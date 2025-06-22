@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import {
@@ -8,153 +8,299 @@ import {
   Typography,
   Box,
   Button,
-  Card,
-  CardContent,
   TextField,
   Grid,
-  Snackbar,
-  Alert,
+  Switch,
+  FormControlLabel,
 } from '@mui/material';
-import PhoneIcon from '@mui/icons-material/Phone';
-import MessageIcon from '@mui/icons-material/Message';
+import AddIcon from '@mui/icons-material/Add';
+import SettingsIcon from '@mui/icons-material/Settings';
+import { AnimatePresence } from 'framer-motion';
 import { theme } from './theme';
+import { ContactCard3D } from './components/ContactCard3D';
+import { CallInterface } from './components/CallInterface';
+import { ParticleField } from './components/effects/ParticleField';
+import { PerformanceDashboard } from './components/PerformanceDashboard';
 import { twilioService } from './services/twilioService';
 import { supabase } from './lib/supabase';
+import { useStore } from './store/useStore';
+import { glassmorphism } from './theme/glassmorphism';
 
 function App() {
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [message, setMessage] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' as 'success' | 'error' });
+  const [showSettings, setShowSettings] = useState(false);
+  const [newContactName, setNewContactName] = useState('');
+  const [newContactPhone, setNewContactPhone] = useState('');
+  
+  const {
+    contacts,
+    addContact,
+    activeCall,
+    setActiveCall,
+    isCallInProgress,
+    setCallInProgress,
+    aiEnabled,
+    toggleAI,
+    transcriptionEnabled,
+    toggleTranscription,
+  } = useStore();
 
-  const handleMakeCall = async () => {
-    if (!phoneNumber) return;
-    
-    setLoading(true);
+  // Load contacts from Supabase on mount
+  const loadContacts = useCallback(async () => {
     try {
-      await twilioService.makeCall(phoneNumber);
-      setSnackbar({ open: true, message: 'Call initiated successfully!', severity: 'success' });
+      const { data, error } = await supabase
+        .from('contacts')
+        .select('*')
+        .order('created_at', { ascending: false });
+      
+      if (error) throw error;
+      
+      // Add contacts to store
+      data?.forEach(contact => {
+        addContact({
+          name: `${contact.first_name || ''} ${contact.last_name || ''}`.trim() || 'Unknown',
+          phoneNumber: contact.phone_number || contact.cell || '',
+          email: contact.email,
+          notes: contact.notes || `${contact.summary || ''}\n${contact.tech_interests || ''}`.trim(),
+          tags: [
+            contact.specialty,
+            contact.lead_tier,
+            contact.contact_priority,
+            contact.territory
+          ].filter(Boolean),
+        });
+      });
+    } catch (error) {
+      console.error('Error loading contacts:', error);
+    }
+  }, [addContact]);
+
+  useEffect(() => {
+    loadContacts();
+  }, [loadContacts]);
+
+  const handleMakeCall = async (contact: any) => {
+    setCallInProgress(true);
+    setActiveCall({
+      id: crypto.randomUUID(),
+      contactId: contact.id,
+      phoneNumber: contact.phoneNumber,
+      duration: 0,
+      timestamp: new Date(),
+      type: 'outgoing',
+    });
+
+    try {
+      await twilioService.makeCall(contact.phoneNumber);
       
       // Log to Supabase
       await supabase.from('calls').insert({
-        phone_number: phoneNumber,
+        contact_id: contact.id,
+        phone_number: contact.phoneNumber,
+        type: 'outgoing',
         status: 'initiated',
         created_at: new Date().toISOString(),
       });
     } catch (error) {
-      setSnackbar({ open: true, message: 'Failed to make call', severity: 'error' });
-    } finally {
-      setLoading(false);
+      console.error('Error making call:', error);
+      setCallInProgress(false);
+      setActiveCall(null);
     }
   };
 
-  const handleSendSMS = async () => {
-    if (!phoneNumber || !message) return;
-    
-    setLoading(true);
-    try {
-      await twilioService.sendSMS(phoneNumber, message);
-      setSnackbar({ open: true, message: 'SMS sent successfully!', severity: 'success' });
-      
-      // Log to Supabase
-      await supabase.from('messages').insert({
-        phone_number: phoneNumber,
-        message: message,
-        status: 'sent',
-        created_at: new Date().toISOString(),
-      });
-      
-      setMessage('');
-    } catch (error) {
-      setSnackbar({ open: true, message: 'Failed to send SMS', severity: 'error' });
-    } finally {
-      setLoading(false);
+  const handleEndCall = () => {
+    setCallInProgress(false);
+    setActiveCall(null);
+  };
+
+  const handleAddContact = async () => {
+    if (newContactName && newContactPhone) {
+      try {
+        // Split name into first and last name
+        const nameParts = newContactName.trim().split(' ');
+        const firstName = nameParts[0] || '';
+        const lastName = nameParts.slice(1).join(' ') || '';
+        
+        // Insert into Supabase
+        const { data, error } = await supabase
+          .from('contacts')
+          .insert({
+            first_name: firstName,
+            last_name: lastName,
+            phone_number: newContactPhone,
+            created_at: new Date().toISOString(),
+          })
+          .select()
+          .single();
+          
+        if (error) throw error;
+        
+        // Add to local store
+        addContact({
+          name: newContactName,
+          phoneNumber: newContactPhone,
+        });
+        
+        setNewContactName('');
+        setNewContactPhone('');
+      } catch (error) {
+        console.error('Error adding contact:', error);
+      }
     }
   };
 
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Box sx={{ flexGrow: 1 }}>
-        <AppBar position="static">
-          <Toolbar>
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              RepConnect1
-            </Typography>
-          </Toolbar>
-        </AppBar>
-        
-        <Container maxWidth="md" sx={{ mt: 4 }}>
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <Card>
-                <CardContent>
-                  <Typography variant="h5" gutterBottom>
-                    Communication Center
-                  </Typography>
-                  
-                  <Box sx={{ mt: 3 }}>
-                    <TextField
-                      fullWidth
-                      label="Phone Number"
-                      variant="outlined"
-                      value={phoneNumber}
-                      onChange={(e) => setPhoneNumber(e.target.value)}
-                      placeholder="+1234567890"
-                      sx={{ mb: 2 }}
-                    />
-                    
-                    <Grid container spacing={2} sx={{ mb: 3 }}>
-                      <Grid item>
-                        <Button
-                          variant="contained"
-                          startIcon={<PhoneIcon />}
-                          onClick={handleMakeCall}
-                          disabled={!phoneNumber || loading}
-                        >
-                          Make Call
-                        </Button>
-                      </Grid>
-                    </Grid>
-                    
-                    <TextField
-                      fullWidth
-                      label="SMS Message"
-                      variant="outlined"
-                      multiline
-                      rows={4}
-                      value={message}
-                      onChange={(e) => setMessage(e.target.value)}
-                      placeholder="Type your message here..."
-                      sx={{ mb: 2 }}
-                    />
-                    
-                    <Button
-                      variant="contained"
-                      color="secondary"
-                      startIcon={<MessageIcon />}
-                      onClick={handleSendSMS}
-                      disabled={!phoneNumber || !message || loading}
-                    >
-                      Send SMS
-                    </Button>
-                  </Box>
-                </CardContent>
-              </Card>
-            </Grid>
-          </Grid>
-        </Container>
-      </Box>
-      
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={6000}
-        onClose={() => setSnackbar({ ...snackbar, open: false })}
+      <Box
+        sx={{
+          minHeight: '100vh',
+          background: 'linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #0F172A 100%)',
+          position: 'relative',
+          overflowX: 'hidden',
+        }}
       >
-        <Alert onClose={() => setSnackbar({ ...snackbar, open: false })} severity={snackbar.severity}>
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
+        {/* Particle Background */}
+        <ParticleField color="#6366F1" />
+        
+        {/* Performance Dashboard */}
+        <PerformanceDashboard />
+        
+        {/* Main App */}
+        <Box sx={{ position: 'relative', zIndex: 1 }}>
+          <AppBar
+            position="static"
+            elevation={0}
+            sx={{
+              ...glassmorphism.dark,
+              borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+            }}
+          >
+            <Toolbar>
+              <Typography variant="h6" component="div" sx={{ flexGrow: 1, fontWeight: 700 }}>
+                RepConnect Ultra
+              </Typography>
+              
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={aiEnabled}
+                    onChange={toggleAI}
+                    color="primary"
+                  />
+                }
+                label="AI"
+                sx={{ mr: 2 }}
+              />
+              
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={transcriptionEnabled}
+                    onChange={toggleTranscription}
+                    color="secondary"
+                  />
+                }
+                label="Transcription"
+                sx={{ mr: 2 }}
+              />
+              
+              <Button
+                startIcon={<SettingsIcon />}
+                onClick={() => setShowSettings(!showSettings)}
+                sx={{ color: 'white' }}
+              >
+                Settings
+              </Button>
+            </Toolbar>
+          </AppBar>
+          
+          <Container maxWidth="xl" sx={{ mt: 4, pb: 8 }}>
+            {/* Add Contact Section */}
+            <Box
+              sx={{
+                ...glassmorphism.dark,
+                padding: 3,
+                borderRadius: 2.5,
+                mb: 4,
+              }}
+            >
+              <Typography variant="h5" gutterBottom fontWeight="600">
+                Quick Add Contact
+              </Typography>
+              <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
+                <TextField
+                  label="Name"
+                  value={newContactName}
+                  onChange={(e) => setNewContactName(e.target.value)}
+                  sx={{ flex: 1 }}
+                />
+                <TextField
+                  label="Phone Number"
+                  value={newContactPhone}
+                  onChange={(e) => setNewContactPhone(e.target.value)}
+                  sx={{ flex: 1 }}
+                />
+                <Button
+                  variant="contained"
+                  startIcon={<AddIcon />}
+                  onClick={handleAddContact}
+                  disabled={!newContactName || !newContactPhone}
+                  sx={{ px: 4 }}
+                >
+                  Add
+                </Button>
+              </Box>
+            </Box>
+            
+            {/* Contacts Grid */}
+            <Typography variant="h4" gutterBottom fontWeight="700" mb={3}>
+              Your Contacts
+            </Typography>
+            
+            <Grid container spacing={3}>
+              {contacts.map((contact) => (
+                <Grid item xs={12} sm={6} md={4} key={contact.id}>
+                  <ContactCard3D
+                    contact={contact}
+                    onCall={() => handleMakeCall(contact)}
+                  />
+                </Grid>
+              ))}
+            </Grid>
+            
+            {contacts.length === 0 && (
+              <Box
+                sx={{
+                  textAlign: 'center',
+                  py: 8,
+                  opacity: 0.5,
+                }}
+              >
+                <Typography variant="h6" gutterBottom>
+                  No contacts yet
+                </Typography>
+                <Typography variant="body2">
+                  Add your first contact to get started
+                </Typography>
+              </Box>
+            )}
+          </Container>
+        </Box>
+        
+        {/* Call Interface Overlay */}
+        <AnimatePresence>
+          {isCallInProgress && activeCall && (
+            <CallInterface
+              contact={{
+                name: contacts.find(c => c.id === activeCall.contactId)?.name || 'Unknown',
+                phoneNumber: activeCall.phoneNumber,
+                avatar: contacts.find(c => c.id === activeCall.contactId)?.avatar,
+              }}
+              onEndCall={handleEndCall}
+            />
+          )}
+        </AnimatePresence>
+      </Box>
     </ThemeProvider>
   );
 }
