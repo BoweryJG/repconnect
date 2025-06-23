@@ -9,7 +9,6 @@ import {
   Box,
   Button,
   TextField,
-  Grid,
   Switch,
   FormControlLabel,
 } from '@mui/material';
@@ -17,7 +16,6 @@ import AddIcon from '@mui/icons-material/Add';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { AnimatePresence } from 'framer-motion';
 import { theme } from './theme';
-import { ContactCard3D } from './components/ContactCard3D';
 import { DigitalRolodex } from './components/DigitalRolodex';
 import { CallInterface } from './components/CallInterface';
 import { AdaptiveGradientBackground } from './components/effects/AdaptiveGradientBackground';
@@ -27,7 +25,6 @@ import { supabase } from './lib/supabase';
 import { useStore } from './store/useStore';
 import { glassmorphism } from './theme/glassmorphism';
 import { adaptiveRenderer } from './lib/performance/AdaptiveRenderer';
-import { performanceMonitor } from './lib/performance/PerformanceMonitor';
 import { PerformanceDashboard } from './components/PerformanceDashboard';
 
 function App() {

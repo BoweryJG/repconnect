@@ -1,6 +1,5 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { FixedSizeGrid as Grid } from 'react-window';
-import { Box } from '@mui/material';
 import { ContactCard3DLazy } from './ContactCard3DLazy';
 
 interface VirtualizedContactGridProps {
