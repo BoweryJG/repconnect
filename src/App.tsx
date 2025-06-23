@@ -21,7 +21,6 @@ import { ContactCard3D } from './components/ContactCard3D';
 import { DigitalRolodex } from './components/DigitalRolodex';
 import { CallInterface } from './components/CallInterface';
 import { SimpleGradientBackground } from './components/effects/SimpleGradientBackground';
-import { PerformanceDashboard } from './components/PerformanceDashboard';
 import { twilioService } from './services/twilioService';
 import { supabase } from './lib/supabase';
 import { useStore } from './store/useStore';

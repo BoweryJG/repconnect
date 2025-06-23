@@ -7,11 +7,6 @@ export class PerformanceMonitor {
   private callbacks: Set<(metrics: PerformanceMetrics) => void> = new Set();
   private rafId: number | null = null;
 
-  constructor() {
-    // Disabled monitoring to prevent frame rate fluctuations
-    // this.startMonitoring();
-  }
-
   private startMonitoring() {
     const measure = () => {
       const now = performance.now();

@@ -1,17 +1,13 @@
-import React, { useState, useCallback, useRef, useEffect, useMemo } from 'react';
+import React, { useState, useCallback, useRef, useMemo } from 'react';
 import { FixedSizeList as List } from 'react-window';
-import InfiniteLoader from 'react-window-infinite-loader';
 import {
   Box,
   TextField,
   Typography,
   IconButton,
-  Chip,
   InputAdornment,
-  Paper,
   Button,
   Avatar,
-  Divider,
   Fade,
   alpha,
 } from '@mui/material';
