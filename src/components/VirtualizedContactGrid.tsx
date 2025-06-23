@@ -1,6 +1,6 @@
 import React from 'react';
 import { FixedSizeGrid as Grid } from 'react-window';
-import { ContactCard3DLazy } from './ContactCard3DLazy';
+import { PremiumContactCard } from './PremiumContactCard';
 
 interface VirtualizedContactGridProps {
   contacts: any[];
@@ -10,9 +10,9 @@ interface VirtualizedContactGridProps {
   height: number;
 }
 
-const CARD_WIDTH = 280;
-const CARD_HEIGHT = 200;
-const CARD_GAP = 16;
+const CARD_WIDTH = 320;
+const CARD_HEIGHT = 280;
+const CARD_GAP = 24;
 
 export const VirtualizedContactGrid: React.FC<VirtualizedContactGridProps> = ({
   contacts,
@@ -37,11 +37,10 @@ export const VirtualizedContactGrid: React.FC<VirtualizedContactGridProps> = ({
           padding: CARD_GAP / 2,
         }}
       >
-        <ContactCard3DLazy
+        <PremiumContactCard
           contact={contact}
           onClick={() => onContactClick(contact)}
-          selected={selectedContactId === contact.id}
-          depth={0}
+          onCall={() => onContactClick(contact)}
         />
       </div>
     );
