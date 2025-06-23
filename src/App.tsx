@@ -27,7 +27,7 @@ import { supabase } from './lib/supabase';
 import { useStore } from './store/useStore';
 import { glassmorphism } from './theme/glassmorphism';
 import { AdaptiveRenderer } from './lib/performance/AdaptiveRenderer';
-import { PerformanceMonitor } from './lib/performance/PerformanceMonitor';
+import { performanceMonitor } from './lib/performance/PerformanceMonitor';
 import { PerformanceDashboard } from './components/PerformanceDashboard';
 
 function App() {
@@ -100,7 +100,6 @@ function App() {
 
   // Initialize adaptive renderer
   useEffect(() => {
-    const monitor = PerformanceMonitor.getInstance();
     const renderer = AdaptiveRenderer.getInstance();
     
     // Subscribe to quality changes
@@ -110,11 +109,11 @@ function App() {
     });
 
     // Start monitoring
-    monitor.start();
+    performanceMonitor.start();
     
     return () => {
       unsubscribe();
-      monitor.stop();
+      performanceMonitor.destroy();
     };
   }, []);
 
