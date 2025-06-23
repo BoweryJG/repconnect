@@ -1,7 +1,6 @@
 import React, { useState, useCallback, useRef, useMemo } from 'react';
 import { FixedSizeList as List } from 'react-window';
 import {
-  Box,
   TextField,
   Typography,
   IconButton,
@@ -9,14 +8,12 @@ import {
   Button,
   Avatar,
   Fade,
-  alpha,
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import PhoneIcon from '@mui/icons-material/Phone';
 import MessageIcon from '@mui/icons-material/Message';
 import StarIcon from '@mui/icons-material/Star';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
-import { glassmorphism } from '../theme/glassmorphism';
 
 interface Contact {
   id: string;
@@ -109,15 +106,14 @@ export const DigitalRolodex: React.FC<DigitalRolodexProps> = ({
         onMouseEnter={() => setHoveredIndex(index)}
         onMouseLeave={() => setHoveredIndex(null)}
       >
-        <Box
-          sx={{
-            px: 2,
-            py: 1,
+        <div
+          style={{
+            padding: '8px 16px',
             display: 'flex',
             alignItems: 'center',
-            gap: 2,
+            gap: '16px',
             transition: 'all 0.2s',
-            backgroundColor: isHovered ? alpha('#fff', 0.05) : 'transparent',
+            backgroundColor: isHovered ? 'rgba(255, 255, 255, 0.05)' : 'transparent',
             borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
             cursor: 'pointer',
           }}
@@ -135,7 +131,7 @@ export const DigitalRolodex: React.FC<DigitalRolodexProps> = ({
             {contact.name.substring(0, 2).toUpperCase()}
           </Avatar>
 
-          <Box sx={{ flex: 1, minWidth: 0 }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
             <Typography
               variant="body1"
               sx={{
@@ -158,10 +154,10 @@ export const DigitalRolodex: React.FC<DigitalRolodexProps> = ({
             >
               {contact.phoneNumber}
             </Typography>
-          </Box>
+          </div>
 
           <Fade in={isHovered}>
-            <Box sx={{ display: 'flex', gap: 1 }}>
+            <div style={{ display: 'flex', gap: '8px' }}>
               <IconButton
                 size="small"
                 onClick={(e) => {
@@ -200,34 +196,45 @@ export const DigitalRolodex: React.FC<DigitalRolodexProps> = ({
               >
                 <PhoneIcon />
               </IconButton>
-            </Box>
+            </div>
           </Fade>
-        </Box>
+        </div>
       </div>
     );
   };
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        height: '100%',
-        position: 'relative',
-      }}
-    >
+    <>
+      <style>
+        {`
+          @keyframes fadeOut {
+            0% { opacity: 1; }
+            100% { opacity: 0; }
+          }
+        `}
+      </style>
+      <div
+        style={{
+          display: 'flex',
+          height: '100%',
+          position: 'relative',
+        }}
+      >
       {/* Main Rolodex */}
-      <Box
-        sx={{
+      <div
+        style={{
           flex: 1,
           display: 'flex',
           flexDirection: 'column',
-          ...glassmorphism.dark,
-          borderRadius: 3,
+          background: 'rgba(255, 255, 255, 0.05)',
+          backdropFilter: 'blur(10px)',
+          border: '1px solid rgba(255, 255, 255, 0.1)',
+          borderRadius: '24px',
           overflow: 'hidden',
         }}
       >
         {/* Search Header */}
-        <Box sx={{ p: 3, borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>
+        <div style={{ padding: '24px', borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>
           <TextField
             fullWidth
             placeholder="Search contacts..."
@@ -259,10 +266,10 @@ export const DigitalRolodex: React.FC<DigitalRolodexProps> = ({
           >
             {processedContacts.length} of {contacts.length} contacts
           </Typography>
-        </Box>
+        </div>
 
         {/* Contact List */}
-        <Box sx={{ flex: 1, position: 'relative' }}>
+        <div style={{ flex: 1, position: 'relative' }}>
           <List
             ref={listRef}
             height={window.innerHeight - 200}
@@ -275,40 +282,38 @@ export const DigitalRolodex: React.FC<DigitalRolodexProps> = ({
 
           {/* Letter Overlay */}
           {selectedLetter && (
-            <Box
-              sx={{
+            <div
+              style={{
                 position: 'absolute',
                 top: '50%',
                 left: '50%',
                 transform: 'translate(-50%, -50%)',
                 fontSize: '5rem',
                 fontWeight: 700,
-                color: 'primary.main',
+                color: '#6366F1',
                 pointerEvents: 'none',
                 animation: 'fadeOut 1s forwards',
-                '@keyframes fadeOut': {
-                  '0%': { opacity: 1 },
-                  '100%': { opacity: 0 },
-                },
               }}
             >
               {selectedLetter}
-            </Box>
+            </div>
           )}
-        </Box>
-      </Box>
+        </div>
+      </div>
 
       {/* Alphabet Navigation */}
-      <Box
-        sx={{
-          width: 40,
-          ml: 2,
+      <div
+        style={{
+          width: '40px',
+          marginLeft: '16px',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
-          ...glassmorphism.dark,
-          borderRadius: 3,
-          py: 2,
+          background: 'rgba(255, 255, 255, 0.05)',
+          backdropFilter: 'blur(10px)',
+          border: '1px solid rgba(255, 255, 255, 0.1)',
+          borderRadius: '24px',
+          padding: '16px 0',
         }}
       >
         {ALPHABET.map((letter) => {
@@ -338,7 +343,8 @@ export const DigitalRolodex: React.FC<DigitalRolodexProps> = ({
             </Button>
           );
         })}
-      </Box>
-    </Box>
+      </div>
+    </div>
+    </>
   );
 };

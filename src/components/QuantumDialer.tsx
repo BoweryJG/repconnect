@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Box, IconButton, Typography, Fade, Portal } from '@mui/material';
+import { IconButton, Typography, Portal } from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
 import PhoneIcon from '@mui/icons-material/Phone';
 import BackspaceIcon from '@mui/icons-material/Backspace';
@@ -228,19 +228,22 @@ export const QuantumDialer: React.FC<QuantumDialerProps> = ({ isOpen, onClose, o
               />
 
               {/* Main Dialer Container */}
-              <Box
-                sx={{
+              <div
+                style={{
                   position: 'relative',
                   width: '100%',
                   height: '100%',
                   background: 'linear-gradient(135deg, rgba(0, 20, 40, 0.9) 0%, rgba(0, 40, 80, 0.8) 100%)',
                   backdropFilter: 'blur(20px)',
                   border: '2px solid rgba(0, 255, 255, 0.3)',
-                  borderRadius: 4,
+                  borderRadius: '32px',
                   overflow: 'hidden',
                   animation: `${hologramPulse} 2s ease-in-out infinite`,
-                  '&::before': {
-                    content: '""',
+                }}
+              >
+                {/* Scanline Effect */}
+                <div
+                  style={{
                     position: 'absolute',
                     top: 0,
                     left: 0,
@@ -249,11 +252,11 @@ export const QuantumDialer: React.FC<QuantumDialerProps> = ({ isOpen, onClose, o
                     background: 'linear-gradient(180deg, transparent 0%, rgba(0, 255, 255, 0.1) 50%, transparent 100%)',
                     animation: `${scanlineAnimation} 3s linear infinite`,
                     pointerEvents: 'none',
-                  },
-                }}
-              >
+                  }}
+                />
+
                 {/* Header */}
-                <Box sx={{ p: 3, textAlign: 'center', position: 'relative' }}>
+                <div style={{ padding: '24px', textAlign: 'center', position: 'relative' }}>
                   <IconButton
                     onClick={onClose}
                     sx={{
@@ -297,19 +300,18 @@ export const QuantumDialer: React.FC<QuantumDialerProps> = ({ isOpen, onClose, o
                   >
                     Secure Line Protocol 7.0
                   </Typography>
-                </Box>
+                </div>
 
                 {/* Phone Number Display */}
-                <Box
-                  sx={{
-                    mx: 3,
-                    mb: 4,
-                    p: 2,
+                <div
+                  style={{
+                    margin: '0 24px 32px 24px',
+                    padding: '16px',
                     background: 'rgba(0, 0, 0, 0.5)',
                     border: '1px solid rgba(0, 255, 255, 0.3)',
-                    borderRadius: 2,
+                    borderRadius: '16px',
                     textAlign: 'center',
-                    minHeight: 60,
+                    minHeight: '60px',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -326,16 +328,16 @@ export const QuantumDialer: React.FC<QuantumDialerProps> = ({ isOpen, onClose, o
                   >
                     {formatPhoneNumber(phoneNumber) || 'Enter Number'}
                   </Typography>
-                </Box>
+                </div>
 
                 {/* Number Pad */}
-                <Box
-                  sx={{
+                <div
+                  style={{
                     display: 'grid',
                     gridTemplateColumns: 'repeat(3, 1fr)',
-                    gap: 2,
-                    px: 3,
-                    mb: 3,
+                    gap: '16px',
+                    padding: '0 24px',
+                    marginBottom: '24px',
                   }}
                 >
                   {dialerNumbers.map((item) => (
@@ -393,14 +395,14 @@ export const QuantumDialer: React.FC<QuantumDialerProps> = ({ isOpen, onClose, o
                       )}
                     </motion.button>
                   ))}
-                </Box>
+                </div>
 
                 {/* Action Buttons */}
-                <Box
-                  sx={{
+                <div
+                  style={{
                     display: 'flex',
-                    gap: 2,
-                    px: 3,
+                    gap: '16px',
+                    padding: '0 24px',
                     justifyContent: 'center',
                   }}
                 >
@@ -474,13 +476,13 @@ export const QuantumDialer: React.FC<QuantumDialerProps> = ({ isOpen, onClose, o
                       <BackspaceIcon />
                     </IconButton>
                   </motion.div>
-                </Box>
+                </div>
 
                 {/* Status Bar */}
-                <Box
-                  sx={{
+                <div
+                  style={{
                     position: 'absolute',
-                    bottom: 20,
+                    bottom: '20px',
                     left: 0,
                     right: 0,
                     textAlign: 'center',
@@ -496,8 +498,8 @@ export const QuantumDialer: React.FC<QuantumDialerProps> = ({ isOpen, onClose, o
                   >
                     {isVoiceActive ? 'VOICE CONTROL ACTIVE' : 'SECURE LINE READY'}
                   </Typography>
-                </Box>
-              </Box>
+                </div>
+              </div>
             </motion.div>
           </motion.div>
         )}

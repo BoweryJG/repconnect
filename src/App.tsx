@@ -49,8 +49,6 @@ function App() {
     setCallInProgress,
     aiEnabled,
     toggleAI,
-    transcriptionEnabled,
-    toggleTranscription,
   } = useStore();
 
   // Load contacts from Supabase on mount
