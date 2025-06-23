@@ -26,7 +26,7 @@ import { twilioService } from './services/twilioService';
 import { supabase } from './lib/supabase';
 import { useStore } from './store/useStore';
 import { glassmorphism } from './theme/glassmorphism';
-import { AdaptiveRenderer } from './lib/performance/AdaptiveRenderer';
+import { adaptiveRenderer } from './lib/performance/AdaptiveRenderer';
 import { performanceMonitor } from './lib/performance/PerformanceMonitor';
 import { PerformanceDashboard } from './components/PerformanceDashboard';
 
@@ -100,20 +100,22 @@ function App() {
 
   // Initialize adaptive renderer
   useEffect(() => {
-    const renderer = AdaptiveRenderer.getInstance();
-    
     // Subscribe to quality changes
-    const unsubscribe = renderer.onQualityChange((quality) => {
-      setRenderQuality(quality);
-      console.log('Render quality changed to:', quality);
+    const unsubscribe = adaptiveRenderer.subscribe((settings) => {
+      // Map quality settings to simple quality level
+      if (settings.particleCount >= 5000) {
+        setRenderQuality('ultra');
+      } else if (settings.particleCount >= 3000) {
+        setRenderQuality('high');
+      } else if (settings.particleCount >= 1500) {
+        setRenderQuality('medium');
+      } else {
+        setRenderQuality('low');
+      }
     });
 
-    // Start monitoring
-    performanceMonitor.start();
-    
     return () => {
       unsubscribe();
-      performanceMonitor.destroy();
     };
   }, []);
 

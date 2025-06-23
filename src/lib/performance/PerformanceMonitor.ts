@@ -7,6 +7,10 @@ export class PerformanceMonitor {
   private callbacks: Set<(metrics: PerformanceMetrics) => void> = new Set();
   private rafId: number | null = null;
 
+  constructor() {
+    this.startMonitoring();
+  }
+
   private startMonitoring() {
     const measure = () => {
       const now = performance.now();
