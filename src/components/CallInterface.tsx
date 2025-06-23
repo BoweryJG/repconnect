@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
-  Box,
   Typography,
   IconButton,
   Avatar,
@@ -142,13 +141,13 @@ export const CallInterface: React.FC<CallInterfaceProps> = ({ contact, onEndCall
         WebkitBackdropFilter: 'blur(16px) saturate(150%)',
       }}
     >
-      <Box sx={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: 500, p: 3 }}>
+      <div style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: '500px', padding: '24px' }}>
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ delay: 0.2 }}
         >
-          <Box sx={{ textAlign: 'center', mb: 4 }}>
+          <div style={{ textAlign: 'center', marginBottom: '32px' }}>
             <Avatar
               src={contact.avatar}
               alt={contact.name}
@@ -171,16 +170,16 @@ export const CallInterface: React.FC<CallInterfaceProps> = ({ contact, onEndCall
             <Typography variant="h6" color="primary.light" mt={2}>
               {formatDuration(duration)}
             </Typography>
-          </Box>
+          </div>
         </motion.div>
 
         {/* Waveform Visualization */}
-        <Box
-          sx={{
+        <div
+          style={{
             width: '100%',
-            height: 80,
-            mb: 4,
-            borderRadius: 2,
+            height: '80px',
+            marginBottom: '32px',
+            borderRadius: '16px',
             overflow: 'hidden',
             background: 'rgba(0,0,0,0.3)',
             position: 'relative',
@@ -197,52 +196,39 @@ export const CallInterface: React.FC<CallInterfaceProps> = ({ contact, onEndCall
             }}
           />
           {isTranscribing && (
-            <Box
-              sx={{
+            <div
+              style={{
                 position: 'absolute',
-                top: 8,
-                right: 8,
+                top: '8px',
+                right: '8px',
                 display: 'flex',
                 alignItems: 'center',
-                gap: 1,
+                gap: '8px',
               }}
             >
               <RecordVoiceOverIcon sx={{ color: 'primary.light', fontSize: 16 }} />
               <Typography variant="caption" color="primary.light">
                 AI Listening
               </Typography>
-            </Box>
+            </div>
           )}
-        </Box>
+        </div>
 
         {/* AI Transcript */}
         {transcriptionEnabled && transcript && (
           <Slide direction="up" in={!!transcript}>
-            <Box
-              sx={{
-                padding: 2,
-                borderRadius: 1.5,
-                mb: 3,
-                minHeight: 80,
+            <div
+              style={{
+                padding: '16px',
+                borderRadius: '12px',
+                marginBottom: '24px',
+                minHeight: '80px',
                 position: 'relative',
                 overflow: 'hidden',
                 background: `${sentimentColors[sentiment]}22`,
                 backdropFilter: 'blur(20px) saturate(200%)',
                 WebkitBackdropFilter: 'blur(20px) saturate(200%)',
                 border: `1px solid ${sentimentColors[sentiment]}44`,
-                '@keyframes shimmer': {
-                  '0%': { backgroundPosition: '-200% 0' },
-                  '100%': { backgroundPosition: '200% 0' },
-                },
-                '&::after': {
-                  content: '""',
-                  position: 'absolute',
-                  inset: 0,
-                  opacity: 0.1,
-                  background: 'linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.2) 50%, transparent 100%)',
-                  backgroundSize: '200% 100%',
-                  animation: 'shimmer 2s infinite',
-                },
               }}
             >
               <Typography variant="caption" color="text.secondary" gutterBottom>
@@ -263,12 +249,12 @@ export const CallInterface: React.FC<CallInterfaceProps> = ({ contact, onEndCall
                   fontWeight: 600,
                 }}
               />
-            </Box>
+            </div>
           </Slide>
         )}
 
         {/* Call Controls */}
-        <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '16px' }}>
           <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
             <IconButton
               onClick={() => setIsMuted(!isMuted)}
@@ -326,8 +312,8 @@ export const CallInterface: React.FC<CallInterfaceProps> = ({ contact, onEndCall
               {speakerOn ? <VolumeUpIcon /> : <VolumeOffIcon />}
             </IconButton>
           </motion.div>
-        </Box>
-      </Box>
+        </div>
+      </div>
     </motion.div>
   );
 };
