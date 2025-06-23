@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Typography, Avatar, Chip, IconButton, Tooltip } from '@mui/material';
+import { Typography, Avatar, Chip, IconButton, Tooltip } from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
 import PhoneIcon from '@mui/icons-material/Phone';
 import EmailIcon from '@mui/icons-material/Email';
@@ -75,8 +75,8 @@ export const PremiumContactCard: React.FC<PremiumContactCardProps> = ({ contact,
         >
           {!isFlipped ? (
             // Front of card
-            <Box
-              sx={{
+            <div
+              style={{
                 height: '100%',
                 background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(236, 72, 153, 0.05) 100%)',
                 backdropFilter: 'blur(20px) saturate(180%)',
@@ -85,38 +85,24 @@ export const PremiumContactCard: React.FC<PremiumContactCardProps> = ({ contact,
                 boxShadow: contact.isFavorite 
                   ? '0 0 20px rgba(99, 102, 241, 0.5), 0 0 40px rgba(99, 102, 241, 0.3)' 
                   : '0 8px 32px 0 rgba(0, 0, 0, 0.2)',
-                p: 3,
+                padding: '24px',
                 display: 'flex',
                 flexDirection: 'column',
-                gap: 2,
+                gap: '16px',
                 position: 'relative',
                 overflow: 'hidden',
-                borderRadius: 3,
+                borderRadius: '24px',
                 transition: 'all 0.4s ease',
-                '&::before': {
-                  content: '""',
-                  position: 'absolute',
-                  top: -2,
-                  left: -2,
-                  right: -2,
-                  bottom: -2,
-                  background: 'linear-gradient(135deg, #6366F1, #EC4899, #3B82F6)',
-                  backgroundSize: '300% 300%',
-                  borderRadius: 'inherit',
-                  opacity: 0.3,
-                  filter: 'blur(10px)',
-                  zIndex: -1,
-                },
               }}
             >
               {/* Animated background gradient */}
-              <Box
-                sx={{
+              <div
+                style={{
                   position: 'absolute',
-                  top: -100,
-                  right: -100,
-                  width: 200,
-                  height: 200,
+                  top: '-100px',
+                  right: '-100px',
+                  width: '200px',
+                  height: '200px',
                   background: 'radial-gradient(circle, rgba(99, 102, 241, 0.2) 0%, transparent 70%)',
                   filter: 'blur(40px)',
                   opacity: isHovered ? 1 : 0,
@@ -125,7 +111,7 @@ export const PremiumContactCard: React.FC<PremiumContactCardProps> = ({ contact,
               />
 
               {/* Header */}
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                 <Avatar
                   src={contact.avatar}
                   sx={{
@@ -139,7 +125,7 @@ export const PremiumContactCard: React.FC<PremiumContactCardProps> = ({ contact,
                 >
                   {!contact.avatar && getInitials(contact.name)}
                 </Avatar>
-                <Box sx={{ flex: 1 }}>
+                <div style={{ flex: 1 }}>
                   <Typography 
                     variant="h6" 
                     sx={{ 
@@ -155,7 +141,7 @@ export const PremiumContactCard: React.FC<PremiumContactCardProps> = ({ contact,
                   <Typography variant="body2" sx={{ color: 'text.secondary', mt: 0.5 }}>
                     {formatPhoneNumber(contact.phoneNumber)}
                   </Typography>
-                </Box>
+                </div>
                 <IconButton
                   onClick={(e) => {
                     e.stopPropagation();
@@ -171,51 +157,51 @@ export const PremiumContactCard: React.FC<PremiumContactCardProps> = ({ contact,
                 >
                   {contact.isFavorite ? <StarIcon /> : <StarBorderIcon />}
                 </IconButton>
-              </Box>
+              </div>
 
               {/* Stats */}
-              <Box sx={{ display: 'flex', gap: 2 }}>
-                <Box sx={{ 
+              <div style={{ display: 'flex', gap: '16px' }}>
+                <div style={{ 
                   flex: 1, 
-                  p: 1.5, 
-                  borderRadius: 2,
+                  padding: '12px', 
+                  borderRadius: '16px',
                   background: 'rgba(99, 102, 241, 0.1)',
                   border: '1px solid rgba(99, 102, 241, 0.2)',
                 }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <TrendingUpIcon sx={{ fontSize: 18, color: '#6366F1' }} />
                     <Typography variant="caption" sx={{ color: 'text.secondary' }}>
                       Calls
                     </Typography>
-                  </Box>
+                  </div>
                   <Typography variant="h6" sx={{ fontWeight: 700, color: '#6366F1' }}>
                     {contact.callCount}
                   </Typography>
-                </Box>
+                </div>
                 {contact.lastCall && (
-                  <Box sx={{ 
+                  <div style={{ 
                     flex: 1, 
-                    p: 1.5, 
-                    borderRadius: 2,
+                    padding: '12px', 
+                    borderRadius: '16px',
                     background: 'rgba(236, 72, 153, 0.1)',
                     border: '1px solid rgba(236, 72, 153, 0.2)',
                   }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                       <ScheduleIcon sx={{ fontSize: 18, color: '#EC4899' }} />
                       <Typography variant="caption" sx={{ color: 'text.secondary' }}>
                         Last Call
                       </Typography>
-                    </Box>
+                    </div>
                     <Typography variant="body2" sx={{ fontWeight: 600, color: '#EC4899' }}>
                       {new Date(contact.lastCall).toLocaleDateString()}
                     </Typography>
-                  </Box>
+                  </div>
                 )}
-              </Box>
+              </div>
 
               {/* Tags */}
               {contact.tags && contact.tags.length > 0 && (
-                <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                   {contact.tags.slice(0, 3).map((tag, index) => (
                     <Chip
                       key={index}
@@ -245,11 +231,11 @@ export const PremiumContactCard: React.FC<PremiumContactCardProps> = ({ contact,
                       }}
                     />
                   )}
-                </Box>
+                </div>
               )}
 
               {/* Action buttons */}
-              <Box sx={{ display: 'flex', gap: 1, mt: 'auto' }}>
+              <div style={{ display: 'flex', gap: '8px', marginTop: 'auto' }}>
                 <Tooltip title="Call">
                   <IconButton
                     onClick={(e) => {
@@ -310,22 +296,22 @@ export const PremiumContactCard: React.FC<PremiumContactCardProps> = ({ contact,
                     <EmailIcon />
                   </IconButton>
                 </Tooltip>
-              </Box>
-            </Box>
+              </div>
+            </div>
           ) : (
             // Back of card
-            <Box
-              sx={{
+            <div
+              style={{
                 height: '100%',
                 background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(236, 72, 153, 0.05) 100%)',
                 backdropFilter: 'blur(20px)',
                 border: '1px solid rgba(255, 255, 255, 0.1)',
                 boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.2)',
-                borderRadius: 3,
-                p: 3,
+                borderRadius: '24px',
+                padding: '24px',
                 display: 'flex',
                 flexDirection: 'column',
-                gap: 2,
+                gap: '16px',
               }}
             >
               <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>
@@ -333,33 +319,33 @@ export const PremiumContactCard: React.FC<PremiumContactCardProps> = ({ contact,
               </Typography>
               
               {contact.email && (
-                <Box>
+                <div>
                   <Typography variant="caption" sx={{ color: 'text.secondary' }}>
                     Email
                   </Typography>
                   <Typography variant="body2" sx={{ fontWeight: 500 }}>
                     {contact.email}
                   </Typography>
-                </Box>
+                </div>
               )}
 
               {contact.notes && (
-                <Box>
+                <div>
                   <Typography variant="caption" sx={{ color: 'text.secondary' }}>
                     Notes
                   </Typography>
                   <Typography variant="body2" sx={{ mt: 0.5 }}>
                     {contact.notes}
                   </Typography>
-                </Box>
+                </div>
               )}
 
               {contact.tags && contact.tags.length > 0 && (
-                <Box>
+                <div>
                   <Typography variant="caption" sx={{ color: 'text.secondary' }}>
                     All Tags
                   </Typography>
-                  <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mt: 1 }}>
+                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '8px' }}>
                     {contact.tags.map((tag, index) => (
                       <Chip
                         key={index}
@@ -372,8 +358,8 @@ export const PremiumContactCard: React.FC<PremiumContactCardProps> = ({ contact,
                         }}
                       />
                     ))}
-                  </Box>
-                </Box>
+                  </div>
+                </div>
               )}
 
               <Typography 
@@ -387,7 +373,7 @@ export const PremiumContactCard: React.FC<PremiumContactCardProps> = ({ contact,
               >
                 Click to flip back
               </Typography>
-            </Box>
+            </div>
           )}
         </motion.div>
       </AnimatePresence>
