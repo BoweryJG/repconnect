@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import {
@@ -20,17 +20,23 @@ import { theme } from './theme';
 import { ContactCard3D } from './components/ContactCard3D';
 import { DigitalRolodex } from './components/DigitalRolodex';
 import { CallInterface } from './components/CallInterface';
-import { SimpleGradientBackground } from './components/effects/SimpleGradientBackground';
+import { AdaptiveGradientBackground } from './components/effects/AdaptiveGradientBackground';
+import { VirtualizedContactGrid } from './components/VirtualizedContactGrid';
 import { twilioService } from './services/twilioService';
 import { supabase } from './lib/supabase';
 import { useStore } from './store/useStore';
 import { glassmorphism } from './theme/glassmorphism';
+import { AdaptiveRenderer } from './lib/performance/AdaptiveRenderer';
+import { PerformanceMonitor } from './lib/performance/PerformanceMonitor';
 
 function App() {
   const [showSettings, setShowSettings] = useState(false);
   const [newContactName, setNewContactName] = useState('');
   const [newContactPhone, setNewContactPhone] = useState('');
   const [viewMode, setViewMode] = useState<'rolodex' | 'grid'>('rolodex');
+  const [renderQuality, setRenderQuality] = useState<'ultra' | 'high' | 'medium' | 'low'>('high');
+  const [gridDimensions, setGridDimensions] = useState({ width: 1200, height: 600 });
+  const gridContainerRef = useRef<HTMLDivElement>(null);
   
   const {
     contacts,
@@ -90,6 +96,44 @@ function App() {
     console.log('useEffect running, calling loadContacts...');
     loadContacts();
   }, [loadContacts]);
+
+  // Initialize adaptive renderer
+  useEffect(() => {
+    const monitor = PerformanceMonitor.getInstance();
+    const renderer = AdaptiveRenderer.getInstance();
+    
+    // Subscribe to quality changes
+    const unsubscribe = renderer.onQualityChange((quality) => {
+      setRenderQuality(quality);
+      console.log('Render quality changed to:', quality);
+    });
+
+    // Start monitoring
+    monitor.start();
+    
+    return () => {
+      unsubscribe();
+      monitor.stop();
+    };
+  }, []);
+
+  // Setup resize observer for grid dimensions
+  useEffect(() => {
+    if (!gridContainerRef.current) return;
+
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const { width, height } = entry.contentRect;
+        setGridDimensions({ width, height });
+      }
+    });
+
+    resizeObserver.observe(gridContainerRef.current);
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, [viewMode]);
 
   const handleMakeCall = async (contact: any) => {
     setCallInProgress(true);
@@ -172,11 +216,11 @@ function App() {
           overflowX: 'hidden',
         }}
       >
-        {/* Simple Gradient Background */}
-        <SimpleGradientBackground />
+        {/* Adaptive Gradient Background */}
+        <AdaptiveGradientBackground quality={renderQuality} />
         
-        {/* Performance Dashboard - Disabled */}
-        {/* <PerformanceDashboard /> */}
+        {/* Performance Dashboard */}
+        <PerformanceDashboard />
         
         {/* Main App */}
         <Box sx={{ position: 'relative', zIndex: 1 }}>
@@ -299,23 +343,22 @@ function App() {
                 />
               </Box>
             ) : (
-              <>
-                <Grid container spacing={3}>
-                  {contacts.slice(0, 100).map((contact) => (
-                    <Grid item xs={12} sm={6} md={4} key={contact.id}>
-                      <ContactCard3D
-                        contact={contact}
-                        onCall={() => handleMakeCall(contact)}
-                      />
-                    </Grid>
-                  ))}
-                </Grid>
-                {contacts.length > 100 && (
-                  <Typography variant="body2" sx={{ textAlign: 'center', mt: 3, opacity: 0.7 }}>
-                    Showing first 100 contacts. Use Rolodex view to see all {contacts.length} contacts.
-                  </Typography>
-                )}
-              </>
+              <Box 
+                ref={gridContainerRef}
+                sx={{ 
+                  height: 'calc(100vh - 350px)', 
+                  minHeight: 600,
+                  width: '100%',
+                }}
+              >
+                <VirtualizedContactGrid
+                  contacts={contacts}
+                  onContactClick={handleMakeCall}
+                  selectedContactId={activeCall?.contactId}
+                  width={gridDimensions.width}
+                  height={gridDimensions.height}
+                />
+              </Box>
             )}
             
             {contacts.length === 0 && (
