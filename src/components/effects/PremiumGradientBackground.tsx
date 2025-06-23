@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from 'react';
-import { Box } from '@mui/material';
 import { keyframes } from '@mui/material';
 
 const gradientAnimation = keyframes`
@@ -107,8 +106,8 @@ export const PremiumGradientBackground: React.FC<PremiumGradientBackgroundProps>
 
   return (
     <>
-      <Box
-        sx={{
+      <div
+        style={{
           position: 'fixed',
           top: 0,
           left: 0,
@@ -122,13 +121,13 @@ export const PremiumGradientBackground: React.FC<PremiumGradientBackgroundProps>
       />
       
       {/* Animated orbs */}
-      <Box
-        sx={{
+      <div
+        style={{
           position: 'fixed',
           top: '20%',
           left: '10%',
-          width: 400,
-          height: 400,
+          width: '400px',
+          height: '400px',
           borderRadius: '50%',
           background: 'radial-gradient(circle, rgba(99, 102, 241, 0.3) 0%, transparent 70%)',
           filter: 'blur(40px)',
@@ -136,13 +135,13 @@ export const PremiumGradientBackground: React.FC<PremiumGradientBackgroundProps>
           zIndex: -2,
         }}
       />
-      <Box
-        sx={{
+      <div
+        style={{
           position: 'fixed',
           bottom: '20%',
           right: '10%',
-          width: 600,
-          height: 600,
+          width: '600px',
+          height: '600px',
           borderRadius: '50%',
           background: 'radial-gradient(circle, rgba(236, 72, 153, 0.3) 0%, transparent 70%)',
           filter: 'blur(60px)',
@@ -150,14 +149,14 @@ export const PremiumGradientBackground: React.FC<PremiumGradientBackgroundProps>
           zIndex: -2,
         }}
       />
-      <Box
-        sx={{
+      <div
+        style={{
           position: 'fixed',
           top: '50%',
           left: '50%',
           transform: 'translate(-50%, -50%)',
-          width: 800,
-          height: 800,
+          width: '800px',
+          height: '800px',
           borderRadius: '50%',
           background: 'radial-gradient(circle, rgba(59, 130, 246, 0.2) 0%, transparent 70%)',
           filter: 'blur(80px)',
@@ -182,8 +181,8 @@ export const PremiumGradientBackground: React.FC<PremiumGradientBackgroundProps>
       />
       
       {/* Noise texture overlay */}
-      <Box
-        sx={{
+      <div
+        style={{
           position: 'fixed',
           top: 0,
           left: 0,
