@@ -51,13 +51,22 @@ function App() {
       const { data, error } = await supabase
         .from('contacts')
         .select('*')
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: false })
+        .limit(50); // Add limit to avoid loading 5000+ contacts at once
       
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase error:', error);
+        throw error;
+      }
+      
+      console.log('Loaded contacts:', data?.length || 0);
+      console.log('First contact:', data?.[0]); // Debug first contact
+      
+      // Clear existing contacts first to avoid duplicates
       
       // Add contacts to store
       data?.forEach(contact => {
-        addContact({
+        const contactData = {
           name: `${contact.first_name || ''} ${contact.last_name || ''}`.trim() || 'Unknown',
           phoneNumber: contact.phone_number || contact.cell || '',
           email: contact.email,
@@ -68,7 +77,9 @@ function App() {
             contact.contact_priority,
             contact.territory
           ].filter(Boolean),
-        });
+        };
+        console.log('Adding contact:', contactData.name); // Debug each contact
+        addContact(contactData);
       });
     } catch (error) {
       console.error('Error loading contacts:', error);
@@ -76,6 +87,7 @@ function App() {
   }, [addContact]);
 
   useEffect(() => {
+    console.log('useEffect running, calling loadContacts...');
     loadContacts();
   }, [loadContacts]);
 
