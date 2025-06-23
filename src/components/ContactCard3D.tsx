@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Box, Typography, Avatar, Chip } from '@mui/material';
+import { Typography, Avatar, Chip } from '@mui/material';
 import { motion } from 'framer-motion';
 import PhoneIcon from '@mui/icons-material/Phone';
 import EmailIcon from '@mui/icons-material/Email';
@@ -58,15 +58,15 @@ export const ContactCard3D: React.FC<ContactCard3DProps> = ({ contact, onClick, 
   };
 
   const frontFace = {
-    position: 'absolute',
+    position: 'absolute' as const,
     width: '100%',
     height: '100%',
-    backfaceVisibility: 'hidden',
+    backfaceVisibility: 'hidden' as const,
     borderRadius: '20px',
     padding: '24px',
     display: 'flex',
-    flexDirection: 'column',
-    gap: 2,
+    flexDirection: 'column' as const,
+    gap: '16px',
     transform: 'rotateY(0deg)',
   };
 
@@ -85,9 +85,37 @@ export const ContactCard3D: React.FC<ContactCard3DProps> = ({ contact, onClick, 
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <Box
+      <style>
+        {`
+          .contact-card-3d::before {
+            content: "";
+            position: absolute;
+            inset: -2px;
+            border-radius: 20px;
+            padding: 2px;
+            background: linear-gradient(135deg, #6366F1, #8B5CF6, #06B6D4);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: exclude;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.3s;
+          }
+          .contact-card-3d:hover::before {
+            opacity: 1;
+          }
+          .screw::after {
+            content: "";
+            position: absolute;
+            inset: 2px;
+            background: linear-gradient(45deg, transparent 45%, #606060 45%, #606060 55%, transparent 55%);
+            border-radius: 50%;
+          }
+        `}
+      </style>
+      <div
         ref={cardRef}
-        sx={{
+        className="contact-card-3d"
+        style={{
           background: 'rgba(17, 25, 40, 0.75)',
           backdropFilter: 'blur(16px) saturate(150%)',
           WebkitBackdropFilter: 'blur(16px) saturate(150%)',
@@ -95,38 +123,26 @@ export const ContactCard3D: React.FC<ContactCard3DProps> = ({ contact, onClick, 
           boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12)',
           position: 'relative',
           width: '100%',
-          height: 380,
+          height: '380px',
           cursor: 'pointer',
           transformStyle: 'preserve-3d',
           transition: 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease',
           transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
           borderRadius: '20px',
-          '&:hover': {
-            boxShadow: '0 12px 48px rgba(0, 0, 0, 0.2)',
-          },
-          '&::before': {
-            content: '""',
-            position: 'absolute',
-            inset: '-2px',
-            borderRadius: '20px',
-            padding: '2px',
-            background: 'linear-gradient(135deg, #6366F1, #8B5CF6, #06B6D4)',
-            WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
-            WebkitMaskComposite: 'exclude',
-            maskComposite: 'exclude',
-            opacity: 0,
-            transition: 'opacity 0.3s',
-          },
-          '&:hover::before': {
-            opacity: 1,
-          }
         }}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
         onClick={() => setIsFlipped(!isFlipped)}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.boxShadow = '0 12px 48px rgba(0, 0, 0, 0.2)';
+        }}
+        onMouseLeave={(e) => {
+          handleMouseLeave();
+          e.currentTarget.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.12)';
+        }}
       >
         {/* Precision Screws - Balanced Bezel Logic */}
-        <Box className="screw screw-top-left" sx={{
+        <div className="screw screw-top-left" style={{
           position: 'absolute',
           top: '6px',
           left: '5%',
@@ -136,15 +152,8 @@ export const ContactCard3D: React.FC<ContactCard3DProps> = ({ contact, onClick, 
           background: 'radial-gradient(circle at 30% 30%, #C0C0C0, #808080)',
           boxShadow: 'inset -1px -1px 2px rgba(0,0,0,0.5), 0 1px 1px rgba(255,255,255,0.3)',
           transform: 'rotate(10deg)',
-          '&::after': {
-            content: '""',
-            position: 'absolute',
-            inset: '2px',
-            background: 'linear-gradient(45deg, transparent 45%, #606060 45%, #606060 55%, transparent 55%)',
-            borderRadius: '50%',
-          }
         }} />
-        <Box className="screw screw-top-center" sx={{
+        <div className="screw screw-top-center" style={{
           position: 'absolute',
           top: '6px',
           left: '50%',
@@ -154,15 +163,8 @@ export const ContactCard3D: React.FC<ContactCard3DProps> = ({ contact, onClick, 
           background: 'radial-gradient(circle at 30% 30%, #C0C0C0, #808080)',
           boxShadow: 'inset -1px -1px 2px rgba(0,0,0,0.5), 0 1px 1px rgba(255,255,255,0.3)',
           transform: 'translateX(-50%) rotate(3deg)',
-          '&::after': {
-            content: '""',
-            position: 'absolute',
-            inset: '2px',
-            background: 'linear-gradient(45deg, transparent 45%, #606060 45%, #606060 55%, transparent 55%)',
-            borderRadius: '50%',
-          }
         }} />
-        <Box className="screw screw-top-right" sx={{
+        <div className="screw screw-top-right" style={{
           position: 'absolute',
           top: '6px',
           right: '5%',
@@ -172,15 +174,8 @@ export const ContactCard3D: React.FC<ContactCard3DProps> = ({ contact, onClick, 
           background: 'radial-gradient(circle at 30% 30%, #C0C0C0, #808080)',
           boxShadow: 'inset -1px -1px 2px rgba(0,0,0,0.5), 0 1px 1px rgba(255,255,255,0.3)',
           transform: 'rotate(20deg)',
-          '&::after': {
-            content: '""',
-            position: 'absolute',
-            inset: '2px',
-            background: 'linear-gradient(45deg, transparent 45%, #606060 45%, #606060 55%, transparent 55%)',
-            borderRadius: '50%',
-          }
         }} />
-        <Box className="screw screw-bot-left" sx={{
+        <div className="screw screw-bot-left" style={{
           position: 'absolute',
           bottom: '6px',
           left: '5%',
@@ -190,15 +185,8 @@ export const ContactCard3D: React.FC<ContactCard3DProps> = ({ contact, onClick, 
           background: 'radial-gradient(circle at 30% 30%, #C0C0C0, #808080)',
           boxShadow: 'inset -1px -1px 2px rgba(0,0,0,0.5), 0 1px 1px rgba(255,255,255,0.3)',
           transform: 'rotate(8deg)',
-          '&::after': {
-            content: '""',
-            position: 'absolute',
-            inset: '2px',
-            background: 'linear-gradient(45deg, transparent 45%, #606060 45%, #606060 55%, transparent 55%)',
-            borderRadius: '50%',
-          }
         }} />
-        <Box className="screw screw-bot-center" sx={{
+        <div className="screw screw-bot-center" style={{
           position: 'absolute',
           bottom: '6px',
           left: '50%',
@@ -208,15 +196,8 @@ export const ContactCard3D: React.FC<ContactCard3DProps> = ({ contact, onClick, 
           background: 'radial-gradient(circle at 30% 30%, #C0C0C0, #808080)',
           boxShadow: 'inset -1px -1px 2px rgba(0,0,0,0.5), 0 1px 1px rgba(255,255,255,0.3)',
           transform: 'translateX(-50%) rotate(-3deg)',
-          '&::after': {
-            content: '""',
-            position: 'absolute',
-            inset: '2px',
-            background: 'linear-gradient(45deg, transparent 45%, #606060 45%, #606060 55%, transparent 55%)',
-            borderRadius: '50%',
-          }
         }} />
-        <Box className="screw screw-bot-right" sx={{
+        <div className="screw screw-bot-right" style={{
           position: 'absolute',
           bottom: '6px',
           right: '5%',
@@ -226,18 +207,11 @@ export const ContactCard3D: React.FC<ContactCard3DProps> = ({ contact, onClick, 
           background: 'radial-gradient(circle at 30% 30%, #C0C0C0, #808080)',
           boxShadow: 'inset -1px -1px 2px rgba(0,0,0,0.5), 0 1px 1px rgba(255,255,255,0.3)',
           transform: 'rotate(-10deg)',
-          '&::after': {
-            content: '""',
-            position: 'absolute',
-            inset: '2px',
-            background: 'linear-gradient(45deg, transparent 45%, #606060 45%, #606060 55%, transparent 55%)',
-            borderRadius: '50%',
-          }
         }} />
 
         {/* Front Face */}
-        <Box sx={frontFace}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+        <div style={frontFace}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
             <Avatar
               src={contact.avatar}
               alt={contact.name}
@@ -248,31 +222,31 @@ export const ContactCard3D: React.FC<ContactCard3DProps> = ({ contact, onClick, 
                 boxShadow: '0 8px 32px rgba(0,0,0,0.2)',
               }}
             />
-            <Box sx={{ flex: 1 }}>
+            <div style={{ flex: 1 }}>
               <Typography variant="h5" fontWeight="600" color="primary.light">
                 {contact.name}
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 {contact.callCount} calls
               </Typography>
-            </Box>
-          </Box>
+            </div>
+          </div>
 
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5, mt: 2 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '16px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
               <PhoneIcon sx={{ color: 'primary.main', fontSize: 20 }} />
               <Typography variant="body1">{contact.phoneNumber}</Typography>
-            </Box>
+            </div>
             {contact.email && (
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                 <EmailIcon sx={{ color: 'secondary.main', fontSize: 20 }} />
                 <Typography variant="body1">{contact.email}</Typography>
-              </Box>
+              </div>
             )}
-          </Box>
+          </div>
 
           {contact.tags && contact.tags.length > 0 && (
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 'auto' }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: 'auto' }}>
               {contact.tags.map((tag, index) => (
                 <Chip
                   key={index}
@@ -285,7 +259,7 @@ export const ContactCard3D: React.FC<ContactCard3DProps> = ({ contact, onClick, 
                   }}
                 />
               ))}
-            </Box>
+            </div>
           )}
 
           <motion.button
@@ -321,29 +295,29 @@ export const ContactCard3D: React.FC<ContactCard3DProps> = ({ contact, onClick, 
           >
             <PhoneIcon /> Call Now
           </motion.button>
-        </Box>
+        </div>
 
         {/* Back Face */}
-        <Box sx={backFace}>
+        <div style={backFace}>
           <Typography variant="h6" fontWeight="600" mb={2}>
             Notes & Details
           </Typography>
           
           {contact.notes ? (
-            <Box
-              sx={{
+            <div
+              style={{
                 flex: 1,
-                p: 2,
-                borderRadius: 2,
+                padding: '16px',
+                borderRadius: '16px',
                 background: 'rgba(0,0,0,0.2)',
                 overflowY: 'auto',
               }}
             >
               <Typography variant="body2">{contact.notes}</Typography>
-            </Box>
+            </div>
           ) : (
-            <Box
-              sx={{
+            <div
+              style={{
                 flex: 1,
                 display: 'flex',
                 alignItems: 'center',
@@ -353,7 +327,7 @@ export const ContactCard3D: React.FC<ContactCard3DProps> = ({ contact, onClick, 
             >
               <NotesIcon sx={{ fontSize: 48, mb: 1 }} />
               <Typography variant="body2">No notes yet</Typography>
-            </Box>
+            </div>
           )}
 
           {contact.lastCall && (
@@ -361,8 +335,8 @@ export const ContactCard3D: React.FC<ContactCard3DProps> = ({ contact, onClick, 
               Last call: {new Date(contact.lastCall).toLocaleDateString()}
             </Typography>
           )}
-        </Box>
-      </Box>
+        </div>
+      </div>
     </motion.div>
   );
 };

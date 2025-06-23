@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, LinearProgress, Chip, IconButton, Collapse } from '@mui/material';
+import { Typography, LinearProgress, Chip, IconButton, Collapse } from '@mui/material';
 import SpeedIcon from '@mui/icons-material/Speed';
 import BatteryFullIcon from '@mui/icons-material/BatteryFull';
 import Battery90Icon from '@mui/icons-material/Battery90';
@@ -97,17 +97,17 @@ export const PerformanceDashboard: React.FC = () => {
         border: '1px solid rgba(255, 255, 255, 0.125)',
       }}
     >
-      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
         <Typography variant="h6" fontWeight="600">
           Performance Monitor
         </Typography>
         <IconButton size="small" onClick={() => setIsExpanded(!isExpanded)}>
           {isExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
         </IconButton>
-      </Box>
+      </div>
 
       {/* Quick Stats */}
-      <Box sx={{ display: 'flex', gap: 1, mb: 2 }}>
+      <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
         <Chip
           icon={<SpeedIcon />}
           label={`${fps} FPS`}
@@ -134,17 +134,17 @@ export const PerformanceDashboard: React.FC = () => {
             border: '1px solid #6366F1',
           }}
         />
-      </Box>
+      </div>
 
       <Collapse in={isExpanded}>
-        <Box sx={{ mt: 2 }}>
+        <div style={{ marginTop: '16px' }}>
           {/* FPS */}
-          <Box sx={metricStyles}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <div style={metricStyles}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <SpeedIcon sx={{ fontSize: 20, color: 'primary.main' }} />
               <Typography variant="body2">Frame Rate</Typography>
-            </Box>
-            <Box sx={{ textAlign: 'right' }}>
+            </div>
+            <div style={{ textAlign: 'right' }}>
               <Typography variant="body2" fontWeight="600">
                 {fps} FPS
               </Typography>
@@ -162,52 +162,52 @@ export const PerformanceDashboard: React.FC = () => {
                   },
                 }}
               />
-            </Box>
-          </Box>
+            </div>
+          </div>
 
           {/* Memory */}
-          <Box sx={metricStyles}>
+          <div style={metricStyles}>
             <Typography variant="body2">Memory Usage</Typography>
             <Typography variant="body2" fontWeight="600">
               {memory} MB
             </Typography>
-          </Box>
+          </div>
 
           {/* Battery */}
-          <Box sx={metricStyles}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <div style={metricStyles}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               {getBatteryIcon()}
               <Typography variant="body2">Battery</Typography>
-            </Box>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <Typography variant="body2" fontWeight="600">
                 {Math.round(batteryLevel * 100)}%
               </Typography>
               {isCharging && (
                 <Chip label="Charging" size="small" color="success" />
               )}
-            </Box>
-          </Box>
+            </div>
+          </div>
 
           {/* Network */}
-          <Box sx={metricStyles}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <div style={metricStyles}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <NetworkCheckIcon sx={{ fontSize: 20, color: 'secondary.main' }} />
               <Typography variant="body2">Network</Typography>
-            </Box>
+            </div>
             <Chip
               label={networkType}
               size="small"
               color={networkType === 'fast' ? 'success' : networkType === 'slow' ? 'warning' : 'error'}
             />
-          </Box>
+          </div>
 
           {/* Quality Settings */}
-          <Box sx={{ mt: 2, pt: 2, borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+          <div style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
             <Typography variant="caption" color="text.secondary" gutterBottom>
               Current Quality Settings
             </Typography>
-            <Box sx={{ mt: 1 }}>
+            <div style={{ marginTop: '8px' }}>
               <Typography variant="caption">
                 • Particles: {quality.particleCount?.toLocaleString() || 0}
               </Typography>
@@ -223,9 +223,9 @@ export const PerformanceDashboard: React.FC = () => {
               <Typography variant="caption">
                 • Animation: {quality.animationFPS || 0} FPS
               </Typography>
-            </Box>
-          </Box>
-        </Box>
+            </div>
+          </div>
+        </div>
       </Collapse>
     </motion.div>
   );

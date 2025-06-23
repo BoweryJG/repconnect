@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Text, OrbitControls, Float, MeshDistortMaterial } from '@react-three/drei';
-import { Box, IconButton, Typography, Portal } from '@mui/material';
+import { IconButton, Typography, Portal } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { motion, AnimatePresence } from 'framer-motion';
 import * as THREE from 'three';
@@ -193,19 +193,19 @@ export const MissionControlDashboard: React.FC<MissionControlDashboardProps> = (
             }}
           >
             {/* Header */}
-            <Box
-              sx={{
+            <div
+              style={{
                 position: 'absolute',
                 top: 0,
                 left: 0,
                 right: 0,
-                p: 3,
+                padding: '24px',
                 background: 'linear-gradient(180deg, rgba(0, 0, 20, 0.9) 0%, transparent 100%)',
                 zIndex: 10,
               }}
             >
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <Box>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div>
                   <Typography
                     variant="h3"
                     sx={{
@@ -233,7 +233,7 @@ export const MissionControlDashboard: React.FC<MissionControlDashboardProps> = (
                   >
                     Real-Time System Analytics
                   </Typography>
-                </Box>
+                </div>
                 <IconButton
                   onClick={onClose}
                   sx={{
@@ -247,8 +247,8 @@ export const MissionControlDashboard: React.FC<MissionControlDashboardProps> = (
                 >
                   <CloseIcon />
                 </IconButton>
-              </Box>
-            </Box>
+              </div>
+            </div>
 
             {/* 3D Scene */}
             <Canvas
@@ -311,13 +311,13 @@ export const MissionControlDashboard: React.FC<MissionControlDashboardProps> = (
             </Canvas>
 
             {/* Bottom Stats Bar */}
-            <Box
-              sx={{
+            <div
+              style={{
                 position: 'absolute',
                 bottom: 0,
                 left: 0,
                 right: 0,
-                p: 3,
+                padding: '24px',
                 background: 'linear-gradient(0deg, rgba(0, 0, 20, 0.9) 0%, transparent 100%)',
                 display: 'flex',
                 justifyContent: 'space-around',
@@ -330,7 +330,7 @@ export const MissionControlDashboard: React.FC<MissionControlDashboardProps> = (
                 { label: 'Network I/O', value: '156 KB/s', color: '#FF00FF' },
                 { label: 'Active Threads', value: '8', color: '#FFD700' },
               ].map((stat, index) => (
-                <Box key={index} sx={{ textAlign: 'center' }}>
+                <div key={index} style={{ textAlign: 'center' }}>
                   <Typography
                     variant="caption"
                     sx={{
@@ -352,9 +352,9 @@ export const MissionControlDashboard: React.FC<MissionControlDashboardProps> = (
                   >
                     {stat.value}
                   </Typography>
-                </Box>
+                </div>
               ))}
-            </Box>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
