@@ -28,6 +28,7 @@ import { useStore } from './store/useStore';
 import { glassmorphism } from './theme/glassmorphism';
 import { AdaptiveRenderer } from './lib/performance/AdaptiveRenderer';
 import { PerformanceMonitor } from './lib/performance/PerformanceMonitor';
+import { PerformanceDashboard } from './components/PerformanceDashboard';
 
 function App() {
   const [showSettings, setShowSettings] = useState(false);
