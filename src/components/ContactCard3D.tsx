@@ -125,6 +125,116 @@ export const ContactCard3D: React.FC<ContactCard3DProps> = ({ contact, onClick, 
         onMouseLeave={handleMouseLeave}
         onClick={() => setIsFlipped(!isFlipped)}
       >
+        {/* Precision Screws - Balanced Bezel Logic */}
+        <Box className="screw screw-top-left" sx={{
+          position: 'absolute',
+          top: '6px',
+          left: '5%',
+          width: '8px',
+          height: '8px',
+          borderRadius: '50%',
+          background: 'radial-gradient(circle at 30% 30%, #C0C0C0, #808080)',
+          boxShadow: 'inset -1px -1px 2px rgba(0,0,0,0.5), 0 1px 1px rgba(255,255,255,0.3)',
+          transform: 'rotate(10deg)',
+          '&::after': {
+            content: '""',
+            position: 'absolute',
+            inset: '2px',
+            background: 'linear-gradient(45deg, transparent 45%, #606060 45%, #606060 55%, transparent 55%)',
+            borderRadius: '50%',
+          }
+        }} />
+        <Box className="screw screw-top-center" sx={{
+          position: 'absolute',
+          top: '6px',
+          left: '50%',
+          width: '8px',
+          height: '8px',
+          borderRadius: '50%',
+          background: 'radial-gradient(circle at 30% 30%, #C0C0C0, #808080)',
+          boxShadow: 'inset -1px -1px 2px rgba(0,0,0,0.5), 0 1px 1px rgba(255,255,255,0.3)',
+          transform: 'translateX(-50%) rotate(3deg)',
+          '&::after': {
+            content: '""',
+            position: 'absolute',
+            inset: '2px',
+            background: 'linear-gradient(45deg, transparent 45%, #606060 45%, #606060 55%, transparent 55%)',
+            borderRadius: '50%',
+          }
+        }} />
+        <Box className="screw screw-top-right" sx={{
+          position: 'absolute',
+          top: '6px',
+          right: '5%',
+          width: '8px',
+          height: '8px',
+          borderRadius: '50%',
+          background: 'radial-gradient(circle at 30% 30%, #C0C0C0, #808080)',
+          boxShadow: 'inset -1px -1px 2px rgba(0,0,0,0.5), 0 1px 1px rgba(255,255,255,0.3)',
+          transform: 'rotate(20deg)',
+          '&::after': {
+            content: '""',
+            position: 'absolute',
+            inset: '2px',
+            background: 'linear-gradient(45deg, transparent 45%, #606060 45%, #606060 55%, transparent 55%)',
+            borderRadius: '50%',
+          }
+        }} />
+        <Box className="screw screw-bot-left" sx={{
+          position: 'absolute',
+          bottom: '6px',
+          left: '5%',
+          width: '8px',
+          height: '8px',
+          borderRadius: '50%',
+          background: 'radial-gradient(circle at 30% 30%, #C0C0C0, #808080)',
+          boxShadow: 'inset -1px -1px 2px rgba(0,0,0,0.5), 0 1px 1px rgba(255,255,255,0.3)',
+          transform: 'rotate(8deg)',
+          '&::after': {
+            content: '""',
+            position: 'absolute',
+            inset: '2px',
+            background: 'linear-gradient(45deg, transparent 45%, #606060 45%, #606060 55%, transparent 55%)',
+            borderRadius: '50%',
+          }
+        }} />
+        <Box className="screw screw-bot-center" sx={{
+          position: 'absolute',
+          bottom: '6px',
+          left: '50%',
+          width: '8px',
+          height: '8px',
+          borderRadius: '50%',
+          background: 'radial-gradient(circle at 30% 30%, #C0C0C0, #808080)',
+          boxShadow: 'inset -1px -1px 2px rgba(0,0,0,0.5), 0 1px 1px rgba(255,255,255,0.3)',
+          transform: 'translateX(-50%) rotate(-3deg)',
+          '&::after': {
+            content: '""',
+            position: 'absolute',
+            inset: '2px',
+            background: 'linear-gradient(45deg, transparent 45%, #606060 45%, #606060 55%, transparent 55%)',
+            borderRadius: '50%',
+          }
+        }} />
+        <Box className="screw screw-bot-right" sx={{
+          position: 'absolute',
+          bottom: '6px',
+          right: '5%',
+          width: '8px',
+          height: '8px',
+          borderRadius: '50%',
+          background: 'radial-gradient(circle at 30% 30%, #C0C0C0, #808080)',
+          boxShadow: 'inset -1px -1px 2px rgba(0,0,0,0.5), 0 1px 1px rgba(255,255,255,0.3)',
+          transform: 'rotate(-10deg)',
+          '&::after': {
+            content: '""',
+            position: 'absolute',
+            inset: '2px',
+            background: 'linear-gradient(45deg, transparent 45%, #606060 45%, #606060 55%, transparent 55%)',
+            borderRadius: '50%',
+          }
+        }} />
+
         {/* Front Face */}
         <Box sx={frontFace}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>

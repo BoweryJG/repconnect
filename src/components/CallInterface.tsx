@@ -5,11 +5,9 @@ import {
   IconButton,
   Avatar,
   Chip,
-  LinearProgress,
-  Fade,
   Slide,
 } from '@mui/material';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import CallEndIcon from '@mui/icons-material/CallEnd';
 import MicIcon from '@mui/icons-material/Mic';
 import MicOffIcon from '@mui/icons-material/MicOff';

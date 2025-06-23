@@ -8,7 +8,8 @@ export class PerformanceMonitor {
   private rafId: number | null = null;
 
   constructor() {
-    this.startMonitoring();
+    // Disabled monitoring to prevent frame rate fluctuations
+    // this.startMonitoring();
   }
 
   private startMonitoring() {

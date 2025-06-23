@@ -1,5 +1,4 @@
 import { performanceMonitor } from './PerformanceMonitor';
-import { adaptiveRenderer } from './AdaptiveRenderer';
 
 interface BatteryManager extends EventTarget {
   charging: boolean;

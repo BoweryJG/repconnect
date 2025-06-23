@@ -18,8 +18,9 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import { AnimatePresence } from 'framer-motion';
 import { theme } from './theme';
 import { ContactCard3D } from './components/ContactCard3D';
+import { DigitalRolodex } from './components/DigitalRolodex';
 import { CallInterface } from './components/CallInterface';
-import { ParticleField } from './components/effects/ParticleField';
+import { SimpleGradientBackground } from './components/effects/SimpleGradientBackground';
 import { PerformanceDashboard } from './components/PerformanceDashboard';
 import { twilioService } from './services/twilioService';
 import { supabase } from './lib/supabase';
@@ -30,6 +31,7 @@ function App() {
   const [showSettings, setShowSettings] = useState(false);
   const [newContactName, setNewContactName] = useState('');
   const [newContactPhone, setNewContactPhone] = useState('');
+  const [viewMode, setViewMode] = useState<'rolodex' | 'grid'>('rolodex');
   
   const {
     contacts,
@@ -121,7 +123,7 @@ function App() {
         const lastName = nameParts.slice(1).join(' ') || '';
         
         // Insert into Supabase
-        const { data, error } = await supabase
+        const { error } = await supabase
           .from('contacts')
           .insert({
             first_name: firstName,
@@ -159,11 +161,11 @@ function App() {
           overflowX: 'hidden',
         }}
       >
-        {/* Particle Background */}
-        <ParticleField color="#6366F1" />
+        {/* Simple Gradient Background */}
+        <SimpleGradientBackground />
         
-        {/* Performance Dashboard */}
-        <PerformanceDashboard />
+        {/* Performance Dashboard - Disabled */}
+        {/* <PerformanceDashboard /> */}
         
         {/* Main App */}
         <Box sx={{ position: 'relative', zIndex: 1 }}>
@@ -252,21 +254,58 @@ function App() {
               </Box>
             </Box>
             
-            {/* Contacts Grid */}
-            <Typography variant="h4" gutterBottom fontWeight="700" mb={3}>
-              Your Contacts
-            </Typography>
+            {/* View Mode Toggle */}
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+              <Typography variant="h4" fontWeight="700">
+                Your Contacts ({contacts.length})
+              </Typography>
+              <Button
+                variant="outlined"
+                onClick={() => setViewMode(viewMode === 'rolodex' ? 'grid' : 'rolodex')}
+                sx={{ 
+                  borderColor: 'rgba(255, 255, 255, 0.3)',
+                  color: 'white',
+                  '&:hover': {
+                    borderColor: 'rgba(255, 255, 255, 0.5)',
+                    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                  }
+                }}
+              >
+                {viewMode === 'rolodex' ? 'Grid View' : 'Rolodex View'}
+              </Button>
+            </Box>
             
-            <Grid container spacing={3}>
-              {contacts.map((contact) => (
-                <Grid item xs={12} sm={6} md={4} key={contact.id}>
-                  <ContactCard3D
-                    contact={contact}
-                    onCall={() => handleMakeCall(contact)}
-                  />
+            {/* Contacts Display */}
+            {viewMode === 'rolodex' ? (
+              <Box sx={{ height: 'calc(100vh - 350px)', minHeight: 600 }}>
+                <DigitalRolodex
+                  contacts={contacts}
+                  onCall={handleMakeCall}
+                  onToggleFavorite={(contact) => {
+                    // TODO: Implement favorite toggle
+                    console.log('Toggle favorite:', contact);
+                  }}
+                />
+              </Box>
+            ) : (
+              <>
+                <Grid container spacing={3}>
+                  {contacts.slice(0, 100).map((contact) => (
+                    <Grid item xs={12} sm={6} md={4} key={contact.id}>
+                      <ContactCard3D
+                        contact={contact}
+                        onCall={() => handleMakeCall(contact)}
+                      />
+                    </Grid>
+                  ))}
                 </Grid>
-              ))}
-            </Grid>
+                {contacts.length > 100 && (
+                  <Typography variant="body2" sx={{ textAlign: 'center', mt: 3, opacity: 0.7 }}>
+                    Showing first 100 contacts. Use Rolodex view to see all {contacts.length} contacts.
+                  </Typography>
+                )}
+              </>
+            )}
             
             {contacts.length === 0 && (
               <Box

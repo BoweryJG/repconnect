@@ -13,11 +13,46 @@ export const theme = createTheme({
     },
   },
   typography: {
-    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+    fontFamily: '"Inter", "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif',
+    fontSize: 18,
     h1: {
-      fontWeight: 500,
+      fontWeight: 600,
+      fontSize: '3rem',
+      letterSpacing: '-0.02em',
     },
     h2: {
+      fontWeight: 600,
+      fontSize: '2.5rem',
+      letterSpacing: '-0.02em',
+    },
+    h3: {
+      fontWeight: 600,
+      fontSize: '2rem',
+      letterSpacing: '-0.01em',
+    },
+    h4: {
+      fontWeight: 600,
+      fontSize: '1.75rem',
+      letterSpacing: '-0.01em',
+    },
+    h5: {
+      fontWeight: 600,
+      fontSize: '1.5rem',
+    },
+    h6: {
+      fontWeight: 600,
+      fontSize: '1.25rem',
+    },
+    body1: {
+      fontSize: '1.125rem',
+      lineHeight: 1.6,
+    },
+    body2: {
+      fontSize: '1rem',
+      lineHeight: 1.5,
+    },
+    button: {
+      fontSize: '1rem',
       fontWeight: 500,
     },
   },
