@@ -6,7 +6,6 @@ import {
   AppBar,
   Toolbar,
   Typography,
-  Box,
   Button,
   TextField,
   IconButton,
@@ -17,20 +16,24 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import ViewModuleIcon from '@mui/icons-material/ViewModule';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
+import DialpadIcon from '@mui/icons-material/Dialpad';
 import { AnimatePresence, motion } from 'framer-motion';
 import { premiumTheme } from './theme/premiumTheme';
 import { DigitalRolodex } from './components/DigitalRolodex';
 import { CallInterface } from './components/CallInterface';
 import { PremiumGradientBackground } from './components/effects/PremiumGradientBackground';
 import { VirtualizedContactGrid } from './components/VirtualizedContactGrid';
+import { QuantumDialer } from './components/QuantumDialer';
 import { twilioService } from './services/twilioService';
 import { supabase } from './lib/supabase';
 import { useStore } from './store/useStore';
 import { adaptiveRenderer } from './lib/performance/AdaptiveRenderer';
-import { PerformanceDashboard } from './components/PerformanceDashboard';
+import { MissionControlDashboard } from './components/MissionControlDashboard';
 
 function App() {
   const [showSettings, setShowSettings] = useState(false);
+  const [showDialer, setShowDialer] = useState(false);
+  const [showMissionControl, setShowMissionControl] = useState(false);
   const [newContactName, setNewContactName] = useState('');
   const [newContactPhone, setNewContactPhone] = useState('');
   const [viewMode, setViewMode] = useState<'rolodex' | 'grid'>('rolodex');
@@ -155,6 +158,34 @@ function App() {
     }
   };
 
+  const handleDialNumber = async (phoneNumber: string) => {
+    setCallInProgress(true);
+    setActiveCall({
+      id: crypto.randomUUID(),
+      contactId: '',
+      phoneNumber: phoneNumber,
+      duration: 0,
+      timestamp: new Date(),
+      type: 'outgoing',
+    });
+
+    try {
+      await twilioService.makeCall(phoneNumber);
+      
+      // Log to Supabase
+      await supabase.from('calls').insert({
+        phone_number: phoneNumber,
+        type: 'outgoing',
+        status: 'initiated',
+        created_at: new Date().toISOString(),
+      });
+    } catch (error) {
+      console.error('Error making call:', error);
+      setCallInProgress(false);
+      setActiveCall(null);
+    }
+  };
+
   const handleEndCall = () => {
     setCallInProgress(false);
     setActiveCall(null);
@@ -199,8 +230,8 @@ function App() {
   return (
     <ThemeProvider theme={premiumTheme}>
       <CssBaseline />
-      <Box
-        sx={{
+      <div
+        style={{
           minHeight: '100vh',
           position: 'relative',
           overflowX: 'hidden',
@@ -210,11 +241,8 @@ function App() {
         {/* Premium Gradient Background */}
         <PremiumGradientBackground variant="aurora" />
         
-        {/* Performance Dashboard */}
-        <PerformanceDashboard />
-        
         {/* Main App */}
-        <Box sx={{ position: 'relative', zIndex: 1 }}>
+        <div style={{ position: 'relative', zIndex: 1 }}>
           <AppBar
             position="fixed"
             elevation={0}
@@ -227,7 +255,7 @@ function App() {
             }}
           >
             <Toolbar sx={{ py: 1 }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexGrow: 1 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexGrow: 1 }}>
                 <AutoAwesomeIcon sx={{ color: '#6366F1', fontSize: 32 }} />
                 <Typography 
                   variant="h5" 
@@ -252,14 +280,32 @@ function App() {
                 >
                   RepConnect Ultra
                 </Typography>
-              </Box>
+              </div>
               
-              <Box sx={{ display: 'flex', gap: 1.5, alignItems: 'center' }}>
-                <Box sx={{ 
+              <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                <Button
+                  startIcon={<DialpadIcon />}
+                  onClick={() => setShowDialer(true)}
+                  sx={{
+                    background: 'linear-gradient(135deg, rgba(0, 255, 255, 0.2) 0%, rgba(0, 150, 255, 0.15) 100%)',
+                    backdropFilter: 'blur(10px)',
+                    border: '1px solid rgba(0, 255, 255, 0.3)',
+                    px: 3,
+                    color: '#00FFFF',
+                    '&:hover': {
+                      background: 'linear-gradient(135deg, rgba(0, 255, 255, 0.3) 0%, rgba(0, 150, 255, 0.25) 100%)',
+                      transform: 'translateY(-2px)',
+                      boxShadow: '0 8px 32px 0 rgba(0, 255, 255, 0.4)',
+                    },
+                  }}
+                >
+                  Quantum Dial
+                </Button>
+                <div style={{ 
                   display: 'flex', 
-                  gap: 1, 
-                  p: 1, 
-                  borderRadius: 3,
+                  gap: '8px', 
+                  padding: '8px', 
+                  borderRadius: '24px',
                   background: 'rgba(255, 255, 255, 0.05)',
                   backdropFilter: 'blur(10px)',
                   border: '1px solid rgba(255, 255, 255, 0.08)',
@@ -278,21 +324,21 @@ function App() {
                       <AutoAwesomeIcon />
                     </IconButton>
                   </Tooltip>
-                  <Tooltip title="Transcription">
+                  <Tooltip title="Mission Control">
                     <IconButton
-                      onClick={toggleTranscription}
+                      onClick={() => setShowMissionControl(true)}
                       sx={{
-                        color: transcriptionEnabled ? '#EC4899' : 'text.secondary',
-                        background: transcriptionEnabled ? 'rgba(236, 72, 153, 0.1)' : 'transparent',
+                        color: '#EC4899',
+                        background: 'rgba(236, 72, 153, 0.1)',
                         '&:hover': {
-                          background: transcriptionEnabled ? 'rgba(236, 72, 153, 0.2)' : 'rgba(255, 255, 255, 0.05)',
+                          background: 'rgba(236, 72, 153, 0.2)',
                         },
                       }}
                     >
                       <DashboardIcon />
                     </IconButton>
                   </Tooltip>
-                </Box>
+                </div>
                 <Button
                   startIcon={<SettingsIcon />}
                   onClick={() => setShowSettings(!showSettings)}
@@ -310,7 +356,7 @@ function App() {
                 >
                   Settings
                 </Button>
-              </Box>
+              </div>
             </Toolbar>
           </AppBar>
           
@@ -321,31 +367,17 @@ function App() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <Box
-                sx={{
+              <div
+                style={{
                   background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(236, 72, 153, 0.05) 100%)',
                   backdropFilter: 'blur(20px)',
                   border: '1px solid rgba(255, 255, 255, 0.1)',
                   boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.2)',
-                  padding: 4,
-                  borderRadius: 3,
-                  mb: 4,
+                  padding: '32px',
+                  borderRadius: '24px',
+                  marginBottom: '32px',
                   position: 'relative',
                   overflow: 'hidden',
-                  '&::before': {
-                    content: '""',
-                    position: 'absolute',
-                    top: -2,
-                    left: -2,
-                    right: -2,
-                    bottom: -2,
-                    background: 'linear-gradient(135deg, #6366F1, #EC4899, #3B82F6)',
-                    backgroundSize: '300% 300%',
-                    borderRadius: 'inherit',
-                    opacity: 0.4,
-                    filter: 'blur(10px)',
-                    zIndex: -1,
-                  },
                 }}
               >
                 <Typography 
@@ -361,7 +393,7 @@ function App() {
                 >
                   Quick Add Contact
                 </Typography>
-                <Box sx={{ display: 'flex', gap: 2, mt: 3 }}>
+                <div style={{ display: 'flex', gap: '16px', marginTop: '24px' }}>
                   <TextField
                     label="Name"
                     value={newContactName}
@@ -421,8 +453,8 @@ function App() {
                   >
                     Add
                   </Button>
-                </Box>
-              </Box>
+                </div>
+              </div>
             </motion.div>
             
             {/* View Mode Toggle */}
@@ -431,8 +463,8 @@ function App() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.1 }}
             >
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
-                <Box>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
+                <div>
                   <Typography 
                     variant="h3" 
                     sx={{ 
@@ -455,7 +487,7 @@ function App() {
                   >
                     {contacts.length} connections
                   </Typography>
-                </Box>
+                </div>
                 <Button
                   variant="outlined"
                   startIcon={viewMode === 'rolodex' ? <ViewModuleIcon /> : <DashboardIcon />}
@@ -477,12 +509,12 @@ function App() {
                 >
                   {viewMode === 'rolodex' ? 'Grid View' : 'Rolodex View'}
                 </Button>
-              </Box>
+              </div>
             </motion.div>
             
             {/* Contacts Display */}
             {viewMode === 'rolodex' ? (
-              <Box sx={{ height: 'calc(100vh - 350px)', minHeight: 600 }}>
+              <div style={{ height: 'calc(100vh - 350px)', minHeight: 600 }}>
                 <DigitalRolodex
                   contacts={contacts}
                   onCall={handleMakeCall}
@@ -491,11 +523,11 @@ function App() {
                     console.log('Toggle favorite:', contact);
                   }}
                 />
-              </Box>
+              </div>
             ) : (
-              <Box 
+              <div 
                 ref={gridContainerRef}
-                sx={{ 
+                style={{ 
                   height: 'calc(100vh - 350px)', 
                   minHeight: 600,
                   width: '100%',
@@ -508,7 +540,7 @@ function App() {
                   width={gridDimensions.width}
                   height={gridDimensions.height}
                 />
-              </Box>
+              </div>
             )}
             
             {contacts.length === 0 && (
@@ -517,35 +549,33 @@ function App() {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.5 }}
               >
-                <Box
-                  sx={{
+                <div
+                  style={{
                     textAlign: 'center',
-                    py: 12,
-                    px: 4,
+                    padding: '96px 32px',
                     background: 'rgba(255, 255, 255, 0.03)',
                     backdropFilter: 'blur(20px)',
                     border: '1px solid rgba(255, 255, 255, 0.08)',
-                    borderRadius: 4,
-                    maxWidth: 600,
-                    mx: 'auto',
+                    borderRadius: '32px',
+                    maxWidth: '600px',
+                    margin: '0 auto',
                   }}
                 >
-                  <Box
-                    sx={{
-                      width: 120,
-                      height: 120,
+                  <div
+                    style={{
+                      width: '120px',
+                      height: '120px',
                       borderRadius: '50%',
                       background: 'linear-gradient(135deg, #6366F1 0%, #EC4899 100%)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      mx: 'auto',
-                      mb: 4,
+                      margin: '0 auto 32px auto',
                       boxShadow: '0 20px 60px rgba(99, 102, 241, 0.4)',
                     }}
                   >
                     <AutoAwesomeIcon sx={{ fontSize: 60, color: 'white' }} />
-                  </Box>
+                  </div>
                   <Typography 
                     variant="h5" 
                     gutterBottom
@@ -579,11 +609,11 @@ function App() {
                   >
                     Add First Contact
                   </Button>
-                </Box>
+                </div>
               </motion.div>
             )}
           </Container>
-        </Box>
+        </div>
         
         {/* Call Interface Overlay */}
         <AnimatePresence>
@@ -598,7 +628,20 @@ function App() {
             />
           )}
         </AnimatePresence>
-      </Box>
+
+        {/* Quantum Dialer */}
+        <QuantumDialer
+          isOpen={showDialer}
+          onClose={() => setShowDialer(false)}
+          onDial={handleDialNumber}
+        />
+
+        {/* Mission Control Dashboard */}
+        <MissionControlDashboard
+          isOpen={showMissionControl}
+          onClose={() => setShowMissionControl(false)}
+        />
+      </div>
     </ThemeProvider>
   );
 }
