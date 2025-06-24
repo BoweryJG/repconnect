@@ -40,8 +40,10 @@ This guide will help you set up call forwarding so that calls to your Twilio num
 When someone calls your Twilio number:
 1. Twilio sends a webhook to your Netlify function
 2. The function returns TwiML instructions to forward the call
-3. Twilio forwards the call to your personal phone
-4. You see the Twilio number as caller ID (so you know it's a business call)
+3. **The call is automatically recorded** (both sides)
+4. Twilio forwards the call to your personal phone
+5. You see the Twilio number as caller ID (so you know it's a business call)
+6. After the call, the recording URL is saved to your database
 
 ## Optional Features
 
@@ -76,11 +78,44 @@ dial.number('+14155555678');
 2. **Call fails immediately**: Verify FORWARD_TO_PHONE is set in Netlify
 3. **Wrong caller ID**: The caller will see your Twilio number, not the original caller
 
+## Call Recording Features
+
+### Automatic Recording
+- All forwarded calls are automatically recorded
+- Both sides of the conversation are captured
+- Recordings are stored securely by Twilio
+- Recording URLs are saved to your database
+
+### Accessing Recordings
+1. **In Twilio Console**: 
+   - Go to Monitor → Logs → Recordings
+   - Download MP3 or WAV files
+   
+2. **In Your Database** (if Supabase is configured):
+   - Recording URLs are saved in `call_recordings` table
+   - Linked to call records with duration, caller info, etc.
+
+3. **Via API**: 
+   - Use recording URLs from database
+   - Twilio keeps recordings for 90 days by default
+
+### Privacy & Compliance
+- **Important**: Check local laws about call recording
+- Some states/countries require consent from all parties
+- Consider adding to greeting: "This call may be recorded for quality purposes"
+
+### To Disable Recording
+If you don't want recordings, remove this line from `incoming-call.js`:
+```javascript
+record: 'record-from-answer-dual',
+```
+
 ## Costs
 
 - Incoming calls to Twilio number: ~$0.0085/minute
 - Outbound call to your phone: ~$0.013/minute
-- Total: ~$0.02/minute for forwarded calls
+- Call recording: ~$0.0025/minute
+- Total: ~$0.024/minute for forwarded & recorded calls
 
 ## Need Help?
 

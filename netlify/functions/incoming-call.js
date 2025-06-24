@@ -34,11 +34,14 @@ exports.handler = async (event, context) => {
     voice: 'alice'
   }, 'Thank you for calling RepConnect. Connecting you now.');
   
-  // Forward the call to your phone
+  // Forward the call to your phone with recording
   const dial = twiml.dial({
     callerId: To, // Use the Twilio number as caller ID
     timeout: 30,
-    action: '/.netlify/functions/call-status', // Optional: track call status
+    record: 'record-from-answer-dual', // Record both sides of the call
+    recordingStatusCallback: '/.netlify/functions/recording-status', // Get recording URL
+    recordingStatusCallbackEvent: ['completed'], // Notify when recording is ready
+    action: '/.netlify/functions/call-status', // Track call status
   });
   
   dial.number(YOUR_PHONE_NUMBER);
