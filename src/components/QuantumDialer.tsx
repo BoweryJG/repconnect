@@ -6,6 +6,7 @@ import BackspaceIcon from '@mui/icons-material/Backspace';
 import MicIcon from '@mui/icons-material/Mic';
 import CloseIcon from '@mui/icons-material/Close';
 import { keyframes } from '@mui/material';
+import { useResponsive } from '../hooks/useResponsive';
 
 const hologramPulse = keyframes`
   0% {
@@ -44,6 +45,7 @@ interface QuantumDialerProps {
 }
 
 export const QuantumDialer: React.FC<QuantumDialerProps> = ({ isOpen, onClose, onDial }) => {
+  const { isMobile } = useResponsive();
   const [phoneNumber, setPhoneNumber] = useState('');
   const [isVoiceActive, setIsVoiceActive] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -207,8 +209,10 @@ export const QuantumDialer: React.FC<QuantumDialerProps> = ({ isOpen, onClose, o
               onClick={(e) => e.stopPropagation()}
               style={{
                 position: 'relative',
-                width: 500,
-                height: 700,
+                width: isMobile ? '95vw' : 500,
+                maxWidth: 500,
+                height: isMobile ? '85vh' : 700,
+                maxHeight: 700,
               }}
             >
               {/* Holographic Background */}

@@ -31,8 +31,10 @@ import { useStore } from './store/useStore';
 import { adaptiveRenderer } from './lib/performance/AdaptiveRenderer';
 import { MissionControlDashboard } from './components/MissionControlDashboard';
 import { SyncDashboard } from './components/SyncDashboard';
+import { useResponsive } from './hooks/useResponsive';
 
 function App() {
+  const { isMobile, isTablet, windowDimensions } = useResponsive();
   const [showDialer, setShowDialer] = useState(false);
   const [showMissionControl, setShowMissionControl] = useState(false);
   const [showSyncDashboard, setShowSyncDashboard] = useState(false);
@@ -254,9 +256,17 @@ function App() {
               boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
             }}
           >
-            <Toolbar sx={{ py: 1 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexGrow: 1 }}>
-                <AutoAwesomeIcon sx={{ color: '#6366F1', fontSize: 32 }} />
+            <Toolbar sx={{ 
+              py: { xs: 0.5, sm: 1 },
+              px: { xs: 1, sm: 2 },
+              minHeight: { xs: 56, sm: 64 }
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexGrow: 1 }}>
+                <AutoAwesomeIcon sx={{ 
+                  color: '#6366F1', 
+                  fontSize: { xs: 24, sm: 32 },
+                  display: { xs: 'none', sm: 'block' }
+                }} />
                 <Typography 
                   variant="h5" 
                   component={motion.div}
@@ -264,7 +274,7 @@ function App() {
                   animate={{ opacity: 1, x: 0 }}
                   sx={{ 
                     fontWeight: 800,
-                    fontSize: '1.75rem',
+                    fontSize: { xs: '1.2rem', sm: '1.75rem' },
                     background: 'linear-gradient(135deg, #FFFFFF 0%, #6366F1 50%, #EC4899 100%)',
                     backgroundClip: 'text',
                     WebkitBackgroundClip: 'text',
@@ -282,7 +292,7 @@ function App() {
                 </Typography>
               </div>
               
-              <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+              <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                 <Button
                   startIcon={<DialpadIcon />}
                   onClick={() => setShowDialer(true)}
@@ -290,21 +300,30 @@ function App() {
                     background: 'linear-gradient(135deg, rgba(0, 255, 255, 0.2) 0%, rgba(0, 150, 255, 0.15) 100%)',
                     backdropFilter: 'blur(10px)',
                     border: '1px solid rgba(0, 255, 255, 0.3)',
-                    px: 3,
+                    px: { xs: 1.5, sm: 3 },
+                    py: { xs: 0.5, sm: 1 },
                     color: '#00FFFF',
+                    fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                    minWidth: { xs: 'auto', sm: '64px' },
                     '&:hover': {
                       background: 'linear-gradient(135deg, rgba(0, 255, 255, 0.3) 0%, rgba(0, 150, 255, 0.25) 100%)',
                       transform: 'translateY(-2px)',
                       boxShadow: '0 8px 32px 0 rgba(0, 255, 255, 0.4)',
                     },
+                    '& .MuiButton-startIcon': {
+                      margin: { xs: 0, sm: '0 8px 0 -4px' },
+                      '& > svg': {
+                        fontSize: { xs: '1rem', sm: '1.25rem' },
+                      },
+                    },
                   }}
                 >
-                  Quantum Dial
+                  <span style={{ display: isMobile ? 'none' : 'inline' }}>Quantum </span>Dial
                 </Button>
                 <div style={{ 
                   display: 'flex', 
-                  gap: '8px', 
-                  padding: '8px', 
+                  gap: '4px', 
+                  padding: '4px', 
                   borderRadius: '24px',
                   background: 'rgba(255, 255, 255, 0.05)',
                   backdropFilter: 'blur(10px)',
@@ -316,12 +335,13 @@ function App() {
                       sx={{
                         color: aiEnabled ? '#6366F1' : 'text.secondary',
                         background: aiEnabled ? 'rgba(99, 102, 241, 0.1)' : 'transparent',
+                        padding: { xs: '6px', sm: '8px' },
                         '&:hover': {
                           background: aiEnabled ? 'rgba(99, 102, 241, 0.2)' : 'rgba(255, 255, 255, 0.05)',
                         },
                       }}
                     >
-                      <AutoAwesomeIcon />
+                      <AutoAwesomeIcon sx={{ fontSize: { xs: '1.25rem', sm: '1.5rem' } }} />
                     </IconButton>
                   </Tooltip>
                   <Tooltip title="Mission Control">
@@ -330,12 +350,13 @@ function App() {
                       sx={{
                         color: '#EC4899',
                         background: 'rgba(236, 72, 153, 0.1)',
+                        padding: { xs: '6px', sm: '8px' },
                         '&:hover': {
                           background: 'rgba(236, 72, 153, 0.2)',
                         },
                       }}
                     >
-                      <DashboardIcon />
+                      <DashboardIcon sx={{ fontSize: { xs: '1.25rem', sm: '1.5rem' } }} />
                     </IconButton>
                   </Tooltip>
                 </div>
@@ -346,7 +367,11 @@ function App() {
                     background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(236, 72, 153, 0.15) 100%)',
                     backdropFilter: 'blur(10px)',
                     border: '1px solid rgba(255, 255, 255, 0.15)',
-                    px: 3,
+                    px: { xs: 1.5, sm: 3 },
+                    py: { xs: 0.5, sm: 1 },
+                    fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                    minWidth: { xs: 'auto', sm: '64px' },
+                    display: { xs: 'none', sm: 'flex' },
                     '&:hover': {
                       background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.3) 0%, rgba(236, 72, 153, 0.25) 100%)',
                       transform: 'translateY(-2px)',
@@ -360,7 +385,7 @@ function App() {
             </Toolbar>
           </AppBar>
           
-          <Container maxWidth="xl" sx={{ mt: 12, pb: 8 }}>
+          <Container maxWidth="xl" sx={{ mt: { xs: 8, sm: 12 }, pb: { xs: 4, sm: 8 }, px: { xs: 1, sm: 3 } }}>
             {/* Add Contact Section */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -373,9 +398,9 @@ function App() {
                   backdropFilter: 'blur(20px)',
                   border: '1px solid rgba(255, 255, 255, 0.1)',
                   boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.2)',
-                  padding: '32px',
+                  padding: isMobile ? '16px' : '32px',
                   borderRadius: '24px',
-                  marginBottom: '32px',
+                  marginBottom: isMobile ? '16px' : '32px',
                   position: 'relative',
                   overflow: 'hidden',
                 }}
@@ -385,6 +410,7 @@ function App() {
                   gutterBottom 
                   sx={{ 
                     fontWeight: 700,
+                    fontSize: { xs: '1.25rem', sm: '1.5rem' },
                     background: 'linear-gradient(135deg, #FFFFFF 0%, #D1D5DB 100%)',
                     backgroundClip: 'text',
                     WebkitBackgroundClip: 'text',
@@ -393,7 +419,12 @@ function App() {
                 >
                   Quick Add Contact
                 </Typography>
-                <div style={{ display: 'flex', gap: '16px', marginTop: '24px' }}>
+                <div style={{ 
+                  display: 'flex', 
+                  flexDirection: isMobile ? 'column' : 'row',
+                  gap: isMobile ? '12px' : '16px', 
+                  marginTop: isMobile ? '16px' : '24px' 
+                }}>
                   <TextField
                     label="Name"
                     value={newContactName}
@@ -435,9 +466,10 @@ function App() {
                     startIcon={<AddIcon />}
                     onClick={handleAddContact}
                     disabled={!newContactName || !newContactPhone}
+                    fullWidth={isMobile}
                     sx={{ 
-                      px: 4,
-                      py: 1.5,
+                      px: { xs: 3, sm: 4 },
+                      py: { xs: 1.5, sm: 1.5 },
                       background: 'linear-gradient(135deg, #6366F1 0%, #EC4899 100%)',
                       boxShadow: '0 8px 32px rgba(99, 102, 241, 0.3)',
                       '&:hover': {
