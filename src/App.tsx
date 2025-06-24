@@ -34,7 +34,7 @@ import { SyncDashboard } from './components/SyncDashboard';
 import { useResponsive } from './hooks/useResponsive';
 
 function App() {
-  const { isMobile, isTablet, windowDimensions } = useResponsive();
+  const { isMobile } = useResponsive();
   const [showDialer, setShowDialer] = useState(false);
   const [showMissionControl, setShowMissionControl] = useState(false);
   const [showSyncDashboard, setShowSyncDashboard] = useState(false);
