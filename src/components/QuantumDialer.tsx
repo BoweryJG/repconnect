@@ -174,9 +174,6 @@ export const QuantumDialer: React.FC<QuantumDialerProps> = ({ isOpen, onClose, o
     { num: '7', letters: 'PQRS' },
     { num: '8', letters: 'TUV' },
     { num: '9', letters: 'WXYZ' },
-    { num: '*', letters: '' },
-    { num: '0', letters: '+' },
-    { num: '#', letters: '' },
   ];
 
   return (
@@ -337,7 +334,7 @@ export const QuantumDialer: React.FC<QuantumDialerProps> = ({ isOpen, onClose, o
                     gridTemplateColumns: 'repeat(3, 1fr)',
                     gap: '16px',
                     padding: '0 24px',
-                    marginBottom: '24px',
+                    marginBottom: '16px',
                   }}
                 >
                   {dialerNumbers.map((item) => (
@@ -395,6 +392,162 @@ export const QuantumDialer: React.FC<QuantumDialerProps> = ({ isOpen, onClose, o
                       )}
                     </motion.button>
                   ))}
+                </div>
+
+                {/* Bottom Row with *, 0, #, and Backspace */}
+                <div
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(4, 1fr)',
+                    gap: '16px',
+                    padding: '0 24px',
+                    marginBottom: '24px',
+                  }}
+                >
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => handleNumberClick('*')}
+                    style={{
+                      background: 'rgba(0, 255, 255, 0.1)',
+                      border: '1px solid rgba(0, 255, 255, 0.3)',
+                      borderRadius: '50%',
+                      aspectRatio: 1,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      transition: 'all 0.3s ease',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = 'rgba(0, 255, 255, 0.2)';
+                      e.currentTarget.style.borderColor = 'rgba(0, 255, 255, 0.6)';
+                      e.currentTarget.style.boxShadow = '0 0 20px rgba(0, 255, 255, 0.5)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = 'rgba(0, 255, 255, 0.1)';
+                      e.currentTarget.style.borderColor = 'rgba(0, 255, 255, 0.3)';
+                      e.currentTarget.style.boxShadow = 'none';
+                    }}
+                  >
+                    <Typography
+                      variant="h4"
+                      sx={{
+                        color: '#00FFFF',
+                        fontWeight: 300,
+                        fontFamily: 'monospace',
+                      }}
+                    >
+                      *
+                    </Typography>
+                  </motion.button>
+
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => handleNumberClick('0')}
+                    style={{
+                      background: 'rgba(0, 255, 255, 0.1)',
+                      border: '1px solid rgba(0, 255, 255, 0.3)',
+                      borderRadius: '50%',
+                      aspectRatio: 1,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      transition: 'all 0.3s ease',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = 'rgba(0, 255, 255, 0.2)';
+                      e.currentTarget.style.borderColor = 'rgba(0, 255, 255, 0.6)';
+                      e.currentTarget.style.boxShadow = '0 0 20px rgba(0, 255, 255, 0.5)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = 'rgba(0, 255, 255, 0.1)';
+                      e.currentTarget.style.borderColor = 'rgba(0, 255, 255, 0.3)';
+                      e.currentTarget.style.boxShadow = 'none';
+                    }}
+                  >
+                    <Typography
+                      variant="h4"
+                      sx={{
+                        color: '#00FFFF',
+                        fontWeight: 300,
+                        fontFamily: 'monospace',
+                      }}
+                    >
+                      0
+                    </Typography>
+                    <Typography
+                      variant="caption"
+                      sx={{
+                        color: 'rgba(0, 255, 255, 0.6)',
+                        fontSize: '0.7rem',
+                        letterSpacing: 1,
+                      }}
+                    >
+                      +
+                    </Typography>
+                  </motion.button>
+
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => handleNumberClick('#')}
+                    style={{
+                      background: 'rgba(0, 255, 255, 0.1)',
+                      border: '1px solid rgba(0, 255, 255, 0.3)',
+                      borderRadius: '50%',
+                      aspectRatio: 1,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      transition: 'all 0.3s ease',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = 'rgba(0, 255, 255, 0.2)';
+                      e.currentTarget.style.borderColor = 'rgba(0, 255, 255, 0.6)';
+                      e.currentTarget.style.boxShadow = '0 0 20px rgba(0, 255, 255, 0.5)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = 'rgba(0, 255, 255, 0.1)';
+                      e.currentTarget.style.borderColor = 'rgba(0, 255, 255, 0.3)';
+                      e.currentTarget.style.boxShadow = 'none';
+                    }}
+                  >
+                    <Typography
+                      variant="h4"
+                      sx={{
+                        color: '#00FFFF',
+                        fontWeight: 300,
+                        fontFamily: 'monospace',
+                      }}
+                    >
+                      #
+                    </Typography>
+                  </motion.button>
+
+                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                    <IconButton
+                      onClick={handleBackspace}
+                      sx={{
+                        width: '100%',
+                        height: '100%',
+                        aspectRatio: 1,
+                        background: 'rgba(255, 100, 100, 0.1)',
+                        border: '1px solid rgba(255, 100, 100, 0.3)',
+                        color: '#FF6666',
+                        '&:hover': {
+                          background: 'rgba(255, 100, 100, 0.2)',
+                          boxShadow: '0 0 20px rgba(255, 100, 100, 0.5)',
+                        },
+                      }}
+                    >
+                      <BackspaceIcon />
+                    </IconButton>
+                  </motion.div>
                 </div>
 
                 {/* Action Buttons */}
@@ -455,25 +608,6 @@ export const QuantumDialer: React.FC<QuantumDialerProps> = ({ isOpen, onClose, o
                       }}
                     >
                       <PhoneIcon sx={{ fontSize: 32 }} />
-                    </IconButton>
-                  </motion.div>
-
-                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                    <IconButton
-                      onClick={handleBackspace}
-                      sx={{
-                        width: 60,
-                        height: 60,
-                        background: 'rgba(255, 100, 100, 0.1)',
-                        border: '1px solid rgba(255, 100, 100, 0.3)',
-                        color: '#FF6666',
-                        '&:hover': {
-                          background: 'rgba(255, 100, 100, 0.2)',
-                          boxShadow: '0 0 20px rgba(255, 100, 100, 0.5)',
-                        },
-                      }}
-                    >
-                      <BackspaceIcon />
                     </IconButton>
                   </motion.div>
                 </div>

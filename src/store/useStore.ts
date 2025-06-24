@@ -11,6 +11,13 @@ interface Contact {
   callCount: number;
   notes?: string;
   tags?: string[];
+  location?: {
+    city?: string;
+    state?: string;
+    coordinates?: [number, number];
+  };
+  value?: 'high' | 'standard';
+  interestScore?: Record<string, number>;
 }
 
 interface Call {

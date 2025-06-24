@@ -12,11 +12,12 @@ import {
   Tooltip,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import SettingsIcon from '@mui/icons-material/Settings';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import ViewModuleIcon from '@mui/icons-material/ViewModule';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import DialpadIcon from '@mui/icons-material/Dialpad';
+import CloseIcon from '@mui/icons-material/Close';
+import SyncIcon from '@mui/icons-material/Sync';
 import { AnimatePresence, motion } from 'framer-motion';
 import { premiumTheme } from './theme/premiumTheme';
 import { DigitalRolodex } from './components/DigitalRolodex';
@@ -29,11 +30,12 @@ import { supabase } from './lib/supabase';
 import { useStore } from './store/useStore';
 import { adaptiveRenderer } from './lib/performance/AdaptiveRenderer';
 import { MissionControlDashboard } from './components/MissionControlDashboard';
+import { SyncDashboard } from './components/SyncDashboard';
 
 function App() {
-  const [showSettings, setShowSettings] = useState(false);
   const [showDialer, setShowDialer] = useState(false);
   const [showMissionControl, setShowMissionControl] = useState(false);
+  const [showSyncDashboard, setShowSyncDashboard] = useState(false);
   const [newContactName, setNewContactName] = useState('');
   const [newContactPhone, setNewContactPhone] = useState('');
   const [viewMode, setViewMode] = useState<'rolodex' | 'grid'>('rolodex');
@@ -338,8 +340,8 @@ function App() {
                   </Tooltip>
                 </div>
                 <Button
-                  startIcon={<SettingsIcon />}
-                  onClick={() => setShowSettings(!showSettings)}
+                  startIcon={<SyncIcon />}
+                  onClick={() => setShowSyncDashboard(true)}
                   sx={{
                     background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(236, 72, 153, 0.15) 100%)',
                     backdropFilter: 'blur(10px)',
@@ -352,7 +354,7 @@ function App() {
                     },
                   }}
                 >
-                  Settings
+                  AI Sync
                 </Button>
               </div>
             </Toolbar>
@@ -639,6 +641,55 @@ function App() {
           isOpen={showMissionControl}
           onClose={() => setShowMissionControl(false)}
         />
+
+        {/* Sync Dashboard Modal */}
+        <AnimatePresence>
+          {showSyncDashboard && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              style={{
+                position: 'fixed',
+                inset: 0,
+                zIndex: 1300,
+                background: 'rgba(0, 0, 0, 0.8)',
+              }}
+              onClick={() => setShowSyncDashboard(false)}
+            >
+              <motion.div
+                initial={{ y: '100%' }}
+                animate={{ y: 0 }}
+                exit={{ y: '100%' }}
+                transition={{ type: 'spring', damping: 30, stiffness: 300 }}
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  background: '#0a0a0a',
+                  overflow: 'auto',
+                }}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <IconButton
+                  onClick={() => setShowSyncDashboard(false)}
+                  sx={{
+                    position: 'absolute',
+                    top: 16,
+                    right: 16,
+                    zIndex: 1,
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    '&:hover': {
+                      background: 'rgba(255, 255, 255, 0.2)',
+                    },
+                  }}
+                >
+                  <CloseIcon />
+                </IconButton>
+                <SyncDashboard />
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </ThemeProvider>
   );
