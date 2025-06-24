@@ -1,5 +1,4 @@
 import React from 'react';
-import { Box } from '@mui/material';
 import { adaptiveRenderer } from '../../lib/performance/AdaptiveRenderer';
 
 interface AdaptiveGradientBackgroundProps {
@@ -65,8 +64,8 @@ export const AdaptiveGradientBackground: React.FC<AdaptiveGradientBackgroundProp
   };
 
   return (
-    <Box
-      sx={{
+    <div
+      style={{
         position: 'fixed',
         top: 0,
         left: 0,

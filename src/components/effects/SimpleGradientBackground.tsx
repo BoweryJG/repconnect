@@ -1,10 +1,9 @@
 import React from 'react';
-import { Box } from '@mui/material';
 
 export const SimpleGradientBackground: React.FC = () => {
   return (
-    <Box
-      sx={{
+    <div
+      style={{
         position: 'fixed',
         top: 0,
         left: 0,

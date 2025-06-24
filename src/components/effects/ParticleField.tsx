@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Box } from '@mui/material';
 import { adaptiveRenderer } from '../../lib/performance/AdaptiveRenderer';
 import { renderQueue } from '../../lib/performance/RenderQueue';
 
@@ -132,8 +131,8 @@ export const ParticleField: React.FC<{ color?: string }> = ({ color = '#6366F1' 
   }, [color, particleCount]);
 
   return (
-    <Box
-      sx={{
+    <div
+      style={{
         position: 'fixed',
         top: 0,
         left: 0,
@@ -152,6 +151,6 @@ export const ParticleField: React.FC<{ color?: string }> = ({ color = '#6366F1' 
           transform: 'translateZ(0)', // Force GPU layer
         }}
       />
-    </Box>
+    </div>
   );
 };
