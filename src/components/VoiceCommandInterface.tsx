@@ -74,14 +74,6 @@ export const VoiceCommandInterface: React.FC<VoiceCommandInterfaceProps> = ({
     };
   }, []);
 
-  useEffect(() => {
-    if (isListening && enableEffects) {
-      drawWaveform();
-    } else if (animationRef.current) {
-      cancelAnimationFrame(animationRef.current);
-    }
-  }, [isListening, enableEffects]);
-
   const drawWaveform = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -114,7 +106,15 @@ export const VoiceCommandInterface: React.FC<VoiceCommandInterfaceProps> = ({
     ctx.stroke();
 
     animationRef.current = requestAnimationFrame(drawWaveform);
-  }, []);
+  }, [isListening]);
+
+  useEffect(() => {
+    if (isListening && enableEffects) {
+      drawWaveform();
+    } else if (animationRef.current) {
+      cancelAnimationFrame(animationRef.current);
+    }
+  }, [isListening, enableEffects, drawWaveform]);
 
   const toggleListening = () => {
     if (!recognitionRef.current) return;
