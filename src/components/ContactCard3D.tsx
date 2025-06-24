@@ -131,7 +131,6 @@ export const ContactCard3D: React.FC<ContactCard3DProps> = ({ contact, onClick, 
           borderRadius: '20px',
         }}
         onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
         onClick={() => setIsFlipped(!isFlipped)}
         onMouseEnter={(e) => {
           e.currentTarget.style.boxShadow = '0 12px 48px rgba(0, 0, 0, 0.2)';
