@@ -232,7 +232,7 @@ export class SmartCallQueue {
     const totalContacts = queue.contacts.length;
     let synced = 0;
 
-    for (const contact of queue.contacts) {
+    for (const _contact of queue.contacts) {
       // In production, this would sync to CRM/dashboard
       await new Promise(resolve => setTimeout(resolve, 50));
       

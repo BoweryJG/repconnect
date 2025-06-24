@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Typography, IconButton, TextField, Chip, CircularProgress } from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
 import MicIcon from '@mui/icons-material/Mic';
@@ -82,7 +82,7 @@ export const VoiceCommandInterface: React.FC<VoiceCommandInterfaceProps> = ({
     }
   }, [isListening, enableEffects]);
 
-  const drawWaveform = () => {
+  const drawWaveform = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -114,7 +114,7 @@ export const VoiceCommandInterface: React.FC<VoiceCommandInterfaceProps> = ({
     ctx.stroke();
 
     animationRef.current = requestAnimationFrame(drawWaveform);
-  };
+  }, []);
 
   const toggleListening = () => {
     if (!recognitionRef.current) return;

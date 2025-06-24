@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Typography, IconButton, Badge } from '@mui/material';
+import { Typography, Badge } from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
 import SyncIcon from '@mui/icons-material/Sync';
 import SettingsIcon from '@mui/icons-material/Settings';

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Typography, LinearProgress, IconButton, Chip, Grid } from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
@@ -10,7 +10,6 @@ import { VoiceCommandInterface } from './VoiceCommandInterface';
 import { SettingsNavbar } from './SettingsNavbar';
 import { SmartCallQueue } from '../lib/ai/SmartCallQueue';
 import { useStore } from '../store/useStore';
-import { ContactCard3D } from './ContactCard3D';
 
 interface SyncQueue {
   id: string;
