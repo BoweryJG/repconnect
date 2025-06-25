@@ -3,21 +3,19 @@ import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import {
   Container,
-  AppBar,
-  Toolbar,
-  Typography,
   Button,
   TextField,
   IconButton,
   Tooltip,
+  Box,
+  Typography,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import ViewModuleIcon from '@mui/icons-material/ViewModule';
-import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
-import DialpadIcon from '@mui/icons-material/Dialpad';
 import CloseIcon from '@mui/icons-material/Close';
 import SyncIcon from '@mui/icons-material/Sync';
+import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import { AnimatePresence, motion } from 'framer-motion';
 import { premiumTheme } from './theme/premiumTheme';
 import { DigitalRolodex } from './components/DigitalRolodex';
@@ -25,6 +23,7 @@ import { CallInterface } from './components/CallInterface';
 import { PremiumGradientBackground } from './components/effects/PremiumGradientBackground';
 import { VirtualizedContactGrid } from './components/VirtualizedContactGrid';
 import { QuantumDialer } from './components/QuantumDialer';
+import { PremiumNavbar } from './components/PremiumNavbar';
 import { twilioService } from './services/twilioService';
 import { supabase } from './lib/supabase';
 import { useStore } from './store/useStore';
@@ -32,6 +31,7 @@ import { adaptiveRenderer } from './lib/performance/AdaptiveRenderer';
 import { MissionControlDashboard } from './components/MissionControlDashboard';
 import { SyncDashboard } from './components/SyncDashboard';
 import { useResponsive } from './hooks/useResponsive';
+import { createBezelCard, withBezelDesign, getScrewStyles } from './theme/premiumBezel';
 
 function App() {
   const { isMobile } = useResponsive();
@@ -245,145 +245,11 @@ function App() {
         
         {/* Main App */}
         <div style={{ position: 'relative', zIndex: 1 }}>
-          <AppBar
-            position="fixed"
-            elevation={0}
-            sx={{
-              background: 'rgba(10, 10, 11, 0.8)',
-              backdropFilter: 'blur(20px) saturate(180%)',
-              WebkitBackdropFilter: 'blur(20px) saturate(180%)',
-              borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
-              boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
-            }}
-          >
-            <Toolbar sx={{ 
-              py: { xs: 0.5, sm: 1 },
-              px: { xs: 1, sm: 2 },
-              minHeight: { xs: 56, sm: 64 }
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexGrow: 1 }}>
-                <AutoAwesomeIcon sx={{ 
-                  color: '#6366F1', 
-                  fontSize: { xs: 24, sm: 32 },
-                  display: { xs: 'none', sm: 'block' }
-                }} />
-                <Typography 
-                  variant="h5" 
-                  component={motion.div}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  sx={{ 
-                    fontWeight: 800,
-                    fontSize: { xs: '1.2rem', sm: '1.75rem' },
-                    background: 'linear-gradient(135deg, #FFFFFF 0%, #6366F1 50%, #EC4899 100%)',
-                    backgroundClip: 'text',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    backgroundSize: '200% 200%',
-                    animation: 'gradient 3s ease infinite',
-                    '@keyframes gradient': {
-                      '0%': { backgroundPosition: '0% 50%' },
-                      '50%': { backgroundPosition: '100% 50%' },
-                      '100%': { backgroundPosition: '0% 50%' },
-                    },
-                  }}
-                >
-                  RepConnect Ultra
-                </Typography>
-              </div>
-              
-              <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                <Button
-                  startIcon={<DialpadIcon />}
-                  onClick={() => setShowDialer(true)}
-                  sx={{
-                    background: 'linear-gradient(135deg, rgba(0, 255, 255, 0.2) 0%, rgba(0, 150, 255, 0.15) 100%)',
-                    backdropFilter: 'blur(10px)',
-                    border: '1px solid rgba(0, 255, 255, 0.3)',
-                    px: { xs: 1.5, sm: 3 },
-                    py: { xs: 0.5, sm: 1 },
-                    color: '#00FFFF',
-                    fontSize: { xs: '0.75rem', sm: '0.875rem' },
-                    minWidth: { xs: 'auto', sm: '64px' },
-                    '&:hover': {
-                      background: 'linear-gradient(135deg, rgba(0, 255, 255, 0.3) 0%, rgba(0, 150, 255, 0.25) 100%)',
-                      transform: 'translateY(-2px)',
-                      boxShadow: '0 8px 32px 0 rgba(0, 255, 255, 0.4)',
-                    },
-                    '& .MuiButton-startIcon': {
-                      margin: { xs: 0, sm: '0 8px 0 -4px' },
-                      '& > svg': {
-                        fontSize: { xs: '1rem', sm: '1.25rem' },
-                      },
-                    },
-                  }}
-                >
-                  <span style={{ display: isMobile ? 'none' : 'inline' }}>Quantum </span>Dial
-                </Button>
-                <div style={{ 
-                  display: 'flex', 
-                  gap: '4px', 
-                  padding: '4px', 
-                  borderRadius: '24px',
-                  background: 'rgba(255, 255, 255, 0.05)',
-                  backdropFilter: 'blur(10px)',
-                  border: '1px solid rgba(255, 255, 255, 0.08)',
-                }}>
-                  <Tooltip title="AI Assistant">
-                    <IconButton
-                      onClick={toggleAI}
-                      sx={{
-                        color: aiEnabled ? '#6366F1' : 'text.secondary',
-                        background: aiEnabled ? 'rgba(99, 102, 241, 0.1)' : 'transparent',
-                        padding: { xs: '6px', sm: '8px' },
-                        '&:hover': {
-                          background: aiEnabled ? 'rgba(99, 102, 241, 0.2)' : 'rgba(255, 255, 255, 0.05)',
-                        },
-                      }}
-                    >
-                      <AutoAwesomeIcon sx={{ fontSize: { xs: '1.25rem', sm: '1.5rem' } }} />
-                    </IconButton>
-                  </Tooltip>
-                  <Tooltip title="Mission Control">
-                    <IconButton
-                      onClick={() => setShowMissionControl(true)}
-                      sx={{
-                        color: '#EC4899',
-                        background: 'rgba(236, 72, 153, 0.1)',
-                        padding: { xs: '6px', sm: '8px' },
-                        '&:hover': {
-                          background: 'rgba(236, 72, 153, 0.2)',
-                        },
-                      }}
-                    >
-                      <DashboardIcon sx={{ fontSize: { xs: '1.25rem', sm: '1.5rem' } }} />
-                    </IconButton>
-                  </Tooltip>
-                </div>
-                <Button
-                  startIcon={<SyncIcon />}
-                  onClick={() => setShowSyncDashboard(true)}
-                  sx={{
-                    background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(236, 72, 153, 0.15) 100%)',
-                    backdropFilter: 'blur(10px)',
-                    border: '1px solid rgba(255, 255, 255, 0.15)',
-                    px: { xs: 1.5, sm: 3 },
-                    py: { xs: 0.5, sm: 1 },
-                    fontSize: { xs: '0.75rem', sm: '0.875rem' },
-                    minWidth: { xs: 'auto', sm: '64px' },
-                    display: { xs: 'none', sm: 'flex' },
-                    '&:hover': {
-                      background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.3) 0%, rgba(236, 72, 153, 0.25) 100%)',
-                      transform: 'translateY(-2px)',
-                      boxShadow: '0 8px 32px 0 rgba(99, 102, 241, 0.4)',
-                    },
-                  }}
-                >
-                  AI Sync
-                </Button>
-              </div>
-            </Toolbar>
-          </AppBar>
+          <PremiumNavbar 
+            onDialerOpen={() => setShowDialer(true)}
+            aiEnabled={aiEnabled}
+            onAIToggle={toggleAI}
+          />
           
           <Container maxWidth="xl" sx={{ mt: { xs: 8, sm: 12 }, pb: { xs: 4, sm: 8 }, px: { xs: 1, sm: 3 } }}>
             {/* Add Contact Section */}
@@ -392,19 +258,37 @@ function App() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <div
-                style={{
-                  background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(236, 72, 153, 0.05) 100%)',
-                  backdropFilter: 'blur(20px)',
-                  border: '1px solid rgba(255, 255, 255, 0.1)',
-                  boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.2)',
+              <Box
+                sx={{
+                  ...createBezelCard(premiumTheme, {
+                    showScrews: true,
+                    showEdgeMounts: true,
+                    glassEffect: true,
+                    colorTheme: {
+                      impossible: '99, 102, 241',
+                      shift: '236, 72, 153',
+                      deep: '139, 92, 246'
+                    },
+                    elevation: 1
+                  }),
                   padding: isMobile ? '16px' : '32px',
-                  borderRadius: '24px',
                   marginBottom: isMobile ? '16px' : '32px',
-                  position: 'relative',
-                  overflow: 'hidden',
                 }}
               >
+                {/* Bezel Screws */}
+                <Box className="bezel-screws">
+                  {[1, 2, 3, 4].map((idx) => (
+                    <Box key={idx} sx={{ ...getScrewStyles(premiumTheme, {}, '10deg').wrapper }}>
+                      <Box sx={{ ...getScrewStyles(premiumTheme, {}, '10deg').screw }}>
+                        <Box sx={{ ...getScrewStyles(premiumTheme, {}, '10deg').jewel }} />
+                      </Box>
+                    </Box>
+                  ))}
+                </Box>
+                
+                {/* Edge Mounts */}
+                <Box className="bezel-edge-left" />
+                <Box className="bezel-edge-right" />
                 <Typography 
                   variant="h5" 
                   gutterBottom 
@@ -486,7 +370,7 @@ function App() {
                     Add
                   </Button>
                 </div>
-              </div>
+              </Box>
             </motion.div>
             
             {/* View Mode Toggle */}
@@ -545,35 +429,69 @@ function App() {
             </motion.div>
             
             {/* Contacts Display */}
-            {viewMode === 'rolodex' ? (
-              <div style={{ height: 'calc(100vh - 350px)', minHeight: 600 }}>
-                <DigitalRolodex
-                  contacts={contacts}
-                  onCall={handleMakeCall}
-                  onToggleFavorite={(contact) => {
-                    // TODO: Implement favorite toggle
-                    console.log('Toggle favorite:', contact);
+            <Box
+              sx={{
+                ...createBezelCard(premiumTheme, {
+                  showScrews: true,
+                  showEdgeMounts: true,
+                  glassEffect: true,
+                  colorTheme: {
+                    impossible: '255, 0, 255',
+                    shift: '0, 255, 255',
+                    deep: '255, 0, 170'
+                  },
+                  elevation: 2
+                }),
+                padding: 0,
+                height: 'calc(100vh - 350px)',
+                minHeight: 600,
+              }}
+            >
+              {/* Bezel Screws */}
+              <Box className="bezel-screws">
+                {[1, 2, 3, 4].map((idx) => (
+                  <Box key={idx} sx={{ ...getScrewStyles(premiumTheme, {}, '10deg').wrapper }}>
+                    <Box sx={{ ...getScrewStyles(premiumTheme, {}, '10deg').screw }}>
+                      <Box sx={{ ...getScrewStyles(premiumTheme, {}, '10deg').jewel }} />
+                    </Box>
+                  </Box>
+                ))}
+              </Box>
+              
+              {/* Edge Mounts */}
+              <Box className="bezel-edge-left" />
+              <Box className="bezel-edge-right" />
+              
+              {viewMode === 'rolodex' ? (
+                <Box sx={{ height: '100%', p: 3 }}>
+                  <DigitalRolodex
+                    contacts={contacts}
+                    onCall={handleMakeCall}
+                    onToggleFavorite={(contact) => {
+                      // TODO: Implement favorite toggle
+                      console.log('Toggle favorite:', contact);
+                    }}
+                  />
+                </Box>
+              ) : (
+                <Box 
+                  ref={gridContainerRef}
+                  sx={{ 
+                    height: '100%',
+                    width: '100%',
+                    p: 3,
                   }}
-                />
-              </div>
-            ) : (
-              <div 
-                ref={gridContainerRef}
-                style={{ 
-                  height: 'calc(100vh - 350px)', 
-                  minHeight: 600,
-                  width: '100%',
-                }}
-              >
-                <VirtualizedContactGrid
-                  contacts={contacts}
-                  onContactClick={handleMakeCall}
-                  selectedContactId={activeCall?.contactId}
-                  width={gridDimensions.width}
-                  height={gridDimensions.height}
-                />
-              </div>
-            )}
+                >
+                  <VirtualizedContactGrid
+                    contacts={contacts}
+                    onContactClick={handleMakeCall}
+                    selectedContactId={activeCall?.contactId}
+                    width={gridDimensions.width}
+                    height={gridDimensions.height}
+                  />
+                </Box>
+              )}
+            </Box>
             
             {contacts.length === 0 && (
               <motion.div
@@ -581,14 +499,21 @@ function App() {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.5 }}
               >
-                <div
-                  style={{
+                <Box
+                  sx={{
+                    ...createBezelCard(premiumTheme, {
+                      showScrews: true,
+                      showEdgeMounts: false,
+                      glassEffect: true,
+                      colorTheme: {
+                        impossible: '99, 102, 241',
+                        shift: '236, 72, 153',
+                        deep: '139, 92, 246'
+                      },
+                      elevation: 1
+                    }),
                     textAlign: 'center',
                     padding: '96px 32px',
-                    background: 'rgba(255, 255, 255, 0.03)',
-                    backdropFilter: 'blur(20px)',
-                    border: '1px solid rgba(255, 255, 255, 0.08)',
-                    borderRadius: '32px',
                     maxWidth: '600px',
                     margin: '0 auto',
                   }}
@@ -641,7 +566,18 @@ function App() {
                   >
                     Add First Contact
                   </Button>
-                </div>
+                  
+                  {/* Bezel Screws */}
+                  <Box className="bezel-screws">
+                    {[1, 2, 3, 4].map((idx) => (
+                      <Box key={idx} sx={{ ...getScrewStyles(premiumTheme, {}, '10deg').wrapper }}>
+                        <Box sx={{ ...getScrewStyles(premiumTheme, {}, '10deg').screw }}>
+                          <Box sx={{ ...getScrewStyles(premiumTheme, {}, '10deg').jewel }} />
+                        </Box>
+                      </Box>
+                    ))}
+                  </Box>
+                </Box>
               </motion.div>
             )}
           </Container>
