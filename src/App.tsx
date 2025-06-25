@@ -245,6 +245,8 @@ function App() {
             onDialerOpen={() => setShowDialer(true)}
             aiEnabled={aiEnabled}
             onAIToggle={toggleAI}
+            onSyncDashboardOpen={() => setShowSyncDashboard(true)}
+            onMissionControlOpen={() => setShowMissionControl(true)}
           />
           
           <Container maxWidth="xl" sx={{ mt: { xs: 8, sm: 12 }, pb: { xs: 4, sm: 8 }, px: { xs: 1, sm: 3 } }}>

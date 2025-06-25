@@ -7,6 +7,7 @@ import MicIcon from '@mui/icons-material/Mic';
 import CloseIcon from '@mui/icons-material/Close';
 import { keyframes } from '@mui/material';
 import { useResponsive } from '../hooks/useResponsive';
+import { Phone3DVisualizer } from './Phone3DVisualizer';
 
 const hologramPulse = keyframes`
   0% {
@@ -211,8 +212,8 @@ export const QuantumDialer: React.FC<QuantumDialerProps> = ({ isOpen, onClose, o
                 position: 'relative',
                 width: isMobile ? '95vw' : 500,
                 maxWidth: 500,
-                height: isMobile ? '85vh' : 700,
-                maxHeight: isMobile ? '85vh' : 700,
+                height: isMobile ? 'auto' : 700,
+                maxHeight: isMobile ? '90vh' : 700,
               }}
             >
               {/* Holographic Background */}
@@ -238,7 +239,9 @@ export const QuantumDialer: React.FC<QuantumDialerProps> = ({ isOpen, onClose, o
                   backdropFilter: 'blur(20px)',
                   border: '2px solid rgba(0, 255, 255, 0.3)',
                   borderRadius: '32px',
-                  overflow: 'auto',
+                  overflow: 'hidden',
+                  display: 'flex',
+                  flexDirection: 'column',
                   animation: `${hologramPulse} 2s ease-in-out infinite`,
                 }}
               >
@@ -257,7 +260,7 @@ export const QuantumDialer: React.FC<QuantumDialerProps> = ({ isOpen, onClose, o
                 />
 
                 {/* Header */}
-                <div style={{ padding: '24px', textAlign: 'center', position: 'relative' }}>
+                <div style={{ padding: isMobile ? '16px' : '24px', textAlign: 'center', position: 'relative', flex: '0 0 auto' }}>
                   <IconButton
                     onClick={onClose}
                     sx={{
@@ -306,16 +309,17 @@ export const QuantumDialer: React.FC<QuantumDialerProps> = ({ isOpen, onClose, o
                 {/* Phone Number Display */}
                 <div
                   style={{
-                    margin: '0 24px 20px 24px',
-                    padding: '12px',
+                    margin: isMobile ? '0 12px 12px 12px' : '0 24px 20px 24px',
+                    padding: isMobile ? '8px' : '12px',
                     background: 'rgba(0, 0, 0, 0.5)',
                     border: '1px solid rgba(0, 255, 255, 0.3)',
                     borderRadius: '16px',
                     textAlign: 'center',
-                    minHeight: '50px',
+                    minHeight: isMobile ? '40px' : '50px',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
+                    flex: '0 0 auto',
                   }}
                 >
                   <Typography
@@ -331,14 +335,25 @@ export const QuantumDialer: React.FC<QuantumDialerProps> = ({ isOpen, onClose, o
                   </Typography>
                 </div>
 
+                {/* 3D Phone Visualizer - Show on larger screens or landscape mobile */}
+                {(!isMobile || window.innerHeight < 600) && (
+                  <div style={{ flex: '0 0 auto', padding: '8px 0' }}>
+                    <Phone3DVisualizer 
+                      isActive={phoneNumber.length > 0}
+                      phoneNumber={phoneNumber}
+                    />
+                  </div>
+                )}
+
                 {/* Number Pad */}
                 <div
                   style={{
                     display: 'grid',
                     gridTemplateColumns: 'repeat(3, 1fr)',
-                    gap: '12px',
-                    padding: '0 24px',
-                    marginBottom: '12px',
+                    gap: isMobile ? '8px' : '12px',
+                    padding: isMobile ? '0 12px' : '0 24px',
+                    marginBottom: isMobile ? '8px' : '12px',
+                    flex: '1 1 auto',
                   }}
                 >
                   {dialerNumbers.map((item) => (
@@ -403,11 +418,12 @@ export const QuantumDialer: React.FC<QuantumDialerProps> = ({ isOpen, onClose, o
                   style={{
                     display: 'grid',
                     gridTemplateColumns: 'repeat(4, 1fr)',
-                    gap: '12px',
-                    padding: '0 24px',
-                    marginBottom: '24px',
+                    gap: isMobile ? '8px' : '12px',
+                    padding: isMobile ? '0 12px' : '0 24px',
+                    marginBottom: isMobile ? '12px' : '24px',
                     alignItems: 'center',
                     justifyItems: 'center',
+                    flex: '0 0 auto',
                   }}
                 >
                   <motion.button
@@ -577,9 +593,10 @@ export const QuantumDialer: React.FC<QuantumDialerProps> = ({ isOpen, onClose, o
                 <div
                   style={{
                     display: 'flex',
-                    gap: '16px',
-                    padding: '0 24px',
+                    gap: isMobile ? '12px' : '16px',
+                    padding: isMobile ? '0 12px 12px' : '0 24px 24px',
                     justifyContent: 'center',
+                    flex: '0 0 auto',
                   }}
                 >
                   <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>

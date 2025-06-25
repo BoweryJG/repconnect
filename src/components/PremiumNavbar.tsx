@@ -45,12 +45,16 @@ interface PremiumNavbarProps {
   onDialerOpen: () => void;
   aiEnabled: boolean;
   onAIToggle: () => void;
+  onSyncDashboardOpen?: () => void;
+  onMissionControlOpen?: () => void;
 }
 
 export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({ 
   onDialerOpen, 
   aiEnabled, 
-  onAIToggle 
+  onAIToggle,
+  onSyncDashboardOpen,
+  onMissionControlOpen
 }) => {
   const theme = useTheme();
   const [scrolled, setScrolled] = useState(false);
@@ -390,13 +394,14 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
             justifyContent: 'center',
           }}>
             {[
-              { icon: <ContactsIcon />, label: 'Contacts', color: currentTheme.shift },
-              { icon: <SyncIcon />, label: 'AI Sync', color: currentTheme.impossible },
-              { icon: <BarChartIcon />, label: 'Analytics', color: currentTheme.deep },
+              { icon: <ContactsIcon />, label: 'Contacts', color: currentTheme.shift, onClick: () => {} },
+              { icon: <SyncIcon />, label: 'AI Sync', color: currentTheme.impossible, onClick: onSyncDashboardOpen },
+              { icon: <BarChartIcon />, label: 'Analytics', color: currentTheme.deep, onClick: onMissionControlOpen },
             ].map((item, idx) => (
               <Button
                 key={idx}
                 startIcon={item.icon}
+                onClick={item.onClick}
                 sx={{
                   position: 'relative',
                   px: 2,
