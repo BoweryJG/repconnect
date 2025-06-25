@@ -406,6 +406,8 @@ export const QuantumDialer: React.FC<QuantumDialerProps> = ({ isOpen, onClose, o
                     gap: '16px',
                     padding: '0 24px',
                     marginBottom: '24px',
+                    alignItems: 'center',
+                    justifyItems: 'center',
                   }}
                 >
                   <motion.button
@@ -422,6 +424,9 @@ export const QuantumDialer: React.FC<QuantumDialerProps> = ({ isOpen, onClose, o
                       alignItems: 'center',
                       justifyContent: 'center',
                       transition: 'all 0.3s ease',
+                      width: '100%',
+                      maxWidth: '80px',
+                      minWidth: '60px',
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.background = 'rgba(0, 255, 255, 0.2)';
@@ -461,6 +466,9 @@ export const QuantumDialer: React.FC<QuantumDialerProps> = ({ isOpen, onClose, o
                       alignItems: 'center',
                       justifyContent: 'center',
                       transition: 'all 0.3s ease',
+                      width: '100%',
+                      maxWidth: '80px',
+                      minWidth: '60px',
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.background = 'rgba(0, 255, 255, 0.2)';
@@ -509,6 +517,9 @@ export const QuantumDialer: React.FC<QuantumDialerProps> = ({ isOpen, onClose, o
                       alignItems: 'center',
                       justifyContent: 'center',
                       transition: 'all 0.3s ease',
+                      width: '100%',
+                      maxWidth: '80px',
+                      minWidth: '60px',
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.background = 'rgba(0, 255, 255, 0.2)';
@@ -533,13 +544,21 @@ export const QuantumDialer: React.FC<QuantumDialerProps> = ({ isOpen, onClose, o
                     </Typography>
                   </motion.button>
 
-                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                  <motion.div 
+                    whileHover={{ scale: 1.05 }} 
+                    whileTap={{ scale: 0.95 }}
+                    style={{
+                      width: '100%',
+                      maxWidth: '80px',
+                      minWidth: '60px',
+                      aspectRatio: 1,
+                    }}
+                  >
                     <IconButton
                       onClick={handleBackspace}
                       sx={{
                         width: '100%',
                         height: '100%',
-                        aspectRatio: 1,
                         background: 'rgba(255, 100, 100, 0.1)',
                         border: '1px solid rgba(255, 100, 100, 0.3)',
                         color: '#FF6666',
