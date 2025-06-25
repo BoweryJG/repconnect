@@ -27,6 +27,8 @@ import { useStore } from './store/useStore';
 import { adaptiveRenderer } from './lib/performance/AdaptiveRenderer';
 import { MissionControlDashboard } from './components/MissionControlDashboard';
 import { SyncDashboard } from './components/SyncDashboard';
+import { AISettings } from './components/AISettings';
+import { PerformanceHistory } from './components/PerformanceHistory';
 import { useResponsive } from './hooks/useResponsive';
 
 function App() {
@@ -34,6 +36,8 @@ function App() {
   const [showDialer, setShowDialer] = useState(false);
   const [showMissionControl, setShowMissionControl] = useState(false);
   const [showSyncDashboard, setShowSyncDashboard] = useState(false);
+  const [showAISettings, setShowAISettings] = useState(false);
+  const [showPerformance, setShowPerformance] = useState(false);
   const [newContactName, setNewContactName] = useState('');
   const [newContactPhone, setNewContactPhone] = useState('');
   const [viewMode, setViewMode] = useState<'rolodex' | 'grid'>('rolodex');
@@ -247,6 +251,8 @@ function App() {
             onAIToggle={toggleAI}
             onSyncDashboardOpen={() => setShowSyncDashboard(true)}
             onMissionControlOpen={() => setShowMissionControl(true)}
+            onAISettingsOpen={() => setShowAISettings(true)}
+            onPerformanceOpen={() => setShowPerformance(true)}
           />
           
           <Container maxWidth="xl" sx={{ mt: { xs: 8, sm: 12 }, pb: { xs: 4, sm: 8 }, px: { xs: 1, sm: 3 } }}>
@@ -767,6 +773,18 @@ function App() {
         <MissionControlDashboard
           isOpen={showMissionControl}
           onClose={() => setShowMissionControl(false)}
+        />
+
+        {/* AI Settings Modal */}
+        <AISettings
+          open={showAISettings}
+          onClose={() => setShowAISettings(false)}
+        />
+
+        {/* Performance History Modal */}
+        <PerformanceHistory
+          open={showPerformance}
+          onClose={() => setShowPerformance(false)}
         />
 
         {/* Sync Dashboard Modal */}

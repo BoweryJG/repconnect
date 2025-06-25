@@ -16,6 +16,8 @@ import SyncIcon from '@mui/icons-material/Sync';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import ContactsIcon from '@mui/icons-material/Contacts';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import SettingsIcon from '@mui/icons-material/Settings';
+import TimelineIcon from '@mui/icons-material/Timeline';
 import { keyframes } from '@mui/material';
 
 // Animations
@@ -47,6 +49,8 @@ interface PremiumNavbarProps {
   onAIToggle: () => void;
   onSyncDashboardOpen?: () => void;
   onMissionControlOpen?: () => void;
+  onAISettingsOpen?: () => void;
+  onPerformanceOpen?: () => void;
 }
 
 export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({ 
@@ -54,7 +58,9 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
   aiEnabled, 
   onAIToggle,
   onSyncDashboardOpen,
-  onMissionControlOpen
+  onMissionControlOpen,
+  onAISettingsOpen,
+  onPerformanceOpen
 }) => {
   const theme = useTheme();
   const [scrolled, setScrolled] = useState(false);
@@ -394,7 +400,7 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
             justifyContent: 'center',
           }}>
             {[
-              { icon: <ContactsIcon />, label: 'Contacts', color: currentTheme.shift, onClick: () => {} },
+              { icon: <ContactsIcon />, label: 'Contacts', color: currentTheme.shift, onClick: () => window.scrollTo({ top: 0, behavior: 'smooth' }) },
               { icon: <SyncIcon />, label: 'AI Sync', color: currentTheme.impossible, onClick: onSyncDashboardOpen },
               { icon: <BarChartIcon />, label: 'Analytics', color: currentTheme.deep, onClick: onMissionControlOpen },
             ].map((item, idx) => (
@@ -542,6 +548,46 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
             >
               AI {aiEnabled ? 'ON' : 'OFF'}
             </Button>
+
+            {/* Settings Button */}
+            <IconButton
+              onClick={onAISettingsOpen}
+              sx={{
+                width: 36,
+                height: 36,
+                borderRadius: '10px',
+                background: alpha('#ffffff', 0.05),
+                border: `1px solid ${alpha('#ffffff', 0.1)}`,
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                '&:hover': {
+                  background: alpha('#ffffff', 0.08),
+                  borderColor: `rgba(${currentTheme.impossible}, 0.3)`,
+                  transform: 'translateY(-1px)',
+                },
+              }}
+            >
+              <SettingsIcon sx={{ fontSize: 20 }} />
+            </IconButton>
+
+            {/* Performance Button */}
+            <IconButton
+              onClick={onPerformanceOpen}
+              sx={{
+                width: 36,
+                height: 36,
+                borderRadius: '10px',
+                background: alpha('#ffffff', 0.05),
+                border: `1px solid ${alpha('#ffffff', 0.1)}`,
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                '&:hover': {
+                  background: alpha('#ffffff', 0.08),
+                  borderColor: `rgba(${currentTheme.shift}, 0.3)`,
+                  transform: 'translateY(-1px)',
+                },
+              }}
+            >
+              <TimelineIcon sx={{ fontSize: 20 }} />
+            </IconButton>
 
             {/* More Menu */}
             <IconButton
