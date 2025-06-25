@@ -38,8 +38,6 @@ export interface BezelConfig {
 // Get premium bezel container styles
 export const getBezelContainer = (theme: Theme, config: BezelConfig = {}) => {
   const {
-    showScrews = true,
-    showEdgeMounts = true,
     glassEffect = true,
     colorTheme = {
       impossible: '255, 0, 255',

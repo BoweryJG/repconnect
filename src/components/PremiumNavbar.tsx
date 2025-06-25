@@ -9,7 +9,7 @@ import {
   useTheme,
   alpha
 } from '@mui/material';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import DialpadIcon from '@mui/icons-material/Dialpad';
 import SyncIcon from '@mui/icons-material/Sync';
