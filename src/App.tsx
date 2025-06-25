@@ -687,7 +687,7 @@ function App() {
                     No contacts yet
                   </Typography>
                   <Typography variant="body1" sx={{ color: 'text.secondary', mb: 4 }}>
-                    Add your first contact to get started with RepConnect Ultra
+                    Add your first contact to get started with Pipeline Ultra
                   </Typography>
                   <Button
                     variant="contained"

@@ -388,7 +388,7 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                 },
               }}
             >
-              RepConnect Ultra
+              Pipeline
             </Typography>
           </Box>
 
