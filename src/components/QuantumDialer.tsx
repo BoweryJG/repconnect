@@ -212,7 +212,7 @@ export const QuantumDialer: React.FC<QuantumDialerProps> = ({ isOpen, onClose, o
                 width: isMobile ? '95vw' : 500,
                 maxWidth: 500,
                 height: isMobile ? '85vh' : 700,
-                maxHeight: 700,
+                maxHeight: isMobile ? '85vh' : 700,
               }}
             >
               {/* Holographic Background */}
@@ -238,7 +238,7 @@ export const QuantumDialer: React.FC<QuantumDialerProps> = ({ isOpen, onClose, o
                   backdropFilter: 'blur(20px)',
                   border: '2px solid rgba(0, 255, 255, 0.3)',
                   borderRadius: '32px',
-                  overflow: 'hidden',
+                  overflow: 'auto',
                   animation: `${hologramPulse} 2s ease-in-out infinite`,
                 }}
               >
@@ -306,13 +306,13 @@ export const QuantumDialer: React.FC<QuantumDialerProps> = ({ isOpen, onClose, o
                 {/* Phone Number Display */}
                 <div
                   style={{
-                    margin: '0 24px 32px 24px',
-                    padding: '16px',
+                    margin: '0 24px 20px 24px',
+                    padding: '12px',
                     background: 'rgba(0, 0, 0, 0.5)',
                     border: '1px solid rgba(0, 255, 255, 0.3)',
                     borderRadius: '16px',
                     textAlign: 'center',
-                    minHeight: '60px',
+                    minHeight: '50px',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -336,9 +336,9 @@ export const QuantumDialer: React.FC<QuantumDialerProps> = ({ isOpen, onClose, o
                   style={{
                     display: 'grid',
                     gridTemplateColumns: 'repeat(3, 1fr)',
-                    gap: '16px',
+                    gap: '12px',
                     padding: '0 24px',
-                    marginBottom: '16px',
+                    marginBottom: '12px',
                   }}
                 >
                   {dialerNumbers.map((item) => (
@@ -403,7 +403,7 @@ export const QuantumDialer: React.FC<QuantumDialerProps> = ({ isOpen, onClose, o
                   style={{
                     display: 'grid',
                     gridTemplateColumns: 'repeat(4, 1fr)',
-                    gap: '16px',
+                    gap: '12px',
                     padding: '0 24px',
                     marginBottom: '24px',
                     alignItems: 'center',

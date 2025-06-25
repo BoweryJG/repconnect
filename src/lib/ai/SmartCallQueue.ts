@@ -228,26 +228,42 @@ export class SmartCallQueue {
   ): Promise<SyncQueue> {
     queue.status = 'syncing';
     
-    // Simulate progressive sync
-    const totalContacts = queue.contacts.length;
-    let synced = 0;
+    try {
+      // Import dynamically to avoid circular dependency
+      const { CallQueueService } = await import('../../services/callQueueService');
+      
+      // Create actual call records in database
+      const calls = await CallQueueService.createCallsFromQueue(
+        queue.id,
+        queue.contacts
+      );
+      
+      // Track sync progress
+      const totalContacts = queue.contacts.length;
+      let synced = 0;
 
-    for (let i = 0; i < queue.contacts.length; i++) {
-      // In production, this would sync to CRM/dashboard
-      await new Promise(resolve => setTimeout(resolve, 50));
-      
-      synced++;
-      queue.progress = (synced / totalContacts) * 100;
-      
-      if (onProgress) {
-        onProgress(queue.progress);
+      // Update progress as we create records
+      for (let i = 0; i < calls.length; i++) {
+        synced++;
+        queue.progress = (synced / totalContacts) * 100;
+        
+        if (onProgress) {
+          onProgress(queue.progress);
+        }
+        
+        // Small delay to show progress
+        await new Promise(resolve => setTimeout(resolve, 20));
       }
-    }
 
-    queue.status = 'completed';
-    queue.progress = 100;
-    
-    return queue;
+      queue.status = 'completed';
+      queue.progress = 100;
+      
+      return queue;
+    } catch (error) {
+      console.error('Error syncing queue:', error);
+      queue.status = 'error';
+      throw error;
+    }
   }
 
   static generatePresets(): Array<{ name: string; query: string; icon: string }> {

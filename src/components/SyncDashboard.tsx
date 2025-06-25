@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
-import { Typography, LinearProgress, IconButton, Chip, Grid } from '@mui/material';
+import { Typography, LinearProgress, IconButton, Chip, Grid, Button } from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import PauseIcon from '@mui/icons-material/Pause';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ErrorIcon from '@mui/icons-material/Error';
+import PhoneIcon from '@mui/icons-material/Phone';
 import { VoiceCommandInterface } from './VoiceCommandInterface';
 import { SettingsNavbar } from './SettingsNavbar';
+import { QueueCallInterface } from './QueueCallInterfaceSimple';
 import { SmartCallQueue } from '../lib/ai/SmartCallQueue';
 import { useStore } from '../store/useStore';
 
@@ -24,6 +26,7 @@ export const SyncDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState('sync');
   const [queues, setQueues] = useState<SyncQueue[]>([]);
   const [activeQueue, setActiveQueue] = useState<string | null>(null);
+  const [callingQueueId, setCallingQueueId] = useState<string | null>(null);
   const contacts = useStore((state) => state.contacts);
   
   const presets = SmartCallQueue.generatePresets();
@@ -245,6 +248,24 @@ export const SyncDashboard: React.FC = () => {
                               <PauseIcon />
                             </IconButton>
                           )}
+                          {queue.status === 'completed' && (
+                            <Button
+                              onClick={() => setCallingQueueId(queue.id)}
+                              startIcon={<PhoneIcon />}
+                              variant="contained"
+                              size="small"
+                              sx={{
+                                background: 'linear-gradient(135deg, #00ff88 0%, #00d4ff 100%)',
+                                color: '#000',
+                                '&:hover': {
+                                  background: 'linear-gradient(135deg, #00ff88 0%, #00d4ff 100%)',
+                                  transform: 'scale(1.05)',
+                                }
+                              }}
+                            >
+                              Start Calling
+                            </Button>
+                          )}
                           <IconButton
                             onClick={() => handleDeleteQueue(queue.id)}
                             style={{
@@ -292,6 +313,57 @@ export const SyncDashboard: React.FC = () => {
                   ))}
                 </div>
               </div>
+            )}
+
+            {/* Call Interface Modal */}
+            {callingQueueId && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                style={{
+                  position: 'fixed',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  background: 'rgba(0, 0, 0, 0.9)',
+                  zIndex: 1200,
+                  display: 'flex',
+                  flexDirection: 'column',
+                }}
+              >
+                <div style={{ 
+                  display: 'flex', 
+                  justifyContent: 'space-between', 
+                  alignItems: 'center',
+                  padding: '16px 24px',
+                  borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
+                }}>
+                  <Typography variant="h5" sx={{ color: '#fff' }}>
+                    Call Queue Manager
+                  </Typography>
+                  <Button
+                    onClick={() => setCallingQueueId(null)}
+                    sx={{ color: '#fff' }}
+                  >
+                    Close
+                  </Button>
+                </div>
+                <div style={{ flex: 1, overflow: 'auto' }}>
+                  <QueueCallInterface 
+                    queueId={callingQueueId} 
+                    onComplete={() => {
+                      setCallingQueueId(null);
+                      // Refresh queue status
+                      const updatedQueues = queues.map(q => 
+                        q.id === callingQueueId ? { ...q, status: 'completed' as const } : q
+                      );
+                      setQueues(updatedQueues);
+                    }}
+                  />
+                </div>
+              </motion.div>
             )}
           </div>
         );
