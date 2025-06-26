@@ -132,59 +132,97 @@ function App() {
   }, [viewMode]);
 
   const handleMakeCall = async (contact: any) => {
+    // Format the phone number to ensure it has country code
+    let formattedNumber = contact.phoneNumber.replace(/\D/g, '');
+    if (!formattedNumber.startsWith('1') && formattedNumber.length === 10) {
+      formattedNumber = '1' + formattedNumber;
+    }
+    formattedNumber = '+' + formattedNumber;
+    
     setCallInProgress(true);
     setActiveCall({
       id: crypto.randomUUID(),
       contactId: contact.id,
-      phoneNumber: contact.phoneNumber,
+      phoneNumber: formattedNumber,
       duration: 0,
       timestamp: new Date(),
       type: 'outgoing',
     });
 
     try {
-      await twilioService.makeCall(contact.phoneNumber);
+      await twilioService.makeCall(formattedNumber);
       
       // Log to Supabase
       await supabase.from('calls').insert({
         contact_id: contact.id,
-        phone_number: contact.phoneNumber,
+        phone_number: formattedNumber,
         type: 'outgoing',
         status: 'initiated',
         created_at: new Date().toISOString(),
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error making call:', error);
       setCallInProgress(false);
       setActiveCall(null);
+      
+      // Show user-friendly error message
+      const errorMessage = error.response?.data?.error || error.response?.data?.details?.error || error.message || 'Unknown error';
+      alert(`Call failed: ${errorMessage}\n\nPlease check:\n- Phone number is valid\n- Twilio account is active\n- Backend server is running`);
     }
   };
 
   const handleDialNumber = async (phoneNumber: string) => {
+    console.log('🔍 [APP DEBUG] Starting dial process for:', phoneNumber);
+    
+    // Format the phone number to ensure it has country code
+    let formattedNumber = phoneNumber.replace(/\D/g, '');
+    if (!formattedNumber.startsWith('1') && formattedNumber.length === 10) {
+      formattedNumber = '1' + formattedNumber;
+    }
+    formattedNumber = '+' + formattedNumber;
+    
+    console.log('🔍 [APP DEBUG] Formatted number:', formattedNumber);
+    
     setCallInProgress(true);
     setActiveCall({
       id: crypto.randomUUID(),
       contactId: '',
-      phoneNumber: phoneNumber,
+      phoneNumber: formattedNumber,
       duration: 0,
       timestamp: new Date(),
       type: 'outgoing',
     });
 
     try {
-      await twilioService.makeCall(phoneNumber);
+      console.log('🔍 [APP DEBUG] Calling twilioService.makeCall...');
+      const result = await twilioService.makeCall(formattedNumber);
+      
+      console.log('✅ [APP DEBUG] Call initiated successfully:', result);
       
       // Log to Supabase
       await supabase.from('calls').insert({
-        phone_number: phoneNumber,
+        phone_number: formattedNumber,
         type: 'outgoing',
         status: 'initiated',
         created_at: new Date().toISOString(),
       });
-    } catch (error) {
-      console.error('Error making call:', error);
+      
+      console.log('✅ [APP DEBUG] Call logged to database');
+      
+      // Close dialer on success
+      setShowDialer(false);
+    } catch (error: any) {
+      console.error('❌ [APP DEBUG] Call failed:', {
+        error: error.message,
+        response: error.response?.data,
+        status: error.response?.status
+      });
       setCallInProgress(false);
       setActiveCall(null);
+      
+      // Show user-friendly error message
+      const errorMessage = error.response?.data?.error || error.response?.data?.details?.error || error.message || 'Unknown error';
+      alert(`Call failed: ${errorMessage}\n\nPlease check:\n- Phone number is valid\n- Twilio account is active\n- Backend server is running`);
     }
   };
 

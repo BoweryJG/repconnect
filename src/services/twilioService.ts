@@ -7,17 +7,36 @@ const PROXY_URL = '/.netlify/functions/twilio-proxy';
 export const twilioService = {
   async makeCall(to: string, from?: string) {
     try {
-      const url = USE_PROXY 
+      const url = USE_PROXY
         ? `${PROXY_URL}/api/twilio/make-call`
         : `${BACKEND_URL}/api/twilio/make-call`;
+      
+      const fromNumber = from || process.env.REACT_APP_TWILIO_PHONE_NUMBER;
+      
+      console.log('🔍 [DIALER DEBUG] Making call with config:', {
+        to,
+        from: fromNumber,
+        url,
+        useProxy: USE_PROXY,
+        backendUrl: BACKEND_URL,
+        proxyUrl: PROXY_URL
+      });
         
       const response = await axios.post(url, {
         to,
-        from: from || process.env.REACT_APP_TWILIO_PHONE_NUMBER,
+        from: fromNumber,
       });
+      
+      console.log('✅ [DIALER DEBUG] Call request successful:', response.data);
       return response.data;
-    } catch (error) {
-      console.error('Error making call:', error);
+    } catch (error: any) {
+      console.error('❌ [DIALER DEBUG] Call request failed:', {
+        error: error.message,
+        response: error.response?.data,
+        status: error.response?.status,
+        url: error.config?.url,
+        requestData: error.config?.data
+      });
       throw error;
     }
   },

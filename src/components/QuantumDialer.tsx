@@ -46,10 +46,23 @@ interface QuantumDialerProps {
 }
 
 export const QuantumDialer: React.FC<QuantumDialerProps> = ({ isOpen, onClose, onDial }) => {
-  const { isMobile } = useResponsive();
+  const { isMobile, windowDimensions } = useResponsive();
   const [phoneNumber, setPhoneNumber] = useState('');
   const [isVoiceActive, setIsVoiceActive] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  // Debug logging for responsive detection
+  useEffect(() => {
+    if (isOpen) {
+      console.log('🔍 [DIALER DEBUG] Dialer opened with responsive state:', {
+        isMobile,
+        windowDimensions,
+        innerWidth: window.innerWidth,
+        innerHeight: window.innerHeight,
+        userAgent: navigator.userAgent.includes('Mobile') ? 'Mobile UA' : 'Desktop UA'
+      });
+    }
+  }, [isOpen, isMobile, windowDimensions]);
 
   // Holographic effect canvas
   useEffect(() => {
@@ -149,9 +162,13 @@ export const QuantumDialer: React.FC<QuantumDialerProps> = ({ isOpen, onClose, o
 
   const handleDial = () => {
     if (phoneNumber.length >= 10) {
+      console.log('🔍 [DIALER DEBUG] Initiating call with number:', phoneNumber);
       onDial(phoneNumber);
-      setPhoneNumber('');
-      onClose();
+      // Don't clear the number or close immediately - let the parent handle that
+      // This gives time to see any errors
+    } else {
+      console.warn('❌ [DIALER DEBUG] Phone number too short:', phoneNumber);
+      alert('Please enter at least 10 digits');
     }
   };
 
@@ -212,8 +229,8 @@ export const QuantumDialer: React.FC<QuantumDialerProps> = ({ isOpen, onClose, o
                 position: 'relative',
                 width: isMobile ? '95vw' : 500,
                 maxWidth: 500,
-                height: isMobile ? 'auto' : 700,
-                maxHeight: isMobile ? '90vh' : 700,
+                height: 'auto',
+                maxHeight: '90vh',
               }}
             >
               {/* Holographic Background */}
@@ -335,8 +352,8 @@ export const QuantumDialer: React.FC<QuantumDialerProps> = ({ isOpen, onClose, o
                   </Typography>
                 </div>
 
-                {/* 3D Phone Visualizer - Show on larger screens or landscape mobile */}
-                {(!isMobile || window.innerHeight < 600) && (
+                {/* 3D Phone Visualizer - Show on desktop and hide on portrait mobile */}
+                {!isMobile && (
                   <div style={{ flex: '0 0 auto', padding: '8px 0' }}>
                     <Phone3DVisualizer 
                       isActive={phoneNumber.length > 0}

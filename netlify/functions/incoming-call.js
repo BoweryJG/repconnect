@@ -32,7 +32,7 @@ exports.handler = async (event, context) => {
   // Optional: Add a message before forwarding
   twiml.say({
     voice: 'alice'
-  }, 'Thank you for calling Pipeline. Connecting you now.');
+  }, 'Thank you for calling Bowery Creative. Connecting you now.');
   
   // Forward the call to your phone with recording
   const dial = twiml.dial({

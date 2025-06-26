@@ -38,15 +38,31 @@ export const handler: Handler = async (event, context) => {
   try {
     const path = event.path.replace('/.netlify/functions/twilio-proxy', '');
     const url = `${BACKEND_URL}${path}`;
+    const requestData = event.body ? JSON.parse(event.body) : undefined;
+    
+    console.log('🔍 [PROXY DEBUG] Incoming request:', {
+      originalPath: event.path,
+      processedPath: path,
+      finalUrl: url,
+      method: event.httpMethod,
+      requestData,
+      backendUrl: BACKEND_URL
+    });
     
     const response = await axios({
       method: event.httpMethod,
       url,
-      data: event.body ? JSON.parse(event.body) : undefined,
+      data: requestData,
       headers: {
         'Content-Type': 'application/json',
         ...event.headers
-      }
+      },
+      timeout: 30000 // 30 second timeout
+    });
+
+    console.log('✅ [PROXY DEBUG] Backend response successful:', {
+      status: response.status,
+      data: response.data
     });
 
     return {
@@ -55,13 +71,25 @@ export const handler: Handler = async (event, context) => {
       body: JSON.stringify(response.data)
     };
   } catch (error: any) {
-    console.error('Proxy error:', error);
+    console.error('❌ [PROXY DEBUG] Backend request failed:', {
+      error: error.message,
+      response: error.response?.data,
+      status: error.response?.status,
+      url: error.config?.url,
+      code: error.code,
+      timeout: error.code === 'ECONNABORTED'
+    });
     
     return {
       statusCode: error.response?.status || 500,
       headers,
       body: JSON.stringify({
-        error: error.response?.data?.error || error.message || 'Internal server error'
+        error: error.response?.data?.error || error.message || 'Internal server error',
+        details: {
+          backendUrl: BACKEND_URL,
+          path: event.path,
+          timeout: error.code === 'ECONNABORTED'
+        }
       })
     };
   }

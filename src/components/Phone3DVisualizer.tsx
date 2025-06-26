@@ -24,6 +24,21 @@ export const Phone3DVisualizer: React.FC<Phone3DVisualizerProps> = ({
     let rotation = 0;
     let animationId: number;
 
+    // Polyfill for roundRect
+    if (!ctx.roundRect) {
+      (ctx as any).roundRect = function(x: number, y: number, width: number, height: number, radius: number) {
+        if (width < 2 * radius) radius = width / 2;
+        if (height < 2 * radius) radius = height / 2;
+        this.beginPath();
+        this.moveTo(x + radius, y);
+        this.arcTo(x + width, y, x + width, y + height, radius);
+        this.arcTo(x + width, y + height, x, y + height, radius);
+        this.arcTo(x, y + height, x, y, radius);
+        this.arcTo(x, y, x + width, y, radius);
+        this.closePath();
+      };
+    }
+
     const drawPhone = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       

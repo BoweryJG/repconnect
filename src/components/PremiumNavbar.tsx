@@ -365,31 +365,74 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            <AutoAwesomeIcon sx={{ 
-              color: '#6366F1', 
-              fontSize: 32,
-              filter: 'drop-shadow(0 1px 2px rgba(255,255,255,0.1))',
-            }} />
-            <Typography 
-              variant="h5" 
-              sx={{ 
-                fontWeight: 800,
-                fontSize: '1.75rem',
-                background: `linear-gradient(135deg, #FFFFFF 0%, rgb(${currentTheme.impossible}) 50%, rgb(${currentTheme.shift}) 100%)`,
-                backgroundClip: 'text',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundSize: '200% 200%',
-                animation: 'gradient 3s ease infinite',
-                '@keyframes gradient': {
-                  '0%': { backgroundPosition: '0% 50%' },
-                  '50%': { backgroundPosition: '100% 50%' },
-                  '100%': { backgroundPosition: '0% 50%' },
-                },
+            <div
+              style={{
+                width: 36,
+                height: 36,
+                position: 'relative',
               }}
             >
-              Pipeline
-            </Typography>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" style={{ width: '100%', height: '100%', filter: 'drop-shadow(0 1px 2px rgba(255,255,255,0.1))' }}>
+                <defs>
+                  <linearGradient id="sphereGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#9f58fa" />
+                    <stop offset="100%" stopColor="#4B96DC" />
+                  </linearGradient>
+                  <radialGradient id="jewelGradient" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stopColor="#fff" stopOpacity="1" />
+                    <stop offset="30%" stopColor="#ff00ff" stopOpacity="1" />
+                    <stop offset="60%" stopColor="#00ffff" stopOpacity="1" />
+                    <stop offset="100%" stopColor="#ff00aa" stopOpacity="0.9" />
+                  </radialGradient>
+                </defs>
+                <circle cx="16" cy="16" r="12" fill="none" stroke="url(#sphereGradient)" strokeWidth="2" opacity="0.8" />
+                <circle cx="16" cy="16" r="8" fill="none" stroke="url(#sphereGradient)" strokeWidth="1.5" opacity="0.5" />
+                <circle cx="16" cy="16" r="3" fill="url(#jewelGradient)">
+                  <animate attributeName="r" values="3;4;3" dur="2s" repeatCount="indefinite"/>
+                  <animate attributeName="opacity" values="0.8;1;0.8" dur="2s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="16" cy="4" r="1.5" fill="#9f58fa">
+                  <animateTransform attributeName="transform" type="rotate" from="0 16 16" to="360 16 16" dur="6s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="28" cy="16" r="1.5" fill="#4B96DC">
+                  <animateTransform attributeName="transform" type="rotate" from="0 16 16" to="360 16 16" dur="8s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="16" cy="28" r="1.5" fill="#4bd48e">
+                  <animateTransform attributeName="transform" type="rotate" from="0 16 16" to="360 16 16" dur="10s" repeatCount="indefinite"/>
+                </circle>
+              </svg>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 0 }}>
+              <Typography 
+                sx={{ 
+                  fontFamily: 'Orbitron, monospace',
+                  fontWeight: 800,
+                  fontSize: '1.25rem',
+                  lineHeight: 1,
+                  letterSpacing: '-0.5px',
+                  background: 'linear-gradient(135deg, #9f58fa, #4B96DC)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                }}
+              >
+                REPSPHERES
+              </Typography>
+              <Typography 
+                sx={{ 
+                  fontFamily: 'Orbitron, monospace',
+                  fontWeight: 600,
+                  fontSize: '0.75rem',
+                  lineHeight: 1.2,
+                  letterSpacing: '2px',
+                  textTransform: 'uppercase',
+                  color: 'rgba(255, 255, 255, 0.6)',
+                  marginTop: '2px',
+                }}
+              >
+                Pipeline
+              </Typography>
+            </div>
           </Box>
 
           {/* Center Navigation */}
