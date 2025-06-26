@@ -449,12 +449,12 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
 
           {/* Center Navigation - Desktop Only */}
           {!isMobile && (
-            <Box sx={{ 
+            <div style={{ 
               display: 'flex', 
-              gap: 1,
+              gap: 8,
               flex: 1,
               justifyContent: 'center',
-            } as any}>
+            }}>
               {[
                 { icon: <ContactsIcon />, label: 'Contacts', color: currentTheme.shift, onClick: () => window.scrollTo({ top: 0, behavior: 'smooth' }) },
                 { icon: <SyncIcon />, label: 'AI Sync', color: currentTheme.impossible, onClick: onSyncDashboardOpen },
@@ -508,7 +508,7 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                   {item.label}
                 </Button>
               ))}
-            </Box>
+            </div>
           )}
 
           {/* Right Actions */}
@@ -708,21 +708,21 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
           },
         }}
       >
-        <Box sx={{ p: 2 }}>
+        <div style={{ padding: 16 }}>
           {/* Header */}
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-            <Typography variant="h6" sx={{ fontWeight: 600 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
+            <Typography variant="h6" sx={{ fontWeight: 600 } as any}>
               Menu
             </Typography>
             <IconButton 
               onClick={() => setMobileMenuOpen(false)}
               sx={{ 
                 color: 'rgba(255, 255, 255, 0.7)'
-              }}
+              } as any}
             >
               <CloseIcon />
             </IconButton>
-          </Box>
+          </div>
 
           {/* Menu Items */}
           <List>
@@ -793,7 +793,7 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
               <ListItemText primary="Performance" />
             </ListItemButton>
           </List>
-        </Box>
+        </div>
       </Drawer>
     </div>
   );
