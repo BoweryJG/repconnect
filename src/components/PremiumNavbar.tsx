@@ -708,17 +708,16 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
           },
         }}
       >
-        <Box sx={{ p: 2 }}>
+        <Box style={{ padding: 16 }}>
           {/* Header */}
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-            <Typography variant="h6" sx={{ fontWeight: 600 }}>
+          <Box style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
+            <Typography variant="h6" style={{ fontWeight: 600 }}>
               Menu
             </Typography>
             <IconButton 
               onClick={() => setMobileMenuOpen(false)}
-              sx={{ 
-                color: 'text.secondary',
-                '&:hover': { color: 'text.primary' }
+              style={{ 
+                color: 'rgba(255, 255, 255, 0.7)'
               }}
             >
               <CloseIcon />
@@ -732,7 +731,7 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                 window.scrollTo({ top: 0, behavior: 'smooth' });
                 setMobileMenuOpen(false);
               }}
-              sx={{ borderRadius: '12px', mb: 1 }}
+              style={{ borderRadius: '12px', marginBottom: 8 }}
             >
               <ListItemIcon><ContactsIcon /></ListItemIcon>
               <ListItemText primary="Contacts" />
@@ -743,7 +742,7 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                 onSyncDashboardOpen?.();
                 setMobileMenuOpen(false);
               }}
-              sx={{ borderRadius: '12px', mb: 1 }}
+              style={{ borderRadius: '12px', marginBottom: 8 }}
             >
               <ListItemIcon><SyncIcon /></ListItemIcon>
               <ListItemText primary="AI Sync" />
@@ -754,29 +753,21 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                 onMissionControlOpen?.();
                 setMobileMenuOpen(false);
               }}
-              sx={{ borderRadius: '12px', mb: 1 }}
+              style={{ borderRadius: '12px', marginBottom: 8 }}
             >
               <ListItemIcon><BarChartIcon /></ListItemIcon>
               <ListItemText primary="Analytics" />
             </ListItemButton>
 
-            <Divider sx={{ my: 2 }} />
+            <Divider style={{ margin: '16px 0' }} />
 
             {/* AI Toggle */}
-            <ListItem sx={{ borderRadius: '12px', mb: 1 }}>
+            <ListItem style={{ borderRadius: '12px', marginBottom: 8 }}>
               <ListItemText primary="AI Assistant" />
               <Switch
                 edge="end"
                 checked={aiEnabled}
                 onChange={onAIToggle}
-                sx={{
-                  '& .MuiSwitch-switchBase.Mui-checked': {
-                    color: theme.palette.primary.main,
-                  },
-                  '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
-                    backgroundColor: theme.palette.primary.main,
-                  },
-                }}
               />
             </ListItem>
 
@@ -785,7 +776,7 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                 onAISettingsOpen?.();
                 setMobileMenuOpen(false);
               }}
-              sx={{ borderRadius: '12px', mb: 1 }}
+              style={{ borderRadius: '12px', marginBottom: 8 }}
             >
               <ListItemIcon><SettingsIcon /></ListItemIcon>
               <ListItemText primary="AI Settings" />
@@ -796,7 +787,7 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                 onPerformanceOpen?.();
                 setMobileMenuOpen(false);
               }}
-              sx={{ borderRadius: '12px', mb: 1 }}
+              style={{ borderRadius: '12px', marginBottom: 8 }}
             >
               <ListItemIcon><TimelineIcon /></ListItemIcon>
               <ListItemText primary="Performance" />
