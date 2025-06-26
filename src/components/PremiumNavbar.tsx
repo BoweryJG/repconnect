@@ -373,12 +373,12 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
               '&:hover': {
                 background: `rgba(${currentTheme.impossible}, 0.1)`,
               },
-            }}
+            } as any}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            <Box
-              sx={{
+            <div
+              style={{
                 width: isMobile ? 30 : 36,
                 height: isMobile ? 30 : 36,
                 position: 'relative',
@@ -413,8 +413,8 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                   <animateTransform attributeName="transform" type="rotate" from="0 16 16" to="360 16 16" dur="10s" repeatCount="indefinite"/>
                 </circle>
               </svg>
-            </Box>
-            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 0 }}>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 0 }}>
               <Typography 
                 sx={{ 
                   fontFamily: 'Orbitron, monospace',
@@ -426,7 +426,7 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
                   backgroundClip: 'text',
-                }}
+                } as any}
               >
                 REPSPHERES
               </Typography>
@@ -440,11 +440,11 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                   textTransform: 'uppercase',
                   color: 'rgba(255, 255, 255, 0.6)',
                   marginTop: '2px',
-                }}
+                } as any}
               >
                 Pipeline
               </Typography>
-            </Box>
+            </div>
           </Box>
 
           {/* Center Navigation - Desktop Only */}
@@ -512,7 +512,7 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
           )}
 
           {/* Right Actions */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: isMobile ? 1 : 1.5 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? 8 : 12 }}>
             {/* Quantum Dialer Button */}
             <Button
               startIcon={!isMobile && <DialpadIcon />}
@@ -691,7 +691,7 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                 <MenuIcon sx={{ fontSize: 20 }} />
               </IconButton>
             )}
-          </Box>
+          </div>
         </Toolbar>
       </AppBar>
 
