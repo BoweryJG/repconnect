@@ -17,7 +17,7 @@ import {
   Switch,
   ListItemButton
 } from '@mui/material';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import DialpadIcon from '@mui/icons-material/Dialpad';
 import SyncIcon from '@mui/icons-material/Sync';
 import BarChartIcon from '@mui/icons-material/BarChart';
