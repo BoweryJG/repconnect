@@ -194,7 +194,7 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
             opacity: 0.2,
             animation: `${glassOscillate} 8s ease-in-out infinite`,
           },
-        }}
+        } as any}
       >
         {/* Edge Mount Indicators */}
         <div
@@ -377,8 +377,8 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            <div
-              style={{
+            <Box
+              sx={{
                 width: isMobile ? 30 : 36,
                 height: isMobile ? 30 : 36,
                 position: 'relative',
@@ -413,8 +413,8 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                   <animateTransform attributeName="transform" type="rotate" from="0 16 16" to="360 16 16" dur="10s" repeatCount="indefinite"/>
                 </circle>
               </svg>
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 0 }}>
+            </Box>
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 0 }}>
               <Typography 
                 sx={{ 
                   fontFamily: 'Orbitron, monospace',
@@ -444,14 +444,14 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
               >
                 Pipeline
               </Typography>
-            </div>
+            </Box>
           </Box>
 
           {/* Center Navigation - Desktop Only */}
           {!isMobile && (
-            <div style={{ 
+            <Box sx={{ 
               display: 'flex', 
-              gap: 8,
+              gap: 1,
               flex: 1,
               justifyContent: 'center',
             }}>
@@ -503,16 +503,16 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                         transform: 'translateX(100%)',
                       },
                     },
-                  }}
+                  } as any}
                 >
                   {item.label}
                 </Button>
               ))}
-            </div>
+            </Box>
           )}
 
           {/* Right Actions */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? 8 : 12 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: isMobile ? 1 : 1.5 }}>
             {/* Quantum Dialer Button */}
             <Button
               startIcon={!isMobile && <DialpadIcon />}
@@ -575,7 +575,7 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                 '&:hover::before': {
                   left: '100%',
                 },
-              }}
+              } as any}
             >
               {isMobile ? <DialpadIcon /> : 'Dialer'}
             </Button>
@@ -604,7 +604,7 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                         : alpha('#ffffff', 0.08),
                       transform: 'translateY(-1px)',
                     },
-                  }}
+                  } as any}
                 >
                   AI {aiEnabled ? 'ON' : 'OFF'}
                 </Button>
@@ -624,7 +624,7 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                       borderColor: `rgba(${currentTheme.impossible}, 0.3)`,
                       transform: 'translateY(-1px)',
                     },
-                  }}
+                  } as any}
                 >
                   <SettingsIcon sx={{ fontSize: 20 }} />
                 </IconButton>
@@ -644,7 +644,7 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                       borderColor: `rgba(${currentTheme.shift}, 0.3)`,
                       transform: 'translateY(-1px)',
                     },
-                  }}
+                  } as any}
                 >
                   <TimelineIcon sx={{ fontSize: 20 }} />
                 </IconButton>
@@ -663,7 +663,7 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                       borderColor: `rgba(${currentTheme.impossible}, 0.3)`,
                       transform: 'translateY(-1px)',
                     },
-                  }}
+                  } as any}
                 >
                   <MoreHorizIcon sx={{ fontSize: 20 }} />
                 </IconButton>
@@ -686,12 +686,12 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                     borderColor: `rgba(${currentTheme.impossible}, 0.3)`,
                     transform: 'translateY(-1px)',
                   },
-                }}
+                } as any}
               >
                 <MenuIcon sx={{ fontSize: 20 }} />
               </IconButton>
             )}
-          </div>
+          </Box>
         </Toolbar>
       </AppBar>
 
@@ -708,15 +708,15 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
           },
         }}
       >
-        <Box style={{ padding: 16 }}>
+        <Box sx={{ p: 2 }}>
           {/* Header */}
-          <Box style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
-            <Typography variant="h6" style={{ fontWeight: 600 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+            <Typography variant="h6" sx={{ fontWeight: 600 }}>
               Menu
             </Typography>
             <IconButton 
               onClick={() => setMobileMenuOpen(false)}
-              style={{ 
+              sx={{ 
                 color: 'rgba(255, 255, 255, 0.7)'
               }}
             >
@@ -731,7 +731,7 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                 window.scrollTo({ top: 0, behavior: 'smooth' });
                 setMobileMenuOpen(false);
               }}
-              style={{ borderRadius: '12px', marginBottom: 8 }}
+              sx={{ borderRadius: '12px', mb: 1 }}
             >
               <ListItemIcon><ContactsIcon /></ListItemIcon>
               <ListItemText primary="Contacts" />
@@ -742,7 +742,7 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                 onSyncDashboardOpen?.();
                 setMobileMenuOpen(false);
               }}
-              style={{ borderRadius: '12px', marginBottom: 8 }}
+              sx={{ borderRadius: '12px', mb: 1 }}
             >
               <ListItemIcon><SyncIcon /></ListItemIcon>
               <ListItemText primary="AI Sync" />
@@ -753,16 +753,16 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                 onMissionControlOpen?.();
                 setMobileMenuOpen(false);
               }}
-              style={{ borderRadius: '12px', marginBottom: 8 }}
+              sx={{ borderRadius: '12px', mb: 1 }}
             >
               <ListItemIcon><BarChartIcon /></ListItemIcon>
               <ListItemText primary="Analytics" />
             </ListItemButton>
 
-            <Divider style={{ margin: '16px 0' }} />
+            <Divider sx={{ m: 2 }} />
 
             {/* AI Toggle */}
-            <ListItem style={{ borderRadius: '12px', marginBottom: 8 }}>
+            <ListItem sx={{ borderRadius: '12px', mb: 1 }}>
               <ListItemText primary="AI Assistant" />
               <Switch
                 edge="end"
@@ -776,7 +776,7 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                 onAISettingsOpen?.();
                 setMobileMenuOpen(false);
               }}
-              style={{ borderRadius: '12px', marginBottom: 8 }}
+              sx={{ borderRadius: '12px', mb: 1 }}
             >
               <ListItemIcon><SettingsIcon /></ListItemIcon>
               <ListItemText primary="AI Settings" />
@@ -787,7 +787,7 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                 onPerformanceOpen?.();
                 setMobileMenuOpen(false);
               }}
-              style={{ borderRadius: '12px', marginBottom: 8 }}
+              sx={{ borderRadius: '12px', mb: 1 }}
             >
               <ListItemIcon><TimelineIcon /></ListItemIcon>
               <ListItemText primary="Performance" />
