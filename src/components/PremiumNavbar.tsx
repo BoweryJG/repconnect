@@ -454,7 +454,7 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
               gap: 1,
               flex: 1,
               justifyContent: 'center',
-            }}>
+            } as any}>
               {[
                 { icon: <ContactsIcon />, label: 'Contacts', color: currentTheme.shift, onClick: () => window.scrollTo({ top: 0, behavior: 'smooth' }) },
                 { icon: <SyncIcon />, label: 'AI Sync', color: currentTheme.impossible, onClick: onSyncDashboardOpen },
