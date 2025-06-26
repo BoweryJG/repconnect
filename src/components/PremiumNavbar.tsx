@@ -7,9 +7,17 @@ import {
   IconButton,
   Box,
   useTheme,
-  alpha
+  alpha,
+  Drawer,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Divider,
+  Switch,
+  ListItemButton
 } from '@mui/material';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import DialpadIcon from '@mui/icons-material/Dialpad';
 import SyncIcon from '@mui/icons-material/Sync';
 import BarChartIcon from '@mui/icons-material/BarChart';
@@ -17,7 +25,10 @@ import ContactsIcon from '@mui/icons-material/Contacts';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import SettingsIcon from '@mui/icons-material/Settings';
 import TimelineIcon from '@mui/icons-material/Timeline';
+import MenuIcon from '@mui/icons-material/Menu';
+import CloseIcon from '@mui/icons-material/Close';
 import { keyframes } from '@mui/material';
+import { useResponsive } from '../hooks/useResponsive';
 
 // Animations
 const screwWiggle = keyframes`
@@ -62,8 +73,10 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
   onPerformanceOpen
 }) => {
   const theme = useTheme();
+  const { isMobile } = useResponsive();
   const [scrolled, setScrolled] = useState(false);
   const [scrollOffset, setScrollOffset] = useState(0);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [currentTheme, setCurrentTheme] = useState({
     impossible: '255, 0, 255',
     shift: '0, 255, 255',
@@ -102,7 +115,7 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
         left: 0,
         right: 0,
         zIndex: 1200,
-        paddingTop: 24,
+        paddingTop: isMobile ? 12 : 24,
       }}
     >
       <AppBar
@@ -112,9 +125,9 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
           position: 'relative',
           left: '50%',
           transform: scrolled ? 'translateX(-50%) scale(0.98) translateZ(30px)' : 'translateX(-50%)',
-          width: '96vw',
+          width: isMobile ? '94vw' : '96vw',
           maxWidth: 1400,
-          height: 60,
+          height: isMobile ? 56 : 60,
           backdropFilter: 'blur(20px) saturate(180%)',
           WebkitBackdropFilter: 'blur(20px) saturate(180%)',
           background: `linear-gradient(to right,
@@ -339,7 +352,7 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
           height: '100%',
           maxWidth: 1200,
           margin: '0 auto',
-          px: 3,
+          px: isMobile ? 2 : 3,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
@@ -366,8 +379,8 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
           >
             <div
               style={{
-                width: 36,
-                height: 36,
+                width: isMobile ? 30 : 36,
+                height: isMobile ? 30 : 36,
                 position: 'relative',
               }}
             >
@@ -406,7 +419,7 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                 sx={{ 
                   fontFamily: 'Orbitron, monospace',
                   fontWeight: 800,
-                  fontSize: '1.25rem',
+                  fontSize: isMobile ? '1rem' : '1.25rem',
                   lineHeight: 1,
                   letterSpacing: '-0.5px',
                   background: 'linear-gradient(135deg, #9f58fa, #4B96DC)',
@@ -434,83 +447,85 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
             </div>
           </Box>
 
-          {/* Center Navigation */}
-          <div style={{ 
-            display: 'flex', 
-            gap: 8,
-            flex: 1,
-            justifyContent: 'center',
-          }}>
-            {[
-              { icon: <ContactsIcon />, label: 'Contacts', color: currentTheme.shift, onClick: () => window.scrollTo({ top: 0, behavior: 'smooth' }) },
-              { icon: <SyncIcon />, label: 'AI Sync', color: currentTheme.impossible, onClick: onSyncDashboardOpen },
-              { icon: <BarChartIcon />, label: 'Analytics', color: currentTheme.deep, onClick: onMissionControlOpen },
-            ].map((item, idx) => (
-              <Button
-                key={idx}
-                startIcon={item.icon}
-                onClick={item.onClick}
-                sx={{
-                  position: 'relative',
-                  px: 2,
-                  py: 1,
-                  borderRadius: '10px',
-                  color: 'text.secondary',
-                  fontSize: '13px',
-                  fontWeight: 500,
-                  background: alpha('#ffffff', 0.02),
-                  border: '1px solid transparent',
-                  overflow: 'hidden',
-                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                  '&::before': {
-                    content: '""',
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    background: `linear-gradient(135deg, 
-                      transparent 0%,
-                      rgba(${item.color}, 0.1) 50%,
-                      transparent 100%
-                    )`,
-                    transform: 'translateX(-100%)',
-                    transition: 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
-                  },
-                  '&:hover': {
-                    color: 'text.primary',
-                    background: alpha('#ffffff', 0.05),
-                    borderColor: `rgba(${item.color}, 0.3)`,
-                    transform: 'translateY(-1px)',
-                    boxShadow: `
-                      0 4px 20px rgba(${item.color}, 0.2),
-                      0 0 0 1px rgba(${item.color}, 0.1) inset`,
+          {/* Center Navigation - Desktop Only */}
+          {!isMobile && (
+            <div style={{ 
+              display: 'flex', 
+              gap: 8,
+              flex: 1,
+              justifyContent: 'center',
+            }}>
+              {[
+                { icon: <ContactsIcon />, label: 'Contacts', color: currentTheme.shift, onClick: () => window.scrollTo({ top: 0, behavior: 'smooth' }) },
+                { icon: <SyncIcon />, label: 'AI Sync', color: currentTheme.impossible, onClick: onSyncDashboardOpen },
+                { icon: <BarChartIcon />, label: 'Analytics', color: currentTheme.deep, onClick: onMissionControlOpen },
+              ].map((item, idx) => (
+                <Button
+                  key={idx}
+                  startIcon={item.icon}
+                  onClick={item.onClick}
+                  sx={{
+                    position: 'relative',
+                    px: 2,
+                    py: 1,
+                    borderRadius: '10px',
+                    color: 'text.secondary',
+                    fontSize: '13px',
+                    fontWeight: 500,
+                    background: alpha('#ffffff', 0.02),
+                    border: '1px solid transparent',
+                    overflow: 'hidden',
+                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                     '&::before': {
-                      transform: 'translateX(100%)',
+                      content: '""',
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      background: `linear-gradient(135deg, 
+                        transparent 0%,
+                        rgba(${item.color}, 0.1) 50%,
+                        transparent 100%
+                      )`,
+                      transform: 'translateX(-100%)',
+                      transition: 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
                     },
-                  },
-                }}
-              >
-                {item.label}
-              </Button>
-            ))}
-          </div>
+                    '&:hover': {
+                      color: 'text.primary',
+                      background: alpha('#ffffff', 0.05),
+                      borderColor: `rgba(${item.color}, 0.3)`,
+                      transform: 'translateY(-1px)',
+                      boxShadow: `
+                        0 4px 20px rgba(${item.color}, 0.2),
+                        0 0 0 1px rgba(${item.color}, 0.1) inset`,
+                      '&::before': {
+                        transform: 'translateX(100%)',
+                      },
+                    },
+                  }}
+                >
+                  {item.label}
+                </Button>
+              ))}
+            </div>
+          )}
 
           {/* Right Actions */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? 8 : 12 }}>
             {/* Quantum Dialer Button */}
             <Button
-              startIcon={<DialpadIcon />}
+              startIcon={!isMobile && <DialpadIcon />}
               onClick={onDialerOpen}
               sx={{
                 position: 'relative',
-                px: 3,
-                py: 1.25,
+                px: isMobile ? 2 : 3,
+                py: isMobile ? 1 : 1.25,
                 borderRadius: '12px',
                 background: `linear-gradient(135deg, ${theme.palette.primary.main}, rgb(${currentTheme.shift}))`,
                 color: 'white',
                 fontWeight: 600,
-                fontSize: '14px',
+                fontSize: isMobile ? '13px' : '14px',
                 overflow: 'hidden',
                 transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                 boxShadow: `
@@ -562,96 +577,233 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                 },
               }}
             >
-              Dialer
+              {isMobile ? <DialpadIcon /> : 'Dialer'}
             </Button>
 
-            {/* AI Toggle */}
-            <Button
-              onClick={onAIToggle}
-              sx={{
-                px: 2,
-                py: 1,
-                borderRadius: '10px',
-                background: aiEnabled 
-                  ? `linear-gradient(135deg, rgba(${currentTheme.impossible}, 0.2), rgba(${currentTheme.shift}, 0.2))`
-                  : alpha('#ffffff', 0.05),
-                border: `1px solid ${aiEnabled ? `rgba(${currentTheme.shift}, 0.3)` : alpha('#ffffff', 0.1)}`,
-                color: aiEnabled ? theme.palette.primary.light : 'text.secondary',
-                fontSize: '13px',
-                fontWeight: 500,
-                transition: 'all 0.3s ease',
-                '&:hover': {
-                  background: aiEnabled
-                    ? `linear-gradient(135deg, rgba(${currentTheme.impossible}, 0.3), rgba(${currentTheme.shift}, 0.3))`
-                    : alpha('#ffffff', 0.08),
-                  transform: 'translateY(-1px)',
-                },
-              }}
-            >
-              AI {aiEnabled ? 'ON' : 'OFF'}
-            </Button>
+            {/* Desktop Actions */}
+            {!isMobile && (
+              <>
+                {/* AI Toggle */}
+                <Button
+                  onClick={onAIToggle}
+                  sx={{
+                    px: 2,
+                    py: 1,
+                    borderRadius: '10px',
+                    background: aiEnabled 
+                      ? `linear-gradient(135deg, rgba(${currentTheme.impossible}, 0.2), rgba(${currentTheme.shift}, 0.2))`
+                      : alpha('#ffffff', 0.05),
+                    border: `1px solid ${aiEnabled ? `rgba(${currentTheme.shift}, 0.3)` : alpha('#ffffff', 0.1)}`,
+                    color: aiEnabled ? theme.palette.primary.light : 'text.secondary',
+                    fontSize: '13px',
+                    fontWeight: 500,
+                    transition: 'all 0.3s ease',
+                    '&:hover': {
+                      background: aiEnabled
+                        ? `linear-gradient(135deg, rgba(${currentTheme.impossible}, 0.3), rgba(${currentTheme.shift}, 0.3))`
+                        : alpha('#ffffff', 0.08),
+                      transform: 'translateY(-1px)',
+                    },
+                  }}
+                >
+                  AI {aiEnabled ? 'ON' : 'OFF'}
+                </Button>
 
-            {/* Settings Button */}
-            <IconButton
-              onClick={onAISettingsOpen}
-              sx={{
-                width: 36,
-                height: 36,
-                borderRadius: '10px',
-                background: alpha('#ffffff', 0.05),
-                border: `1px solid ${alpha('#ffffff', 0.1)}`,
-                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                '&:hover': {
-                  background: alpha('#ffffff', 0.08),
-                  borderColor: `rgba(${currentTheme.impossible}, 0.3)`,
-                  transform: 'translateY(-1px)',
-                },
-              }}
-            >
-              <SettingsIcon sx={{ fontSize: 20 }} />
-            </IconButton>
+                {/* Settings Button */}
+                <IconButton
+                  onClick={onAISettingsOpen}
+                  sx={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: '10px',
+                    background: alpha('#ffffff', 0.05),
+                    border: `1px solid ${alpha('#ffffff', 0.1)}`,
+                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                    '&:hover': {
+                      background: alpha('#ffffff', 0.08),
+                      borderColor: `rgba(${currentTheme.impossible}, 0.3)`,
+                      transform: 'translateY(-1px)',
+                    },
+                  }}
+                >
+                  <SettingsIcon sx={{ fontSize: 20 }} />
+                </IconButton>
 
-            {/* Performance Button */}
-            <IconButton
-              onClick={onPerformanceOpen}
-              sx={{
-                width: 36,
-                height: 36,
-                borderRadius: '10px',
-                background: alpha('#ffffff', 0.05),
-                border: `1px solid ${alpha('#ffffff', 0.1)}`,
-                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                '&:hover': {
-                  background: alpha('#ffffff', 0.08),
-                  borderColor: `rgba(${currentTheme.shift}, 0.3)`,
-                  transform: 'translateY(-1px)',
-                },
-              }}
-            >
-              <TimelineIcon sx={{ fontSize: 20 }} />
-            </IconButton>
+                {/* Performance Button */}
+                <IconButton
+                  onClick={onPerformanceOpen}
+                  sx={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: '10px',
+                    background: alpha('#ffffff', 0.05),
+                    border: `1px solid ${alpha('#ffffff', 0.1)}`,
+                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                    '&:hover': {
+                      background: alpha('#ffffff', 0.08),
+                      borderColor: `rgba(${currentTheme.shift}, 0.3)`,
+                      transform: 'translateY(-1px)',
+                    },
+                  }}
+                >
+                  <TimelineIcon sx={{ fontSize: 20 }} />
+                </IconButton>
 
-            {/* More Menu */}
-            <IconButton
-              sx={{
-                width: 36,
-                height: 36,
-                borderRadius: '10px',
-                background: alpha('#ffffff', 0.05),
-                border: `1px solid ${alpha('#ffffff', 0.1)}`,
-                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                '&:hover': {
-                  background: alpha('#ffffff', 0.08),
-                  borderColor: `rgba(${currentTheme.impossible}, 0.3)`,
-                  transform: 'translateY(-1px)',
-                },
-              }}
-            >
-              <MoreHorizIcon sx={{ fontSize: 20 }} />
-            </IconButton>
+                {/* More Menu */}
+                <IconButton
+                  sx={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: '10px',
+                    background: alpha('#ffffff', 0.05),
+                    border: `1px solid ${alpha('#ffffff', 0.1)}`,
+                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                    '&:hover': {
+                      background: alpha('#ffffff', 0.08),
+                      borderColor: `rgba(${currentTheme.impossible}, 0.3)`,
+                      transform: 'translateY(-1px)',
+                    },
+                  }}
+                >
+                  <MoreHorizIcon sx={{ fontSize: 20 }} />
+                </IconButton>
+              </>
+            )}
+
+            {/* Mobile Menu Button */}
+            {isMobile && (
+              <IconButton
+                onClick={() => setMobileMenuOpen(true)}
+                sx={{
+                  width: 36,
+                  height: 36,
+                  borderRadius: '10px',
+                  background: alpha('#ffffff', 0.05),
+                  border: `1px solid ${alpha('#ffffff', 0.1)}`,
+                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                  '&:hover': {
+                    background: alpha('#ffffff', 0.08),
+                    borderColor: `rgba(${currentTheme.impossible}, 0.3)`,
+                    transform: 'translateY(-1px)',
+                  },
+                }}
+              >
+                <MenuIcon sx={{ fontSize: 20 }} />
+              </IconButton>
+            )}
           </div>
         </Toolbar>
       </AppBar>
+
+      {/* Mobile Drawer Menu */}
+      <Drawer
+        anchor="right"
+        open={mobileMenuOpen}
+        onClose={() => setMobileMenuOpen(false)}
+        sx={{
+          '& .MuiDrawer-paper': {
+            width: 280,
+            background: '#0a0a0a',
+            borderLeft: '1px solid rgba(255, 255, 255, 0.1)',
+          },
+        }}
+      >
+        <Box sx={{ p: 2 }}>
+          {/* Header */}
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+            <Typography variant="h6" sx={{ fontWeight: 600 }}>
+              Menu
+            </Typography>
+            <IconButton 
+              onClick={() => setMobileMenuOpen(false)}
+              sx={{ 
+                color: 'text.secondary',
+                '&:hover': { color: 'text.primary' }
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+          </Box>
+
+          {/* Menu Items */}
+          <List>
+            <ListItemButton 
+              onClick={() => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                setMobileMenuOpen(false);
+              }}
+              sx={{ borderRadius: '12px', mb: 1 }}
+            >
+              <ListItemIcon><ContactsIcon /></ListItemIcon>
+              <ListItemText primary="Contacts" />
+            </ListItemButton>
+
+            <ListItemButton 
+              onClick={() => {
+                onSyncDashboardOpen?.();
+                setMobileMenuOpen(false);
+              }}
+              sx={{ borderRadius: '12px', mb: 1 }}
+            >
+              <ListItemIcon><SyncIcon /></ListItemIcon>
+              <ListItemText primary="AI Sync" />
+            </ListItemButton>
+
+            <ListItemButton 
+              onClick={() => {
+                onMissionControlOpen?.();
+                setMobileMenuOpen(false);
+              }}
+              sx={{ borderRadius: '12px', mb: 1 }}
+            >
+              <ListItemIcon><BarChartIcon /></ListItemIcon>
+              <ListItemText primary="Analytics" />
+            </ListItemButton>
+
+            <Divider sx={{ my: 2 }} />
+
+            {/* AI Toggle */}
+            <ListItem sx={{ borderRadius: '12px', mb: 1 }}>
+              <ListItemText primary="AI Assistant" />
+              <Switch
+                edge="end"
+                checked={aiEnabled}
+                onChange={onAIToggle}
+                sx={{
+                  '& .MuiSwitch-switchBase.Mui-checked': {
+                    color: theme.palette.primary.main,
+                  },
+                  '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+                    backgroundColor: theme.palette.primary.main,
+                  },
+                }}
+              />
+            </ListItem>
+
+            <ListItemButton 
+              onClick={() => {
+                onAISettingsOpen?.();
+                setMobileMenuOpen(false);
+              }}
+              sx={{ borderRadius: '12px', mb: 1 }}
+            >
+              <ListItemIcon><SettingsIcon /></ListItemIcon>
+              <ListItemText primary="AI Settings" />
+            </ListItemButton>
+
+            <ListItemButton 
+              onClick={() => {
+                onPerformanceOpen?.();
+                setMobileMenuOpen(false);
+              }}
+              sx={{ borderRadius: '12px', mb: 1 }}
+            >
+              <ListItemIcon><TimelineIcon /></ListItemIcon>
+              <ListItemText primary="Performance" />
+            </ListItemButton>
+          </List>
+        </Box>
+      </Drawer>
     </div>
   );
 };

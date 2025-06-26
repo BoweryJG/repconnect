@@ -293,7 +293,7 @@ function App() {
             onPerformanceOpen={() => setShowPerformance(true)}
           />
           
-          <Container maxWidth="xl" sx={{ mt: { xs: 8, sm: 12 }, pb: { xs: 4, sm: 8 }, px: { xs: 1, sm: 3 } }}>
+          <Container maxWidth="xl" sx={{ mt: { xs: 10, sm: 12 }, pb: { xs: 4, sm: 8 }, px: { xs: 1, sm: 3 } }}>
             {/* Add Contact Section */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
