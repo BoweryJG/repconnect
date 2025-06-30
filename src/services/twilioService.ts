@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const USE_PROXY = true;
+const USE_PROXY = false;
 const PROXY_URL = '/.netlify/functions/twilio-proxy';
 
 export const twilioService = {
