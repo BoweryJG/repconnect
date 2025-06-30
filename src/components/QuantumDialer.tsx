@@ -197,7 +197,7 @@ export const QuantumDialer: React.FC<QuantumDialerProps> = ({ isOpen, onClose, o
   ];
 
   return (
-    <Portal>
+    <Portal disableScrollLock>
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -256,7 +256,7 @@ export const QuantumDialer: React.FC<QuantumDialerProps> = ({ isOpen, onClose, o
                   backdropFilter: 'blur(20px)',
                   border: '2px solid rgba(0, 255, 255, 0.3)',
                   borderRadius: '32px',
-                  overflow: 'hidden',
+                  overflow: 'auto',
                   display: 'flex',
                   flexDirection: 'column',
                   animation: `${hologramPulse} 2s ease-in-out infinite`,
