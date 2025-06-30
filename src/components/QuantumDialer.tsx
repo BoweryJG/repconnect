@@ -64,6 +64,16 @@ export const QuantumDialer: React.FC<QuantumDialerProps> = ({ isOpen, onClose, o
     }
   }, [isOpen, isMobile, windowDimensions]);
 
+  // Lock body scroll when dialer is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = '';
+      };
+    }
+  }, [isOpen]);
+
   // Holographic effect canvas
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -216,6 +226,8 @@ export const QuantumDialer: React.FC<QuantumDialerProps> = ({ isOpen, onClose, o
               zIndex: 2000,
               background: 'rgba(0, 0, 0, 0.85)',
               backdropFilter: 'blur(10px)',
+              overflowY: 'auto',
+              padding: '20px 0',
             }}
             onClick={onClose}
           >
@@ -256,7 +268,7 @@ export const QuantumDialer: React.FC<QuantumDialerProps> = ({ isOpen, onClose, o
                   backdropFilter: 'blur(20px)',
                   border: '2px solid rgba(0, 255, 255, 0.3)',
                   borderRadius: '32px',
-                  overflow: 'auto',
+                  overflow: 'hidden',
                   display: 'flex',
                   flexDirection: 'column',
                   animation: `${hologramPulse} 2s ease-in-out infinite`,
