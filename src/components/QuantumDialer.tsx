@@ -197,7 +197,7 @@ export const QuantumDialer: React.FC<QuantumDialerProps> = ({ isOpen, onClose, o
   ];
 
   return (
-    <Portal disableScrollLock>
+    <Portal>
       <AnimatePresence>
         {isOpen && (
           <motion.div
