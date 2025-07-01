@@ -19,7 +19,7 @@ import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 // Removed glassmorphism imports - using inline styles for TypeScript compatibility
 import { useStore } from '../store/useStore';
 import { transcriptionService } from '../services/transcriptionService';
-import { supabase } from '../lib/supabase';
+// import { supabase } from '../lib/supabase';
 
 interface CallInterfaceProps {
   contact: {
