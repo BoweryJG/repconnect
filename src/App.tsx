@@ -30,7 +30,7 @@ import { SyncDashboard } from './components/SyncDashboard';
 import { AISettings } from './components/AISettings';
 import { PerformanceHistory } from './components/PerformanceHistory';
 import { useResponsive } from './hooks/useResponsive';
-import { CallHistoryDashboard } from './components/CallHistoryDashboard';
+// import { CallHistoryDashboard } from './components/CallHistoryDashboard';
 
 function App() {
   const { isMobile } = useResponsive();
@@ -843,11 +843,11 @@ function App() {
           onClose={() => setShowPerformance(false)}
         />
 
-        {/* Call History Dashboard */}
-        <CallHistoryDashboard
+        {/* Call History Dashboard - temporarily disabled for build */}
+        {/* <CallHistoryDashboard
           open={showCallHistory}
           onClose={() => setShowCallHistory(false)}
-        />
+        /> */}
 
         {/* Sync Dashboard Modal */}
         <AnimatePresence>

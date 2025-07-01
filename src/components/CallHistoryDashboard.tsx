@@ -244,8 +244,8 @@ export const CallHistoryDashboard: React.FC<CallHistoryDashboardProps> = ({ open
         }}
       >
         {/* Header */}
-        <Box
-          sx={{
+        <div
+          style={{
             position: 'sticky',
             top: 0,
             zIndex: 10,
