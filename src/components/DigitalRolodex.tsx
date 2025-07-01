@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef, useMemo } from 'react';
+import React, { useState, useCallback, useRef, useMemo, useEffect } from 'react';
 import { FixedSizeList as List } from 'react-window';
 import {
   TextField,
@@ -14,6 +14,8 @@ import PhoneIcon from '@mui/icons-material/Phone';
 import MessageIcon from '@mui/icons-material/Message';
 import StarIcon from '@mui/icons-material/Star';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
+import VolumeUpIcon from '@mui/icons-material/VolumeUp';
+import VolumeOffIcon from '@mui/icons-material/VolumeOff';
 
 interface Contact {
   id: string;
@@ -45,7 +47,10 @@ export const DigitalRolodex: React.FC<DigitalRolodexProps> = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedLetter, setSelectedLetter] = useState<string | null>(null);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [currentScrollIndex, setCurrentScrollIndex] = useState<number>(0);
+  const [voiceEnabled, setVoiceEnabled] = useState(true);
   const listRef = useRef<List>(null);
+  const speechRef = useRef<SpeechSynthesisUtterance | null>(null);
 
   // Sort and filter contacts
   const processedContacts = useMemo(() => {
@@ -83,15 +88,57 @@ export const DigitalRolodex: React.FC<DigitalRolodexProps> = ({
     return indices;
   }, [processedContacts]);
 
+  // Initialize speech synthesis
+  useEffect(() => {
+    if ('speechSynthesis' in window) {
+      speechRef.current = new SpeechSynthesisUtterance();
+      speechRef.current.rate = 1.2; // Slightly faster speech
+      speechRef.current.pitch = 1;
+      speechRef.current.volume = 0.8;
+    }
+  }, []);
+
+  // Voice announcement function
+  const announceContact = useCallback((contact: Contact) => {
+    if (!voiceEnabled || !speechRef.current) return;
+    
+    // Cancel any ongoing speech
+    window.speechSynthesis.cancel();
+    
+    // Announce contact name
+    speechRef.current.text = contact.name;
+    window.speechSynthesis.speak(speechRef.current);
+  }, [voiceEnabled]);
+
+  // Handle scroll events
+  const handleScroll = useCallback((scrollInfo: { scrollOffset: number }) => {
+    const newIndex = Math.floor(scrollInfo.scrollOffset / ITEM_HEIGHT);
+    
+    if (newIndex !== currentScrollIndex && processedContacts[newIndex]) {
+      setCurrentScrollIndex(newIndex);
+      announceContact(processedContacts[newIndex]);
+    }
+  }, [currentScrollIndex, processedContacts, announceContact]);
+
   // Jump to letter
   const jumpToLetter = useCallback((letter: string) => {
     const index = letterIndices[letter];
     if (index !== undefined && listRef.current) {
       listRef.current.scrollToItem(index, 'start');
       setSelectedLetter(letter);
+      
+      // Announce the letter and first contact
+      if (voiceEnabled && processedContacts[index]) {
+        window.speechSynthesis.cancel();
+        if (speechRef.current) {
+          speechRef.current.text = `${letter}. ${processedContacts[index].name}`;
+          window.speechSynthesis.speak(speechRef.current);
+        }
+      }
+      
       setTimeout(() => setSelectedLetter(null), 1000);
     }
-  }, [letterIndices]);
+  }, [letterIndices, voiceEnabled, processedContacts]);
 
   // Row renderer
   const Row = ({ index, style }: { index: number; style: React.CSSProperties }) => {
@@ -235,27 +282,42 @@ export const DigitalRolodex: React.FC<DigitalRolodexProps> = ({
       >
         {/* Search Header */}
         <div style={{ padding: '24px', borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>
-          <TextField
-            fullWidth
-            placeholder="Search contacts..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon sx={{ color: 'rgba(255, 255, 255, 0.5)' }} />
-                </InputAdornment>
-              ),
-              sx: {
-                backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                borderRadius: 2,
-                fontSize: '1.1rem',
-                '& input': {
-                  padding: '12px 8px',
+          <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+            <TextField
+              fullWidth
+              placeholder="Search contacts..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon sx={{ color: 'rgba(255, 255, 255, 0.5)' }} />
+                  </InputAdornment>
+                ),
+                sx: {
+                  backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                  borderRadius: 2,
+                  fontSize: '1.1rem',
+                  '& input': {
+                    padding: '12px 8px',
+                  },
                 },
-              },
-            }}
-          />
+              }}
+            />
+            <IconButton
+              onClick={() => setVoiceEnabled(!voiceEnabled)}
+              sx={{
+                color: voiceEnabled ? 'primary.main' : 'rgba(255, 255, 255, 0.3)',
+                backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                '&:hover': {
+                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                },
+              }}
+              title={voiceEnabled ? 'Disable voice announcements' : 'Enable voice announcements'}
+            >
+              {voiceEnabled ? <VolumeUpIcon /> : <VolumeOffIcon />}
+            </IconButton>
+          </div>
           <Typography
             variant="body2"
             sx={{
@@ -265,6 +327,7 @@ export const DigitalRolodex: React.FC<DigitalRolodexProps> = ({
             }}
           >
             {processedContacts.length} of {contacts.length} contacts
+            {voiceEnabled && ' • Voice enabled'}
           </Typography>
         </div>
 
@@ -276,6 +339,7 @@ export const DigitalRolodex: React.FC<DigitalRolodexProps> = ({
             itemCount={processedContacts.length}
             itemSize={ITEM_HEIGHT}
             width="100%"
+            onScroll={handleScroll}
           >
             {Row}
           </List>

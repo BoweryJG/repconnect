@@ -68,10 +68,14 @@ export const QuantumDialer: React.FC<QuantumDialerProps> = ({ isOpen, onClose, o
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
-      return () => {
-        document.body.style.overflow = '';
-      };
+    } else {
+      document.body.style.overflow = '';
     }
+    
+    // Cleanup on unmount
+    return () => {
+      document.body.style.overflow = '';
+    };
   }, [isOpen]);
 
   // Holographic effect canvas
