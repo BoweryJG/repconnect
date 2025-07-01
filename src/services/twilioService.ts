@@ -1,11 +1,11 @@
 import axios from 'axios';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:3001';
 const USE_PROXY = false;
 const PROXY_URL = '/.netlify/functions/twilio-proxy';
 
 export const twilioService = {
-  async makeCall(to: string, from?: string) {
+  async makeCall(to: string, from?: string, message?: string, options?: any) {
     try {
       const url = USE_PROXY
         ? `${PROXY_URL}/api/twilio/make-call`
@@ -16,6 +16,7 @@ export const twilioService = {
       console.log('🔍 [DIALER DEBUG] Making call with config:', {
         to,
         from: fromNumber,
+        message,
         url,
         useProxy: USE_PROXY,
         backendUrl: BACKEND_URL,
@@ -24,7 +25,9 @@ export const twilioService = {
         
       const response = await axios.post(url, {
         to,
-        from: fromNumber,
+        message: message || "Hello! This is a call from RepConnect.",
+        record: true,
+        metadata: options?.metadata || {}
       });
       
       console.log('✅ [DIALER DEBUG] Call request successful:', response.data);
