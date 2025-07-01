@@ -30,6 +30,7 @@ import { SyncDashboard } from './components/SyncDashboard';
 import { AISettings } from './components/AISettings';
 import { PerformanceHistory } from './components/PerformanceHistory';
 import { useResponsive } from './hooks/useResponsive';
+import { CallHistoryDashboard } from './components/CallHistoryDashboard';
 
 function App() {
   const { isMobile } = useResponsive();
@@ -38,6 +39,7 @@ function App() {
   const [showSyncDashboard, setShowSyncDashboard] = useState(false);
   const [showAISettings, setShowAISettings] = useState(false);
   const [showPerformance, setShowPerformance] = useState(false);
+  const [showCallHistory, setShowCallHistory] = useState(false);
   const [newContactName, setNewContactName] = useState('');
   const [newContactPhone, setNewContactPhone] = useState('');
   const [viewMode, setViewMode] = useState<'rolodex' | 'grid'>('rolodex');
@@ -195,9 +197,22 @@ function App() {
 
     try {
       console.log('🔍 [APP DEBUG] Calling twilioService.makeCall...');
-      const result = await twilioService.makeCall(formattedNumber);
+      const result = await twilioService.makeCall(
+        formattedNumber,
+        undefined,
+        undefined,
+        { enableStream: true } // Enable real-time transcription
+      );
       
       console.log('✅ [APP DEBUG] Call initiated successfully:', result);
+      
+      // Update activeCall with the call SID for transcription
+      if (result.call && result.call.sid) {
+        setActiveCall({
+          ...activeCall!,
+          callSid: result.call.sid
+        });
+      }
       
       // Log to Supabase
       await supabase.from('calls').insert({
@@ -205,6 +220,7 @@ function App() {
         type: 'outgoing',
         status: 'initiated',
         created_at: new Date().toISOString(),
+        call_sid: result.call?.sid
       });
       
       console.log('✅ [APP DEBUG] Call logged to database');
@@ -291,6 +307,7 @@ function App() {
             onMissionControlOpen={() => setShowMissionControl(true)}
             onAISettingsOpen={() => setShowAISettings(true)}
             onPerformanceOpen={() => setShowPerformance(true)}
+            onCallHistoryOpen={() => setShowCallHistory(true)}
           />
           
           <Container maxWidth="xl" sx={{ mt: { xs: 10, sm: 12 }, pb: { xs: 4, sm: 8 }, px: { xs: 1, sm: 3 } }}>
@@ -795,6 +812,7 @@ function App() {
                 phoneNumber: activeCall.phoneNumber,
                 avatar: contacts.find(c => c.id === activeCall.contactId)?.avatar,
               }}
+              callSid={activeCall.callSid}
               onEndCall={handleEndCall}
             />
           )}
@@ -823,6 +841,12 @@ function App() {
         <PerformanceHistory
           open={showPerformance}
           onClose={() => setShowPerformance(false)}
+        />
+
+        {/* Call History Dashboard */}
+        <CallHistoryDashboard
+          open={showCallHistory}
+          onClose={() => setShowCallHistory(false)}
         />
 
         {/* Sync Dashboard Modal */}

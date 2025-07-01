@@ -31,6 +31,7 @@ interface Call {
   transcript?: string;
   sentiment?: 'positive' | 'neutral' | 'negative';
   summary?: string;
+  callSid?: string;
 }
 
 interface AppState {

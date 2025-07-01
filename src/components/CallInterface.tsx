@@ -5,6 +5,8 @@ import {
   Avatar,
   Chip,
   Slide,
+  CircularProgress,
+  Alert,
 } from '@mui/material';
 import { motion } from 'framer-motion';
 import CallEndIcon from '@mui/icons-material/CallEnd';
@@ -13,8 +15,11 @@ import MicOffIcon from '@mui/icons-material/MicOff';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import VolumeOffIcon from '@mui/icons-material/VolumeOff';
 import RecordVoiceOverIcon from '@mui/icons-material/RecordVoiceOver';
+import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 // Removed glassmorphism imports - using inline styles for TypeScript compatibility
 import { useStore } from '../store/useStore';
+import { transcriptionService } from '../services/transcriptionService';
+import { supabase } from '../lib/supabase';
 
 interface CallInterfaceProps {
   contact: {
@@ -23,19 +28,23 @@ interface CallInterfaceProps {
     avatar?: string;
   };
   onEndCall: () => void;
+  callSid?: string;
 }
 
-export const CallInterface: React.FC<CallInterfaceProps> = ({ contact, onEndCall }) => {
+export const CallInterface: React.FC<CallInterfaceProps> = ({ contact, onEndCall, callSid }) => {
   const [duration, setDuration] = useState(0);
   const [isMuted, setIsMuted] = useState(false);
   const [speakerOn, setSpeakerOn] = useState(false);
   const [transcript, setTranscript] = useState('');
   const [sentiment, setSentiment] = useState<'positive' | 'neutral' | 'negative'>('neutral');
   const [isTranscribing, setIsTranscribing] = useState(false);
+  const [transcriptionError, setTranscriptionError] = useState<string | null>(null);
+  const [isConnecting, setIsConnecting] = useState(true);
+  const [fullTranscript, setFullTranscript] = useState<string[]>([]);
   const waveformRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<number | null>(null);
 
-  const { aiEnabled, transcriptionEnabled } = useStore();
+  const { aiEnabled, transcriptionEnabled, activeCall } = useStore();
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -87,29 +96,56 @@ export const CallInterface: React.FC<CallInterfaceProps> = ({ contact, onEndCall
   }, []);
 
   useEffect(() => {
-    // Simulate AI transcription
-    if (transcriptionEnabled && aiEnabled) {
+    // Start real-time transcription if enabled
+    if (transcriptionEnabled && aiEnabled && (callSid || activeCall?.callSid)) {
+      const currentCallSid = callSid || activeCall?.callSid;
+      if (!currentCallSid) return;
+
+      setIsConnecting(true);
       setIsTranscribing(true);
-      const messages = [
-        "Hello! Thanks for calling. How can I help you today?",
-        "I understand your concern. Let me look into that for you.",
-        "That's a great question. Based on our records...",
-        "I appreciate your patience. Here's what I can do for you...",
-      ];
-
-      let index = 0;
-      const interval = setInterval(() => {
-        if (index < messages.length) {
-          setTranscript(messages[index]);
-          // Simulate sentiment analysis
-          setSentiment(['positive', 'neutral', 'negative'][Math.floor(Math.random() * 3)] as any);
-          index++;
+      
+      // Start transcription service
+      transcriptionService.startTranscription(
+        currentCallSid,
+        // On transcription update
+        async (update) => {
+          setIsConnecting(false);
+          setTranscript(update.text);
+          
+          // Add to full transcript if it's a final transcription
+          if (update.isFinal) {
+            setFullTranscript(prev => [...prev, update.text]);
+          }
+          
+          // Update sentiment
+          if (update.sentiment) {
+            setSentiment(update.sentiment);
+          } else {
+            // Analyze sentiment locally if not provided
+            const sentimentResult = await transcriptionService.getSentimentAnalysis(update.text);
+            setSentiment(sentimentResult);
+          }
+        },
+        // On error
+        (error) => {
+          console.error('Transcription error:', error);
+          setTranscriptionError(error.message);
+          setIsTranscribing(false);
+          setIsConnecting(false);
+        },
+        // On complete
+        () => {
+          setIsTranscribing(false);
+          setIsConnecting(false);
         }
-      }, 5000);
+      );
 
-      return () => clearInterval(interval);
+      // Cleanup on unmount
+      return () => {
+        transcriptionService.stopTranscription(currentCallSid);
+      };
     }
-  }, [transcriptionEnabled, aiEnabled]);
+  }, [transcriptionEnabled, aiEnabled, callSid, activeCall]);
 
   const formatDuration = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -195,7 +231,7 @@ export const CallInterface: React.FC<CallInterfaceProps> = ({ contact, onEndCall
               opacity: 0.8,
             }}
           />
-          {isTranscribing && (
+          {aiEnabled && transcriptionEnabled && (
             <div
               style={{
                 position: 'absolute',
@@ -206,25 +242,59 @@ export const CallInterface: React.FC<CallInterfaceProps> = ({ contact, onEndCall
                 gap: '8px',
               }}
             >
-              <RecordVoiceOverIcon sx={{ color: 'primary.light', fontSize: 16 }} />
+              {isConnecting ? (
+                <CircularProgress size={16} sx={{ color: 'primary.light' }} />
+              ) : isTranscribing ? (
+                <FiberManualRecordIcon 
+                  sx={{ 
+                    color: '#EF4444', 
+                    fontSize: 16,
+                    animation: 'pulse 1.5s ease-in-out infinite',
+                    '@keyframes pulse': {
+                      '0%': { opacity: 1 },
+                      '50%': { opacity: 0.3 },
+                      '100%': { opacity: 1 },
+                    }
+                  }} 
+                />
+              ) : (
+                <RecordVoiceOverIcon sx={{ color: 'primary.light', fontSize: 16 }} />
+              )}
               <Typography variant="caption" color="primary.light">
-                AI Listening
+                {isConnecting ? 'Connecting...' : isTranscribing ? 'AI Transcribing' : 'AI Ready'}
               </Typography>
             </div>
           )}
         </div>
 
+        {/* Error Alert */}
+        {transcriptionError && (
+          <Alert 
+            severity="error" 
+            onClose={() => setTranscriptionError(null)}
+            sx={{ 
+              marginBottom: '16px',
+              background: 'rgba(239, 68, 68, 0.1)',
+              color: 'white',
+              '& .MuiAlert-icon': { color: '#EF4444' }
+            }}
+          >
+            {transcriptionError}
+          </Alert>
+        )}
+
         {/* AI Transcript */}
-        {transcriptionEnabled && transcript && (
-          <Slide direction="up" in={!!transcript}>
+        {transcriptionEnabled && (transcript || fullTranscript.length > 0) && (
+          <Slide direction="up" in={!!(transcript || fullTranscript.length > 0)}>
             <div
               style={{
                 padding: '16px',
                 borderRadius: '12px',
                 marginBottom: '24px',
                 minHeight: '80px',
+                maxHeight: '200px',
+                overflowY: 'auto',
                 position: 'relative',
-                overflow: 'hidden',
                 background: `${sentimentColors[sentiment]}22`,
                 backdropFilter: 'blur(20px) saturate(200%)',
                 WebkitBackdropFilter: 'blur(20px) saturate(200%)',
@@ -234,9 +304,28 @@ export const CallInterface: React.FC<CallInterfaceProps> = ({ contact, onEndCall
               <Typography variant="caption" color="text.secondary" gutterBottom>
                 Real-time Transcript
               </Typography>
-              <Typography variant="body2" color="white">
-                {transcript}
-              </Typography>
+              
+              {/* Show full transcript history */}
+              {fullTranscript.map((text, index) => (
+                <Typography key={index} variant="body2" color="white" paragraph>
+                  {text}
+                </Typography>
+              ))}
+              
+              {/* Show current transcript being spoken */}
+              {transcript && (
+                <Typography 
+                  variant="body2" 
+                  color="white" 
+                  sx={{ 
+                    fontStyle: 'italic',
+                    opacity: 0.8 
+                  }}
+                >
+                  {transcript}
+                </Typography>
+              )}
+              
               <Chip
                 label={sentiment}
                 size="small"

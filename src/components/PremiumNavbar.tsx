@@ -27,6 +27,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import TimelineIcon from '@mui/icons-material/Timeline';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
+import HistoryIcon from '@mui/icons-material/History';
 import { keyframes } from '@mui/material';
 import { useResponsive } from '../hooks/useResponsive';
 
@@ -61,6 +62,7 @@ interface PremiumNavbarProps {
   onMissionControlOpen?: () => void;
   onAISettingsOpen?: () => void;
   onPerformanceOpen?: () => void;
+  onCallHistoryOpen?: () => void;
 }
 
 export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({ 
@@ -70,7 +72,8 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
   onSyncDashboardOpen,
   onMissionControlOpen,
   onAISettingsOpen,
-  onPerformanceOpen
+  onPerformanceOpen,
+  onCallHistoryOpen
 }) => {
   const theme = useTheme();
   const { isMobile } = useResponsive();
@@ -459,6 +462,7 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                 { icon: <ContactsIcon />, label: 'Contacts', color: currentTheme.shift, onClick: () => window.scrollTo({ top: 0, behavior: 'smooth' }) },
                 { icon: <SyncIcon />, label: 'AI Sync', color: currentTheme.impossible, onClick: onSyncDashboardOpen },
                 { icon: <BarChartIcon />, label: 'Analytics', color: currentTheme.deep, onClick: onMissionControlOpen },
+                { icon: <HistoryIcon />, label: 'Call History', color: currentTheme.impossible, onClick: onCallHistoryOpen },
               ].map((item, idx) => (
                 <Button
                   key={idx}
@@ -757,6 +761,17 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
             >
               <ListItemIcon><BarChartIcon /></ListItemIcon>
               <ListItemText primary="Analytics" />
+            </ListItemButton>
+
+            <ListItemButton 
+              onClick={() => {
+                onCallHistoryOpen?.();
+                setMobileMenuOpen(false);
+              }}
+              sx={{ borderRadius: '12px', mb: 1 }}
+            >
+              <ListItemIcon><HistoryIcon /></ListItemIcon>
+              <ListItemText primary="Call History" />
             </ListItemButton>
 
             <Divider sx={{ m: 2 }} />

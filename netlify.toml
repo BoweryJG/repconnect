@@ -6,5 +6,15 @@
   to = "/.netlify/functions/twilio-proxy/:splat"
   status = 200
 
+[[redirects]]
+  from = "/api/calls/*/summary"
+  to = "/.netlify/functions/call-summary"
+  status = 200
+
+[[redirects]]
+  from = "/api/calls/*/summary/regenerate"
+  to = "/.netlify/functions/call-summary"
+  status = 200
+
 [functions]
   node_bundler = "esbuild"
