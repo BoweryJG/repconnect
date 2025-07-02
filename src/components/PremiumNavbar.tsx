@@ -221,18 +221,21 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
 
         {/* Corner Accent Screws */}
         {[
-          { top: 16, left: 20, angle: '10deg', delay: 0 },
-          { top: 16, right: 20, angle: '22deg', delay: 1.2 },
+          { top: 8, left: 8, angle: '45deg', delay: 0 },
+          { top: 8, right: 8, angle: '-45deg', delay: 0.3 },
+          { bottom: 8, left: 8, angle: '135deg', delay: 0.6 },
+          { bottom: 8, right: 8, angle: '-135deg', delay: 0.9 },
         ].map((pos, idx) => (
           <div
             key={idx}
             style={{
               position: 'absolute',
               top: pos.top,
+              bottom: pos.bottom,
               left: pos.left,
               right: pos.right,
-              width: 8,
-              height: 8,
+              width: 6,
+              height: 6,
               borderRadius: '50%',
               background: `radial-gradient(circle at center, 
                 ${alpha('#000000', 0.3)} 0%, 
@@ -253,11 +256,11 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
             <div
               style={{
                 position: 'relative',
-                width: 5,
-                height: 5,
+                width: 4,
+                height: 4,
                 background: `
-                  radial-gradient(circle at 35% 35%, #e0e0e0 0%, #b8b8b8 15%, #888 40%, #555 70%, #222 100%),
-                  linear-gradient(135deg, #ccc 0%, #666 100%)`,
+                  radial-gradient(circle at 30% 30%, #f0f0f0 0%, #d0d0d0 10%, #999 30%, #666 60%, #333 100%),
+                  linear-gradient(135deg, #ddd 0%, #777 100%)`,
                 backgroundSize: '100%, 100%',
                 borderRadius: '50%',
                 boxShadow: `
@@ -277,8 +280,8 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                   position: 'absolute',
                   top: '50%',
                   left: '50%',
-                  width: '70%',
-                  height: '0.5px',
+                  width: '60%',
+                  height: '0.4px',
                   background: `linear-gradient(90deg, 
                     transparent, 
                     ${alpha('#000000', 0.7)} 20%, 
@@ -294,8 +297,8 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                   position: 'absolute',
                   top: '50%',
                   left: '50%',
-                  width: '0.5px',
-                  height: '70%',
+                  width: '0.4px',
+                  height: '60%',
                   background: `linear-gradient(180deg, 
                     transparent, 
                     ${alpha('#000000', 0.7)} 20%, 
@@ -312,8 +315,8 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                   position: 'absolute',
                   top: '50%',
                   left: '50%',
-                  width: 1.5,
-                  height: 1.5,
+                  width: 1,
+                  height: 1,
                   transform: 'translate(-50%, -50%)',
                   background: `radial-gradient(circle at center, 
                     ${alpha('#ffffff', 0.8)}, 
