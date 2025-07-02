@@ -130,7 +130,7 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
           transform: scrolled ? 'scale(0.995) translateZ(50px)' : 'scale(1)',
           width: '100%',
           maxWidth: 'none',
-          height: isMobile ? 64 : 72,
+          height: isMobile ? 56 : 64,
           borderRadius: '16px',
           backdropFilter: 'blur(20px) saturate(180%)',
           WebkitBackdropFilter: 'blur(20px) saturate(180%)',
@@ -447,16 +447,18 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
               ].map((item, idx) => (
                 <Button
                   key={idx}
-                  startIcon={item.icon}
+                  startIcon={React.cloneElement(item.icon, { sx: { fontSize: 16 } })}
                   onClick={item.onClick}
                   sx={{
                     position: 'relative',
-                    px: 2,
-                    py: 1,
-                    borderRadius: '10px',
+                    px: 1.5,
+                    py: 0.75,
+                    borderRadius: '8px',
                     color: 'text.secondary',
-                    fontSize: '13px',
+                    fontSize: '12px',
                     fontWeight: 500,
+                    textTransform: 'none',
+                    minWidth: 'auto',
                     background: alpha('#ffffff', 0.02),
                     border: '1px solid transparent',
                     overflow: 'hidden',
@@ -500,17 +502,18 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
           <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? 8 : 12 }}>
             {/* Quantum Dialer Button */}
             <Button
-              startIcon={!isMobile && <DialpadIcon />}
+              startIcon={!isMobile && <DialpadIcon sx={{ fontSize: 16 }} />}
               onClick={onDialerOpen}
               sx={{
                 position: 'relative',
-                px: isMobile ? 2 : 3,
-                py: isMobile ? 1 : 1.25,
-                borderRadius: '12px',
+                px: isMobile ? 1.5 : 2,
+                py: isMobile ? 0.75 : 1,
+                borderRadius: '8px',
                 background: `linear-gradient(135deg, ${theme.palette.primary.main}, rgb(${currentTheme.shift}))`,
                 color: 'white',
                 fontWeight: 600,
-                fontSize: isMobile ? '13px' : '14px',
+                fontSize: isMobile ? '12px' : '13px',
+                textTransform: 'none',
                 overflow: 'hidden',
                 transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                 boxShadow: `
@@ -572,16 +575,17 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                 <Button
                   onClick={onAIToggle}
                   sx={{
-                    px: 2,
-                    py: 1,
-                    borderRadius: '10px',
+                    px: 1.5,
+                    py: 0.75,
+                    borderRadius: '8px',
                     background: aiEnabled 
                       ? `linear-gradient(135deg, rgba(${currentTheme.impossible}, 0.2), rgba(${currentTheme.shift}, 0.2))`
                       : alpha('#ffffff', 0.05),
                     border: `1px solid ${aiEnabled ? `rgba(${currentTheme.shift}, 0.3)` : alpha('#ffffff', 0.1)}`,
                     color: aiEnabled ? theme.palette.primary.light : 'text.secondary',
-                    fontSize: '13px',
+                    fontSize: '12px',
                     fontWeight: 500,
+                    textTransform: 'none',
                     transition: 'all 0.3s ease',
                     '&:hover': {
                       background: aiEnabled
@@ -598,59 +602,59 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                 <IconButton
                   onClick={onAISettingsOpen}
                   sx={{
-                    width: 36,
-                    height: 36,
-                    borderRadius: '10px',
-                    background: alpha('#ffffff', 0.05),
-                    border: `1px solid ${alpha('#ffffff', 0.1)}`,
+                    width: 32,
+                    height: 32,
+                    borderRadius: '8px',
+                    background: alpha('#ffffff', 0.03),
+                    border: `1px solid ${alpha('#ffffff', 0.08)}`,
                     transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                     '&:hover': {
-                      background: alpha('#ffffff', 0.08),
-                      borderColor: `rgba(${currentTheme.impossible}, 0.3)`,
+                      background: alpha('#ffffff', 0.06),
+                      borderColor: `rgba(${currentTheme.impossible}, 0.2)`,
                       transform: 'translateY(-1px)',
                     },
                   } as any}
                 >
-                  <SettingsIcon sx={{ fontSize: 20 }} />
+                  <SettingsIcon sx={{ fontSize: 18 }} />
                 </IconButton>
 
                 {/* Performance Button */}
                 <IconButton
                   onClick={onPerformanceOpen}
                   sx={{
-                    width: 36,
-                    height: 36,
-                    borderRadius: '10px',
-                    background: alpha('#ffffff', 0.05),
-                    border: `1px solid ${alpha('#ffffff', 0.1)}`,
+                    width: 32,
+                    height: 32,
+                    borderRadius: '8px',
+                    background: alpha('#ffffff', 0.03),
+                    border: `1px solid ${alpha('#ffffff', 0.08)}`,
                     transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                     '&:hover': {
-                      background: alpha('#ffffff', 0.08),
-                      borderColor: `rgba(${currentTheme.shift}, 0.3)`,
+                      background: alpha('#ffffff', 0.06),
+                      borderColor: `rgba(${currentTheme.shift}, 0.2)`,
                       transform: 'translateY(-1px)',
                     },
                   } as any}
                 >
-                  <TimelineIcon sx={{ fontSize: 20 }} />
+                  <TimelineIcon sx={{ fontSize: 18 }} />
                 </IconButton>
 
                 {/* More Menu */}
                 <IconButton
                   sx={{
-                    width: 36,
-                    height: 36,
-                    borderRadius: '10px',
-                    background: alpha('#ffffff', 0.05),
-                    border: `1px solid ${alpha('#ffffff', 0.1)}`,
+                    width: 32,
+                    height: 32,
+                    borderRadius: '8px',
+                    background: alpha('#ffffff', 0.03),
+                    border: `1px solid ${alpha('#ffffff', 0.08)}`,
                     transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                     '&:hover': {
-                      background: alpha('#ffffff', 0.08),
-                      borderColor: `rgba(${currentTheme.impossible}, 0.3)`,
+                      background: alpha('#ffffff', 0.06),
+                      borderColor: `rgba(${currentTheme.impossible}, 0.2)`,
                       transform: 'translateY(-1px)',
                     },
                   } as any}
                 >
-                  <MoreHorizIcon sx={{ fontSize: 20 }} />
+                  <MoreHorizIcon sx={{ fontSize: 18 }} />
                 </IconButton>
               </>
             )}
@@ -660,20 +664,20 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
               <IconButton
                 onClick={() => setMobileMenuOpen(true)}
                 sx={{
-                  width: 36,
-                  height: 36,
-                  borderRadius: '10px',
-                  background: alpha('#ffffff', 0.05),
-                  border: `1px solid ${alpha('#ffffff', 0.1)}`,
+                  width: 32,
+                  height: 32,
+                  borderRadius: '8px',
+                  background: alpha('#ffffff', 0.03),
+                  border: `1px solid ${alpha('#ffffff', 0.08)}`,
                   transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                   '&:hover': {
-                    background: alpha('#ffffff', 0.08),
-                    borderColor: `rgba(${currentTheme.impossible}, 0.3)`,
+                    background: alpha('#ffffff', 0.06),
+                    borderColor: `rgba(${currentTheme.impossible}, 0.2)`,
                     transform: 'translateY(-1px)',
                   },
                 } as any}
               >
-                <MenuIcon sx={{ fontSize: 20 }} />
+                <MenuIcon sx={{ fontSize: 18 }} />
               </IconButton>
             )}
           </div>

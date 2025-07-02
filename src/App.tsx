@@ -310,7 +310,7 @@ function App() {
             onCallHistoryOpen={() => setShowCallHistory(true)}
           />
           
-          <div style={{ padding: isMobile ? '8px' : '12px', paddingTop: isMobile ? '88px' : '108px' }}>
+          <div style={{ padding: isMobile ? '8px' : '12px', paddingTop: isMobile ? '80px' : '96px' }}>
             <Container maxWidth="xl" sx={{ pb: { xs: 4, sm: 8 }, px: { xs: 2, sm: 4 } }}>
             {/* Add Contact Section */}
             <motion.div
