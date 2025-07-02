@@ -5,7 +5,6 @@ import {
   Typography, 
   Button, 
   IconButton,
-  Box,
   useTheme,
   alpha,
   Drawer,
@@ -339,28 +338,27 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
           maxWidth: 1600,
           width: '100%',
           margin: '0 auto',
-          px: { xs: 3, sm: 6, md: 8 },
+          paddingLeft: { xs: 24, sm: 48, md: 64 },
+          paddingRight: { xs: 24, sm: 48, md: 64 },
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
         }}>
           {/* Logo Section */}
-          <Box
-            component={motion.div}
-            sx={{
+          <motion.div
+            style={{
               display: 'flex',
               alignItems: 'center',
-              gap: 1.5,
-              px: 2,
-              py: 1,
+              gap: 12,
+              paddingLeft: 16,
+              paddingRight: 16,
+              paddingTop: 8,
+              paddingBottom: 8,
               borderRadius: '12px',
               transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
               transformStyle: 'preserve-3d',
               cursor: 'pointer',
-              '&:hover': {
-                background: `rgba(${currentTheme.impossible}, 0.1)`,
-              },
-            } as any}
+            }}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
@@ -432,7 +430,7 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                 Pipeline
               </Typography>
             </div>
-          </Box>
+          </motion.div>
 
           {/* Center Navigation - Desktop Only */}
           {!isMobile && (
@@ -455,8 +453,10 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                   onClick={item.onClick}
                   sx={{
                     position: 'relative',
-                    px: 1.5,
-                    py: 0.75,
+                    paddingLeft: 12,
+                    paddingRight: 12,
+                    paddingTop: 6,
+                    paddingBottom: 6,
                     borderRadius: '8px',
                     color: 'text.secondary',
                     fontSize: '12px',
@@ -510,8 +510,10 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
               onClick={onDialerOpen}
               sx={{
                 position: 'relative',
-                px: isMobile ? 1.5 : 2,
-                py: isMobile ? 0.75 : 1,
+                paddingLeft: isMobile ? 12 : 16,
+                paddingRight: isMobile ? 12 : 16,
+                paddingTop: isMobile ? 6 : 8,
+                paddingBottom: isMobile ? 6 : 8,
                 borderRadius: '8px',
                 background: `linear-gradient(135deg, ${theme.palette.primary.main}, rgb(${currentTheme.shift}))`,
                 color: 'white',
@@ -579,8 +581,10 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                 <Button
                   onClick={onAIToggle}
                   sx={{
-                    px: 1.5,
-                    py: 0.75,
+                    paddingLeft: 12,
+                    paddingRight: 12,
+                    paddingTop: 6,
+                    paddingBottom: 6,
                     borderRadius: '8px',
                     background: aiEnabled 
                       ? `linear-gradient(135deg, rgba(${currentTheme.impossible}, 0.2), rgba(${currentTheme.shift}, 0.2))`
@@ -724,7 +728,7 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                 window.scrollTo({ top: 0, behavior: 'smooth' });
                 setMobileMenuOpen(false);
               }}
-              sx={{ borderRadius: '12px', mb: 1 }}
+              sx={{ borderRadius: '12px', marginBottom: 8 }}
             >
               <ListItemIcon><ContactsIcon /></ListItemIcon>
               <ListItemText primary="Contacts" />
@@ -735,7 +739,7 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                 window.open('/enrich', '_blank');
                 setMobileMenuOpen(false);
               }}
-              sx={{ borderRadius: '12px', mb: 1 }}
+              sx={{ borderRadius: '12px', marginBottom: 8 }}
             >
               <ListItemIcon><AutoFixHighIcon /></ListItemIcon>
               <ListItemText primary="Enrich Leads" />
@@ -746,7 +750,7 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                 onSyncDashboardOpen?.();
                 setMobileMenuOpen(false);
               }}
-              sx={{ borderRadius: '12px', mb: 1 }}
+              sx={{ borderRadius: '12px', marginBottom: 8 }}
             >
               <ListItemIcon><SyncIcon /></ListItemIcon>
               <ListItemText primary="AI Sync" />
@@ -757,7 +761,7 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                 onMissionControlOpen?.();
                 setMobileMenuOpen(false);
               }}
-              sx={{ borderRadius: '12px', mb: 1 }}
+              sx={{ borderRadius: '12px', marginBottom: 8 }}
             >
               <ListItemIcon><BarChartIcon /></ListItemIcon>
               <ListItemText primary="Analytics" />
@@ -768,16 +772,16 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                 onCallHistoryOpen?.();
                 setMobileMenuOpen(false);
               }}
-              sx={{ borderRadius: '12px', mb: 1 }}
+              sx={{ borderRadius: '12px', marginBottom: 8 }}
             >
               <ListItemIcon><HistoryIcon /></ListItemIcon>
               <ListItemText primary="Call History" />
             </ListItemButton>
 
-            <Divider sx={{ m: 2 }} />
+            <Divider sx={{ margin: 16 }} />
 
             {/* AI Toggle */}
-            <ListItem sx={{ borderRadius: '12px', mb: 1 }}>
+            <ListItem sx={{ borderRadius: '12px', marginBottom: 8 }}>
               <ListItemText primary="AI Assistant" />
               <Switch
                 edge="end"
@@ -791,7 +795,7 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                 onAISettingsOpen?.();
                 setMobileMenuOpen(false);
               }}
-              sx={{ borderRadius: '12px', mb: 1 }}
+              sx={{ borderRadius: '12px', marginBottom: 8 }}
             >
               <ListItemIcon><SettingsIcon /></ListItemIcon>
               <ListItemText primary="AI Settings" />
@@ -802,7 +806,7 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                 onPerformanceOpen?.();
                 setMobileMenuOpen(false);
               }}
-              sx={{ borderRadius: '12px', mb: 1 }}
+              sx={{ borderRadius: '12px', marginBottom: 8 }}
             >
               <ListItemIcon><TimelineIcon /></ListItemIcon>
               <ListItemText primary="Performance" />

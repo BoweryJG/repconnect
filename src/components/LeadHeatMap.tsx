@@ -1,6 +1,5 @@
 import React, { useState, useMemo } from 'react';
 import {
-  Box,
   Paper,
   Typography,
   Tooltip,
@@ -111,7 +110,7 @@ export const LeadHeatMap: React.FC<LeadHeatMapProps> = ({ leads }) => {
   };
 
   return (
-    <Box>
+    <div>
       {/* Controls */}
       <Paper sx={{ 
         p: 3, 
@@ -165,12 +164,12 @@ export const LeadHeatMap: React.FC<LeadHeatMapProps> = ({ leads }) => {
         background: 'rgba(255, 255, 255, 0.03)',
         border: '1px solid rgba(255, 255, 255, 0.1)'
       }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
           <Typography variant="subtitle2">Heat Score:</Typography>
-          <Box sx={{ 
+          <div style={{ 
             flex: 1, 
             height: 20,
-            borderRadius: 2,
+            borderRadius: 8,
             background: `linear-gradient(to right, 
               ${getHeatColor(0)} 0%, 
               ${getHeatColor(25)} 25%, 
@@ -181,7 +180,7 @@ export const LeadHeatMap: React.FC<LeadHeatMapProps> = ({ leads }) => {
           }} />
           <Typography variant="caption">Cold (0)</Typography>
           <Typography variant="caption">Hot (100)</Typography>
-        </Box>
+        </div>
       </Paper>
 
       {/* Heat Map Grid */}
@@ -197,10 +196,10 @@ export const LeadHeatMap: React.FC<LeadHeatMapProps> = ({ leads }) => {
                 {groupName} ({groupLeads.length})
               </Typography>
               
-              <Box sx={{ 
+              <div style={{ 
                 display: 'grid',
                 gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))',
-                gap: 1
+                gap: 8
               }}>
                 {groupLeads.map((lead, index) => (
                   <motion.div
@@ -212,14 +211,14 @@ export const LeadHeatMap: React.FC<LeadHeatMapProps> = ({ leads }) => {
                   >
                     <Tooltip
                       title={
-                        <Box>
+                        <div>
                           <Typography variant="subtitle2">{lead.enriched.fullName}</Typography>
                           <Typography variant="caption">{lead.enriched.title}</Typography>
                           <Typography variant="caption" display="block">{lead.enriched.company}</Typography>
-                          <Box sx={{ mt: 1 }}>
+                          <div style={{ marginTop: 8 }}>
                             <Typography variant="caption">Heat Score: {lead.enriched.heatScore}</Typography>
-                          </Box>
-                        </Box>
+                          </div>
+                        </div>
                       }
                       arrow
                     >
@@ -260,7 +259,7 @@ export const LeadHeatMap: React.FC<LeadHeatMapProps> = ({ leads }) => {
                           >
                             {lead.enriched.fullName.split(' ')[1]}
                           </Typography>
-                          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                             <Typography 
                               variant="caption" 
                               sx={{ 
@@ -274,13 +273,13 @@ export const LeadHeatMap: React.FC<LeadHeatMapProps> = ({ leads }) => {
                             <Typography sx={{ fontSize: '16px' }}>
                               {getSegmentEmoji(lead.enriched.segment)}
                             </Typography>
-                          </Box>
+                          </div>
                         </CardContent>
                       </Card>
                     </Tooltip>
                   </motion.div>
                 ))}
-              </Box>
+              </div>
             </Paper>
           </Grid>
         ))}
@@ -340,6 +339,6 @@ export const LeadHeatMap: React.FC<LeadHeatMapProps> = ({ leads }) => {
           </Card>
         </Grid>
       </Grid>
-    </Box>
+    </div>
   );
 };

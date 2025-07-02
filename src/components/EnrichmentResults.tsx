@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Box,
   Container,
   Typography,
   Paper,
@@ -209,14 +208,14 @@ export const EnrichmentResults: React.FC = () => {
 
   if (isLoading) {
     return (
-      <Box sx={{ 
+      <div style={{ 
         minHeight: '100vh', 
         background: '#0a0a0a',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center'
       }}>
-        <Box textAlign="center">
+        <div style={{ textAlign: 'center' }}>
           <Typography variant="h4" sx={{ mb: 3 }}>
             Enriching your leads...
           </Typography>
@@ -224,15 +223,15 @@ export const EnrichmentResults: React.FC = () => {
           <Typography variant="body1" color="text.secondary">
             Analyzing {enrichedLeads.length || '...'} contacts
           </Typography>
-        </Box>
-      </Box>
+        </div>
+      </div>
     );
   }
 
   return (
-    <Box sx={{ minHeight: '100vh', background: '#0a0a0a', pb: 8 }}>
+    <div style={{ minHeight: '100vh', background: '#0a0a0a', paddingBottom: 64 }}>
       {/* Header */}
-      <Box sx={{ 
+      <div style={{ 
         background: 'linear-gradient(180deg, #1a1a1a 0%, transparent 100%)',
         borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
         position: 'sticky',
@@ -240,8 +239,8 @@ export const EnrichmentResults: React.FC = () => {
         zIndex: 100
       }}>
         <Container maxWidth="xl">
-          <Box sx={{ py: 3, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+          <div style={{ paddingTop: 24, paddingBottom: 24, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
               <Button
                 startIcon={<ArrowBackIcon />}
                 onClick={() => navigate('/enrich')}
@@ -252,8 +251,8 @@ export const EnrichmentResults: React.FC = () => {
               <Typography variant="h4" sx={{ fontWeight: 700 }}>
                 Your Enriched Leads
               </Typography>
-            </Box>
-            <Box sx={{ display: 'flex', gap: 2 }}>
+            </div>
+            <div style={{ display: 'flex', gap: 16 }}>
               <Button
                 startIcon={<ShareIcon />}
                 onClick={handleShare}
@@ -278,10 +277,10 @@ export const EnrichmentResults: React.FC = () => {
               >
                 Save Results
               </Button>
-            </Box>
-          </Box>
+            </div>
+          </div>
         </Container>
-      </Box>
+      </div>
 
       <Container maxWidth="xl" sx={{ mt: 4 }}>
         {/* Stats Overview */}
@@ -399,7 +398,7 @@ export const EnrichmentResults: React.FC = () => {
                 border: '1px solid rgba(255, 255, 255, 0.1)',
                 overflow: 'hidden'
               }}>
-                <Box sx={{ overflowX: 'auto' }}>
+                <div style={{ overflowX: 'auto' }}>
                   <Table>
                     <TableHead>
                       <TableRow>
@@ -416,7 +415,7 @@ export const EnrichmentResults: React.FC = () => {
                       {enrichedLeads.map((lead, index) => (
                         <TableRow key={index}>
                           <TableCell>
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                               <LinearProgress
                                 variant="determinate"
                                 value={lead.enriched.heatScore}
@@ -437,17 +436,17 @@ export const EnrichmentResults: React.FC = () => {
                               <Typography variant="body2" sx={{ fontWeight: 600 }}>
                                 {lead.enriched.heatScore}
                               </Typography>
-                            </Box>
+                            </div>
                           </TableCell>
                           <TableCell>{lead.enriched.fullName}</TableCell>
                           <TableCell>{lead.enriched.email}</TableCell>
                           <TableCell>
-                            <Box>
+                            <div>
                               <Typography variant="body2">{lead.enriched.company}</Typography>
                               <Typography variant="caption" color="text.secondary">
                                 {lead.enriched.companySize} • {lead.enriched.industry}
                               </Typography>
-                            </Box>
+                            </div>
                           </TableCell>
                           <TableCell>{lead.enriched.title}</TableCell>
                           <TableCell>
@@ -464,7 +463,7 @@ export const EnrichmentResults: React.FC = () => {
                             />
                           </TableCell>
                           <TableCell>
-                            <Box sx={{ display: 'flex', gap: 1 }}>
+                            <div style={{ display: 'flex', gap: 8 }}>
                               <Tooltip title="Email">
                                 <IconButton size="small">
                                   <EmailIcon fontSize="small" />
@@ -485,13 +484,13 @@ export const EnrichmentResults: React.FC = () => {
                                   </IconButton>
                                 </Tooltip>
                               )}
-                            </Box>
+                            </div>
                           </TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
                   </Table>
-                </Box>
+                </div>
               </Paper>
             </motion.div>
           )}
@@ -505,7 +504,7 @@ export const EnrichmentResults: React.FC = () => {
           <Typography variant="body1" sx={{ mb: 2 }}>
             Create a free account to:
           </Typography>
-          <Box sx={{ pl: 2 }}>
+          <div style={{ paddingLeft: 16 }}>
             <Typography variant="body2" sx={{ mb: 1 }}>
               ✓ Save and access your enriched leads anytime
             </Typography>
@@ -518,7 +517,7 @@ export const EnrichmentResults: React.FC = () => {
             <Typography variant="body2">
               ✓ Connect to your CRM
             </Typography>
-          </Box>
+          </div>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setShowSaveDialog(false)}>
@@ -535,6 +534,6 @@ export const EnrichmentResults: React.FC = () => {
           </Button>
         </DialogActions>
       </Dialog>
-    </Box>
+    </div>
   );
 };

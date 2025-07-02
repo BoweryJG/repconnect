@@ -311,7 +311,15 @@ function generateBio(name: string, specialization: string, yearsExp: number): st
   return templates[Math.floor(Math.random() * templates.length)];
 }
 
-function generateOfficeHours(): Record<string, string> {
+function generateOfficeHours(): {
+  monday: string;
+  tuesday: string;
+  wednesday: string;
+  thursday: string;
+  friday: string;
+  saturday: string;
+  sunday: string;
+} {
   const standardHours = {
     monday: '8:00 AM - 5:00 PM',
     tuesday: '8:00 AM - 5:00 PM',

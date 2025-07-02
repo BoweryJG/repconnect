@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Typography, 
   Container, 
-  Box, 
   Button, 
   Chip,
   Paper,
@@ -89,10 +88,11 @@ export const LeadEnrichmentLanding: React.FC<LeadEnrichmentLandingProps> = ({ is
   }
 
   return (
-    <Box sx={{ 
+    <div style={{ 
       minHeight: '100vh', 
       background: 'linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%)',
-      py: 8
+      paddingTop: 64,
+      paddingBottom: 64
     }}>
       <Container maxWidth="lg">
         {/* Hero Section */}
@@ -101,7 +101,7 @@ export const LeadEnrichmentLanding: React.FC<LeadEnrichmentLandingProps> = ({ is
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <Box textAlign="center" mb={6}>
+          <div style={{ textAlign: 'center', marginBottom: 48 }}>
             <Typography 
               variant="h2" 
               sx={{
@@ -129,7 +129,7 @@ export const LeadEnrichmentLanding: React.FC<LeadEnrichmentLandingProps> = ({ is
                 px: 1
               }}
             />
-          </Box>
+          </div>
         </motion.div>
 
         {/* Upload Section */}
@@ -168,7 +168,7 @@ export const LeadEnrichmentLanding: React.FC<LeadEnrichmentLandingProps> = ({ is
             <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
               or click to browse • CSV, XLS, XLSX supported
             </Typography>
-            <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center' }}>
+            <div style={{ display: 'flex', gap: 16, justifyContent: 'center' }}>
               <Button
                 variant="outlined"
                 size="large"
@@ -188,7 +188,7 @@ export const LeadEnrichmentLanding: React.FC<LeadEnrichmentLandingProps> = ({ is
               >
                 Try with Sample Data
               </Button>
-            </Box>
+            </div>
           </Paper>
         </motion.div>
 
@@ -209,7 +209,7 @@ export const LeadEnrichmentLanding: React.FC<LeadEnrichmentLandingProps> = ({ is
                 justifyContent: 'center'
               }}
             >
-              <Box textAlign="center">
+              <div style={{ textAlign: 'center' }}>
                 <Typography variant="h4" sx={{ mb: 3, color: 'white' }}>
                   Preparing your demo...
                 </Typography>
@@ -217,7 +217,7 @@ export const LeadEnrichmentLanding: React.FC<LeadEnrichmentLandingProps> = ({ is
                 <Typography variant="body1" sx={{ color: 'rgba(255, 255, 255, 0.7)' }}>
                   Loading sample data
                 </Typography>
-              </Box>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
@@ -243,9 +243,9 @@ export const LeadEnrichmentLanding: React.FC<LeadEnrichmentLandingProps> = ({ is
                     transform: 'translateY(-4px)'
                   }
                 }}>
-                  <Box sx={{ color: 'primary.main', mb: 2 }}>
+                  <div style={{ color: '#6366F1', marginBottom: 16 }}>
                     {React.cloneElement(feature.icon, { sx: { fontSize: 40 } })}
-                  </Box>
+                  </div>
                   <Typography variant="h6" gutterBottom>
                     {feature.title}
                   </Typography>
@@ -264,14 +264,14 @@ export const LeadEnrichmentLanding: React.FC<LeadEnrichmentLandingProps> = ({ is
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.6 }}
         >
-          <Box sx={{ textAlign: 'center', mb: 8 }}>
+          <div style={{ textAlign: 'center', marginBottom: 64 }}>
             <Typography variant="h4" sx={{ mb: 4, fontWeight: 700 }}>
               Sales Teams Love Pipeline Enrichment
             </Typography>
             <Grid container spacing={4} justifyContent="center">
               {testimonials.map((testimonial, index) => (
                 <Grid item xs={12} sm={4} key={index}>
-                  <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     <Avatar sx={{ mb: 2, width: 60, height: 60, bgcolor: 'primary.main' }}>
                       {testimonial.name[0]}
                     </Avatar>
@@ -284,11 +284,11 @@ export const LeadEnrichmentLanding: React.FC<LeadEnrichmentLandingProps> = ({ is
                     <Typography variant="caption" color="text.secondary">
                       {testimonial.role}
                     </Typography>
-                  </Box>
+                  </div>
                 </Grid>
               ))}
             </Grid>
-          </Box>
+          </div>
         </motion.div>
 
         {/* CTA Section */}
@@ -297,12 +297,14 @@ export const LeadEnrichmentLanding: React.FC<LeadEnrichmentLandingProps> = ({ is
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.8 }}
         >
-          <Box sx={{ 
+          <div style={{ 
             textAlign: 'center', 
-            py: 6,
-            px: 4,
+            paddingTop: 48,
+            paddingBottom: 48,
+            paddingLeft: 32,
+            paddingRight: 32,
             background: 'rgba(99, 102, 241, 0.1)',
-            borderRadius: 4,
+            borderRadius: 16,
             border: '1px solid rgba(99, 102, 241, 0.2)'
           }}>
             <Typography variant="h5" sx={{ mb: 2, fontWeight: 600 }}>
@@ -311,15 +313,15 @@ export const LeadEnrichmentLanding: React.FC<LeadEnrichmentLandingProps> = ({ is
             <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
               100 free enrichments every month. Upgrade anytime for more.
             </Typography>
-            <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap' }}>
               <Chip label="✓ Instant Results" />
               <Chip label="✓ No Login Required" />
               <Chip label="✓ Export Anytime" />
               <Chip label="✓ GDPR Compliant" />
-            </Box>
-          </Box>
+            </div>
+          </div>
         </motion.div>
       </Container>
-    </Box>
+    </div>
   );
 };

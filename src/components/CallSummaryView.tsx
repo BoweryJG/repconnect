@@ -1,6 +1,6 @@
 // @ts-nocheck
 import React, { useState, useEffect } from 'react';
-import { Box, Paper, Typography, Button, CircularProgress, Chip, Stack, Alert, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
+import { Paper, Typography, Button, CircularProgress, Chip, Stack, Alert, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import { Refresh as RefreshIcon, Download as DownloadIcon } from '@mui/icons-material';
 
 interface CallSummaryViewProps {
@@ -204,9 +204,9 @@ Version: ${summary.metadata?.version || 1}
 
   if (loading) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight={200}>
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 200 }}>
         <CircularProgress />
-      </Box>
+      </div>
     );
   }
 
@@ -252,7 +252,7 @@ Version: ${summary.metadata?.version || 1}
 
   return (
     <Paper sx={{ p: 3 }}>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
         <Typography variant="h5">Call Summary</Typography>
         <Stack direction="row" spacing={1}>
           <FormControl size="small" sx={{ minWidth: 150 }}>
@@ -281,7 +281,7 @@ Version: ${summary.metadata?.version || 1}
             Download
           </Button>
         </Stack>
-      </Box>
+      </div>
 
       {summary.metadata && (
         <Typography variant="caption" color="text.secondary" sx={{ mb: 2, display: 'block' }}>
@@ -290,12 +290,12 @@ Version: ${summary.metadata?.version || 1}
         </Typography>
       )}
 
-      <Box mb={3}>
+      <div style={{ marginBottom: 24 }}>
         <Typography variant="h6" gutterBottom>Executive Summary</Typography>
         <Typography variant="body1">{summary.executiveSummary}</Typography>
-      </Box>
+      </div>
 
-      <Box mb={3}>
+      <div style={{ marginBottom: 24 }}>
         <Typography variant="h6" gutterBottom>Sentiment Analysis</Typography>
         <Stack direction="row" spacing={2} alignItems="center" mb={2}>
           <Chip 
@@ -318,9 +318,9 @@ Version: ${summary.metadata?.version || 1}
             ))}
           </Stack>
         )}
-      </Box>
+      </div>
 
-      <Box mb={3}>
+      <div style={{ marginBottom: 24 }}>
         <Typography variant="h6" gutterBottom>Key Points</Typography>
         <Stack spacing={1}>
           {summary.keyPoints.map((point, index) => (
@@ -329,34 +329,34 @@ Version: ${summary.metadata?.version || 1}
             </Typography>
           ))}
         </Stack>
-      </Box>
+      </div>
 
       {summary.actionItems.length > 0 && (
-        <Box mb={3}>
+        <div style={{ marginBottom: 24 }}>
           <Typography variant="h6" gutterBottom>Action Items</Typography>
           <Stack spacing={2}>
             {summary.actionItems.map((item, index) => (
-              <Box key={index} sx={{ display: 'flex', alignItems: 'flex-start', gap: 1 }}>
+              <div key={index} style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}>
                 <Chip
                   label={item.priority}
                   size="small"
                   color={getPriorityColor(item.priority)}
                 />
-                <Box flex={1}>
+                <div style={{ flex: 1 }}>
                   <Typography variant="body2">{item.task}</Typography>
                   <Typography variant="caption" color="text.secondary">
                     {item.assignee && `Assignee: ${item.assignee}`}
                     {item.dueDate && ` | Due: ${item.dueDate}`}
                   </Typography>
-                </Box>
-              </Box>
+                </div>
+              </div>
             ))}
           </Stack>
-        </Box>
+        </div>
       )}
 
       {summary.nextSteps.length > 0 && (
-        <Box>
+        <div>
           <Typography variant="h6" gutterBottom>Recommended Next Steps</Typography>
           <Stack spacing={1}>
             {summary.nextSteps.map((step, index) => (
@@ -365,7 +365,7 @@ Version: ${summary.metadata?.version || 1}
               </Typography>
             ))}
           </Stack>
-        </Box>
+        </div>
       )}
     </Paper>
   );

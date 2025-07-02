@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Box,
   Container,
   Typography,
   Paper,
@@ -124,16 +123,16 @@ export const PublicEnrichedDemo: React.FC = () => {
 
   if (loading) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
         <CircularProgress />
-      </Box>
+      </div>
     );
   }
 
   const stats = getStats();
 
   return (
-    <Box sx={{ minHeight: '100vh', background: '#0a0a0a', py: 4 }}>
+    <div style={{ minHeight: '100vh', background: '#0a0a0a', paddingTop: 32, paddingBottom: 32 }}>
       <Container maxWidth="xl">
         {/* Header */}
         <motion.div
@@ -141,7 +140,7 @@ export const PublicEnrichedDemo: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <Box sx={{ mb: 4, textAlign: 'center' }}>
+          <div style={{ marginBottom: 32, textAlign: 'center' }}>
             <Typography variant="h3" sx={{ fontWeight: 800, mb: 2 }}>
               Enriched Medical & Dental Professionals
             </Typography>
@@ -151,7 +150,7 @@ export const PublicEnrichedDemo: React.FC = () => {
             <Alert severity="info" sx={{ maxWidth: 600, mx: 'auto' }}>
               This is a demo showcasing our enrichment capabilities. Sign up to enrich your own contacts!
             </Alert>
-          </Box>
+          </div>
         </motion.div>
 
         {/* Stats Overview */}
@@ -332,7 +331,7 @@ export const PublicEnrichedDemo: React.FC = () => {
         </Paper>
 
         {/* Results Count */}
-        <Box sx={{ mb: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div style={{ marginBottom: 24, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Typography variant="h6">
             Showing {filteredContacts.length} of {contacts.length} contacts
           </Typography>
@@ -345,7 +344,7 @@ export const PublicEnrichedDemo: React.FC = () => {
           >
             Unlock All Features
           </Button>
-        </Box>
+        </div>
 
         {/* Contact Cards */}
         <AnimatePresence mode="wait">
@@ -366,7 +365,7 @@ export const PublicEnrichedDemo: React.FC = () => {
         </AnimatePresence>
 
         {filteredContacts.length === 0 && (
-          <Box sx={{ textAlign: 'center', py: 8 }}>
+          <div style={{ textAlign: 'center', paddingTop: 64, paddingBottom: 64 }}>
             <Typography variant="h6" color="text.secondary">
               No contacts match your current filters
             </Typography>
@@ -381,9 +380,9 @@ export const PublicEnrichedDemo: React.FC = () => {
             >
               Clear Filters
             </Button>
-          </Box>
+          </div>
         )}
       </Container>
-    </Box>
+    </div>
   );
 };

@@ -1,5 +1,5 @@
 import React, { Component, ReactNode } from 'react';
-import { Box, Typography, Button, Paper } from '@mui/material';
+import { Typography, Button, Paper } from '@mui/material';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
 interface Props {
@@ -37,13 +37,13 @@ export class ErrorBoundary extends Component<Props, State> {
       }
 
       return (
-        <Box
-          sx={{
+        <div
+          style={{
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             minHeight: '100vh',
-            p: 3,
+            padding: 24,
           }}
         >
           <Paper
@@ -70,7 +70,7 @@ export class ErrorBoundary extends Component<Props, State> {
               Try Again
             </Button>
           </Paper>
-        </Box>
+        </div>
       );
     }
 
