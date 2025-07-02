@@ -5,10 +5,7 @@ import {
   Typography,
   Paper,
   Grid,
-  Card,
-  CardContent,
   Chip,
-  Avatar,
   Button,
   LinearProgress,
   IconButton,
@@ -26,10 +23,6 @@ import {
   Tooltip
 } from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
-import FireIcon from '@mui/icons-material/Whatshot';
-import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import PersonIcon from '@mui/icons-material/Person';
-import BusinessIcon from '@mui/icons-material/Business';
 import EmailIcon from '@mui/icons-material/Email';
 import PhoneIcon from '@mui/icons-material/Phone';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
@@ -53,6 +46,7 @@ export const EnrichmentResults: React.FC = () => {
 
   useEffect(() => {
     loadEnrichedData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const loadEnrichedData = async () => {

@@ -7,8 +7,7 @@ import {
   LinearProgress,
   Chip,
   Collapse,
-  Alert,
-  Tooltip
+  Alert
 } from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useDropzone } from 'react-dropzone';

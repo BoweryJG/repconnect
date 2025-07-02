@@ -3,7 +3,6 @@ import {
   Box,
   Paper,
   Typography,
-  Chip,
   Tooltip,
   FormControl,
   InputLabel,

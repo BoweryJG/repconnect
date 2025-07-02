@@ -11,7 +11,6 @@ import {
   Select,
   MenuItem,
   FormControl,
-  InputLabel,
   Chip,
   LinearProgress,
   Alert,
@@ -24,7 +23,6 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import Papa from 'papaparse';
 import * as XLSX from 'xlsx';
 import { useNavigate } from 'react-router-dom';
-import { EnrichmentEngine } from '../lib/enrichment/EnrichmentEngine';
 import { supabase } from '../lib/supabase';
 
 interface FileUploadProcessorProps {
@@ -60,6 +58,7 @@ export const FileUploadProcessor: React.FC<FileUploadProcessorProps> = ({ file, 
 
   useEffect(() => {
     parseFile();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [file]);
 
   const parseFile = async () => {
