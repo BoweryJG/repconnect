@@ -1,6 +1,4 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { ThemeProvider } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
 import {
   Container,
   Button,
@@ -15,7 +13,6 @@ import ViewModuleIcon from '@mui/icons-material/ViewModule';
 import CloseIcon from '@mui/icons-material/Close';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import { AnimatePresence, motion } from 'framer-motion';
-import { premiumTheme } from './theme/premiumTheme';
 import { DigitalRolodex } from './components/DigitalRolodex';
 import { CallInterface } from './components/CallInterface';
 import { PremiumGradientBackground } from './components/effects/PremiumGradientBackground';
@@ -31,7 +28,7 @@ import { AISettings } from './components/AISettings';
 import { PerformanceHistory } from './components/PerformanceHistory';
 import { useResponsive } from './hooks/useResponsive';
 import { CallHistoryDashboard } from './components/CallHistoryDashboard';
-import { ErrorBoundary } from './components/ErrorBoundary';
+import { CompactEnrichmentWidget } from './components/CompactEnrichmentWidget';
 
 // Lazy load heavy components
 const MissionControlDashboard = React.lazy(() => import('./components/MissionControlDashboard').then(module => ({ default: module.MissionControlDashboard })));
@@ -287,10 +284,7 @@ function App() {
   };
 
   return (
-    <ErrorBoundary>
-      <ThemeProvider theme={premiumTheme}>
-        <CssBaseline />
-        <div
+      <div
         style={{
           minHeight: '100vh',
           position: 'relative',
@@ -900,14 +894,30 @@ function App() {
                 >
                   <CloseIcon />
                 </IconButton>
-                <SyncDashboard />
+                <SyncDashboard onClose={() => setShowSyncDashboard(false)} />
               </motion.div>
             </motion.div>
           )}
         </AnimatePresence>
+
+        {/* Compact Enrichment Widget */}
+        <CompactEnrichmentWidget 
+          onEnrichmentComplete={(leads) => {
+            // Add enriched leads to contacts
+            leads.forEach(lead => {
+              if (lead.enriched) {
+                addContact({
+                  name: lead.enriched.fullName || 'Unknown',
+                  phoneNumber: lead.enriched.phone || lead.enriched.mobile || '',
+                  email: lead.enriched.email || '',
+                  notes: `${lead.enriched.company || ''} - ${lead.enriched.title || ''}`,
+                  tags: [lead.enriched.segment, lead.enriched.industry].filter(Boolean)
+                });
+              }
+            });
+          }}
+        />
       </div>
-    </ThemeProvider>
-    </ErrorBoundary>
   );
 }
 

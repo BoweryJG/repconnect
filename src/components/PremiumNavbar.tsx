@@ -28,6 +28,7 @@ import TimelineIcon from '@mui/icons-material/Timeline';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import HistoryIcon from '@mui/icons-material/History';
+import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh';
 import { keyframes } from '@mui/material';
 import { useResponsive } from '../hooks/useResponsive';
 
@@ -443,6 +444,7 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
             }}>
               {[
                 { icon: <ContactsIcon />, label: 'Contacts', color: currentTheme.shift, onClick: () => window.scrollTo({ top: 0, behavior: 'smooth' }) },
+                { icon: <AutoFixHighIcon />, label: 'Enrich Leads', color: currentTheme.deep, onClick: () => window.open('/enrich', '_blank') },
                 { icon: <SyncIcon />, label: 'AI Sync', color: currentTheme.impossible, onClick: onSyncDashboardOpen },
                 { icon: <BarChartIcon />, label: 'Analytics', color: currentTheme.deep, onClick: onMissionControlOpen },
                 { icon: <HistoryIcon />, label: 'Call History', color: currentTheme.impossible, onClick: onCallHistoryOpen },
@@ -726,6 +728,17 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
             >
               <ListItemIcon><ContactsIcon /></ListItemIcon>
               <ListItemText primary="Contacts" />
+            </ListItemButton>
+
+            <ListItemButton 
+              onClick={() => {
+                window.open('/enrich', '_blank');
+                setMobileMenuOpen(false);
+              }}
+              sx={{ borderRadius: '12px', mb: 1 }}
+            >
+              <ListItemIcon><AutoFixHighIcon /></ListItemIcon>
+              <ListItemText primary="Enrich Leads" />
             </ListItemButton>
 
             <ListItemButton 

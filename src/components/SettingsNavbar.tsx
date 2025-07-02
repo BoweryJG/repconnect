@@ -19,12 +19,14 @@ interface SettingsNavbarProps {
   activeTab: string;
   onTabChange: (tabId: string) => void;
   syncCount?: number;
+  onClose?: () => void;
 }
 
 export const SettingsNavbar: React.FC<SettingsNavbarProps> = ({
   activeTab,
   onTabChange,
-  syncCount = 0
+  syncCount = 0,
+  onClose
 }) => {
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const [enableEffects, setEnableEffects] = useState(true);
@@ -87,6 +89,56 @@ export const SettingsNavbar: React.FC<SettingsNavbarProps> = ({
           zIndex: 1,
         }}
       >
+        {/* Pipeline Logo Link */}
+        {onClose && (
+          <div
+            style={{
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+              padding: '8px 16px',
+              borderRadius: '8px',
+              background: 'rgba(255, 255, 255, 0.05)',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              transition: 'all 0.3s ease',
+              marginRight: 16,
+            }}
+            onClick={onClose}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
+              e.currentTarget.style.transform = 'scale(1.05)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
+              e.currentTarget.style.transform = 'scale(1)';
+            }}
+          >
+            <div style={{ width: 24, height: 24, position: 'relative' }}>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" style={{ width: '100%', height: '100%' }}>
+                <defs>
+                  <linearGradient id="pipelineGradSync" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#9f58fa" />
+                    <stop offset="100%" stopColor="#4B96DC" />
+                  </linearGradient>
+                </defs>
+                <circle cx="16" cy="16" r="12" fill="none" stroke="url(#pipelineGradSync)" strokeWidth="2" opacity="0.8" />
+                <circle cx="16" cy="16" r="8" fill="none" stroke="url(#pipelineGradSync)" strokeWidth="1.5" opacity="0.5" />
+                <circle cx="16" cy="16" r="3" fill="url(#pipelineGradSync)" />
+              </svg>
+            </div>
+            <Typography 
+              sx={{ 
+                fontFamily: 'Orbitron, monospace',
+                fontWeight: 600,
+                fontSize: '14px',
+                color: 'rgba(255, 255, 255, 0.8)',
+              }}
+            >
+              Pipeline
+            </Typography>
+          </div>
+        )}
         {/* Animated jewel core */}
         <div style={{
           position: 'relative',

@@ -22,7 +22,11 @@ interface SyncQueue {
   progress: number;
 }
 
-export const SyncDashboard: React.FC = () => {
+interface SyncDashboardProps {
+  onClose?: () => void;
+}
+
+export const SyncDashboard: React.FC<SyncDashboardProps> = ({ onClose }) => {
   const [activeTab, setActiveTab] = useState('sync');
   const [queues, setQueues] = useState<SyncQueue[]>([]);
   const [activeQueue, setActiveQueue] = useState<string | null>(null);
@@ -419,6 +423,7 @@ export const SyncDashboard: React.FC = () => {
         activeTab={activeTab}
         onTabChange={setActiveTab}
         syncCount={queues.filter(q => q.status === 'syncing').length}
+        onClose={onClose}
       />
       
       <div style={{
