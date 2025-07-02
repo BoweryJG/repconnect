@@ -255,7 +255,7 @@ export const CallHistoryDashboard: React.FC<CallHistoryDashboardProps> = ({ open
           }}
         >
           <Container maxWidth="xl">
-            <Box sx={{ py: 3, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ paddingTop: 24, paddingBottom: 24, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <Typography
                 variant="h4"
                 sx={{
@@ -271,9 +271,9 @@ export const CallHistoryDashboard: React.FC<CallHistoryDashboardProps> = ({ open
               <IconButton onClick={onClose} sx={{ color: 'text.secondary' }}>
                 <CloseIcon />
               </IconButton>
-            </Box>
+            </div>
           </Container>
-        </Box>
+        </div>
 
         <Container maxWidth="xl" sx={{ py: 4 }}>
           {/* Stats Cards */}
@@ -286,13 +286,13 @@ export const CallHistoryDashboard: React.FC<CallHistoryDashboardProps> = ({ open
                 }}
               >
                 <CardContent>
-                  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <Box>
+                  <div sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <div>
                       <Typography variant="body2" color="text.secondary">Total Calls</Typography>
                       <Typography variant="h4" sx={{ fontWeight: 700 }}>{stats.totalCalls}</Typography>
-                    </Box>
+                    </div>
                     <PhoneIcon sx={{ fontSize: 40, color: 'primary.main', opacity: 0.5 }} />
-                  </Box>
+                  </div>
                 </CardContent>
               </Card>
             </Grid>
@@ -305,15 +305,15 @@ export const CallHistoryDashboard: React.FC<CallHistoryDashboardProps> = ({ open
                 }}
               >
                 <CardContent>
-                  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <Box>
+                  <div sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <div>
                       <Typography variant="body2" color="text.secondary">Avg Duration</Typography>
                       <Typography variant="h4" sx={{ fontWeight: 700 }}>
                         {Math.floor(stats.avgDuration / 60)}:{(Math.floor(stats.avgDuration) % 60).toString().padStart(2, '0')}
                       </Typography>
-                    </Box>
+                    </div>
                     <AccessTimeIcon sx={{ fontSize: 40, color: 'secondary.main', opacity: 0.5 }} />
-                  </Box>
+                  </div>
                 </CardContent>
               </Card>
             </Grid>
@@ -326,15 +326,15 @@ export const CallHistoryDashboard: React.FC<CallHistoryDashboardProps> = ({ open
                 }}
               >
                 <CardContent>
-                  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <Box>
+                  <div sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <div>
                       <Typography variant="body2" color="text.secondary">Positive Calls</Typography>
                       <Typography variant="h4" sx={{ fontWeight: 700 }}>
                         {stats.sentimentCounts.positive || 0}
                       </Typography>
-                    </Box>
+                    </div>
                     <SentimentSatisfiedIcon sx={{ fontSize: 40, color: 'success.main', opacity: 0.5 }} />
-                  </Box>
+                  </div>
                 </CardContent>
               </Card>
             </Grid>
@@ -347,15 +347,15 @@ export const CallHistoryDashboard: React.FC<CallHistoryDashboardProps> = ({ open
                 }}
               >
                 <CardContent>
-                  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <Box>
+                  <div sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <div>
                       <Typography variant="body2" color="text.secondary">Needs Attention</Typography>
                       <Typography variant="h4" sx={{ fontWeight: 700 }}>
                         {stats.sentimentCounts.negative || 0}
                       </Typography>
-                    </Box>
+                    </div>
                     <SentimentDissatisfiedIcon sx={{ fontSize: 40, color: 'error.main', opacity: 0.5 }} />
-                  </Box>
+                  </div>
                 </CardContent>
               </Card>
             </Grid>
@@ -370,7 +370,7 @@ export const CallHistoryDashboard: React.FC<CallHistoryDashboardProps> = ({ open
               border: '1px solid rgba(255, 255, 255, 0.1)',
             }}
           >
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
+            <div sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
               <TextField
                 placeholder="Search calls..."
                 size="small"
@@ -404,7 +404,7 @@ export const CallHistoryDashboard: React.FC<CallHistoryDashboardProps> = ({ open
                 Refresh
               </Button>
 
-              <Box sx={{ flexGrow: 1 }} />
+              <div sx={{ flexGrow: 1 }} />
 
               <Button
                 startIcon={<PdfIcon />}
@@ -425,11 +425,11 @@ export const CallHistoryDashboard: React.FC<CallHistoryDashboardProps> = ({ open
               >
                 Export CSV
               </Button>
-            </Box>
+            </div>
 
             {/* Expanded Filters */}
             <Collapse in={showFilters}>
-              <Box sx={{ mt: 2, pt: 2, borderTop: '1px solid rgba(255, 255, 255, 0.1)' }}>
+              <div sx={{ mt: 2, pt: 2, borderTop: '1px solid rgba(255, 255, 255, 0.1)' }}>
                 <Grid container spacing={2}>
                   <Grid item xs={12} sm={6} md={3}>
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -508,7 +508,7 @@ export const CallHistoryDashboard: React.FC<CallHistoryDashboardProps> = ({ open
                     </FormControl>
                   </Grid>
                 </Grid>
-              </Box>
+              </div>
             </Collapse>
           </Paper>
 
@@ -525,9 +525,9 @@ export const CallHistoryDashboard: React.FC<CallHistoryDashboardProps> = ({ open
 
           {/* Call List */}
           {loading && calls.length === 0 ? (
-            <Box sx={{ display: 'flex', justifyContent: 'center', py: 8 }}>
+            <div style={{ display: 'flex', justifyContent: 'center', paddingTop: 64, paddingBottom: 64 }}>
               <CircularProgress />
-            </Box>
+            </div>
           ) : error ? (
             <Alert severity="error" sx={{ mb: 3 }}>{error}</Alert>
           ) : calls.length === 0 ? (
@@ -580,7 +580,7 @@ export const CallHistoryDashboard: React.FC<CallHistoryDashboardProps> = ({ open
                     }}
                   >
                     {/* Call Header */}
-                    <Box
+                    <div
                       sx={{
                         p: 2,
                         display: 'flex',
@@ -594,8 +594,8 @@ export const CallHistoryDashboard: React.FC<CallHistoryDashboardProps> = ({ open
                         {getCallIcon(call.type, call.status)}
                       </Avatar>
 
-                      <Box sx={{ flex: 1 }}>
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
+                      <div sx={{ flex: 1 }}>
+                        <div sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
                           <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
                             {call.contact_name || 'Unknown Contact'}
                           </Typography>
@@ -608,8 +608,8 @@ export const CallHistoryDashboard: React.FC<CallHistoryDashboardProps> = ({ open
                               {getSentimentIcon(call.analysis.sentiment_analysis.overall)}
                             </>
                           )}
-                        </Box>
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                        </div>
+                        <div sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                           <Typography variant="caption" color="text.secondary">
                             <CalendarIcon sx={{ fontSize: 14, mr: 0.5, verticalAlign: 'middle' }} />
                             {new Date(call.created_at).toLocaleString()}
@@ -635,33 +635,33 @@ export const CallHistoryDashboard: React.FC<CallHistoryDashboardProps> = ({ open
                               sx={{ height: 20 }}
                             />
                           )}
-                        </Box>
-                      </Box>
+                        </div>
+                      </div>
 
                       <IconButton size="small">
                         {expandedCallId === call.id ? <ExpandLessIcon /> : <ExpandMoreIcon />}
                       </IconButton>
-                    </Box>
+                    </div>
 
                     {/* Expanded Content */}
                     <Collapse in={expandedCallId === call.id}>
                       <Divider />
-                      <Box sx={{ p: 3 }}>
+                      <div sx={{ p: 3 }}>
                         {/* Recording Player */}
                         {call.recording_url && (
-                          <Box sx={{ mb: 3 }}>
+                          <div sx={{ mb: 3 }}>
                             <Typography variant="subtitle2" gutterBottom sx={{ fontWeight: 600 }}>
                               Call Recording
                             </Typography>
                             <Paper sx={{ p: 2, background: 'rgba(0, 0, 0, 0.2)' }}>
                               <AudioPlayer url={call.recording_url} />
                             </Paper>
-                          </Box>
+                          </div>
                         )}
 
                         {/* AI Summary */}
                         {call.analysis && (
-                          <Box sx={{ mb: 3 }}>
+                          <div sx={{ mb: 3 }}>
                             <Typography variant="subtitle2" gutterBottom sx={{ fontWeight: 600 }}>
                               AI Summary
                             </Typography>
@@ -675,13 +675,13 @@ export const CallHistoryDashboard: React.FC<CallHistoryDashboardProps> = ({ open
                                   <Typography variant="caption" sx={{ fontWeight: 600, color: 'primary.main' }}>
                                     Key Points:
                                   </Typography>
-                                  <Box component="ul" sx={{ my: 1, pl: 2 }}>
+                                  <div component="ul" sx={{ my: 1, pl: 2 }}>
                                     {call.analysis.key_points.map((point, idx) => (
                                       <Typography key={idx} component="li" variant="body2">
                                         {point}
                                       </Typography>
                                     ))}
-                                  </Box>
+                                  </div>
                                 </>
                               )}
 
@@ -690,7 +690,7 @@ export const CallHistoryDashboard: React.FC<CallHistoryDashboardProps> = ({ open
                                   <Typography variant="caption" sx={{ fontWeight: 600, color: 'secondary.main' }}>
                                     Action Items:
                                   </Typography>
-                                  <Box sx={{ mt: 1 }}>
+                                  <div sx={{ mt: 1 }}>
                                     {call.analysis.action_items.map((item, idx) => (
                                       <Chip
                                         key={idx}
@@ -700,16 +700,16 @@ export const CallHistoryDashboard: React.FC<CallHistoryDashboardProps> = ({ open
                                         color={item.priority === 'high' ? 'error' : 'default'}
                                       />
                                     ))}
-                                  </Box>
+                                  </div>
                                 </>
                               )}
                             </Paper>
-                          </Box>
+                          </div>
                         )}
 
                         {/* Transcription */}
                         {call.transcription && (
-                          <Box>
+                          <div>
                             <Typography variant="subtitle2" gutterBottom sx={{ fontWeight: 600 }}>
                               Transcription
                             </Typography>
@@ -725,9 +725,9 @@ export const CallHistoryDashboard: React.FC<CallHistoryDashboardProps> = ({ open
                                 {call.transcription}
                               </Typography>
                             </Paper>
-                          </Box>
+                          </div>
                         )}
-                      </Box>
+                      </div>
                     </Collapse>
                   </Paper>
                 </motion.div>
@@ -737,7 +737,7 @@ export const CallHistoryDashboard: React.FC<CallHistoryDashboardProps> = ({ open
 
           {/* Load More */}
           {hasMore && !loading && (
-            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+            <div style={{ display: 'flex', justifyContent: 'center', marginTop: 32 }}>
               <Button
                 onClick={loadMore}
                 variant="outlined"
@@ -752,13 +752,13 @@ export const CallHistoryDashboard: React.FC<CallHistoryDashboardProps> = ({ open
               >
                 Load More Calls
               </Button>
-            </Box>
+            </div>
           )}
 
           {loading && calls.length > 0 && (
-            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+            <div style={{ display: 'flex', justifyContent: 'center', marginTop: 32 }}>
               <CircularProgress size={30} />
-            </Box>
+            </div>
           )}
         </Container>
       </div>

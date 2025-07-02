@@ -229,7 +229,6 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
             style={{
               position: 'absolute',
               top: pos.top,
-              bottom: pos.bottom,
               left: pos.left,
               right: pos.right,
               width: 8,
