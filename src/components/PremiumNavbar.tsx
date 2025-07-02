@@ -118,7 +118,7 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
         left: 0,
         right: 0,
         zIndex: 1200,
-        paddingTop: isMobile ? 12 : 24,
+        paddingTop: 0,
       }}
     >
       <AppBar
@@ -126,11 +126,11 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
         elevation={0}
         sx={{
           position: 'relative',
-          left: '50%',
-          transform: scrolled ? 'translateX(-50%) scale(0.98) translateZ(30px)' : 'translateX(-50%)',
-          width: isMobile ? '94vw' : '96vw',
-          maxWidth: 1400,
-          height: isMobile ? 56 : 60,
+          left: 0,
+          transform: scrolled ? 'translateY(-8px) translateZ(50px)' : 'translateY(0)',
+          width: '100vw',
+          maxWidth: 'none',
+          height: isMobile ? 64 : 72,
           backdropFilter: 'blur(20px) saturate(180%)',
           WebkitBackdropFilter: 'blur(20px) saturate(180%)',
           background: `linear-gradient(to right,
@@ -140,8 +140,11 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
             ${alpha('#1e1e1e', 0.9)} 90%,
             ${alpha('#1a1a1a', 0.95)} 100%
           )`,
-          border: `1px solid ${alpha('#ffffff', scrolled ? 0.12 : 0.08)}`,
-          borderRadius: '18px',
+          borderTop: 'none',
+          borderLeft: 'none', 
+          borderRight: 'none',
+          borderBottom: `2px solid ${alpha('#ffffff', scrolled ? 0.15 : 0.1)}`,
+          borderRadius: 0,
           boxShadow: scrolled
             ? `0 16px 50px ${alpha('#000000', 0.5)},
                0 0 30px rgba(${currentTheme.impossible}, 0.12),
@@ -199,50 +202,37 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
           },
         } as any}
       >
-        {/* Edge Mount Indicators */}
+        {/* Full-width gradient edge */}
         <div
           style={{
             position: 'absolute',
-            top: 10,
-            bottom: 10,
-            left: -4,
-            width: 3,
-            background: `linear-gradient(to bottom,
-              rgba(${currentTheme.impossible}, 0.2),
-              rgba(${currentTheme.shift}, 0.1)
+            bottom: -2,
+            left: 0,
+            right: 0,
+            height: 4,
+            background: `linear-gradient(to right,
+              transparent,
+              rgba(${currentTheme.impossible}, 0.6) 10%,
+              rgba(${currentTheme.shift}, 0.8) 25%,
+              rgba(${currentTheme.deep}, 0.6) 50%,
+              rgba(${currentTheme.shift}, 0.8) 75%,
+              rgba(${currentTheme.impossible}, 0.6) 90%,
+              transparent
             )`,
-            boxShadow: `0 0 8px rgba(${currentTheme.shift}, 0.15)`,
-            opacity: 0.6,
-            borderRadius: '2px 0 0 2px',
+            boxShadow: `
+              0 2px 20px rgba(${currentTheme.shift}, 0.4),
+              0 0 40px rgba(${currentTheme.impossible}, 0.2)
+            `,
+            filter: 'blur(1px)',
+            opacity: scrolled ? 1 : 0.7,
             transition: 'all 0.3s ease',
-            transform: 'scaleY(1)',
-          }}
-        />
-        <div
-          style={{
-            position: 'absolute',
-            top: 10,
-            bottom: 10,
-            right: -4,
-            width: 3,
-            background: `linear-gradient(to bottom,
-              rgba(${currentTheme.impossible}, 0.2),
-              rgba(${currentTheme.shift}, 0.1)
-            )`,
-            boxShadow: `0 0 8px rgba(${currentTheme.shift}, 0.15)`,
-            opacity: 0.6,
-            borderRadius: '0 2px 2px 0',
-            transition: 'all 0.3s ease',
-            transform: 'scaleY(1)',
           }}
         />
 
-        {/* Metallic Screws */}
+        {/* Corner Accent Screws */}
         {[
-          { top: 10, left: 10, angle: '10deg', delay: 0 },
-          { top: 10, right: 10, angle: '22deg', delay: 1.2 },
-          { bottom: 10, left: 10, angle: '-12deg', delay: 2.4 },
-          { bottom: 10, right: 10, angle: '18deg', delay: 3.6 },
+          { top: 16, left: 20, angle: '10deg', delay: 0 },
+          { top: 16, right: 20, angle: '22deg', delay: 1.2 },
         ].map((pos, idx) => (
           <div
             key={idx}
@@ -353,9 +343,10 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
 
         <Toolbar sx={{ 
           height: '100%',
-          maxWidth: 1200,
+          maxWidth: 1600,
+          width: '100%',
           margin: '0 auto',
-          px: isMobile ? 2 : 3,
+          px: { xs: 3, sm: 6, md: 8 },
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',

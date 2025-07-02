@@ -310,7 +310,7 @@ function App() {
             onCallHistoryOpen={() => setShowCallHistory(true)}
           />
           
-          <Container maxWidth="xl" sx={{ mt: { xs: 10, sm: 12 }, pb: { xs: 4, sm: 8 }, px: { xs: 1, sm: 3 } }}>
+          <Container maxWidth="xl" sx={{ mt: { xs: 11, sm: 14 }, pb: { xs: 4, sm: 8 }, px: { xs: 2, sm: 4 } }}>
             {/* Add Contact Section */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
