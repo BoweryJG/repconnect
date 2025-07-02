@@ -19,7 +19,6 @@ import {
 } from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
 import SearchIcon from '@mui/icons-material/Search';
-import FilterListIcon from '@mui/icons-material/FilterList';
 import DownloadIcon from '@mui/icons-material/Download';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import { EnrichedContact } from '../lib/mockData/enrichmentGenerator';
@@ -42,7 +41,7 @@ export const PublicEnrichedDemo: React.FC = () => {
 
   useEffect(() => {
     filterAndSortContacts();
-  }, [contacts, searchQuery, filterSegment, filterSpecialization, sortBy, selectedTab]);
+  }, [contacts, searchQuery, filterSegment, filterSpecialization, sortBy, selectedTab]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const loadEnrichedContacts = async () => {
     try {
