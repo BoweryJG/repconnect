@@ -7,6 +7,7 @@ import {
   TextField,
   IconButton,
   Typography,
+  CircularProgress,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DashboardIcon from '@mui/icons-material/Dashboard';
@@ -25,12 +26,15 @@ import { twilioService } from './services/twilioService';
 import { supabase } from './lib/supabase';
 import { useStore } from './store/useStore';
 import { adaptiveRenderer } from './lib/performance/AdaptiveRenderer';
-import { MissionControlDashboard } from './components/MissionControlDashboard';
 import { SyncDashboard } from './components/SyncDashboard';
 import { AISettings } from './components/AISettings';
 import { PerformanceHistory } from './components/PerformanceHistory';
 import { useResponsive } from './hooks/useResponsive';
-// import { CallHistoryDashboard } from './components/CallHistoryDashboard';
+import { CallHistoryDashboard } from './components/CallHistoryDashboard';
+import { ErrorBoundary } from './components/ErrorBoundary';
+
+// Lazy load heavy components
+const MissionControlDashboard = React.lazy(() => import('./components/MissionControlDashboard').then(module => ({ default: module.MissionControlDashboard })));
 
 function App() {
   const { isMobile } = useResponsive();
@@ -39,7 +43,7 @@ function App() {
   const [showSyncDashboard, setShowSyncDashboard] = useState(false);
   const [showAISettings, setShowAISettings] = useState(false);
   const [showPerformance, setShowPerformance] = useState(false);
-  // const [showCallHistory, setShowCallHistory] = useState(false);
+  const [showCallHistory, setShowCallHistory] = useState(false);
   const [newContactName, setNewContactName] = useState('');
   const [newContactPhone, setNewContactPhone] = useState('');
   const [viewMode, setViewMode] = useState<'rolodex' | 'grid'>('rolodex');
@@ -63,8 +67,7 @@ function App() {
       const { data, error } = await supabase
         .from('contacts')
         .select('*')
-        .order('created_at', { ascending: false })
-        .limit(50); // Add limit to avoid loading 5000+ contacts at once
+        .order('created_at', { ascending: false });
       
       if (error) {
         console.error('Supabase error:', error);
@@ -284,9 +287,10 @@ function App() {
   };
 
   return (
-    <ThemeProvider theme={premiumTheme}>
-      <CssBaseline />
-      <div
+    <ErrorBoundary>
+      <ThemeProvider theme={premiumTheme}>
+        <CssBaseline />
+        <div
         style={{
           minHeight: '100vh',
           position: 'relative',
@@ -307,7 +311,7 @@ function App() {
             onMissionControlOpen={() => setShowMissionControl(true)}
             onAISettingsOpen={() => setShowAISettings(true)}
             onPerformanceOpen={() => setShowPerformance(true)}
-            onCallHistoryOpen={() => {/* setShowCallHistory(true) */}}
+            onCallHistoryOpen={() => setShowCallHistory(true)}
           />
           
           <div style={{ padding: isMobile ? '8px' : '12px', paddingTop: isMobile ? '80px' : '96px' }}>
@@ -828,10 +832,12 @@ function App() {
         />
 
         {/* Mission Control Dashboard */}
-        <MissionControlDashboard
-          isOpen={showMissionControl}
-          onClose={() => setShowMissionControl(false)}
-        />
+        <React.Suspense fallback={<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}><CircularProgress /></div>}>
+          <MissionControlDashboard
+            isOpen={showMissionControl}
+            onClose={() => setShowMissionControl(false)}
+          />
+        </React.Suspense>
 
         {/* AI Settings Modal */}
         <AISettings
@@ -845,11 +851,11 @@ function App() {
           onClose={() => setShowPerformance(false)}
         />
 
-        {/* Call History Dashboard - temporarily disabled for build */}
-        {/* <CallHistoryDashboard
+        {/* Call History Dashboard */}
+        <CallHistoryDashboard
           open={showCallHistory}
           onClose={() => setShowCallHistory(false)}
-        /> */}
+        />
 
         {/* Sync Dashboard Modal */}
         <AnimatePresence>
@@ -901,6 +907,7 @@ function App() {
         </AnimatePresence>
       </div>
     </ThemeProvider>
+    </ErrorBoundary>
   );
 }
 
