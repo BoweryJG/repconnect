@@ -338,8 +338,7 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
           maxWidth: 1600,
           width: '100%',
           margin: '0 auto',
-          paddingLeft: { xs: 24, sm: 48, md: 64 },
-          paddingRight: { xs: 24, sm: 48, md: 64 },
+          px: { xs: 3, sm: 6, md: 8 },
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
@@ -358,6 +357,7 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
               transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
               transformStyle: 'preserve-3d',
               cursor: 'pointer',
+              flexShrink: 0,
             }}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -437,8 +437,10 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
             <div style={{ 
               display: 'flex', 
               gap: 8,
-              flex: 1,
+              flex: '1 1 auto',
               justifyContent: 'center',
+              minWidth: 0,
+              overflow: 'hidden',
             }}>
               {[
                 { icon: <ContactsIcon />, label: 'Contacts', color: currentTheme.shift, onClick: () => window.scrollTo({ top: 0, behavior: 'smooth' }) },
@@ -453,10 +455,8 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                   onClick={item.onClick}
                   sx={{
                     position: 'relative',
-                    paddingLeft: 12,
-                    paddingRight: 12,
-                    paddingTop: 6,
-                    paddingBottom: 6,
+                    px: 1.5,
+                    py: 0.75,
                     borderRadius: '8px',
                     color: 'text.secondary',
                     fontSize: '12px',
@@ -503,17 +503,15 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
           )}
 
           {/* Right Actions */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? 8 : 12 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? 8 : 12, flexShrink: 0 }}>
             {/* Quantum Dialer Button */}
             <Button
               startIcon={!isMobile && <DialpadIcon sx={{ fontSize: 16 }} />}
               onClick={onDialerOpen}
               sx={{
                 position: 'relative',
-                paddingLeft: isMobile ? 12 : 16,
-                paddingRight: isMobile ? 12 : 16,
-                paddingTop: isMobile ? 6 : 8,
-                paddingBottom: isMobile ? 6 : 8,
+                px: isMobile ? 1.5 : 2,
+                py: isMobile ? 0.75 : 1,
                 borderRadius: '8px',
                 background: `linear-gradient(135deg, ${theme.palette.primary.main}, rgb(${currentTheme.shift}))`,
                 color: 'white',
@@ -581,10 +579,8 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                 <Button
                   onClick={onAIToggle}
                   sx={{
-                    paddingLeft: 12,
-                    paddingRight: 12,
-                    paddingTop: 6,
-                    paddingBottom: 6,
+                    px: 1.5,
+                    py: 0.75,
                     borderRadius: '8px',
                     background: aiEnabled 
                       ? `linear-gradient(135deg, rgba(${currentTheme.impossible}, 0.2), rgba(${currentTheme.shift}, 0.2))`
