@@ -3,7 +3,6 @@ import {
   Card,
   CardContent,
   Typography,
-  Box,
   Chip,
   IconButton,
   Collapse,
@@ -84,19 +83,19 @@ export const EnrichedContactCard: React.FC<EnrichedContactCardProps> = ({ contac
       }}>
         <CardContent>
           {/* Header Section */}
-          <Box style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
-            <Box style={{ flex: 1 }}>
-              <Typography variant="h5" style={{ fontWeight: 700, marginBottom: 4 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
+            <div style={{ flex: 1 }}>
+              <Typography variant="h5" sx={{ fontWeight: 700, mb: 0.5 }}>
                 {contact.name}
               </Typography>
               <Typography variant="subtitle1" color="text.secondary">
                 {contact.title} • {contact.yearsExperience} years experience
               </Typography>
-              <Typography variant="body2" color="primary" style={{ marginTop: 4 }}>
+              <Typography variant="body2" color="primary" sx={{ mt: 0.5 }}>
                 {contact.practice_name}
               </Typography>
-            </Box>
-            <Box style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+            </div>
+            <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
               <Chip
                 label={contact.segment}
                 size="small"
@@ -119,15 +118,15 @@ export const EnrichedContactCard: React.FC<EnrichedContactCardProps> = ({ contac
                   fontWeight: 600
                 }}
               />
-            </Box>
-          </Box>
+            </div>
+          </div>
 
           {/* Heat Score and Ratings */}
-          <Box style={{ marginBottom: 24 }}>
-            <Box style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 8 }}>
-              <Box style={{ flex: 1 }}>
+          <div style={{ marginBottom: 24 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 8 }}>
+              <div style={{ flex: 1 }}>
                 <Typography variant="caption" color="text.secondary">Heat Score</Typography>
-                <Box style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                   <LinearProgress
                     variant="determinate"
                     value={contact.heatScore}
@@ -148,11 +147,11 @@ export const EnrichedContactCard: React.FC<EnrichedContactCardProps> = ({ contac
                   <Typography variant="h6" sx={{ fontWeight: 700 }}>
                     {contact.heatScore}
                   </Typography>
-                </Box>
-              </Box>
-              <Box>
+                </div>
+              </div>
+              <div>
                 <Typography variant="caption" color="text.secondary">Overall Rating</Typography>
-                <Box style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                   <StarIcon style={{ color: '#ffd93d', fontSize: 20 }} />
                   <Typography variant="h6" style={{ fontWeight: 600 }}>
                     {contact.overallRating}
@@ -160,13 +159,13 @@ export const EnrichedContactCard: React.FC<EnrichedContactCardProps> = ({ contac
                   <Typography variant="caption" color="text.secondary">
                     ({contact.totalReviews} reviews)
                   </Typography>
-                </Box>
-              </Box>
-            </Box>
-          </Box>
+                </div>
+              </div>
+            </div>
+          </div>
 
           {/* Quick Actions */}
-          <Box style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
+          <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
             <Tooltip title={contact.email}>
               <IconButton size="small" sx={{ backgroundColor: 'rgba(99, 102, 241, 0.1)' }}>
                 <EmailIcon fontSize="small" />
@@ -200,10 +199,10 @@ export const EnrichedContactCard: React.FC<EnrichedContactCardProps> = ({ contac
                 <LinkedInIcon fontSize="small" />
               </IconButton>
             </Tooltip>
-          </Box>
+          </div>
 
           {/* Key Info Chips */}
-          <Box style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 16 }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 16 }}>
             {contact.acceptingNewPatients && (
               <Chip
                 icon={<CheckCircleIcon />}
@@ -238,10 +237,10 @@ export const EnrichedContactCard: React.FC<EnrichedContactCardProps> = ({ contac
                 variant="outlined"
               />
             )}
-          </Box>
+          </div>
 
           {/* Expand Button */}
-          <Box style={{ display: 'flex', justifyContent: 'center' }}>
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
             <IconButton
               onClick={() => setExpanded(!expanded)}
               sx={{
@@ -251,7 +250,7 @@ export const EnrichedContactCard: React.FC<EnrichedContactCardProps> = ({ contac
             >
               <ExpandMoreIcon />
             </IconButton>
-          </Box>
+          </div>
 
           {/* Expanded Content */}
           <Collapse in={expanded}>
@@ -263,30 +262,30 @@ export const EnrichedContactCard: React.FC<EnrichedContactCardProps> = ({ contac
                 <Typography variant="h6" style={{ marginBottom: 16, fontWeight: 600 }}>
                   Contact Information
                 </Typography>
-                <Box style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                  <Box style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                     <EmailIcon fontSize="small" color="action" />
                     <Typography variant="body2">{contact.email}</Typography>
-                  </Box>
-                  <Box style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                     <PhoneIcon fontSize="small" color="action" />
                     <Typography variant="body2">{contact.phone}</Typography>
-                  </Box>
-                  <Box style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                     <SmartphoneIcon fontSize="small" color="action" />
                     <Typography variant="body2">{contact.mobile}</Typography>
-                  </Box>
-                  <Box style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                     <FaxIcon fontSize="small" color="action" />
                     <Typography variant="body2">{contact.fax}</Typography>
-                  </Box>
-                  <Box style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                     <LanguageIcon fontSize="small" color="action" />
                     <Link href={`https://${contact.website}`} target="_blank" rel="noopener">
                       {contact.website}
                     </Link>
-                  </Box>
-                </Box>
+                  </div>
+                </div>
               </Grid>
 
               {/* Location */}
@@ -294,16 +293,16 @@ export const EnrichedContactCard: React.FC<EnrichedContactCardProps> = ({ contac
                 <Typography variant="h6" style={{ marginBottom: 16, fontWeight: 600 }}>
                   Location
                 </Typography>
-                <Box style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}>
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}>
                   <LocationOnIcon fontSize="small" color="action" />
-                  <Box>
+                  <div>
                     <Typography variant="body2">{contact.address}</Typography>
                     {contact.suite && <Typography variant="body2">{contact.suite}</Typography>}
                     <Typography variant="body2">
                       {contact.city}, {contact.state} {contact.zipCode}
                     </Typography>
-                  </Box>
-                </Box>
+                  </div>
+                </div>
               </Grid>
 
               {/* Professional Info */}
@@ -313,32 +312,32 @@ export const EnrichedContactCard: React.FC<EnrichedContactCardProps> = ({ contac
                 </Typography>
                 <Typography variant="body2" style={{ marginBottom: 16 }}>{contact.bio}</Typography>
                 
-                <Box style={{ marginBottom: 16 }}>
+                <div style={{ marginBottom: 16 }}>
                   <Typography variant="subtitle2" style={{ marginBottom: 8 }}>Education</Typography>
                   {contact.education.map((edu, index) => (
                     <Typography key={index} variant="body2" color="text.secondary">
                       • {edu}
                     </Typography>
                   ))}
-                </Box>
+                </div>
 
-                <Box style={{ marginBottom: 16 }}>
+                <div style={{ marginBottom: 16 }}>
                   <Typography variant="subtitle2" style={{ marginBottom: 8 }}>Certifications</Typography>
-                  <Box style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
                     {contact.certifications.map((cert, index) => (
                       <Chip key={index} label={cert} size="small" variant="outlined" />
                     ))}
-                  </Box>
-                </Box>
+                  </div>
+                </div>
 
-                <Box style={{ marginBottom: 16 }}>
+                <div style={{ marginBottom: 16 }}>
                   <Typography variant="subtitle2" style={{ marginBottom: 8 }}>Languages</Typography>
-                  <Box style={{ display: 'flex', gap: 8 }}>
+                  <div style={{ display: 'flex', gap: 8 }}>
                     {contact.languages.map((lang, index) => (
                       <Chip key={index} label={lang} size="small" color="primary" variant="outlined" />
                     ))}
-                  </Box>
-                </Box>
+                  </div>
+                </div>
               </Grid>
 
               {/* Practice Details */}
@@ -346,7 +345,7 @@ export const EnrichedContactCard: React.FC<EnrichedContactCardProps> = ({ contac
                 <Typography variant="h6" style={{ marginBottom: 16, fontWeight: 600 }}>
                   Insurance Accepted
                 </Typography>
-                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
                   {contact.insuranceAccepted.slice(0, 5).map((ins, index) => (
                     <Chip key={index} label={ins} size="small" variant="outlined" />
                   ))}
@@ -357,7 +356,7 @@ export const EnrichedContactCard: React.FC<EnrichedContactCardProps> = ({ contac
                       variant="outlined"
                     />
                   )}
-                </Box>
+                </div>
               </Grid>
 
               {/* Office Hours */}
@@ -365,7 +364,7 @@ export const EnrichedContactCard: React.FC<EnrichedContactCardProps> = ({ contac
                 <Typography variant="h6" style={{ marginBottom: 16, fontWeight: 600 }}>
                   Office Hours
                 </Typography>
-                <Box style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: 4 }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: 4 }}>
                   {Object.entries(contact.officeHours).map(([day, hours]) => (
                     <React.Fragment key={day}>
                       <Typography variant="caption" style={{ textTransform: 'capitalize' }}>
@@ -376,7 +375,7 @@ export const EnrichedContactCard: React.FC<EnrichedContactCardProps> = ({ contac
                       </Typography>
                     </React.Fragment>
                   ))}
-                </Box>
+                </div>
               </Grid>
 
               {/* Ratings Breakdown */}
@@ -386,46 +385,46 @@ export const EnrichedContactCard: React.FC<EnrichedContactCardProps> = ({ contac
                 </Typography>
                 <Grid container spacing={2}>
                   <Grid item xs={4}>
-                    <Box style={{ textAlign: 'center' }}>
+                    <div style={{ textAlign: 'center' }}>
                       <Typography variant="caption" color="text.secondary">Google</Typography>
-                      <Box style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
                         <StarIcon style={{ color: '#ffd93d', fontSize: 16 }} />
                         <Typography variant="body2" style={{ fontWeight: 600 }}>
                           {contact.googleRating}
                         </Typography>
-                      </Box>
+                      </div>
                       <Typography variant="caption" color="text.secondary">
                         ({contact.googleReviewCount})
                       </Typography>
-                    </Box>
+                    </div>
                   </Grid>
                   <Grid item xs={4}>
-                    <Box style={{ textAlign: 'center' }}>
+                    <div style={{ textAlign: 'center' }}>
                       <Typography variant="caption" color="text.secondary">Yelp</Typography>
-                      <Box style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
                         <StarIcon style={{ color: '#ffd93d', fontSize: 16 }} />
                         <Typography variant="body2" style={{ fontWeight: 600 }}>
                           {contact.yelpRating}
                         </Typography>
-                      </Box>
+                      </div>
                       <Typography variant="caption" color="text.secondary">
                         ({contact.yelpReviewCount})
                       </Typography>
-                    </Box>
+                    </div>
                   </Grid>
                   <Grid item xs={4}>
-                    <Box style={{ textAlign: 'center' }}>
+                    <div style={{ textAlign: 'center' }}>
                       <Typography variant="caption" color="text.secondary">Healthgrades</Typography>
-                      <Box style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
                         <StarIcon style={{ color: '#ffd93d', fontSize: 16 }} />
                         <Typography variant="body2" style={{ fontWeight: 600 }}>
                           {contact.healthgradesRating}
                         </Typography>
-                      </Box>
+                      </div>
                       <Typography variant="caption" color="text.secondary">
                         ({contact.healthgradesReviewCount})
                       </Typography>
-                    </Box>
+                    </div>
                   </Grid>
                 </Grid>
               </Grid>
@@ -435,7 +434,7 @@ export const EnrichedContactCard: React.FC<EnrichedContactCardProps> = ({ contac
                 <Typography variant="h6" style={{ marginBottom: 16, fontWeight: 600 }}>
                   Social Media & Online Presence
                 </Typography>
-                <Box style={{ display: 'flex', gap: 8 }}>
+                <div style={{ display: 'flex', gap: 8 }}>
                   <Button
                     size="small"
                     startIcon={<LinkedInIcon />}
@@ -476,22 +475,22 @@ export const EnrichedContactCard: React.FC<EnrichedContactCardProps> = ({ contac
                   >
                     Healthgrades
                   </Button>
-                </Box>
+                </div>
               </Grid>
 
               {/* Metadata */}
               <Grid item xs={12}>
                 <Divider style={{ marginTop: 16, marginBottom: 16 }} />
-                <Box style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <Box>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div>
                     <Typography variant="caption" color="text.secondary">
                       Last Enriched: {new Date(contact.lastEnriched).toLocaleDateString()}
                     </Typography>
                     <Typography variant="caption" color="text.secondary" style={{ marginLeft: 16 }}>
                       Source: {contact.enrichmentSource}
                     </Typography>
-                  </Box>
-                  <Box style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                     <Typography variant="caption" color="text.secondary">
                       Data Completeness:
                     </Typography>
@@ -506,8 +505,8 @@ export const EnrichedContactCard: React.FC<EnrichedContactCardProps> = ({ contac
                       color={contact.verificationStatus === 'verified' ? 'success' : 'default'}
                       variant="outlined"
                     />
-                  </Box>
-                </Box>
+                  </div>
+                </div>
               </Grid>
             </Grid>
           </Collapse>
