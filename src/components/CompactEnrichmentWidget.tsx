@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Paper,
   Typography,
@@ -7,7 +7,9 @@ import {
   LinearProgress,
   Chip,
   Collapse,
-  Alert
+  Alert,
+  useMediaQuery,
+  useTheme
 } from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useDropzone } from 'react-dropzone';
@@ -26,6 +28,10 @@ interface CompactEnrichmentWidgetProps {
 }
 
 export const CompactEnrichmentWidget: React.FC<CompactEnrichmentWidgetProps> = ({ onEnrichmentComplete }) => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isTablet = useMediaQuery(theme.breakpoints.down('md'));
+  
   const [expanded, setExpanded] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -133,26 +139,54 @@ export const CompactEnrichmentWidget: React.FC<CompactEnrichmentWidgetProps> = (
     });
   };
 
-  return (
-    <Paper
-      sx={{
-        position: 'fixed',
-        top: 100,
+  // Calculate dynamic positioning
+  const getWidgetStyles = () => {
+    const baseStyles = {
+      position: 'fixed' as const,
+      background: 'rgba(255, 255, 255, 0.03)',
+      border: '1px solid rgba(255, 255, 255, 0.1)',
+      borderRadius: '16px',
+      overflow: 'hidden',
+      transition: 'all 0.3s ease',
+      zIndex: 1000,
+      boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)'
+    };
+
+    if (isMobile) {
+      return {
+        ...baseStyles,
+        top: 'auto',
+        bottom: 20,
+        right: 10,
+        left: 10,
+        width: 'auto',
+        maxWidth: expanded ? '100%' : 200,
+        transform: expanded ? 'scale(1)' : 'scale(0.8)',
+        transformOrigin: 'bottom right'
+      };
+    } else if (isTablet) {
+      return {
+        ...baseStyles,
+        top: 80,
         right: 20,
+        width: expanded ? 350 : 240,
+      };
+    } else {
+      return {
+        ...baseStyles,
+        top: 90,
+        right: 40,
         width: expanded ? 400 : 280,
-        background: 'rgba(255, 255, 255, 0.03)',
-        border: '1px solid rgba(255, 255, 255, 0.1)',
-        borderRadius: '16px',
-        overflow: 'hidden',
-        transition: 'all 0.3s ease',
-        zIndex: 1000,
-        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)'
-      }}
-    >
+      };
+    }
+  };
+
+  return (
+    <Paper sx={getWidgetStyles()}>
       {/* Header */}
       <div
         style={{
-          padding: '12px 16px',
+          padding: isMobile ? '8px 12px' : '12px 16px',
           background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%)',
           borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
           cursor: 'pointer',
@@ -162,9 +196,9 @@ export const CompactEnrichmentWidget: React.FC<CompactEnrichmentWidgetProps> = (
         }}
         onClick={() => !isProcessing && setExpanded(!expanded)}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <AutoFixHighIcon sx={{ color: '#EC4899', fontSize: 20 }} />
-          <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? 6 : 8 }}>
+          <AutoFixHighIcon sx={{ color: '#EC4899', fontSize: isMobile ? 16 : 20 }} />
+          <Typography variant={isMobile ? "caption" : "subtitle2"} sx={{ fontWeight: 600 }}>
             Instant Lead Enricher
           </Typography>
           {enrichedCount > 0 && !isProcessing && (
@@ -188,7 +222,7 @@ export const CompactEnrichmentWidget: React.FC<CompactEnrichmentWidgetProps> = (
 
       {/* Content */}
       <Collapse in={expanded}>
-        <div style={{ padding: 16 }}>
+        <div style={{ padding: isMobile ? 12 : 16 }}>
           {!file && !isProcessing ? (
             <>
               <div
