@@ -233,6 +233,24 @@ Jane,Smith,jane@example.com,Tech Co`],
               >
                 Try with sample data
               </Button>
+              
+              <Button
+                variant="text"
+                size="small"
+                fullWidth
+                sx={{ 
+                  mt: 1,
+                  color: 'primary.main',
+                  textDecoration: 'underline',
+                  '&:hover': {
+                    textDecoration: 'underline',
+                    backgroundColor: 'rgba(99, 102, 241, 0.08)'
+                  }
+                }}
+                onClick={() => window.open('/demo', '_blank')}
+              >
+                View 40 Enriched Contacts Demo →
+              </Button>
             </>
           ) : isProcessing ? (
             <div style={{ textAlign: 'center' }}>

@@ -6,6 +6,7 @@ import { premiumTheme } from './theme/premiumTheme';
 import App from './App';
 import { LeadEnrichmentLanding } from './components/LeadEnrichmentLanding';
 import { EnrichmentResults } from './components/EnrichmentResults';
+import { PublicEnrichedDemo } from './components/PublicEnrichedDemo';
 import { ErrorBoundary } from './components/ErrorBoundary';
 
 export const AppRouter: React.FC = () => {
@@ -21,6 +22,7 @@ export const AppRouter: React.FC = () => {
             {/* Lead enrichment routes */}
             <Route path="/enrich" element={<LeadEnrichmentLanding />} />
             <Route path="/enrich/results" element={<EnrichmentResults />} />
+            <Route path="/demo" element={<PublicEnrichedDemo />} />
             
             {/* Redirect any unknown routes to home */}
             <Route path="*" element={<Navigate to="/" replace />} />
