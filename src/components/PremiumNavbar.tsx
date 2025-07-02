@@ -118,7 +118,7 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
         left: 0,
         right: 0,
         zIndex: 1200,
-        paddingTop: 0,
+        padding: isMobile ? '8px' : '12px',
       }}
     >
       <AppBar
@@ -127,10 +127,11 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
         sx={{
           position: 'relative',
           left: 0,
-          transform: scrolled ? 'translateY(-8px) translateZ(50px)' : 'translateY(0)',
-          width: '100vw',
+          transform: scrolled ? 'scale(0.995) translateZ(50px)' : 'scale(1)',
+          width: '100%',
           maxWidth: 'none',
           height: isMobile ? 64 : 72,
+          borderRadius: '16px',
           backdropFilter: 'blur(20px) saturate(180%)',
           WebkitBackdropFilter: 'blur(20px) saturate(180%)',
           background: `linear-gradient(to right,
@@ -140,11 +141,7 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
             ${alpha('#1e1e1e', 0.9)} 90%,
             ${alpha('#1a1a1a', 0.95)} 100%
           )`,
-          borderTop: 'none',
-          borderLeft: 'none', 
-          borderRight: 'none',
-          borderBottom: `2px solid ${alpha('#ffffff', scrolled ? 0.15 : 0.1)}`,
-          borderRadius: 0,
+          border: `1px solid ${alpha('#ffffff', scrolled ? 0.12 : 0.08)}`,
           boxShadow: scrolled
             ? `0 16px 50px ${alpha('#000000', 0.5)},
                0 0 30px rgba(${currentTheme.impossible}, 0.12),
@@ -202,29 +199,22 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
           },
         } as any}
       >
-        {/* Full-width gradient edge */}
+        {/* Bottom gradient accent */}
         <div
           style={{
             position: 'absolute',
-            bottom: -2,
-            left: 0,
-            right: 0,
-            height: 4,
+            bottom: 0,
+            left: '10%',
+            right: '10%',
+            height: 2,
             background: `linear-gradient(to right,
               transparent,
-              rgba(${currentTheme.impossible}, 0.6) 10%,
-              rgba(${currentTheme.shift}, 0.8) 25%,
-              rgba(${currentTheme.deep}, 0.6) 50%,
-              rgba(${currentTheme.shift}, 0.8) 75%,
-              rgba(${currentTheme.impossible}, 0.6) 90%,
+              rgba(${currentTheme.impossible}, 0.4) 20%,
+              rgba(${currentTheme.shift}, 0.6) 50%,
+              rgba(${currentTheme.impossible}, 0.4) 80%,
               transparent
             )`,
-            boxShadow: `
-              0 2px 20px rgba(${currentTheme.shift}, 0.4),
-              0 0 40px rgba(${currentTheme.impossible}, 0.2)
-            `,
-            filter: 'blur(1px)',
-            opacity: scrolled ? 1 : 0.7,
+            opacity: scrolled ? 0.8 : 0.5,
             transition: 'all 0.3s ease',
           }}
         />

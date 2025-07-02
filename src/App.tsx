@@ -310,7 +310,8 @@ function App() {
             onCallHistoryOpen={() => setShowCallHistory(true)}
           />
           
-          <Container maxWidth="xl" sx={{ mt: { xs: 11, sm: 14 }, pb: { xs: 4, sm: 8 }, px: { xs: 2, sm: 4 } }}>
+          <div style={{ padding: isMobile ? '8px' : '12px', paddingTop: isMobile ? '88px' : '108px' }}>
+            <Container maxWidth="xl" sx={{ pb: { xs: 4, sm: 8 }, px: { xs: 2, sm: 4 } }}>
             {/* Add Contact Section */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -801,6 +802,7 @@ function App() {
               </motion.div>
             )}
           </Container>
+          </div>
         </div>
         
         {/* Call Interface Overlay */}
