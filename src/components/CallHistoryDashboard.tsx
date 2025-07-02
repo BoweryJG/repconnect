@@ -154,7 +154,7 @@ export const CallHistoryDashboard: React.FC<CallHistoryDashboardProps> = ({ open
   const [selectedTab, setSelectedTab] = useState(0);
   const [filters, setFilters] = useState<CallHistoryFilters>({});
   const [showFilters, setShowFilters] = useState(false);
-  const [selectedCalls, setSelectedCalls] = useState<Set<string>>(new Set());
+  const [selectedCalls] = useState<Set<string>>(new Set());
 
   const {
     calls,
