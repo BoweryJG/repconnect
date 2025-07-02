@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { supabase } from '../lib/supabase';
-import { CallAnalysisRecord, CallSummary } from '../types/callSummary';
+import { CallAnalysisRecord } from '../types/callSummary';
 
 export interface CallHistoryItem {
   id: string;
@@ -195,6 +195,7 @@ export const useCallHistory = (options: UseCallHistoryOptions = {}) => {
   // Initial fetch and refetch when filters change
   useEffect(() => {
     fetchCalls(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters]);
 
   // Fetch when page changes
@@ -202,6 +203,7 @@ export const useCallHistory = (options: UseCallHistoryOptions = {}) => {
     if (page > 0) {
       fetchCalls();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
 
   // Export functions
@@ -210,7 +212,8 @@ export const useCallHistory = (options: UseCallHistoryOptions = {}) => {
     // For now, we'll just log the intent
     console.log('Export to PDF:', callIds || 'all calls');
     // TODO: Implement PDF export
-  }, [calls]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const exportToCSV = useCallback(async (callIds?: string[]) => {
     const callsToExport = callIds 

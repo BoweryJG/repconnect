@@ -21,19 +21,15 @@ import {
   Collapse,
   Stack,
   Divider,
-  ToggleButton,
-  ToggleButtonGroup,
   InputAdornment,
   Alert,
   CircularProgress,
-  Tooltip,
   Tab,
   Tabs,
 } from '@mui/material';
 import {
   Search as SearchIcon,
   FilterList as FilterIcon,
-  Download as DownloadIcon,
   Refresh as RefreshIcon,
   Phone as PhoneIcon,
   PhoneInTalk as PhoneInTalkIcon,
@@ -43,8 +39,6 @@ import {
   Stop as StopIcon,
   ExpandMore as ExpandMoreIcon,
   ExpandLess as ExpandLessIcon,
-  TrendingUp as TrendingUpIcon,
-  TrendingDown as TrendingDownIcon,
   SentimentSatisfied as SentimentSatisfiedIcon,
   SentimentNeutral as SentimentNeutralIcon,
   SentimentDissatisfied as SentimentDissatisfiedIcon,
@@ -58,9 +52,8 @@ import {
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useCallHistory, CallHistoryFilters } from '../hooks/useCallHistory';
-import { CallSummary } from '../types/callSummary';
 
 interface AudioPlayerProps {
   url: string;
@@ -168,7 +161,6 @@ export const CallHistoryDashboard: React.FC<CallHistoryDashboardProps> = ({ open
     loading,
     error,
     hasMore,
-    totalCount,
     stats,
     loadMore,
     refresh,
@@ -184,17 +176,17 @@ export const CallHistoryDashboard: React.FC<CallHistoryDashboardProps> = ({ open
     setExpandedCallId(prev => prev === callId ? null : callId);
   };
 
-  const handleSelectCall = (callId: string) => {
-    setSelectedCalls(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(callId)) {
-        newSet.delete(callId);
-      } else {
-        newSet.add(callId);
-      }
-      return newSet;
-    });
-  };
+  // const handleSelectCall = (callId: string) => {
+  //   setSelectedCalls(prev => {
+  //     const newSet = new Set(prev);
+  //     if (newSet.has(callId)) {
+  //       newSet.delete(callId);
+  //     } else {
+  //       newSet.add(callId);
+  //     }
+  //     return newSet;
+  //   });
+  // };
 
   const handleExport = (format: 'pdf' | 'csv') => {
     const callIds = selectedCalls.size > 0 ? Array.from(selectedCalls) : undefined;
