@@ -19,11 +19,11 @@ interface LeadHeatMapProps {
   leads: EnrichedLead[];
 }
 
-interface HeatMapCell {
-  lead: EnrichedLead;
-  x: number;
-  y: number;
-}
+// interface HeatMapCell {
+//   lead: EnrichedLead;
+//   x: number;
+//   y: number;
+// }
 
 export const LeadHeatMap: React.FC<LeadHeatMapProps> = ({ leads }) => {
   const [groupBy, setGroupBy] = useState<'industry' | 'companySize' | 'segment'>('industry');
