@@ -39,7 +39,7 @@ function App() {
   const [showSyncDashboard, setShowSyncDashboard] = useState(false);
   const [showAISettings, setShowAISettings] = useState(false);
   const [showPerformance, setShowPerformance] = useState(false);
-  const [showCallHistory, setShowCallHistory] = useState(false);
+  // const [showCallHistory, setShowCallHistory] = useState(false);
   const [newContactName, setNewContactName] = useState('');
   const [newContactPhone, setNewContactPhone] = useState('');
   const [viewMode, setViewMode] = useState<'rolodex' | 'grid'>('rolodex');
@@ -307,7 +307,7 @@ function App() {
             onMissionControlOpen={() => setShowMissionControl(true)}
             onAISettingsOpen={() => setShowAISettings(true)}
             onPerformanceOpen={() => setShowPerformance(true)}
-            onCallHistoryOpen={() => setShowCallHistory(true)}
+            onCallHistoryOpen={() => {/* setShowCallHistory(true) */}}
           />
           
           <div style={{ padding: isMobile ? '8px' : '12px', paddingTop: isMobile ? '80px' : '96px' }}>
