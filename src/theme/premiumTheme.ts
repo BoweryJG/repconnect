@@ -1,18 +1,45 @@
 import { createTheme } from '@mui/material/styles';
 
+// Pipeline color palette
+export const pipelineColors = {
+  // Main pipeline colors
+  pipeBlue: '#0EA5E9',
+  pipeBlueDark: '#0284C7',
+  pipeBlueLight: '#60A5FA',
+  
+  // Data flow colors
+  pipePurple: '#A855F7',
+  pipePurpleDark: '#9333EA',
+  pipePurpleLight: '#C084FC',
+  
+  // Hot lead pipes
+  pipeOrange: '#F97316',
+  pipeOrangeDark: '#EA580C',
+  pipeRed: '#DC2626',
+  
+  // Success/active pipes
+  pipeGreen: '#10B981',
+  pipeGreenDark: '#059669',
+  
+  // Flow particles
+  particleGlow: '#60A5FA',
+  particlePink: '#F472B6',
+  particleWhite: '#FFFFFF',
+};
+
 export const premiumTheme = createTheme({
   palette: {
     mode: 'dark',
     primary: {
-      main: '#6366F1', // Indigo
-      light: '#818CF8',
-      dark: '#4F46E5',
+      main: pipelineColors.pipeBlue, // Changed to pipeline blue
+      light: pipelineColors.pipeBlueLight,
+      dark: pipelineColors.pipeBlueDark,
       contrastText: '#FFFFFF',
     },
     secondary: {
-      main: '#EC4899', // Pink
-      light: '#F472B6',
-      dark: '#DB2777',
+      main: pipelineColors.pipePurple, // Changed to pipeline purple
+      light: pipelineColors.pipePurpleLight,
+      dark: pipelineColors.pipePurpleDark,
       contrastText: '#FFFFFF',
     },
     error: {
