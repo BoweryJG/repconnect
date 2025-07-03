@@ -33,7 +33,8 @@ export const FlowParticle: React.FC<FlowParticleProps> = ({
         ` : 'none',
         pointerEvents: 'none',
         zIndex: 100,
-      }}
+        offsetPath: path ? `path('${path}')` : undefined,
+      } as any}
       initial={{ 
         opacity: 0,
         scale: 0,
@@ -50,9 +51,6 @@ export const FlowParticle: React.FC<FlowParticleProps> = ({
         repeat: Infinity,
         ease: 'linear',
       }}
-      style={{
-        offsetPath: path ? `path('${path}')` : undefined,
-      } as any}
     />
   );
 };

@@ -8,6 +8,8 @@ import StarBorderIcon from '@mui/icons-material/StarBorder';
 import MessageIcon from '@mui/icons-material/Message';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+import { SimplePipelineBorder } from './effects/PipelineBorder';
+import { pipelineColors } from '../theme/premiumTheme';
 // Premium glassmorphism styles will be defined inline
 
 interface PremiumContactCardProps {
@@ -50,13 +52,19 @@ export const PremiumContactCard: React.FC<PremiumContactCardProps> = ({ contact,
   };
 
   return (
-    <motion.div
-      style={{ position: 'relative', height: 280 }}
-      onHoverStart={() => setIsHovered(true)}
-      onHoverEnd={() => setIsHovered(false)}
-      whileHover={{ scale: 1.02, transition: { duration: 0.2 } }}
-      whileTap={{ scale: 0.98 }}
+    <SimplePipelineBorder
+      color={contact.isFavorite ? pipelineColors.pipeOrange : isHovered ? pipelineColors.pipeBlue : pipelineColors.pipeBlue}
+      borderWidth={isHovered ? 2 : 1}
+      glow={isHovered || contact.isFavorite}
+      style={{ borderRadius: 20 }}
     >
+      <motion.div
+        style={{ position: 'relative', height: 280 }}
+        onHoverStart={() => setIsHovered(true)}
+        onHoverEnd={() => setIsHovered(false)}
+        whileHover={{ scale: 1.02, transition: { duration: 0.2 } }}
+        whileTap={{ scale: 0.98 }}
+      >
       <AnimatePresence mode="wait">
         <motion.div
           key={isFlipped ? 'back' : 'front'}
@@ -81,7 +89,6 @@ export const PremiumContactCard: React.FC<PremiumContactCardProps> = ({ contact,
                 background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(236, 72, 153, 0.05) 100%)',
                 backdropFilter: 'blur(20px) saturate(180%)',
                 WebkitBackdropFilter: 'blur(20px) saturate(180%)',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
                 boxShadow: contact.isFavorite 
                   ? '0 0 20px rgba(99, 102, 241, 0.5), 0 0 40px rgba(99, 102, 241, 0.3)' 
                   : '0 8px 32px 0 rgba(0, 0, 0, 0.2)',
@@ -378,5 +385,6 @@ export const PremiumContactCard: React.FC<PremiumContactCardProps> = ({ contact,
         </motion.div>
       </AnimatePresence>
     </motion.div>
+    </SimplePipelineBorder>
   );
 };

@@ -17,6 +17,7 @@ import { DigitalRolodex } from './components/DigitalRolodex';
 import { CallInterface } from './components/CallInterface';
 import { PremiumGradientBackground } from './components/effects/PremiumGradientBackground';
 import { PipelineBackground } from './components/effects/PipelineBackground';
+import { SubtlePipelineBackground } from './components/effects/SubtlePipelineBackground';
 import { VirtualizedContactGrid } from './components/VirtualizedContactGrid';
 import { QuantumDialer } from './components/QuantumDialer';
 import { PremiumNavbar } from './components/PremiumNavbar';
@@ -293,8 +294,8 @@ function App() {
           background: '#0A0A0B',
         }}
       >
-        {/* Premium Gradient Background */}
-        <PipelineBackground variant="default" interactive={true} />
+        {/* Subtle Pipeline Background */}
+        <SubtlePipelineBackground />
         
         {/* Main App */}
         <div style={{ position: 'relative', zIndex: 1 }}>
