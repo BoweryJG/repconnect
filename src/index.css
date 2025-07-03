@@ -11,3 +11,8 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* Hide scrollbar for nav buttons container */
+.nav-buttons-container::-webkit-scrollbar {
+  display: none;
+}

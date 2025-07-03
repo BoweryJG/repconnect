@@ -79,6 +79,7 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
   const theme = useTheme();
   const { isMobile } = useResponsive();
   const isTablet = useMediaQuery(theme.breakpoints.down('md'));
+  const isCompact = useMediaQuery(theme.breakpoints.down('lg')); // Hide nav at larger breakpoint
   const [scrolled, setScrolled] = useState(false);
   const [scrollOffset, setScrollOffset] = useState(0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -435,17 +436,21 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
           </motion.div>
 
           {/* Center Navigation - Desktop Only */}
-          {!isMobile && (
-            <div style={{ 
-              display: 'flex', 
-              gap: isTablet ? 4 : 8,
-              flex: '1 1 auto',
-              justifyContent: 'center',
-              minWidth: 0,
-              overflow: 'hidden',
-              paddingLeft: 8,
-              paddingRight: 8,
-            }}>
+          {!isCompact && (
+            <div 
+              className="nav-buttons-container"
+              style={{ 
+                display: 'flex', 
+                gap: 6,
+                flex: '1 1 auto',
+                justifyContent: 'center',
+                minWidth: 0,
+                overflow: 'auto',
+                paddingLeft: 16,
+                paddingRight: 16,
+                scrollbarWidth: 'none',
+                msOverflowStyle: 'none',
+              } as React.CSSProperties}>
               {[
                 { icon: <ContactsIcon />, label: 'Contacts', color: currentTheme.shift, onClick: () => window.scrollTo({ top: 0, behavior: 'smooth' }) },
                 { icon: <AutoFixHighIcon />, label: 'Enrich Leads', color: currentTheme.deep, onClick: () => window.open('/enrich', '_blank') },
@@ -455,18 +460,20 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
               ].map((item, idx) => (
                 <Button
                   key={idx}
-                  startIcon={React.cloneElement(item.icon, { sx: { fontSize: 16 } })}
+                  startIcon={React.cloneElement(item.icon, { sx: { fontSize: { xs: 14, sm: 15, md: 16 } } })}
                   onClick={item.onClick}
                   sx={{
                     position: 'relative',
-                    px: isTablet ? 1 : 1.5,
-                    py: isTablet ? 0.5 : 0.75,
+                    px: { xs: 1, sm: 1.25, md: 1.5 },
+                    py: { xs: 0.5, sm: 0.625, md: 0.75 },
                     borderRadius: '8px',
                     color: 'text.secondary',
-                    fontSize: isTablet ? '11px' : '12px',
+                    fontSize: { xs: '11px', sm: '11px', md: '12px' },
                     fontWeight: 500,
                     textTransform: 'none',
                     minWidth: 'auto',
+                    whiteSpace: 'nowrap',
+                    flexShrink: 0,
                     background: alpha('#ffffff', 0.02),
                     border: '1px solid transparent',
                     overflow: 'hidden',
@@ -577,7 +584,7 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
             </Button>
 
             {/* Desktop Actions */}
-            {!isMobile && (
+            {!isCompact && (
               <>
                 {/* AI Toggle */}
                 <Button
@@ -667,8 +674,8 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
               </>
             )}
 
-            {/* Mobile Menu Button */}
-            {isMobile && (
+            {/* Mobile/Tablet Menu Button */}
+            {isCompact && (
               <IconButton
                 onClick={() => setMobileMenuOpen(true)}
                 sx={{
