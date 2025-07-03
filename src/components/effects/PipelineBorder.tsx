@@ -131,7 +131,9 @@ export const PipelineBorder: React.FC<PipelineBorderProps> = ({
             boxShadow: `0 0 8px ${pipelineColors.particleGlow}`,
             pointerEvents: 'none',
             zIndex: 2,
-          }}
+            offsetPath: `path('M ${borderRadius} 2 L ${`calc(100% - ${borderRadius}px)`} 2 Q ${`calc(100% - 2px)`} 2 ${`calc(100% - 2px)`} ${borderRadius} L ${`calc(100% - 2px)`} ${`calc(100% - ${borderRadius}px)`} Q ${`calc(100% - 2px)`} ${`calc(100% - 2px)`} ${`calc(100% - ${borderRadius}px)`} ${`calc(100% - 2px)`} L ${borderRadius} ${`calc(100% - 2px)`} Q 2 ${`calc(100% - 2px)`} 2 ${`calc(100% - ${borderRadius}px)`} L 2 ${borderRadius} Q 2 2 ${borderRadius} 2')`,
+            offsetRotate: '0deg',
+          } as any}
           animate={{
             offsetDistance: ['0%', '100%'],
           }}
@@ -141,10 +143,6 @@ export const PipelineBorder: React.FC<PipelineBorderProps> = ({
             ease: 'linear',
             delay: (particle.id / particleCount) * pulseSpeed * 2,
           }}
-          style={{
-            offsetPath: `path('M ${borderRadius} 2 L ${`calc(100% - ${borderRadius}px)`} 2 Q ${`calc(100% - 2px)`} 2 ${`calc(100% - 2px)`} ${borderRadius} L ${`calc(100% - 2px)`} ${`calc(100% - ${borderRadius}px)`} Q ${`calc(100% - 2px)`} ${`calc(100% - 2px)`} ${`calc(100% - ${borderRadius}px)`} ${`calc(100% - 2px)`} L ${borderRadius} ${`calc(100% - 2px)`} Q 2 ${`calc(100% - 2px)`} 2 ${`calc(100% - ${borderRadius}px)`} L 2 ${borderRadius} Q 2 2 ${borderRadius} 2')`,
-            offsetRotate: '0deg',
-          } as any}
         />
       ))}
 

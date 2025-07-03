@@ -25,14 +25,15 @@ import { supabase } from '../lib/supabase';
 
 interface CompactEnrichmentWidgetProps {
   onEnrichmentComplete?: (leads: any[]) => void;
+  embedded?: boolean; // When true, removes fixed positioning
 }
 
-export const CompactEnrichmentWidget: React.FC<CompactEnrichmentWidgetProps> = ({ onEnrichmentComplete }) => {
+export const CompactEnrichmentWidget: React.FC<CompactEnrichmentWidgetProps> = ({ onEnrichmentComplete, embedded = false }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const isTablet = useMediaQuery(theme.breakpoints.down('md'));
   
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(embedded && (isMobile || isTablet));
   const [file, setFile] = useState<File | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -142,19 +143,44 @@ export const CompactEnrichmentWidget: React.FC<CompactEnrichmentWidgetProps> = (
   // Calculate dynamic positioning
   const getWidgetStyles = () => {
     const baseStyles = {
-      position: 'fixed' as const,
       background: 'rgba(255, 255, 255, 0.03)',
       border: '1px solid rgba(255, 255, 255, 0.1)',
       borderRadius: '16px',
       overflow: 'hidden',
       transition: 'all 0.3s ease',
-      zIndex: 1000,
       boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)'
+    };
+
+    // For embedded mode, return simplified styles
+    if (embedded) {
+      const widthMap = {
+        mobile: { expanded: 240, collapsed: 140 },
+        tablet: { expanded: 220, collapsed: 130 },
+        desktop: { expanded: 180, collapsed: 100 }
+      };
+      
+      const currentSize = isMobile ? 'mobile' : isTablet ? 'tablet' : 'desktop';
+      const width = widthMap[currentSize];
+      
+      return {
+        ...baseStyles,
+        width: expanded ? width.expanded : 'auto',
+        minWidth: expanded ? (width.expanded - 40) : width.collapsed,
+        maxWidth: expanded ? (width.expanded + 40) : (width.collapsed + 20),
+        fontSize: isMobile ? '0.875rem' : isTablet ? '0.8rem' : '0.75rem',
+      };
+    }
+
+    // Original fixed positioning styles
+    const fixedStyles = {
+      ...baseStyles,
+      position: 'fixed' as const,
+      zIndex: 1000,
     };
 
     if (isMobile) {
       return {
-        ...baseStyles,
+        ...fixedStyles,
         top: 'auto',
         bottom: 20,
         right: 10,
@@ -166,17 +192,17 @@ export const CompactEnrichmentWidget: React.FC<CompactEnrichmentWidgetProps> = (
       };
     } else if (isTablet) {
       return {
-        ...baseStyles,
-        top: 80,
-        right: 20,
+        ...fixedStyles,
+        top: 140,
+        right: 30,
         width: expanded ? 350 : 240,
       };
     } else {
       return {
-        ...baseStyles,
-        top: 90,
-        right: 40,
-        width: expanded ? 400 : 280,
+        ...fixedStyles,
+        top: 230, // Positioned to align with Quick Add Contact section
+        right: 60, // More padding from right edge
+        width: expanded ? 380 : 260, // Slightly smaller to fit better
       };
     }
   };
@@ -186,7 +212,7 @@ export const CompactEnrichmentWidget: React.FC<CompactEnrichmentWidgetProps> = (
       {/* Header */}
       <div
         style={{
-          padding: isMobile ? '8px 12px' : '12px 16px',
+          padding: embedded ? (isMobile ? '8px 12px' : '6px 10px') : isMobile ? '8px 12px' : '12px 16px',
           background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%)',
           borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
           cursor: 'pointer',
@@ -196,10 +222,10 @@ export const CompactEnrichmentWidget: React.FC<CompactEnrichmentWidgetProps> = (
         }}
         onClick={() => !isProcessing && setExpanded(!expanded)}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? 6 : 8 }}>
-          <AutoFixHighIcon sx={{ color: '#EC4899', fontSize: isMobile ? 16 : 20 }} />
-          <Typography variant={isMobile ? "caption" : "subtitle2"} sx={{ fontWeight: 600 }}>
-            Instant Lead Enricher
+        <div style={{ display: 'flex', alignItems: 'center', gap: embedded ? (isMobile ? 6 : isTablet ? 5 : 4) : isMobile ? 6 : 8 }}>
+          <AutoFixHighIcon sx={{ color: '#EC4899', fontSize: embedded ? (isMobile ? 16 : isTablet ? 14 : 12) : isMobile ? 16 : 20 }} />
+          <Typography variant="caption" sx={{ fontWeight: 600, fontSize: embedded ? (isMobile ? '0.8rem' : isTablet ? '0.75rem' : '0.65rem') : '0.75rem' }}>
+            {embedded ? (isMobile || isTablet ? 'Lead Enricher' : 'Enricher') : 'Instant Lead Enricher'}
           </Typography>
           {enrichedCount > 0 && !isProcessing && (
             <Chip
@@ -215,14 +241,14 @@ export const CompactEnrichmentWidget: React.FC<CompactEnrichmentWidgetProps> = (
             />
           )}
         </div>
-        <IconButton size="small" disabled={isProcessing}>
-          {expanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+        <IconButton size="small" disabled={isProcessing} sx={{ padding: embedded ? (isMobile ? '4px' : isTablet ? '2px' : '1px') : '8px' }}>
+          {expanded ? <ExpandLessIcon sx={{ fontSize: embedded ? (isMobile ? 18 : isTablet ? 16 : 14) : 20 }} /> : <ExpandMoreIcon sx={{ fontSize: embedded ? (isMobile ? 18 : isTablet ? 16 : 14) : 20 }} />}
         </IconButton>
       </div>
 
       {/* Content */}
       <Collapse in={expanded}>
-        <div style={{ padding: isMobile ? 12 : 16 }}>
+        <div style={{ padding: embedded ? 10 : isMobile ? 12 : 16 }}>
           {!file && !isProcessing ? (
             <>
               <div
@@ -230,7 +256,7 @@ export const CompactEnrichmentWidget: React.FC<CompactEnrichmentWidgetProps> = (
                 style={{
                   border: '2px dashed rgba(255, 255, 255, 0.2)',
                   borderRadius: 12,
-                  padding: 24,
+                  padding: embedded ? 16 : 24,
                   textAlign: 'center',
                   cursor: 'pointer',
                   background: isDragActive ? 'rgba(99, 102, 241, 0.1)' : 'transparent',
@@ -238,11 +264,11 @@ export const CompactEnrichmentWidget: React.FC<CompactEnrichmentWidgetProps> = (
                 }}
               >
                 <input {...getInputProps()} />
-                <UploadFileIcon sx={{ fontSize: 40, color: 'rgba(255, 255, 255, 0.4)', mb: 1 }} />
-                <Typography variant="body2" color="text.secondary">
-                  Drop CSV/Excel here
+                <UploadFileIcon sx={{ fontSize: embedded ? (isMobile ? 32 : 24) : 40, color: 'rgba(255, 255, 255, 0.4)', mb: embedded ? 0.5 : 1 }} />
+                <Typography variant="caption" color="text.secondary" sx={{ fontSize: embedded ? (isMobile ? '0.8rem' : '0.65rem') : '0.875rem' }}>
+                  Drop CSV/Excel
                 </Typography>
-                <Typography variant="caption" color="text.secondary">
+                <Typography variant="caption" color="text.secondary" sx={{ fontSize: embedded ? (isMobile ? '0.75rem' : '0.6rem') : '0.75rem' }}>
                   or click to browse
                 </Typography>
               </div>

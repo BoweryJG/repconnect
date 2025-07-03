@@ -52,6 +52,7 @@ function App() {
   const {
     contacts,
     addContact,
+    setContacts,
     activeCall,
     setActiveCall,
     isCallInProgress,
@@ -76,29 +77,28 @@ function App() {
       console.log('Loaded contacts:', data?.length || 0);
       console.log('First contact:', data?.[0]); // Debug first contact
       
-      // Clear existing contacts first to avoid duplicates
+      // Convert Supabase data to Contact format and set all at once
+      const formattedContacts = data?.map(contact => ({
+        id: crypto.randomUUID(),
+        name: `${contact.first_name || ''} ${contact.last_name || ''}`.trim() || 'Unknown',
+        phoneNumber: contact.phone_number || contact.cell || '',
+        email: contact.email,
+        notes: contact.notes || `${contact.summary || ''}\n${contact.tech_interests || ''}`.trim(),
+        tags: [
+          contact.specialty,
+          contact.lead_tier,
+          contact.contact_priority,
+          contact.territory
+        ].filter(Boolean),
+        callCount: 0
+      })) || [];
       
-      // Add contacts to store
-      data?.forEach(contact => {
-        const contactData = {
-          name: `${contact.first_name || ''} ${contact.last_name || ''}`.trim() || 'Unknown',
-          phoneNumber: contact.phone_number || contact.cell || '',
-          email: contact.email,
-          notes: contact.notes || `${contact.summary || ''}\n${contact.tech_interests || ''}`.trim(),
-          tags: [
-            contact.specialty,
-            contact.lead_tier,
-            contact.contact_priority,
-            contact.territory
-          ].filter(Boolean),
-        };
-        console.log('Adding contact:', contactData.name); // Debug each contact
-        addContact(contactData);
-      });
+      // Set all contacts at once, replacing any existing ones
+      setContacts(formattedContacts);
     } catch (error) {
       console.error('Error loading contacts:', error);
     }
-  }, [addContact]);
+  }, [setContacts]);
 
   useEffect(() => {
     console.log('useEffect running, calling loadContacts...');
@@ -341,7 +341,7 @@ function App() {
                   `,
                   overflow: 'hidden',
                   transformStyle: 'preserve-3d',
-                  padding: isMobile ? '16px' : '32px',
+                  padding: isMobile ? '20px' : '36px',
                   marginBottom: isMobile ? '16px' : '32px',
                 }}
               >
@@ -410,25 +410,53 @@ function App() {
                     borderRadius: '0 2px 2px 0',
                   }}
                 />
-                <Typography 
-                  variant="h5" 
-                  gutterBottom 
-                  sx={{ 
-                    fontWeight: 700,
-                    fontSize: { xs: '1.25rem', sm: '1.5rem' },
-                    background: 'linear-gradient(135deg, #FFFFFF 0%, #D1D5DB 100%)',
-                    backgroundClip: 'text',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                  }}
-                >
-                  Quick Add Contact
-                </Typography>
+                {/* Header with title and widget */}
+                <div style={{ 
+                  display: 'flex', 
+                  alignItems: 'flex-start',
+                  marginBottom: isMobile ? '16px' : '24px',
+                  gap: '16px'
+                }}>
+                  <Typography 
+                    variant="h5" 
+                    sx={{ 
+                      fontWeight: 700,
+                      fontSize: { xs: '1.25rem', sm: '1.5rem' },
+                      background: 'linear-gradient(135deg, #FFFFFF 0%, #D1D5DB 100%)',
+                      backgroundClip: 'text',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                      flex: '0 0 auto',
+                      marginRight: 'auto', // Push widget to the left
+                    }}
+                  >
+                    Quick Add Contact
+                  </Typography>
+                  
+                  {/* Instant Lead Enricher */}
+                  <CompactEnrichmentWidget 
+                    embedded={true}
+                    onEnrichmentComplete={(leads) => {
+                      // Add enriched leads to contacts
+                      leads.forEach(lead => {
+                        if (lead.enriched) {
+                          addContact({
+                            name: lead.enriched.fullName || 'Unknown',
+                            phoneNumber: lead.enriched.phone || lead.enriched.mobile || '',
+                            email: lead.enriched.email || '',
+                            notes: `${lead.enriched.company || ''} - ${lead.enriched.title || ''}`,
+                            tags: [lead.enriched.segment, lead.enriched.industry].filter(Boolean)
+                          });
+                        }
+                      });
+                    }}
+                  />
+                </div>
+                
                 <div style={{ 
                   display: 'flex', 
                   flexDirection: isMobile ? 'column' : 'row',
-                  gap: isMobile ? '12px' : '16px', 
-                  marginTop: isMobile ? '16px' : '24px' 
+                  gap: isMobile ? '12px' : '16px'
                 }}>
                   <TextField
                     label="Name"
@@ -902,23 +930,6 @@ function App() {
           )}
         </AnimatePresence>
 
-        {/* Compact Enrichment Widget */}
-        <CompactEnrichmentWidget 
-          onEnrichmentComplete={(leads) => {
-            // Add enriched leads to contacts
-            leads.forEach(lead => {
-              if (lead.enriched) {
-                addContact({
-                  name: lead.enriched.fullName || 'Unknown',
-                  phoneNumber: lead.enriched.phone || lead.enriched.mobile || '',
-                  email: lead.enriched.email || '',
-                  notes: `${lead.enriched.company || ''} - ${lead.enriched.title || ''}`,
-                  tags: [lead.enriched.segment, lead.enriched.industry].filter(Boolean)
-                });
-              }
-            });
-          }}
-        />
       </div>
   );
 }

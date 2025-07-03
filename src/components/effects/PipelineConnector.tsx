@@ -265,7 +265,7 @@ export const PipelineConnector: React.FC<PipelineConnectorProps> = ({
             particleCount={conn.particleCount || 5}
             color={conn.color || '#60A5FA'}
             speed={conn.flowSpeed || 3}
-            active={conn.active !== false}
+            active={conn.active === undefined ? true : conn.active}
           />
         );
       })}

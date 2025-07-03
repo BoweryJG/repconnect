@@ -40,6 +40,7 @@ interface AppState {
   addContact: (contact: Omit<Contact, 'id' | 'callCount'>) => void;
   updateContact: (id: string, updates: Partial<Contact>) => void;
   deleteContact: (id: string) => void;
+  setContacts: (contacts: Contact[]) => void;
   
   // Calls
   calls: Call[];
@@ -96,6 +97,8 @@ export const useStore = create<AppState>()(
       contacts: state.contacts.filter(c => c.id !== id),
       calls: state.calls.filter(call => call.contactId !== id)
     })),
+    
+    setContacts: (contacts) => set({ contacts }),
     
     // Call actions
     addCall: (call) => {

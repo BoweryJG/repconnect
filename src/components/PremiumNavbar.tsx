@@ -6,6 +6,7 @@ import {
   Button, 
   IconButton,
   useTheme,
+  useMediaQuery,
   alpha,
   Drawer,
   List,
@@ -77,6 +78,7 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
 }) => {
   const theme = useTheme();
   const { isMobile } = useResponsive();
+  const isTablet = useMediaQuery(theme.breakpoints.down('md'));
   const [scrolled, setScrolled] = useState(false);
   const [scrollOffset, setScrollOffset] = useState(0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -436,11 +438,13 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
           {!isMobile && (
             <div style={{ 
               display: 'flex', 
-              gap: 8,
+              gap: isTablet ? 4 : 8,
               flex: '1 1 auto',
               justifyContent: 'center',
               minWidth: 0,
               overflow: 'hidden',
+              paddingLeft: 8,
+              paddingRight: 8,
             }}>
               {[
                 { icon: <ContactsIcon />, label: 'Contacts', color: currentTheme.shift, onClick: () => window.scrollTo({ top: 0, behavior: 'smooth' }) },
@@ -455,11 +459,11 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                   onClick={item.onClick}
                   sx={{
                     position: 'relative',
-                    px: 1.5,
-                    py: 0.75,
+                    px: isTablet ? 1 : 1.5,
+                    py: isTablet ? 0.5 : 0.75,
                     borderRadius: '8px',
                     color: 'text.secondary',
-                    fontSize: '12px',
+                    fontSize: isTablet ? '11px' : '12px',
                     fontWeight: 500,
                     textTransform: 'none',
                     minWidth: 'auto',
