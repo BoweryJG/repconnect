@@ -26,7 +26,13 @@ class TranscriptionService {
   private maxReconnectAttempts: number = 5;
 
   constructor() {
-    this.connect();
+    // Only attempt to connect if backend URL is configured
+    const backendUrl = process.env.REACT_APP_BACKEND_URL;
+    if (backendUrl && backendUrl !== 'http://localhost:3001') {
+      this.connect();
+    } else {
+      console.log('[TranscriptionService] No backend URL configured, running without real-time transcription');
+    }
   }
 
   private async connect() {
@@ -85,8 +91,10 @@ class TranscriptionService {
     });
 
     this.socket.on('connect_error', (error: any) => {
-      console.error('[TranscriptionService] Connection error:', error.message);
-      console.error('[TranscriptionService] Error type:', error.type);
+      // Only log first connection error to avoid console spam
+      if (this.reconnectAttempts === 0) {
+        console.warn('[TranscriptionService] Unable to connect to backend transcription service. The app will continue without real-time transcription.');
+      }
     });
 
     this.socket.on('transcription:update', (data: any) => {
@@ -132,14 +140,14 @@ class TranscriptionService {
 
   private handleReconnect() {
     if (this.reconnectAttempts >= this.maxReconnectAttempts) {
-      console.error('Max reconnection attempts reached');
+      console.log('[TranscriptionService] Transcription service unavailable - continuing without real-time features');
       return;
     }
 
     this.reconnectAttempts++;
     const delay = Math.min(1000 * Math.pow(2, this.reconnectAttempts), 30000);
     
-    console.log(`Attempting to reconnect in ${delay}ms...`);
+    // Silent reconnection attempts
     setTimeout(() => {
       this.connect();
     }, delay);

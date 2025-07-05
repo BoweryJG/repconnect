@@ -58,7 +58,7 @@ export const useCallHistory = (options: UseCallHistoryOptions = {}) => {
 
       // Build query
       let query = supabase
-        .from('calls')
+        .from('call_logs')
         .select(`
           *,
           contacts (
@@ -164,7 +164,7 @@ export const useCallHistory = (options: UseCallHistoryOptions = {}) => {
         { 
           event: '*', 
           schema: 'public', 
-          table: 'calls' 
+          table: 'call_logs' 
         },
         (payload) => {
           console.log('Call update:', payload);
