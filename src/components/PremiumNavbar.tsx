@@ -29,6 +29,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import HistoryIcon from '@mui/icons-material/History';
 import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh';
+import GavelIcon from '@mui/icons-material/Gavel';
 import { keyframes } from '@mui/material';
 import { useResponsive } from '../hooks/useResponsive';
 import { CornerScrews } from './effects/PrecisionScrew';
@@ -334,6 +335,7 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
               } as React.CSSProperties}>
               {[
                 { icon: <ContactsIcon />, label: 'Contacts', color: currentTheme.shift, onClick: () => window.scrollTo({ top: 0, behavior: 'smooth' }) },
+                { icon: <GavelIcon />, label: 'Harvey', color: '#FFD700', onClick: () => window.location.href = '/harvey' },
                 { icon: <AutoFixHighIcon />, label: 'Enrich Leads', color: currentTheme.deep, onClick: () => window.open('/enrich', '_blank') },
                 { icon: <SyncIcon />, label: 'AI Sync', color: currentTheme.impossible, onClick: onSyncDashboardOpen },
                 { icon: <BarChartIcon />, label: 'Analytics', color: currentTheme.deep, onClick: onMissionControlOpen },
@@ -620,6 +622,17 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
             >
               <ListItemIcon><ContactsIcon /></ListItemIcon>
               <ListItemText primary="Contacts" />
+            </ListItemButton>
+
+            <ListItemButton 
+              onClick={() => {
+                window.location.href = '/harvey';
+                setMobileMenuOpen(false);
+              }}
+              sx={{ borderRadius: '12px', marginBottom: 8 }}
+            >
+              <ListItemIcon><GavelIcon /></ListItemIcon>
+              <ListItemText primary="Harvey Syndicate" />
             </ListItemButton>
 
             <ListItemButton 

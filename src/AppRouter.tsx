@@ -8,6 +8,8 @@ import { LeadEnrichmentLanding } from './components/LeadEnrichmentLanding';
 import { EnrichmentResults } from './components/EnrichmentResults';
 import { PublicEnrichedDemo } from './components/PublicEnrichedDemo';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { HarveySyndicate } from './components/HarveySyndicate';
+import { HarveyWarRoom } from './components/HarveyWarRoom';
 
 export const AppRouter: React.FC = () => {
   return (
@@ -23,6 +25,10 @@ export const AppRouter: React.FC = () => {
             <Route path="/enrich" element={<LeadEnrichmentLanding />} />
             <Route path="/enrich/results" element={<EnrichmentResults />} />
             <Route path="/demo" element={<PublicEnrichedDemo />} />
+            
+            {/* Harvey Syndicate routes */}
+            <Route path="/harvey" element={<HarveySyndicate />} />
+            <Route path="/harvey/warroom" element={<HarveyWarRoom />} />
             
             {/* Redirect any unknown routes to home */}
             <Route path="*" element={<Navigate to="/" replace />} />
