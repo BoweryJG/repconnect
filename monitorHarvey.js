@@ -31,12 +31,20 @@ async function monitorHarvey() {
   console.log(`📈 Reps Monitored: ${metrics?.length || 0}`);
   
   // Get leaderboard
-  const leaderboard = await harveyCoach.updateLeaderboard();
-  console.log('\n🏆 TODAY\'S LEADERBOARD:');
-  console.log('====================');
-  leaderboard.slice(0, 10).forEach((rep, index) => {
-    console.log(`${index + 1}. ${rep.name} - Harvey Score: ${rep.harveyScore}`);
-  });
+  try {
+    const leaderboard = await harveyCoach.updateLeaderboard();
+    if (leaderboard && leaderboard.length > 0) {
+      console.log('\n🏆 TODAY\'S LEADERBOARD:');
+      console.log('====================');
+      leaderboard.slice(0, 10).forEach((rep, index) => {
+        console.log(`${index + 1}. ${rep.name} - Harvey Score: ${rep.harveyScore}`);
+      });
+    } else {
+      console.log('\n🏆 No leaderboard data yet');
+    }
+  } catch (error) {
+    console.log('\n🏆 Leaderboard temporarily unavailable');
+  }
   
   // Show recent coaching
   if (sessions && sessions.length > 0) {

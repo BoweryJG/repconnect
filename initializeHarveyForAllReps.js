@@ -10,26 +10,54 @@ async function initializeAllReps() {
   console.log('🚀 Initializing Harvey for all sales reps...\n');
   
   try {
-    // Get all active sales reps from your database
-    // Adjust this query based on your actual user/rep table structure
+    // Get all active sales reps from user_profiles table
     const { data: reps, error } = await supabase
-      .from('users')  // or 'sales_reps' - adjust to your table name
-      .select('id, name')
-      .eq('role', 'sales_rep')
-      .eq('active', true);
+      .from('user_profiles')
+      .select('id, first_name, last_name, role')
+      .in('role', ['sales_rep', 'manager']);
     
     if (error) {
       console.error('Failed to fetch reps:', error);
       return;
     }
     
-    console.log(`Found ${reps.length} active sales reps\n`);
+    if (!reps || reps.length === 0) {
+      console.log('No sales reps found. Creating demo reps...');
+      
+      // Create demo reps if none exist
+      const demoReps = [
+        { id: 'demo-rep-001', first_name: 'Mike', last_name: 'Ross', role: 'sales_rep' },
+        { id: 'demo-rep-002', first_name: 'Rachel', last_name: 'Zane', role: 'sales_rep' },
+        { id: 'demo-rep-003', first_name: 'Louis', last_name: 'Litt', role: 'sales_rep' }
+      ];
+      
+      for (const demoRep of demoReps) {
+        const { error: insertError } = await supabase
+          .from('user_profiles')
+          .upsert(demoRep, { onConflict: 'id' });
+        
+        if (insertError) {
+          console.error(`Failed to create demo rep ${demoRep.first_name}:`, insertError);
+        }
+      }
+      
+      // Re-fetch reps
+      const { data: newReps } = await supabase
+        .from('user_profiles')
+        .select('id, first_name, last_name, role')
+        .in('role', ['sales_rep', 'manager']);
+      
+      reps = newReps || [];
+    }
+    
+    console.log(`Found ${reps.length} sales reps\n`);
     
     // Initialize Harvey for each rep
     for (const rep of reps) {
-      console.log(`Initializing Harvey for ${rep.name}...`);
-      const result = await harveyCoach.initializeRep(rep.id, rep.name);
-      console.log(`✓ ${rep.name}: ${result.message}\n`);
+      const fullName = `${rep.first_name} ${rep.last_name}`;
+      console.log(`Initializing Harvey for ${fullName}...`);
+      const result = await harveyCoach.initializeRep(rep.id, fullName);
+      console.log(`✓ ${fullName}: ${result.message}\n`);
     }
     
     console.log('✅ Harvey initialization complete!');
