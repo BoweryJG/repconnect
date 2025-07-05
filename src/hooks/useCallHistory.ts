@@ -59,14 +59,7 @@ export const useCallHistory = (options: UseCallHistoryOptions = {}) => {
       // Build query
       let query = supabase
         .from('call_logs')
-        .select(`
-          *,
-          contacts (
-            id,
-            first_name,
-            last_name
-          )
-        `, { count: 'exact' })
+        .select('*', { count: 'exact' })
         .order('created_at', { ascending: false })
         .range(from, to);
 
@@ -100,9 +93,7 @@ export const useCallHistory = (options: UseCallHistoryOptions = {}) => {
         id: call.id,
         call_sid: call.call_sid,
         contact_id: call.contact_id,
-        contact_name: call.contacts 
-          ? `${call.contacts.first_name || ''} ${call.contacts.last_name || ''}`.trim()
-          : undefined,
+        contact_name: undefined, // TODO: Lookup contact name separately if needed
         phone_number: call.phone_number,
         type: call.type,
         status: call.status,
@@ -233,7 +224,7 @@ export const useCallHistory = (options: UseCallHistoryOptions = {}) => {
 
     const rows = callsToExport.map(call => [
       new Date(call.created_at).toLocaleString(),
-      call.contact_name || 'Unknown',
+      call.contact_name || call.phone_number || 'Unknown',
       call.phone_number,
       call.type,
       call.duration ? `${Math.floor(call.duration / 60)}:${(call.duration % 60).toString().padStart(2, '0')}` : 'N/A',
