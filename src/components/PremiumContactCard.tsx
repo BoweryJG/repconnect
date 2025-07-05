@@ -10,6 +10,7 @@ import ScheduleIcon from '@mui/icons-material/Schedule';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import { SimplePipelineBorder } from './effects/PipelineBorder';
 import { pipelineColors } from '../theme/premiumTheme';
+import { CornerScrews } from './effects/PrecisionScrew';
 // Premium glassmorphism styles will be defined inline
 
 interface PremiumContactCardProps {
@@ -115,6 +116,13 @@ export const PremiumContactCard: React.FC<PremiumContactCardProps> = ({ contact,
                   opacity: isHovered ? 1 : 0,
                   transition: 'opacity 0.5s ease',
                 }}
+              />
+
+              {/* Cartier-Level Precision Screws */}
+              <CornerScrews 
+                size="small"
+                grooveType="phillips"
+                premium={true}
               />
 
               {/* Header */}

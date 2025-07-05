@@ -32,6 +32,7 @@ import AccessibleIcon from '@mui/icons-material/Accessible';
 import VideoCallIcon from '@mui/icons-material/VideoCall';
 import StarIcon from '@mui/icons-material/Star';
 import { EnrichedContact } from '../lib/mockData/enrichmentGenerator';
+import { CornerScrews } from './effects/PrecisionScrew';
 
 interface EnrichedContactCardProps {
   contact: EnrichedContact;
@@ -69,6 +70,7 @@ export const EnrichedContactCard: React.FC<EnrichedContactCardProps> = ({ contac
       transition={{ duration: 0.3 }}
     >
       <Card sx={{
+        position: 'relative',
         background: 'rgba(255, 255, 255, 0.03)',
         border: '1px solid rgba(255, 255, 255, 0.1)',
         borderRadius: '16px',
@@ -79,6 +81,12 @@ export const EnrichedContactCard: React.FC<EnrichedContactCardProps> = ({ contac
           boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)'
         }
       }}>
+        {/* Cartier-Level Precision Screws */}
+        <CornerScrews 
+          size="small"
+          grooveType="phillips"
+          premium={true}
+        />
         <CardContent>
           {/* Header Section */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>

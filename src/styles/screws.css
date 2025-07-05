@@ -1,0 +1,347 @@
+/* Cartier-Level Precision Screw System */
+
+/* Keyframe Animations */
+@keyframes screw-idle-wiggle {
+  0%, 100% { 
+    transform: rotate(var(--screw-angle, 0deg)) translateZ(0); 
+  }
+  25% { 
+    transform: rotate(calc(var(--screw-angle, 0deg) + 1deg)) translateZ(0); 
+  }
+  50% { 
+    transform: rotate(calc(var(--screw-angle, 0deg) - 0.8deg)) translateZ(0); 
+  }
+  75% { 
+    transform: rotate(calc(var(--screw-angle, 0deg) + 0.5deg)) translateZ(0); 
+  }
+}
+
+@keyframes jewel-pulse {
+  0%, 100% { 
+    opacity: 0.6;
+    transform: translate(-50%, -50%) scale(1);
+    filter: brightness(1);
+  }
+  50% { 
+    opacity: 0.9;
+    transform: translate(-50%, -50%) scale(1.2);
+    filter: brightness(1.3);
+  }
+}
+
+@keyframes jewel-glow {
+  0%, 100% { 
+    box-shadow: 
+      0 0 2px rgba(255, 0, 255, 0.8),
+      0 0 4px rgba(0, 255, 255, 0.6),
+      0 0 6px rgba(255, 0, 170, 0.4);
+  }
+  50% { 
+    box-shadow: 
+      0 0 3px rgba(255, 0, 255, 0.9),
+      0 0 6px rgba(0, 255, 255, 0.7),
+      0 0 9px rgba(255, 0, 170, 0.5);
+  }
+}
+
+/* Base Screw Wrapper */
+.screw-wrapper {
+  position: absolute;
+  width: var(--screw-size, 10px);
+  height: var(--screw-size, 10px);
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Screw positions */
+.screw-wrapper.top-left {
+  top: var(--screw-inset, 8px);
+  left: var(--screw-inset, 8px);
+}
+
+.screw-wrapper.top-right {
+  top: var(--screw-inset, 8px);
+  right: var(--screw-inset, 8px);
+}
+
+.screw-wrapper.bottom-left {
+  bottom: var(--screw-inset, 8px);
+  left: var(--screw-inset, 8px);
+}
+
+.screw-wrapper.bottom-right {
+  bottom: var(--screw-inset, 8px);
+  right: var(--screw-inset, 8px);
+}
+
+/* Center positions for special layouts */
+.screw-wrapper.top-center {
+  top: var(--screw-inset, 8px);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.screw-wrapper.bottom-center {
+  bottom: var(--screw-inset, 8px);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Bezel Shadow Ring */
+.screw-bezel {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at center,
+    rgba(0, 0, 0, 0.4) 0%,
+    rgba(0, 0, 0, 0.25) 30%,
+    rgba(0, 0, 0, 0.15) 50%,
+    transparent 70%
+  );
+  box-shadow: 
+    inset 0 2px 4px rgba(0, 0, 0, 0.6),
+    inset 0 -1px 2px rgba(255, 255, 255, 0.1),
+    0 1px 2px rgba(255, 255, 255, 0.05);
+}
+
+/* Main Screw Body */
+.screw {
+  position: absolute;
+  width: calc(100% - 3px);
+  height: calc(100% - 3px);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: 
+    radial-gradient(
+      circle at 35% 35%,
+      #f8f8f8 0%,
+      #e0e0e0 5%,
+      #c8c8c8 15%,
+      #b0b0b0 25%,
+      #909090 40%,
+      #707070 55%,
+      #505050 70%,
+      #303030 85%,
+      #181818 100%
+    );
+  border: 0.5px solid rgba(0, 0, 0, 0.3);
+  box-shadow: 
+    inset 0 1px 2px rgba(255, 255, 255, 0.5),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.7),
+    0 1px 3px rgba(0, 0, 0, 0.8),
+    0 0 4px rgba(0, 0, 0, 0.4);
+  animation: screw-idle-wiggle var(--screw-wiggle-duration, 6s) ease-in-out infinite;
+  animation-delay: var(--screw-delay, 0s);
+  will-change: transform;
+  --screw-angle: var(--angle, 0deg);
+}
+
+/* Groove Container */
+.screw-groove {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 70%;
+  height: 70%;
+  transform: translate(-50%, -50%) rotate(var(--groove-angle, 0deg));
+}
+
+/* Slot Groove (Single Line) */
+.screw-groove.slot::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 10%;
+  right: 10%;
+  height: 1.5px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(0, 0, 0, 0.8) 15%,
+    rgba(0, 0, 0, 0.9) 50%,
+    rgba(0, 0, 0, 0.8) 85%,
+    transparent
+  );
+  transform: translateY(-50%);
+  box-shadow: 
+    0 1px 1px rgba(255, 255, 255, 0.2),
+    0 -1px 1px rgba(0, 0, 0, 0.3);
+}
+
+/* Phillips Groove (Cross) */
+.screw-groove.phillips::before,
+.screw-groove.phillips::after {
+  content: '';
+  position: absolute;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(0, 0, 0, 0.8) 15%,
+    rgba(0, 0, 0, 0.9) 50%,
+    rgba(0, 0, 0, 0.8) 85%,
+    transparent
+  );
+  box-shadow: 
+    1px 0 1px rgba(255, 255, 255, 0.15),
+    -1px 0 1px rgba(0, 0, 0, 0.3);
+}
+
+.screw-groove.phillips::before {
+  top: 15%;
+  bottom: 15%;
+  left: 50%;
+  width: 1.5px;
+  transform: translateX(-50%);
+}
+
+.screw-groove.phillips::after {
+  left: 15%;
+  right: 15%;
+  top: 50%;
+  height: 1.5px;
+  transform: translateY(-50%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(0, 0, 0, 0.8) 15%,
+    rgba(0, 0, 0, 0.9) 50%,
+    rgba(0, 0, 0, 0.8) 85%,
+    transparent
+  );
+  box-shadow: 
+    0 1px 1px rgba(255, 255, 255, 0.15),
+    0 -1px 1px rgba(0, 0, 0, 0.3);
+}
+
+/* Jewel Core */
+.screw-jewel {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 2px;
+  height: 2px;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(
+    circle at center,
+    rgba(255, 255, 255, 0.9) 0%,
+    rgba(255, 0, 255, 0.7) 30%,
+    rgba(0, 255, 255, 0.6) 60%,
+    rgba(255, 0, 170, 0.5) 100%
+  );
+  border-radius: 50%;
+  animation: 
+    jewel-pulse 3s ease-in-out infinite,
+    jewel-glow 4s ease-in-out infinite;
+  animation-delay: var(--jewel-delay, 0s);
+  filter: blur(0.2px);
+}
+
+/* Size Variants */
+.screw-wrapper.small {
+  --screw-size: 8px;
+  --screw-inset: 6px;
+}
+
+.screw-wrapper.medium {
+  --screw-size: 10px;
+  --screw-inset: 8px;
+}
+
+.screw-wrapper.large {
+  --screw-size: 12px;
+  --screw-inset: 10px;
+}
+
+/* Container-specific adjustments */
+.nav-container .screw-wrapper {
+  --screw-size: 8px;
+  --screw-inset: 8px;
+}
+
+.panel .screw-wrapper,
+.card .screw-wrapper {
+  --screw-size: 10px;
+  --screw-inset: 10px;
+}
+
+/* Mobile Responsive Scaling */
+@media (max-width: 768px) {
+  .screw-wrapper {
+    --screw-size: 8px;
+    --screw-inset: 6px;
+  }
+  
+  .screw-wrapper.large {
+    --screw-size: 10px;
+    --screw-inset: 8px;
+  }
+  
+  .screw-jewel {
+    width: 1.5px;
+    height: 1.5px;
+  }
+}
+
+/* Dark theme adjustments */
+@media (prefers-color-scheme: dark) {
+  .screw {
+    background: 
+      radial-gradient(
+        circle at 35% 35%,
+        #e8e8e8 0%,
+        #d0d0d0 5%,
+        #b8b8b8 15%,
+        #a0a0a0 25%,
+        #808080 40%,
+        #606060 55%,
+        #404040 70%,
+        #202020 85%,
+        #101010 100%
+      );
+  }
+}
+
+/* High-end variant for premium components */
+.screw-wrapper.premium .screw {
+  background: 
+    radial-gradient(
+      circle at 35% 35%,
+      #ffffff 0%,
+      #f0f0f0 3%,
+      #e0e0e0 8%,
+      #d0d0d0 15%,
+      #b8b8b8 25%,
+      #a0a0a0 35%,
+      #888888 45%,
+      #707070 55%,
+      #585858 65%,
+      #404040 75%,
+      #282828 85%,
+      #181818 95%,
+      #0a0a0a 100%
+    );
+  box-shadow: 
+    inset 0 1px 3px rgba(255, 255, 255, 0.6),
+    inset 0 -1px 3px rgba(0, 0, 0, 0.8),
+    0 2px 4px rgba(0, 0, 0, 0.9),
+    0 0 6px rgba(0, 0, 0, 0.5),
+    0 0 12px rgba(99, 102, 241, 0.1);
+}
+
+.screw-wrapper.premium .screw-jewel {
+  width: 2.5px;
+  height: 2.5px;
+  background: radial-gradient(
+    circle at center,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(255, 0, 255, 0.8) 25%,
+    rgba(0, 255, 255, 0.7) 50%,
+    rgba(255, 0, 170, 0.6) 75%,
+    rgba(99, 102, 241, 0.5) 100%
+  );
+  filter: blur(0.1px);
+}

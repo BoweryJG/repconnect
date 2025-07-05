@@ -6,6 +6,7 @@ import EmailIcon from '@mui/icons-material/Email';
 import NotesIcon from '@mui/icons-material/Notes';
 // Removed glassmorphism imports - using inline styles for TypeScript compatibility
 import { adaptiveRenderer } from '../lib/performance/AdaptiveRenderer';
+import { CornerScrews } from './effects/PrecisionScrew';
 
 interface ContactCard3DProps {
   contact: {
@@ -103,13 +104,6 @@ export const ContactCard3D: React.FC<ContactCard3DProps> = ({ contact, onClick, 
           .contact-card-3d:hover::before {
             opacity: 1;
           }
-          .screw::after {
-            content: "";
-            position: absolute;
-            inset: 2px;
-            background: linear-gradient(45deg, transparent 45%, #606060 45%, #606060 55%, transparent 55%);
-            border-radius: 50%;
-          }
         `}
       </style>
       <div
@@ -140,73 +134,13 @@ export const ContactCard3D: React.FC<ContactCard3DProps> = ({ contact, onClick, 
           e.currentTarget.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.12)';
         }}
       >
-        {/* Precision Screws - Balanced Bezel Logic */}
-        <div className="screw screw-top-left" style={{
-          position: 'absolute',
-          top: '6px',
-          left: '5%',
-          width: '8px',
-          height: '8px',
-          borderRadius: '50%',
-          background: 'radial-gradient(circle at 30% 30%, #C0C0C0, #808080)',
-          boxShadow: 'inset -1px -1px 2px rgba(0,0,0,0.5), 0 1px 1px rgba(255,255,255,0.3)',
-          transform: 'rotate(10deg)',
-        }} />
-        <div className="screw screw-top-center" style={{
-          position: 'absolute',
-          top: '6px',
-          left: '50%',
-          width: '8px',
-          height: '8px',
-          borderRadius: '50%',
-          background: 'radial-gradient(circle at 30% 30%, #C0C0C0, #808080)',
-          boxShadow: 'inset -1px -1px 2px rgba(0,0,0,0.5), 0 1px 1px rgba(255,255,255,0.3)',
-          transform: 'translateX(-50%) rotate(3deg)',
-        }} />
-        <div className="screw screw-top-right" style={{
-          position: 'absolute',
-          top: '6px',
-          right: '5%',
-          width: '8px',
-          height: '8px',
-          borderRadius: '50%',
-          background: 'radial-gradient(circle at 30% 30%, #C0C0C0, #808080)',
-          boxShadow: 'inset -1px -1px 2px rgba(0,0,0,0.5), 0 1px 1px rgba(255,255,255,0.3)',
-          transform: 'rotate(20deg)',
-        }} />
-        <div className="screw screw-bot-left" style={{
-          position: 'absolute',
-          bottom: '6px',
-          left: '5%',
-          width: '8px',
-          height: '8px',
-          borderRadius: '50%',
-          background: 'radial-gradient(circle at 30% 30%, #C0C0C0, #808080)',
-          boxShadow: 'inset -1px -1px 2px rgba(0,0,0,0.5), 0 1px 1px rgba(255,255,255,0.3)',
-          transform: 'rotate(8deg)',
-        }} />
-        <div className="screw screw-bot-center" style={{
-          position: 'absolute',
-          bottom: '6px',
-          left: '50%',
-          width: '8px',
-          height: '8px',
-          borderRadius: '50%',
-          background: 'radial-gradient(circle at 30% 30%, #C0C0C0, #808080)',
-          boxShadow: 'inset -1px -1px 2px rgba(0,0,0,0.5), 0 1px 1px rgba(255,255,255,0.3)',
-          transform: 'translateX(-50%) rotate(-3deg)',
-        }} />
-        <div className="screw screw-bot-right" style={{
-          position: 'absolute',
-          bottom: '6px',
-          right: '5%',
-          width: '8px',
-          height: '8px',
-          borderRadius: '50%',
-          background: 'radial-gradient(circle at 30% 30%, #C0C0C0, #808080)',
-          boxShadow: 'inset -1px -1px 2px rgba(0,0,0,0.5), 0 1px 1px rgba(255,255,255,0.3)',
-          transform: 'rotate(-10deg)',
-        }} />
+        {/* Cartier-Level Precision Screws with Center Positions */}
+        <CornerScrews 
+          size="medium"
+          grooveType="phillips"
+          premium={true}
+          includeCenter={true}
+        />
 
         {/* Front Face */}
         <div style={frontFace}>

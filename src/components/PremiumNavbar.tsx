@@ -31,20 +31,9 @@ import HistoryIcon from '@mui/icons-material/History';
 import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh';
 import { keyframes } from '@mui/material';
 import { useResponsive } from '../hooks/useResponsive';
+import { CornerScrews } from './effects/PrecisionScrew';
 
 // Animations
-const screwWiggle = keyframes`
-  0%, 100% { transform: rotate(var(--angle)); }
-  25% { transform: rotate(calc(var(--angle) + 1.5deg)); }
-  50% { transform: rotate(calc(var(--angle) - 1deg)); }
-  75% { transform: rotate(calc(var(--angle) + 0.5deg)); }
-`;
-
-const jewelPulse = keyframes`
-  0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
-  50% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.2); }
-`;
-
 const glassOscillate = keyframes`
   0%, 100% { opacity: 0.2; transform: scale(1); }
   50% { opacity: 0.3; transform: scale(1.02); }
@@ -78,7 +67,6 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
 }) => {
   const theme = useTheme();
   const { isMobile } = useResponsive();
-  const isTablet = useMediaQuery(theme.breakpoints.down('md'));
   const isCompact = useMediaQuery(theme.breakpoints.down('lg')); // Hide nav at larger breakpoint
   const [scrolled, setScrolled] = useState(false);
   const [scrollOffset, setScrollOffset] = useState(0);
@@ -222,119 +210,12 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
           }}
         />
 
-        {/* Corner Accent Screws */}
-        {[
-          { top: 8, left: 8, angle: '45deg', delay: 0 },
-          { top: 8, right: 8, angle: '-45deg', delay: 0.3 },
-          { bottom: 8, left: 8, angle: '135deg', delay: 0.6 },
-          { bottom: 8, right: 8, angle: '-135deg', delay: 0.9 },
-        ].map((pos, idx) => (
-          <div
-            key={idx}
-            style={{
-              position: 'absolute',
-              top: pos.top,
-              bottom: pos.bottom,
-              left: pos.left,
-              right: pos.right,
-              width: 6,
-              height: 6,
-              borderRadius: '50%',
-              background: `radial-gradient(circle at center, 
-                ${alpha('#000000', 0.3)} 0%, 
-                ${alpha('#000000', 0.15)} 40%, 
-                transparent 70%
-              )`,
-              boxShadow: `
-                inset 0 1px 2px ${alpha('#000000', 0.5)},
-                inset 0 -1px 1px ${alpha('#ffffff', 0.1)},
-                0 1px 1px ${alpha('#ffffff', 0.05)}`,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              pointerEvents: 'none',
-              zIndex: 2,
-            }}
-          >
-            <div
-              style={{
-                position: 'relative',
-                width: 4,
-                height: 4,
-                background: `
-                  radial-gradient(circle at 30% 30%, #f0f0f0 0%, #d0d0d0 10%, #999 30%, #666 60%, #333 100%),
-                  linear-gradient(135deg, #ddd 0%, #777 100%)`,
-                backgroundSize: '100%, 100%',
-                borderRadius: '50%',
-                boxShadow: `
-                  inset 0 0.5px 1px ${alpha('#ffffff', 0.4)},
-                  inset 0 -0.5px 1px ${alpha('#000000', 0.5)},
-                  0 0.5px 2px ${alpha('#000000', 0.8)},
-                  0 0 3px ${alpha('#000000', 0.3)}`,
-                transform: `rotate(${pos.angle})`,
-                border: `0.5px solid ${alpha('#000000', 0.2)}`,
-                animation: `${screwWiggle} 5s ease-in-out infinite`,
-                animationDelay: `${pos.delay}s`,
-              }}
-            >
-              {/* Phillips head grooves */}
-              <div
-                style={{
-                  position: 'absolute',
-                  top: '50%',
-                  left: '50%',
-                  width: '60%',
-                  height: '0.4px',
-                  background: `linear-gradient(90deg, 
-                    transparent, 
-                    ${alpha('#000000', 0.7)} 20%, 
-                    ${alpha('#000000', 0.7)} 80%, 
-                    transparent
-                  )`,
-                  transform: 'translate(-50%, -50%) rotate(0deg)',
-                  boxShadow: `0 0 1px ${alpha('#ffffff', 0.15)}`,
-                }}
-              />
-              <div
-                style={{
-                  position: 'absolute',
-                  top: '50%',
-                  left: '50%',
-                  width: '0.4px',
-                  height: '60%',
-                  background: `linear-gradient(180deg, 
-                    transparent, 
-                    ${alpha('#000000', 0.7)} 20%, 
-                    ${alpha('#000000', 0.7)} 80%, 
-                    transparent
-                  )`,
-                  transform: 'translate(-50%, -50%)',
-                  boxShadow: `0 0 1px ${alpha('#ffffff', 0.15)}`,
-                }}
-              />
-              {/* Jewel center */}
-              <div
-                style={{
-                  position: 'absolute',
-                  top: '50%',
-                  left: '50%',
-                  width: 1,
-                  height: 1,
-                  transform: 'translate(-50%, -50%)',
-                  background: `radial-gradient(circle at center, 
-                    ${alpha('#ffffff', 0.8)}, 
-                    rgba(${currentTheme.impossible}, 0.6), 
-                    rgba(${currentTheme.deep}, 0.4), 
-                    transparent
-                  )`,
-                  borderRadius: '50%',
-                  opacity: 0.7,
-                  animation: `${jewelPulse} 3s infinite`,
-                }}
-              />
-            </div>
-          </div>
-        ))}
+        {/* Cartier-Level Precision Screws */}
+        <CornerScrews 
+          size="small"
+          grooveType="phillips"
+          premium={true}
+        />
 
         <Toolbar sx={{ 
           height: '100%',

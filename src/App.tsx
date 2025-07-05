@@ -15,8 +15,6 @@ import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import { AnimatePresence, motion } from 'framer-motion';
 import { DigitalRolodex } from './components/DigitalRolodex';
 import { CallInterface } from './components/CallInterface';
-import { PremiumGradientBackground } from './components/effects/PremiumGradientBackground';
-import { PipelineBackground } from './components/effects/PipelineBackground';
 import { SubtlePipelineBackground } from './components/effects/SubtlePipelineBackground';
 import { VirtualizedContactGrid } from './components/VirtualizedContactGrid';
 import { QuantumDialer } from './components/QuantumDialer';
@@ -31,6 +29,7 @@ import { PerformanceHistory } from './components/PerformanceHistory';
 import { useResponsive } from './hooks/useResponsive';
 import { CallHistoryDashboard } from './components/CallHistoryDashboard';
 import { CompactEnrichmentWidget } from './components/CompactEnrichmentWidget';
+import { CornerScrews } from './components/effects/PrecisionScrew';
 
 // Lazy load heavy components
 const MissionControlDashboard = React.lazy(() => import('./components/MissionControlDashboard').then(module => ({ default: module.MissionControlDashboard })));
@@ -345,41 +344,12 @@ function App() {
                   marginBottom: isMobile ? '16px' : '32px',
                 }}
               >
-                {/* Bezel Screws */}
-                <div className="bezel-screws">
-                  {[
-                    { top: 12, left: 12 },
-                    { top: 12, right: 12 },
-                    { bottom: 12, left: 12 },
-                    { bottom: 12, right: 12 }
-                  ].map((pos, idx) => (
-                    <div
-                      key={idx}
-                      style={{
-                        position: 'absolute',
-                        ...pos,
-                        width: 8,
-                        height: 8,
-                        borderRadius: '50%',
-                        background: 'radial-gradient(circle at center, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.15) 40%, transparent 70%)',
-                        boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.5), inset 0 -1px 1px rgba(255, 255, 255, 0.1)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }}
-                    >
-                      <div
-                        style={{
-                          width: 5,
-                          height: 5,
-                          background: 'radial-gradient(circle at 35% 35%, #e0e0e0 0%, #888 40%, #222 100%)',
-                          borderRadius: '50%',
-                          boxShadow: 'inset 0 0.5px 1px rgba(255, 255, 255, 0.3)',
-                        }}
-                      />
-                    </div>
-                  ))}
-                </div>
+                {/* Cartier-Level Precision Screws */}
+                <CornerScrews 
+                  size="medium"
+                  grooveType="phillips"
+                  premium={true}
+                />
                 
                 {/* Edge Mounts */}
                 <div 
