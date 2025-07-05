@@ -65,8 +65,7 @@ export const useCallHistory = (options: UseCallHistoryOptions = {}) => {
             id,
             first_name,
             last_name
-          ),
-          call_analysis (*)
+          )
         `, { count: 'exact' })
         .order('created_at', { ascending: false })
         .range(from, to);
@@ -113,16 +112,17 @@ export const useCallHistory = (options: UseCallHistoryOptions = {}) => {
         recording_url: call.recording_url,
         transcription: call.transcription,
         has_analysis: call.has_analysis,
-        analysis: call.call_analysis?.[0] || null,
+        analysis: null, // TODO: Fetch call_analysis separately if needed
       }));
 
       // Apply sentiment filter if needed (client-side for now)
       let filteredCalls = processedCalls;
-      if (filters.sentiment && processedCalls.length > 0) {
-        filteredCalls = processedCalls.filter(call => 
-          call.analysis?.sentiment_analysis?.overall === filters.sentiment
-        );
-      }
+      // TODO: Implement sentiment filtering when call_analysis is properly linked
+      // if (filters.sentiment && processedCalls.length > 0) {
+      //   filteredCalls = processedCalls.filter(call => 
+      //     call.analysis?.sentiment_analysis?.overall === filters.sentiment
+      //   );
+      // }
 
       if (reset) {
         setCalls(filteredCalls);
@@ -238,8 +238,8 @@ export const useCallHistory = (options: UseCallHistoryOptions = {}) => {
       call.type,
       call.duration ? `${Math.floor(call.duration / 60)}:${(call.duration % 60).toString().padStart(2, '0')}` : 'N/A',
       call.status,
-      call.analysis?.sentiment_analysis?.overall || 'N/A',
-      call.analysis?.executive_summary || 'No summary available'
+      'N/A', // TODO: Get sentiment when call_analysis is properly linked
+      'No summary available' // TODO: Get summary when call_analysis is properly linked
     ]);
 
     const csvContent = [
@@ -265,7 +265,8 @@ export const useCallHistory = (options: UseCallHistoryOptions = {}) => {
     const avgDuration = totalCalls > 0 ? totalDuration / totalCalls : 0;
     
     const sentimentCounts = calls.reduce((acc, call) => {
-      const sentiment = call.analysis?.sentiment_analysis?.overall || 'unknown';
+      // TODO: Get sentiment from call_analysis when properly linked
+      const sentiment = 'unknown';
       acc[sentiment] = (acc[sentiment] || 0) + 1;
       return acc;
     }, {} as Record<string, number>);

@@ -1,0 +1,18 @@
+[Unit]
+Description=Harvey Specter Sales Coach
+After=network.target
+
+[Service]
+Type=simple
+User=jgolden
+WorkingDirectory=/home/jgolden/repconnect1
+ExecStart=/usr/bin/node startHarvey.js
+Restart=always
+RestartSec=10
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=harvey-coach
+Environment=NODE_ENV=production
+
+[Install]
+WantedBy=multi-user.target
