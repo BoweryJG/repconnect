@@ -124,7 +124,7 @@ class HarveyService {
   // Get current metrics and leaderboard
   async getMetrics(): Promise<{ metrics: HarveyMetrics; leaderboard: LeaderboardEntry[] }> {
     try {
-      const response = await fetch(`${this.baseUrl}/api/harvey/metrics`, {
+      const response = await fetch(`${this.baseUrl}/api/harvey/metrics?userId=${this.userId}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('harvey_token')}`,
         },
