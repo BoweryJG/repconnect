@@ -112,7 +112,7 @@ export const useCallHistory = (options: UseCallHistoryOptions = {}) => {
         recording_url: call.recording_url,
         transcription: call.transcription,
         has_analysis: call.has_analysis,
-        analysis: null, // TODO: Fetch call_analysis separately if needed
+        analysis: undefined, // TODO: Fetch call_analysis separately if needed
       }));
 
       // Apply sentiment filter if needed (client-side for now)
