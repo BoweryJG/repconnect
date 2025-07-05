@@ -110,7 +110,7 @@ class HarveyWebRTC {
   }
 
   private async connectWebSocket(): Promise<void> {
-    const wsUrl = process.env.REACT_APP_HARVEY_WS_URL || 'ws://localhost:3001/harvey-ws';
+    const wsUrl = process.env.REACT_APP_HARVEY_WS_URL || 'wss://osbackend-zl1h.onrender.com/harvey-ws';
     
     this.websocket = new WebSocket(wsUrl);
     

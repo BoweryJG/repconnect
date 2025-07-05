@@ -26,13 +26,8 @@ class TranscriptionService {
   private maxReconnectAttempts: number = 5;
 
   constructor() {
-    // Only attempt to connect if backend URL is configured
-    const backendUrl = process.env.REACT_APP_BACKEND_URL;
-    if (backendUrl && backendUrl !== 'http://localhost:3001') {
-      this.connect();
-    } else {
-      console.log('[TranscriptionService] No backend URL configured, running without real-time transcription');
-    }
+    // Always attempt to connect to configured backend
+    this.connect();
   }
 
   private async connect() {
@@ -40,7 +35,7 @@ class TranscriptionService {
       // Get the auth token - temporarily make it optional for testing
       const { data: { session } } = await supabase.auth.getSession();
       
-      const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:3001';
+      const backendUrl = process.env.REACT_APP_BACKEND_URL || 'https://osbackend-zl1h.onrender.com';
       console.log('[TranscriptionService] Connecting to:', `${backendUrl}/call-transcription-ws`);
       console.log('[TranscriptionService] Auth token present:', !!session?.access_token);
       

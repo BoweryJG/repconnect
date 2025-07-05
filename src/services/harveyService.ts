@@ -64,7 +64,7 @@ class HarveyService {
   private metricsCache: HarveyMetrics | null = null;
 
   constructor() {
-    this.baseUrl = process.env.REACT_APP_HARVEY_API_URL || 'http://localhost:3001';
+    this.baseUrl = process.env.REACT_APP_HARVEY_API_URL || 'https://osbackend-zl1h.onrender.com';
   }
 
   // Initialize socket connection for real-time updates
