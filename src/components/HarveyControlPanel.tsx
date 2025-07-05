@@ -3,7 +3,6 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import Slider from '@mui/material/Slider';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import Collapse from '@mui/material/Collapse';
@@ -12,9 +11,7 @@ import Divider from '@mui/material/Divider';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
 import Alert from '@mui/material/Alert';
-import Tooltip from '@mui/material/Tooltip';
 import TextField from '@mui/material/TextField';
 import {
   ExpandMore,
@@ -30,7 +27,6 @@ import {
   Speed,
   LocalFireDepartment,
   Chat,
-  Settings,
   PowerSettingsNew,
 } from '@mui/icons-material';
 import { motion, AnimatePresence } from 'framer-motion';

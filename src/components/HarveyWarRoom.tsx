@@ -8,28 +8,20 @@ import {
   IconButton,
   Chip,
   Avatar,
-  Button,
   LinearProgress,
-  Tooltip,
   Badge,
-  CircularProgress,
 } from '@mui/material';
 import {
-  Phone,
   PhoneInTalk,
-  PhoneMissed,
   Visibility,
   VolumeUp,
   VolumeOff,
-  Timeline,
   TrendingUp,
-  TrendingDown,
-  EmojiEvents,
   Warning,
   Speed,
   Psychology,
 } from '@mui/icons-material';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Sphere, Text } from '@react-three/drei';
 import { harveyService } from '../services/harveyService';
@@ -105,7 +97,6 @@ const CallVisualization: React.FC<{ calls: ActiveCall[] }> = ({ calls }) => {
 export const HarveyWarRoom: React.FC = () => {
   const [activeCalls, setActiveCalls] = useState<ActiveCall[]>([]);
   const [battleMode, setBattleMode] = useState<BattleMode>({ active: false, rep1: null, rep2: null });
-  const [selectedCall, setSelectedCall] = useState<ActiveCall | null>(null);
   const [isListening, setIsListening] = useState<{ [key: string]: boolean }>({});
   const [teamStats, setTeamStats] = useState({
     totalActive: 0,
@@ -222,21 +213,6 @@ export const HarveyWarRoom: React.FC = () => {
     }
   };
 
-  const startBattleMode = (rep1Id: string, rep2Id: string) => {
-    const rep1 = activeCalls.find(call => call.repId === rep1Id);
-    const rep2 = activeCalls.find(call => call.repId === rep2Id);
-    
-    if (rep1 && rep2) {
-      setBattleMode({
-        active: true,
-        rep1,
-        rep2,
-      });
-      
-      // Notify Harvey to start battle mode commentary
-      harveyService.submitVoiceCommand('Start battle mode commentary');
-    }
-  };
 
   const getCallStatusColor = (call: ActiveCall) => {
     if (call.confidence > 70) return '#10B981';
@@ -244,15 +220,6 @@ export const HarveyWarRoom: React.FC = () => {
     return '#EF4444';
   };
 
-  const getVoiceMetricIcon = (metric: string) => {
-    switch (metric) {
-      case 'fast': return <Speed sx={{ color: '#F59E0B' }} />;
-      case 'slow': return <Speed sx={{ color: '#3B82F6' }} />;
-      case 'nervous': return <Warning sx={{ color: '#EF4444' }} />;
-      case 'confident': return <Psychology sx={{ color: '#10B981' }} />;
-      default: return <Psychology />;
-    }
-  };
 
   return (
     <div
@@ -435,7 +402,6 @@ export const HarveyWarRoom: React.FC = () => {
                   call={call}
                   onListen={() => toggleListenToCall(call.id)}
                   isListening={isListening[call.id]}
-                  onSelect={() => setSelectedCall(call)}
                 />
               </motion.div>
             </Grid>

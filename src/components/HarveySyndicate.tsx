@@ -10,10 +10,8 @@ import {
   Chip,
   Avatar,
   LinearProgress,
-  Tooltip,
   Badge,
   Divider,
-  CircularProgress,
   SpeedDial,
   SpeedDialAction,
   SpeedDialIcon,
@@ -24,18 +22,14 @@ import {
   LocalFireDepartment,
   Mic,
   MicOff,
-  Visibility,
   TrendingUp,
-  Warning,
-  Psychology,
   Nightlight,
   VolumeUp,
   Settings,
   Chat,
   PowerSettingsNew,
 } from '@mui/icons-material';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useStore } from '../store/useStore';
+import { motion } from 'framer-motion';
 import { harveyService } from '../services/harveyService';
 import { harveyWebRTC } from '../services/harveyWebRTC';
 import { HarveyControlPanel } from './HarveyControlPanel';
