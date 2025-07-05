@@ -7,6 +7,10 @@ interface DailyVerdict {
   rating: number;
   message: string;
   timestamp: Date;
+  text?: string;
+  audio?: string;
+  tone?: string;
+  advice?: string;
 }
 
 interface HarveyMetrics {
@@ -144,8 +148,8 @@ class HarveyService {
   // Get daily verdict from Harvey
   async getDailyVerdict(): Promise<DailyVerdict> {
     try {
-      const response = await fetch(`${this.baseUrl}/api/harvey/verdict`, {
-        method: 'POST',
+      const response = await fetch(`${this.baseUrl}/api/harvey/verdict?userId=${this.userId}`, {
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('harvey_token')}`,
@@ -215,6 +219,38 @@ class HarveyService {
       return {
         success: false,
         message: error.message || 'Failed to join trial',
+      };
+    }
+  }
+
+  // Submit voice command
+  async submitVoiceCommand(command: string): Promise<{ 
+    response: string; 
+    audio?: string; 
+    action?: string; 
+  }> {
+    try {
+      const response = await fetch(`${this.baseUrl}/api/harvey/voice-command`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('harvey_token')}`,
+        },
+        body: JSON.stringify({ 
+          command, 
+          userId: this.userId 
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to process voice command');
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Error processing voice command:', error);
+      return {
+        response: "I can't process that right now. Check your connection.",
       };
     }
   }

@@ -141,6 +141,14 @@ export const HarveySyndicate: React.FC = () => {
       if (!data.metrics.dailyVerdict) {
         const verdict = await harveyService.getDailyVerdict();
         setMetrics(prev => ({ ...prev, dailyVerdict: verdict }));
+        
+        // Play verdict audio if available
+        if (verdict.audio && audioRef.current) {
+          audioRef.current.src = verdict.audio;
+          audioRef.current.play().catch(err => {
+            console.log('Audio autoplay blocked, user interaction required');
+          });
+        }
       }
       
       // Subscribe to real-time updates
@@ -712,6 +720,9 @@ export const HarveySyndicate: React.FC = () => {
           }}
         />
       </SpeedDial>
+      
+      {/* Hidden audio element for Harvey voice */}
+      <audio ref={audioRef} style={{ display: 'none' }} />
     </div>
   );
 };
