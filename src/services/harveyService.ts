@@ -140,7 +140,19 @@ class HarveyService {
       if (data.metrics && data.leaderboard) {
         // New format: { metrics: {...}, leaderboard: [...] }
         this.metricsCache = data.metrics;
-        return data;
+        
+        // Map reputationPoints to points for leaderboard entries if needed
+        const leaderboard = data.leaderboard.map((entry: any) => ({
+          ...entry,
+          points: entry.points || entry.reputationPoints || 0,
+          id: entry.id || entry.userId,
+          rank: entry.rank || 0
+        }));
+        
+        return {
+          metrics: data.metrics,
+          leaderboard
+        };
       } else {
         // Old format: direct metrics object - convert to expected format
         const metrics = {

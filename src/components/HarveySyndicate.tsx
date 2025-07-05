@@ -516,7 +516,7 @@ export const HarveySyndicate: React.FC = () => {
                       </div>
                     </div>
                     <Typography variant="h6" sx={{ color: '#FFD700' }}>
-                      {rep.points.toLocaleString()}
+                      {(rep.points || 0).toLocaleString()}
                     </Typography>
                   </div>
                 ))}
