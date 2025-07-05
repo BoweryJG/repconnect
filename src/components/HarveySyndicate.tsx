@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
-  Box,
   Typography,
   Paper,
   Grid,
@@ -168,8 +167,8 @@ export const HarveySyndicate: React.FC = () => {
   };
 
   return (
-    <Box
-      sx={{
+    <div
+      style={{
         minHeight: '100vh',
         background: `linear-gradient(135deg, 
           rgba(10, 10, 10, 0.95) 0%, 
@@ -180,8 +179,8 @@ export const HarveySyndicate: React.FC = () => {
       }}
     >
       {/* Ambient background effect */}
-      <Box
-        sx={{
+      <div
+        style={{
           position: 'absolute',
           top: 0,
           left: 0,
@@ -194,14 +193,14 @@ export const HarveySyndicate: React.FC = () => {
         }}
       />
 
-      <Box sx={{ position: 'relative', zIndex: 1, p: 3 }}>
+      <div style={{ position: 'relative', zIndex: 1, padding: '24px' }}>
         {/* Header Section */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <Box sx={{ mb: 4, textAlign: 'center' }}>
+          <div style={{ marginBottom: '32px', textAlign: 'center' }}>
             <Typography
               variant="h2"
               sx={{
@@ -222,7 +221,7 @@ export const HarveySyndicate: React.FC = () => {
             </Typography>
             
             {/* Connection Status */}
-            <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 2 }}>
+            <div style={{ marginTop: '16px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '16px' }}>
               <Badge
                 overlap="circular"
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
@@ -248,17 +247,17 @@ export const HarveySyndicate: React.FC = () => {
                 </Avatar>
               </Badge>
               
-              <Box>
+              <div>
                 <Typography variant="h6" sx={{ color: getStatusColor(metrics.harveyStatus) }}>
                   {metrics.harveyStatus.toUpperCase()} STATUS
                 </Typography>
                 <Typography variant="caption" sx={{ color: 'text.secondary' }}>
                   {isConnected ? 'Harvey is watching' : 'Reconnecting...'}
                 </Typography>
-              </Box>
+              </div>
               
               {/* Voice Controls */}
-              <Box sx={{ display: 'flex', gap: 1 }}>
+              <div style={{ display: 'flex', gap: '8px' }}>
                 <IconButton
                   onClick={toggleMute}
                   sx={{
@@ -277,7 +276,7 @@ export const HarveySyndicate: React.FC = () => {
                 >
                   <VolumeUp sx={{ color: isListening ? '#EC4899' : 'inherit' }} />
                 </IconButton>
-              </Box>
+              </div>
               
               {isAfterDark && (
                 <Chip
@@ -290,8 +289,8 @@ export const HarveySyndicate: React.FC = () => {
                   }}
                 />
               )}
-            </Box>
-          </Box>
+            </div>
+          </div>
         </motion.div>
 
         {/* Daily Verdict Card */}
@@ -312,17 +311,17 @@ export const HarveySyndicate: React.FC = () => {
               }}
             >
               <CardContent>
-                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
                   <Typography variant="h5" sx={{ fontWeight: 700 }}>
                     Today's Verdict
                   </Typography>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <Typography variant="h3" sx={{ color: getVerdictColor(metrics.dailyVerdict.rating) }}>
                       {metrics.dailyVerdict.rating}/10
                     </Typography>
                     <EmojiEvents sx={{ fontSize: 40, color: getVerdictColor(metrics.dailyVerdict.rating) }} />
-                  </Box>
-                </Box>
+                  </div>
+                </div>
                 <Typography variant="h6" sx={{ fontStyle: 'italic', color: 'text.secondary' }}>
                   "{metrics.dailyVerdict.message}"
                 </Typography>
@@ -355,7 +354,7 @@ export const HarveySyndicate: React.FC = () => {
                   Your Standing
                 </Typography>
                 
-                <Box sx={{ mb: 3 }}>
+                <div style={{ marginBottom: '24px' }}>
                   <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1 }}>
                     Reputation Points
                   </Typography>
@@ -376,13 +375,13 @@ export const HarveySyndicate: React.FC = () => {
                       },
                     }}
                   />
-                </Box>
+                </div>
                 
                 <Divider sx={{ my: 2 }} />
                 
                 <Grid container spacing={2}>
                   <Grid item xs={6}>
-                    <Box>
+                    <div>
                       <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                         Current Streak
                       </Typography>
@@ -390,21 +389,21 @@ export const HarveySyndicate: React.FC = () => {
                         {metrics.currentStreak}
                         <LocalFireDepartment sx={{ color: '#EF4444' }} />
                       </Typography>
-                    </Box>
+                    </div>
                   </Grid>
                   <Grid item xs={6}>
-                    <Box>
+                    <div>
                       <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                         Closing Rate
                       </Typography>
                       <Typography variant="h5">
                         {(metrics.closingRate * 100).toFixed(1)}%
                       </Typography>
-                    </Box>
+                    </div>
                   </Grid>
                 </Grid>
                 
-                <Box sx={{ mt: 3 }}>
+                <div style={{ marginTop: '24px' }}>
                   <Button
                     fullWidth
                     variant="contained"
@@ -416,7 +415,7 @@ export const HarveySyndicate: React.FC = () => {
                   >
                     Challenge Harvey
                   </Button>
-                </Box>
+                </div>
               </Paper>
             </motion.div>
           </Grid>
@@ -441,17 +440,18 @@ export const HarveySyndicate: React.FC = () => {
                 </Typography>
                 
                 {leaderboard.map((rep, index) => (
-                  <Box
+                  <div
                     key={rep.id}
-                    sx={{
+                    style={{
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'space-between',
-                      py: 1.5,
+                      paddingTop: '12px',
+                      paddingBottom: '12px',
                       borderBottom: index < leaderboard.length - 1 ? '1px solid rgba(255, 255, 255, 0.1)' : 'none',
                     }}
                   >
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                       <Typography
                         variant="h6"
                         sx={{
@@ -461,19 +461,19 @@ export const HarveySyndicate: React.FC = () => {
                       >
                         #{index + 1}
                       </Typography>
-                      <Box>
+                      <div>
                         <Typography variant="body1" sx={{ fontWeight: 600 }}>
                           {rep.name}
                         </Typography>
                         <Typography variant="caption" sx={{ color: 'text.secondary' }}>
                           {rep.status}
                         </Typography>
-                      </Box>
-                    </Box>
+                      </div>
+                    </div>
                     <Typography variant="h6" sx={{ color: '#FFD700' }}>
                       {rep.points.toLocaleString()}
                     </Typography>
-                  </Box>
+                  </div>
                 ))}
               </Paper>
             </motion.div>
@@ -494,7 +494,7 @@ export const HarveySyndicate: React.FC = () => {
                   height: '100%',
                 }}
               >
-                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
                   <Typography variant="h6" sx={{ fontWeight: 700 }}>
                     Harvey's Hit List
                   </Typography>
@@ -511,33 +511,37 @@ export const HarveySyndicate: React.FC = () => {
                       },
                     }}
                   />
-                </Box>
+                </div>
                 
                 {hotLeads.length === 0 ? (
-                  <Box sx={{ textAlign: 'center', py: 4 }}>
+                  <div style={{ textAlign: 'center', paddingTop: '32px', paddingBottom: '32px' }}>
                     <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                       No hot leads right now. Harvey is hunting...
                     </Typography>
-                  </Box>
+                  </div>
                 ) : (
                   hotLeads.map((lead, index) => (
-                    <Box
+                    <div
                       key={lead.id}
-                      sx={{
-                        p: 2,
-                        mb: 2,
+                      style={{
+                        padding: '16px',
+                        marginBottom: '16px',
                         background: 'rgba(236, 72, 153, 0.1)',
                         border: '1px solid rgba(236, 72, 153, 0.3)',
-                        borderRadius: 2,
+                        borderRadius: '8px',
                         cursor: 'pointer',
                         transition: 'all 0.3s',
-                        '&:hover': {
-                          background: 'rgba(236, 72, 153, 0.2)',
-                          transform: 'translateX(10px)',
-                        },
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = 'rgba(236, 72, 153, 0.2)';
+                        e.currentTarget.style.transform = 'translateX(10px)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = 'rgba(236, 72, 153, 0.1)';
+                        e.currentTarget.style.transform = 'translateX(0)';
                       }}
                     >
-                      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
                         <Typography variant="body1" sx={{ fontWeight: 600 }}>
                           {lead.company}
                         </Typography>
@@ -546,17 +550,17 @@ export const HarveySyndicate: React.FC = () => {
                           size="small"
                           sx={{ background: 'linear-gradient(135deg, #EC4899 0%, #6366F1 100%)' }}
                         />
-                      </Box>
+                      </div>
                       <Typography variant="caption" sx={{ color: 'text.secondary' }}>
                         {lead.industry} • {lead.size}
                       </Typography>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 1 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '8px' }}>
                         <TrendingUp sx={{ fontSize: 16, color: '#10B981' }} />
                         <Typography variant="caption" sx={{ color: '#10B981' }}>
                           {lead.readyScore}% ready to buy
                         </Typography>
-                      </Box>
-                    </Box>
+                      </div>
+                    </div>
                   ))
                 )}
               </Paper>
@@ -571,7 +575,7 @@ export const HarveySyndicate: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.6 }}
           >
-            <Box sx={{ mt: 4 }}>
+            <div style={{ marginTop: '32px' }}>
               <Typography variant="h5" sx={{ mb: 3, fontWeight: 700 }}>
                 Active Trials
               </Typography>
@@ -591,7 +595,7 @@ export const HarveySyndicate: React.FC = () => {
                       }}
                     >
                       <CardContent>
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
                           <Typography variant="h6" sx={{ fontWeight: 700 }}>
                             {trial.name}
                           </Typography>
@@ -602,11 +606,11 @@ export const HarveySyndicate: React.FC = () => {
                               background: trial.difficulty === 'EXTREME' ? '#EF4444' : '#F59E0B',
                             }}
                           />
-                        </Box>
+                        </div>
                         <Typography variant="body2" sx={{ color: 'text.secondary', mb: 2 }}>
                           {trial.description}
                         </Typography>
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                           <Typography variant="caption" sx={{ color: 'text.secondary' }}>
                             {trial.participants} competing
                           </Typography>
@@ -619,16 +623,16 @@ export const HarveySyndicate: React.FC = () => {
                           >
                             Enter Arena
                           </Button>
-                        </Box>
+                        </div>
                       </CardContent>
                     </Card>
                   </Grid>
                 ))}
               </Grid>
-            </Box>
+            </div>
           </motion.div>
         )}
-      </Box>
+      </div>
 
       {/* Hidden audio element for Harvey's voice */}
       <audio ref={audioRef} style={{ display: 'none' }} />
@@ -671,6 +675,6 @@ export const HarveySyndicate: React.FC = () => {
           }}
         />
       </SpeedDial>
-    </Box>
+    </div>
   );
 };
