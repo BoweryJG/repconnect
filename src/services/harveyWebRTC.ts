@@ -224,10 +224,11 @@ class HarveyWebRTC {
     const highFreq = dataArray.slice(dataArray.length / 2).reduce((sum, val) => sum + val, 0);
     
     // Determine tone based on frequency distribution
-    let tone: VoiceAnalysis['tone'] = 'normal';
+    let tone: VoiceAnalysis['tone'] = 'confident';
     if (highFreq > midFreq * 1.5) tone = 'nervous';
     else if (lowFreq > midFreq * 1.5) tone = 'confident';
     else if (volume < 20) tone = 'uncertain';
+    else if (volume > 70) tone = 'aggressive';
     
     // Calculate pace (would need more sophisticated analysis in production)
     const pace = volume > 60 ? 'fast' : volume < 30 ? 'slow' : 'normal';

@@ -128,11 +128,17 @@ export function getIceServers(): RTCIceServer[] {
   }
 
   // Filter out any servers with empty URLs
-  return servers.filter(server => 
-    server.urls && (
-      typeof server.urls === 'string' ? server.urls.length > 0 : server.urls.length > 0
-    )
-  );
+  return servers.filter(server => {
+    if (!server.urls) return false;
+    
+    if (typeof server.urls === 'string') {
+      return server.urls.length > 0;
+    } else if (Array.isArray(server.urls)) {
+      return (server.urls as string[]).length > 0;
+    }
+    
+    return false;
+  });
 }
 
 // Utility to test TURN server connectivity

@@ -23,8 +23,8 @@ export class MoshiWebRTCBridge extends EventEmitter {
   constructor() {
     super();
     this.config = {
-      apiUrl: process.env.REACT_APP_MOSHI_API_URL || 'wss://moshi.kyutai.org/api/v1/stream',
-      apiKey: process.env.REACT_APP_MOSHI_API_KEY || '',
+      apiUrl: 'wss://api.piapi.ai/moshi/v1/stream',
+      apiKey: '4beb44e547c8ef520a575d343315b9d0dae38549',
       sampleRate: 16000, // Moshi expects 16kHz
       language: 'en-US'
     };
@@ -131,16 +131,14 @@ export class MoshiWebRTCBridge extends EventEmitter {
     }
 
     return new Promise((resolve, reject) => {
-      const ws = new WebSocket(this.config.apiUrl, {
-        headers: {
-          'Authorization': `Bearer ${this.config.apiKey}`,
-          'X-Session-ID': sessionId,
-          'X-Sample-Rate': this.config.sampleRate.toString(),
-          'X-Language': this.config.language
-        }
-      });
+      // For browser WebSocket, we need to include auth in the URL
+      const url = new URL(this.config.apiUrl);
+      url.searchParams.set('apiKey', this.config.apiKey);
+      url.searchParams.set('sessionId', sessionId);
+      
+      const ws = new WebSocket(url.toString());
 
-      ws.on('open', () => {
+      ws.onopen = () => {
         console.log(`Connected to Moshi for session ${sessionId}`);
         
         // Send initial configuration
@@ -163,29 +161,29 @@ export class MoshiWebRTCBridge extends EventEmitter {
 
         this.moshiConnections.set(sessionId, ws);
         resolve();
-      });
+      };
 
-      ws.on('message', (data) => {
+      ws.onmessage = (event) => {
         try {
-          const message = JSON.parse(data.toString());
+          const message = JSON.parse(event.data);
           this.handleMoshiMessage(sessionId, message);
         } catch (error) {
           console.error('Error parsing Moshi message:', error);
         }
-      });
+      };
 
-      ws.on('error', (error) => {
+      ws.onerror = (error) => {
         console.error(`Moshi connection error for session ${sessionId}:`, error);
         this.emit('error', { sessionId, error });
         reject(error);
-      });
+      };
 
-      ws.on('close', () => {
+      ws.onclose = () => {
         console.log(`Moshi connection closed for session ${sessionId}`);
         this.moshiConnections.delete(sessionId);
         this.audioBuffers.delete(sessionId);
         this.emit('disconnected', sessionId);
-      });
+      };
     });
   }
 
@@ -193,9 +191,13 @@ export class MoshiWebRTCBridge extends EventEmitter {
     const connection = this.moshiConnections.get(sessionId);
     if (!connection || connection.readyState !== WebSocket.OPEN) return;
 
-    // Convert Int16Array to base64 for transmission
-    const buffer = Buffer.from(audio.buffer);
-    const base64Audio = buffer.toString('base64');
+    // Convert Int16Array to base64 for transmission in browser
+    const bytes = new Uint8Array(audio.buffer, audio.byteOffset, audio.byteLength);
+    let binaryString = '';
+    for (let i = 0; i < bytes.length; i++) {
+      binaryString += String.fromCharCode(bytes[i]);
+    }
+    const base64Audio = btoa(binaryString);
 
     connection.send(JSON.stringify({
       type: 'audio',
@@ -259,9 +261,13 @@ export class MoshiWebRTCBridge extends EventEmitter {
   }
 
   private handleSynthesis(sessionId: string, message: any): void {
-    // Decode base64 audio
-    const audioBuffer = Buffer.from(message.audio, 'base64');
-    const int16Audio = new Int16Array(audioBuffer.buffer, audioBuffer.byteOffset, audioBuffer.length / 2);
+    // Decode base64 audio in browser environment
+    const binaryString = atob(message.audio);
+    const bytes = new Uint8Array(binaryString.length);
+    for (let i = 0; i < binaryString.length; i++) {
+      bytes[i] = binaryString.charCodeAt(i);
+    }
+    const int16Audio = new Int16Array(bytes.buffer, bytes.byteOffset, bytes.length / 2);
 
     // Resample from 16kHz to 48kHz for WebRTC
     const resampledAudio = this.resampleAudio(int16Audio, this.config.sampleRate, 48000);

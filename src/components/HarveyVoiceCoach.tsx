@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import {
-  Box,
   Card,
   CardContent,
   Typography,
@@ -22,7 +21,7 @@ import {
 } from '@mui/icons-material';
 import { WebRTCVoiceInterface } from './WebRTCVoiceInterface';
 import voiceBridgeFactory from '../services/voiceBridgeFactory';
-import { harveyCoach } from '../services/harveyCoach';
+import harveyCoach from '../services/harveyCoach';
 
 interface HarveyVoiceCoachProps {
   repId: string;
@@ -99,16 +98,17 @@ export const HarveyVoiceCoach: React.FC<HarveyVoiceCoachProps> = ({
     if (analysis.metrics) {
       setConversationMetrics(prev => ({
         ...prev,
-        ...analysis.metrics
+        sentiment: analysis.metrics.sentiment as 'positive' | 'negative' | 'neutral',
+        objectionCount: analysis.metrics.objectionCount
       }));
     }
 
     // Add coaching insights
-    if (analysis.insights && analysis.insights.length > 0) {
-      const newInsights: CoachingInsight[] = analysis.insights.map((insight: any) => ({
-        type: insight.type,
-        message: insight.message,
-        confidence: insight.confidence || 0.8,
+    if (analysis.recommendations && analysis.recommendations.length > 0) {
+      const newInsights: CoachingInsight[] = analysis.recommendations.map((recommendation: any) => ({
+        type: recommendation.type,
+        message: recommendation.message,
+        confidence: 0.8,
         timestamp: new Date()
       }));
 
@@ -116,8 +116,14 @@ export const HarveyVoiceCoach: React.FC<HarveyVoiceCoachProps> = ({
     }
 
     // Real-time intervention if needed
-    if (analysis.requiresIntervention) {
-      handleHarveyIntervention(analysis.intervention);
+    if (analysis.recommendations && analysis.recommendations.length > 0) {
+      const highPriorityRecommendation = analysis.recommendations.find((r: any) => r.urgency === 'high') as any;
+      if (highPriorityRecommendation) {
+        handleHarveyIntervention({
+          message: highPriorityRecommendation.message,
+          type: highPriorityRecommendation.type
+        });
+      }
     }
   }, [sessionId, repId, callContext, conversationMetrics]);
 
@@ -135,7 +141,7 @@ export const HarveyVoiceCoach: React.FC<HarveyVoiceCoachProps> = ({
       const emotionResponse = harveyCoach.getEmotionResponse(data.emotion);
       if (emotionResponse) {
         setCoachingInsights(prev => [{
-          type: 'tip',
+          type: 'tip' as const,
           message: emotionResponse,
           confidence: data.confidence,
           timestamp: new Date()
@@ -171,7 +177,7 @@ export const HarveyVoiceCoach: React.FC<HarveyVoiceCoachProps> = ({
 
   const getInsightColor = (type: CoachingInsight['type']) => {
     switch (type) {
-      case 'tip': return 'primary';
+      case 'tip': return 'info';
       case 'warning': return 'warning';
       case 'praise': return 'success';
       case 'suggestion': return 'info';
@@ -179,9 +185,9 @@ export const HarveyVoiceCoach: React.FC<HarveyVoiceCoachProps> = ({
   };
 
   return (
-    <Box sx={{ display: 'flex', gap: 3 }}>
+    <div style={{ display: 'flex', gap: '24px' }}>
       {/* Voice Interface */}
-      <Box sx={{ flex: 1 }}>
+      <div style={{ flex: 1 }}>
         <WebRTCVoiceInterface
           sessionId={sessionId}
           onTranscript={(text, isFinal) => {
@@ -193,13 +199,13 @@ export const HarveyVoiceCoach: React.FC<HarveyVoiceCoachProps> = ({
           autoConnect={false}
           showTranscript={true}
         />
-      </Box>
+      </div>
 
       {/* Harvey Coach Panel */}
-      <Box sx={{ flex: 1, maxWidth: 400 }}>
+      <div style={{ flex: 1, maxWidth: '400px' }}>
         <Card>
           <CardContent>
-            <Box display="flex" alignItems="center" gap={2} mb={3}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px' }}>
               <Avatar
                 sx={{
                   bgcolor: 'primary.main',
@@ -209,12 +215,12 @@ export const HarveyVoiceCoach: React.FC<HarveyVoiceCoachProps> = ({
               >
                 <Psychology fontSize="large" />
               </Avatar>
-              <Box flex={1}>
+              <div style={{ flex: 1 }}>
                 <Typography variant="h6">Harvey AI Coach</Typography>
                 <Typography variant="body2" color="textSecondary">
                   Real-time sales coaching
                 </Typography>
-              </Box>
+              </div>
               {isActive && (
                 <Chip
                   icon={<RecordVoiceOver />}
@@ -223,7 +229,7 @@ export const HarveyVoiceCoach: React.FC<HarveyVoiceCoachProps> = ({
                   size="small"
                 />
               )}
-            </Box>
+            </div>
 
             {/* Conversation Metrics */}
             <Paper sx={{ p: 2, mb: 2, bgcolor: 'grey.50' }}>
@@ -232,19 +238,19 @@ export const HarveyVoiceCoach: React.FC<HarveyVoiceCoachProps> = ({
               </Typography>
               
               <Stack spacing={1}>
-                <Box>
-                  <Box display="flex" justifyContent="space-between">
+                <div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <Typography variant="caption">Talk Ratio</Typography>
                     <Typography variant="caption">{conversationMetrics.talkRatio}%</Typography>
-                  </Box>
+                  </div>
                   <LinearProgress 
                     variant="determinate" 
                     value={conversationMetrics.talkRatio}
                     sx={{ height: 6, borderRadius: 3 }}
                   />
-                </Box>
+                </div>
 
-                <Box display="flex" gap={1}>
+                <div style={{ display: 'flex', gap: '8px' }}>
                   <Chip
                     size="small"
                     icon={<Speed />}
@@ -256,7 +262,7 @@ export const HarveyVoiceCoach: React.FC<HarveyVoiceCoachProps> = ({
                     label={`${conversationMetrics.questionsAsked} Questions`}
                     variant="outlined"
                   />
-                </Box>
+                </div>
 
                 {currentEmotion !== 'neutral' && (
                   <Alert severity="info" sx={{ py: 0.5 }}>
@@ -267,7 +273,7 @@ export const HarveyVoiceCoach: React.FC<HarveyVoiceCoachProps> = ({
             </Paper>
 
             {/* Coaching Insights */}
-            <Box>
+            <div>
               <Typography variant="subtitle2" gutterBottom>
                 Real-time Insights
               </Typography>
@@ -296,17 +302,17 @@ export const HarveyVoiceCoach: React.FC<HarveyVoiceCoachProps> = ({
                   ))
                 )}
               </Stack>
-            </Box>
+            </div>
 
             {/* Harvey's Personality Mode */}
-            <Box mt={2} pt={2} borderTop={1} borderColor="divider">
+            <div style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid #e0e0e0' }}>
               <Typography variant="caption" color="textSecondary">
                 Harvey Mode: {process.env.HARVEY_PERSONALITY_MODE || 'Balanced'}
               </Typography>
-            </Box>
+            </div>
           </CardContent>
         </Card>
-      </Box>
-    </Box>
+      </div>
+    </div>
   );
 };

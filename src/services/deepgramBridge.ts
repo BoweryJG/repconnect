@@ -130,14 +130,11 @@ export class DeepgramBridge extends EventEmitter {
         vad_events: 'true'
       });
 
+      // In browser, we include auth token in URL parameters
+      params.set('token', this.config.apiKey);
       const url = `${this.config.apiUrl}?${params.toString()}`;
       
-      const ws = new WebSocket(url, {
-        headers: {
-          'Authorization': `Token ${this.config.apiKey}`,
-          'User-Agent': 'RepConnect/1.0'
-        }
-      });
+      const ws = new WebSocket(url);
 
       ws.binaryType = 'arraybuffer';
 

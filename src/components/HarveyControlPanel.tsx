@@ -1,24 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import {
-  Box,
-  Paper,
-  Typography,
-  Switch,
-  FormControlLabel,
-  Slider,
-  Button,
-  IconButton,
-  Collapse,
-  Chip,
-  Divider,
-  TextField,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  Alert,
-  Tooltip,
-} from '@mui/material';
+import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
+import Switch from '@mui/material/Switch';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Slider from '@mui/material/Slider';
+import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import Collapse from '@mui/material/Collapse';
+import Chip from '@mui/material/Chip';
+import Divider from '@mui/material/Divider';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import Alert from '@mui/material/Alert';
+import Tooltip from '@mui/material/Tooltip';
+import TextField from '@mui/material/TextField';
 import {
   ExpandMore,
   ExpandLess,
@@ -240,24 +237,24 @@ export const HarveyControlPanel: React.FC<HarveyControlPanelProps> = ({
   };
 
   const content = (
-    <Box style={{ padding: embedded ? '16px' : '24px' }}>
+    <div style={{ padding: embedded ? '16px' : '24px' }}>
       {/* Header */}
-      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
           <Gavel sx={{ fontSize: 28, color: '#FFD700' }} />
           <Typography variant="h5" sx={{ fontWeight: 700 }}>
             Harvey Control Panel
           </Typography>
-        </Box>
+        </div>
         {embedded && (
           <IconButton onClick={() => setExpanded(!expanded)} size="small">
             {expanded ? <ExpandLess /> : <ExpandMore />}
           </IconButton>
         )}
-      </Box>
+      </div>
 
       {/* Master Switch */}
-      <Box sx={{ mb: 3 }}>
+      <div style={{ marginBottom: '24px' }}>
         <FormControlLabel
           control={
             <Switch
@@ -274,23 +271,23 @@ export const HarveyControlPanel: React.FC<HarveyControlPanelProps> = ({
             />
           }
           label={
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <PowerSettingsNew />
               <Typography variant="h6">
                 Harvey {modes.enabled ? 'Active' : 'Offline'}
               </Typography>
-            </Box>
+            </div>
           }
         />
-      </Box>
+      </div>
 
       <Collapse in={expanded}>
         {/* Quick Presets */}
-        <Box sx={{ mb: 3 }}>
+        <div style={{ marginBottom: '24px' }}>
           <Typography variant="subtitle2" sx={{ mb: 1, color: 'text.secondary' }}>
             Quick Presets
           </Typography>
-          <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
             {quickPresets.map((preset) => (
               <Button
                 key={preset.name}
@@ -310,13 +307,13 @@ export const HarveyControlPanel: React.FC<HarveyControlPanelProps> = ({
                 {preset.name}
               </Button>
             ))}
-          </Box>
-        </Box>
+          </div>
+        </div>
 
         <Divider sx={{ my: 2 }} />
 
         {/* Coaching Intensity */}
-        <Box sx={{ mb: 3 }}>
+        <div style={{ marginBottom: '24px' }}>
           <Typography variant="subtitle2" sx={{ mb: 2 }}>
             Coaching Intensity
           </Typography>
@@ -355,16 +352,16 @@ export const HarveyControlPanel: React.FC<HarveyControlPanelProps> = ({
               </MenuItem>
             </Select>
           </FormControl>
-        </Box>
+        </div>
 
         <Divider sx={{ my: 2 }} />
 
         {/* Feature Toggles */}
-        <Box sx={{ mb: 3 }}>
+        <div style={{ marginBottom: '24px' }}>
           <Typography variant="subtitle2" sx={{ mb: 2 }}>
             Features
           </Typography>
-          <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 1 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '8px' }}>
             <FormControlLabel
               control={
                 <Switch
@@ -375,10 +372,10 @@ export const HarveyControlPanel: React.FC<HarveyControlPanelProps> = ({
                 />
               }
               label={
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   {modes.voiceEnabled ? <Mic /> : <MicOff />}
                   <span>Voice Connection</span>
-                </Box>
+                </div>
               }
             />
             
@@ -392,10 +389,10 @@ export const HarveyControlPanel: React.FC<HarveyControlPanelProps> = ({
                 />
               }
               label={
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <EmojiEvents />
                   <span>Daily Verdicts</span>
-                </Box>
+                </div>
               }
             />
             
@@ -409,10 +406,10 @@ export const HarveyControlPanel: React.FC<HarveyControlPanelProps> = ({
                 />
               }
               label={
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <VolumeUp />
                   <span>In-Call Coaching</span>
-                </Box>
+                </div>
               }
             />
             
@@ -426,10 +423,10 @@ export const HarveyControlPanel: React.FC<HarveyControlPanelProps> = ({
                 />
               }
               label={
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <Speed />
                   <span>Battle Mode</span>
-                </Box>
+                </div>
               }
             />
             
@@ -451,10 +448,10 @@ export const HarveyControlPanel: React.FC<HarveyControlPanelProps> = ({
                 />
               }
               label={
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <Warning sx={{ color: '#EF4444' }} />
                   <span>Public Failures</span>
-                </Box>
+                </div>
               }
             />
             
@@ -468,10 +465,10 @@ export const HarveyControlPanel: React.FC<HarveyControlPanelProps> = ({
                 />
               }
               label={
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <Nightlight />
                   <span>After Dark</span>
-                </Box>
+                </div>
               }
             />
             
@@ -485,10 +482,10 @@ export const HarveyControlPanel: React.FC<HarveyControlPanelProps> = ({
                 />
               }
               label={
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <LocalFireDepartment />
                   <span>Signature Style</span>
-                </Box>
+                </div>
               }
             />
             
@@ -502,24 +499,24 @@ export const HarveyControlPanel: React.FC<HarveyControlPanelProps> = ({
                 />
               }
               label={
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <Psychology />
                   <span>Training Mode</span>
-                </Box>
+                </div>
               }
             />
-          </Box>
-        </Box>
+          </div>
+        </div>
 
         <Divider sx={{ my: 2 }} />
 
         {/* Direct Interaction */}
-        <Box sx={{ mb: 3 }}>
+        <div style={{ marginBottom: '24px' }}>
           <Typography variant="subtitle2" sx={{ mb: 2 }}>
             Talk to Harvey
           </Typography>
           
-          <Box sx={{ display: 'flex', gap: 1, mb: 2 }}>
+          <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
             <TextField
               fullWidth
               size="small"
@@ -561,7 +558,7 @@ export const HarveyControlPanel: React.FC<HarveyControlPanelProps> = ({
             >
               <Mic sx={{ color: isListening ? '#EC4899' : 'inherit' }} />
             </IconButton>
-          </Box>
+          </div>
           
           {harveyResponse && (
             <Alert 
@@ -579,15 +576,15 @@ export const HarveyControlPanel: React.FC<HarveyControlPanelProps> = ({
               </Typography>
             </Alert>
           )}
-        </Box>
+        </div>
 
         {/* Status Summary */}
-        <Box
-          sx={{
-            p: 2,
+        <div
+          style={{
+            padding: '16px',
             background: 'rgba(255, 215, 0, 0.05)',
             border: '1px solid rgba(255, 215, 0, 0.2)',
-            borderRadius: 1,
+            borderRadius: '4px',
           }}
         >
           <Typography variant="caption" sx={{ color: 'text.secondary' }}>
@@ -605,9 +602,9 @@ export const HarveyControlPanel: React.FC<HarveyControlPanelProps> = ({
             />{' '}
             mode with {Object.values(modes).filter(v => v === true).length - 2} features enabled.
           </Typography>
-        </Box>
+        </div>
       </Collapse>
-    </Box>
+    </div>
   );
 
   if (embedded) {

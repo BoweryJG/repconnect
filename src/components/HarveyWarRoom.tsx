@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
-  Box,
   Typography,
   Paper,
   Grid,
@@ -120,7 +119,7 @@ export const HarveyWarRoom: React.FC = () => {
   useEffect(() => {
     // Subscribe to real-time call updates
     const unsubscribe = harveyService.subscribeToUpdates((update) => {
-      if (update.type === 'warroom') {
+      if (update.type === 'metrics') {
         handleWarRoomUpdate(update.data);
       }
     });
@@ -256,8 +255,8 @@ export const HarveyWarRoom: React.FC = () => {
   };
 
   return (
-    <Box
-      sx={{
+    <div
+      style={{
         minHeight: '100vh',
         background: 'linear-gradient(135deg, #0A0A0B 0%, #1A1A1B 100%)',
         position: 'relative',
@@ -265,8 +264,8 @@ export const HarveyWarRoom: React.FC = () => {
       }}
     >
       {/* Animated background */}
-      <Box
-        sx={{
+      <div
+        style={{
           position: 'absolute',
           top: 0,
           left: 0,
@@ -278,13 +277,13 @@ export const HarveyWarRoom: React.FC = () => {
         }}
       />
 
-      <Box sx={{ position: 'relative', zIndex: 1, p: 3 }}>
+      <div style={{ position: 'relative', zIndex: 1, padding: '24px' }}>
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          <Box sx={{ mb: 4, textAlign: 'center' }}>
+          <div style={{ marginBottom: '32px', textAlign: 'center' }}>
             <Typography
               variant="h2"
               sx={{
@@ -301,7 +300,7 @@ export const HarveyWarRoom: React.FC = () => {
             <Typography variant="h5" sx={{ color: 'text.secondary' }}>
               Live Performance Theater
             </Typography>
-          </Box>
+          </div>
         </motion.div>
 
         {/* Team Stats Bar */}
@@ -320,47 +319,47 @@ export const HarveyWarRoom: React.FC = () => {
           >
             <Grid container spacing={3} alignItems="center">
               <Grid item xs={12} md={3}>
-                <Box sx={{ textAlign: 'center' }}>
+                <div style={{ textAlign: 'center' }}>
                   <Typography variant="h3" sx={{ color: '#6366F1', fontWeight: 900 }}>
                     {teamStats.totalActive}
                   </Typography>
                   <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                     Active Calls
                   </Typography>
-                </Box>
+                </div>
               </Grid>
               <Grid item xs={12} md={3}>
-                <Box sx={{ textAlign: 'center' }}>
+                <div style={{ textAlign: 'center' }}>
                   <Typography variant="h3" sx={{ color: getCallStatusColor({ confidence: teamStats.avgConfidence } as any), fontWeight: 900 }}>
                     {teamStats.avgConfidence.toFixed(0)}%
                   </Typography>
                   <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                     Avg Confidence
                   </Typography>
-                </Box>
+                </div>
               </Grid>
               <Grid item xs={12} md={3}>
-                <Box sx={{ textAlign: 'center' }}>
+                <div style={{ textAlign: 'center' }}>
                   <Typography variant="h3" sx={{ color: '#10B981', fontWeight: 900 }}>
                     {(teamStats.successRate * 100).toFixed(0)}%
                   </Typography>
                   <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                     Success Rate
                   </Typography>
-                </Box>
+                </div>
               </Grid>
               <Grid item xs={12} md={3}>
-                <Box sx={{ textAlign: 'center' }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1 }}>
+                <div style={{ textAlign: 'center' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
                     <Typography variant="h3" sx={{ color: '#EF4444', fontWeight: 900 }}>
                       {teamStats.hotStreak}
                     </Typography>
                     <TrendingUp sx={{ fontSize: 40, color: '#EF4444' }} />
-                  </Box>
+                  </div>
                   <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                     Hot Streak
                   </Typography>
-                </Box>
+                </div>
               </Grid>
             </Grid>
           </Paper>
@@ -409,11 +408,11 @@ export const HarveyWarRoom: React.FC = () => {
                   <CallCard call={battleMode.rep1} isBattle />
                 </Grid>
                 <Grid item xs={12} md={2}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
                     <Typography variant="h2" sx={{ color: '#EC4899' }}>
                       VS
                     </Typography>
-                  </Box>
+                  </div>
                 </Grid>
                 <Grid item xs={12} md={5}>
                   <CallCard call={battleMode.rep2} isBattle />
@@ -445,16 +444,16 @@ export const HarveyWarRoom: React.FC = () => {
 
         {/* No Active Calls */}
         {activeCalls.length === 0 && (
-          <Box sx={{ textAlign: 'center', py: 8 }}>
+          <div style={{ textAlign: 'center', paddingTop: '64px', paddingBottom: '64px' }}>
             <Typography variant="h5" sx={{ color: 'text.secondary', mb: 2 }}>
               No active calls right now
             </Typography>
             <Typography variant="body1" sx={{ color: 'text.disabled' }}>
               The war room is quiet. Time to make some calls.
             </Typography>
-          </Box>
+          </div>
         )}
-      </Box>
+      </div>
 
       {/* Hidden audio elements for call streams */}
       {Object.keys(isListening).map(callId => (
@@ -464,7 +463,7 @@ export const HarveyWarRoom: React.FC = () => {
           style={{ display: 'none' }}
         />
       ))}
-    </Box>
+    </div>
   );
 };
 
@@ -496,8 +495,8 @@ const CallCard: React.FC<{
     >
       <CardContent>
         {/* Header */}
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
             <Badge
               overlap="circular"
               anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
@@ -515,16 +514,16 @@ const CallCard: React.FC<{
                 {call.repName.charAt(0)}
               </Avatar>
             </Badge>
-            <Box>
+            <div>
               <Typography variant="h6" sx={{ fontWeight: 700 }}>
                 {call.repName}
               </Typography>
               <Typography variant="caption" sx={{ color: 'text.secondary' }}>
                 {call.customerName}
               </Typography>
-            </Box>
-          </Box>
-          <Box sx={{ display: 'flex', gap: 1 }}>
+            </div>
+          </div>
+          <div style={{ display: 'flex', gap: '8px' }}>
             {onListen && (
               <IconButton
                 onClick={(e) => {
@@ -544,19 +543,19 @@ const CallCard: React.FC<{
               size="small"
               sx={{ background: 'rgba(99, 102, 241, 0.2)' }}
             />
-          </Box>
-        </Box>
+          </div>
+        </div>
 
         {/* Confidence Meter */}
-        <Box sx={{ mb: 2 }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+        <div style={{ marginBottom: '16px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
               Confidence
             </Typography>
             <Typography variant="body2" sx={{ color: statusColor, fontWeight: 700 }}>
               {call.confidence}%
             </Typography>
-          </Box>
+          </div>
           <LinearProgress
             variant="determinate"
             value={call.confidence}
@@ -570,10 +569,10 @@ const CallCard: React.FC<{
               },
             }}
           />
-        </Box>
+        </div>
 
         {/* Voice Metrics */}
-        <Box sx={{ display: 'flex', gap: 1, mb: 2 }}>
+        <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
           <Chip
             icon={getVoiceMetricIcon(call.voiceMetrics.pace)}
             label={call.voiceMetrics.pace}
@@ -586,17 +585,17 @@ const CallCard: React.FC<{
             size="small"
             sx={{ background: 'rgba(255, 255, 255, 0.05)' }}
           />
-        </Box>
+        </div>
 
         {/* Harvey's Advice */}
         {call.harveyAdvice && (
-          <Box
-            sx={{
-              p: 2,
+          <div
+            style={{
+              padding: '16px',
               background: 'rgba(236, 72, 153, 0.1)',
               border: '1px solid rgba(236, 72, 153, 0.3)',
-              borderRadius: 1,
-              mb: 2,
+              borderRadius: '4px',
+              marginBottom: '16px',
             }}
           >
             <Typography variant="caption" sx={{ color: '#EC4899', fontWeight: 700 }}>
@@ -605,17 +604,17 @@ const CallCard: React.FC<{
             <Typography variant="body2" sx={{ fontStyle: 'italic' }}>
               "{call.harveyAdvice}"
             </Typography>
-          </Box>
+          </div>
         )}
 
         {/* Spectators */}
         {call.spectators.length > 0 && (
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <Visibility sx={{ fontSize: 16, color: 'text.secondary' }} />
             <Typography variant="caption" sx={{ color: 'text.secondary' }}>
               {call.spectators.length} watching
             </Typography>
-          </Box>
+          </div>
         )}
       </CardContent>
     </Card>

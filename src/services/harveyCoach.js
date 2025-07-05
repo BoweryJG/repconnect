@@ -542,6 +542,185 @@ class HarveyCoach {
     }
     return true;
   }
+
+  // Start voice coaching session (for HarveyVoiceCoach component)
+  async startVoiceCoaching(repId, options = {}) {
+    console.log(`🎤 Harvey voice coaching started for rep ${repId}`);
+    
+    const session = {
+      repId,
+      mode: options.mode || 'real-time',
+      intensity: options.intensity || 'balanced',
+      context: options.context || {},
+      startTime: new Date(),
+      isActive: true
+    };
+
+    this.activeCoachingSessions.set(repId, session);
+
+    // Send initial motivation
+    await this.deliverCoaching(repId, {
+      mode: this.coachingModes.MORNING_MOTIVATOR,
+      message: "Voice coaching is live. I'm listening to every word. Make them count.",
+      severity: 'medium',
+      actionRequired: false
+    });
+
+    return session;
+  }
+
+  // Stop voice coaching session
+  async stopVoiceCoaching(repId) {
+    const session = this.activeCoachingSessions.get(repId);
+    if (session) {
+      session.isActive = false;
+      session.endTime = new Date();
+      this.activeCoachingSessions.delete(repId);
+      
+      console.log(`🎤 Harvey voice coaching ended for rep ${repId}`);
+      return session;
+    }
+    return null;
+  }
+
+  // Get active voice coaching session
+  getVoiceCoachingSession(repId) {
+    return this.activeCoachingSessions.get(repId);
+  }
+
+  // Analyze conversation in real-time
+  async analyzeConversation(data) {
+    const { transcript, repId, context } = data;
+    console.log(`🧠 Harvey analyzing: "${transcript}"`);
+
+    // Real-time analysis
+    const analysis = {
+      transcript,
+      repId,
+      confidence: this.assessConfidence(transcript),
+      objectionHandling: this.detectObjections(transcript),
+      closingAttempts: this.detectClosingAttempts(transcript),
+      sentiment: this.analyzeSentiment(transcript),
+      recommendations: [],
+      metrics: {
+        sentiment: this.analyzeSentiment(transcript),
+        objectionCount: this.detectObjections(transcript).detected ? 1 : 0
+      }
+    };
+
+    // Generate recommendations
+    if (analysis.confidence < 0.6) {
+      analysis.recommendations.push({
+        type: 'confidence',
+        message: "Sound more confident. You're not asking for permission, you're offering a solution.",
+        urgency: 'high'
+      });
+    }
+
+    if (analysis.objectionHandling.detected && !analysis.objectionHandling.handled) {
+      analysis.recommendations.push({
+        type: 'objection',
+        message: "Address that objection head-on. Don't let it hang in the air.",
+        urgency: 'high'
+      });
+    }
+
+    // Trigger coaching if needed
+    if (analysis.recommendations.length > 0) {
+      const session = this.getVoiceCoachingSession(repId);
+      if (session && session.isActive) {
+        await this.deliverCoaching(repId, {
+          mode: this.coachingModes.LIVE_DEMO_MASTER,
+          message: analysis.recommendations[0].message,
+          severity: analysis.recommendations[0].urgency,
+          actionRequired: true
+        });
+      }
+    }
+
+    return analysis;
+  }
+
+  // Assess confidence in speech
+  assessConfidence(transcript) {
+    const weakWords = ['um', 'uh', 'maybe', 'probably', 'i think', 'possibly'];
+    const strongWords = ['will', 'definitely', 'absolutely', 'guarantee', 'proven'];
+    
+    let confidence = 0.7; // baseline
+    
+    weakWords.forEach(word => {
+      if (transcript.toLowerCase().includes(word)) {
+        confidence -= 0.15;
+      }
+    });
+    
+    strongWords.forEach(word => {
+      if (transcript.toLowerCase().includes(word)) {
+        confidence += 0.1;
+      }
+    });
+    
+    return Math.max(0, Math.min(1, confidence));
+  }
+
+  // Detect objections in conversation
+  detectObjections(transcript) {
+    const objectionPatterns = [
+      /too expensive|cost too much|can't afford/i,
+      /think about it|need to discuss|talk to my/i,
+      /not interested|not right now|maybe later/i,
+      /already have|working with someone/i
+    ];
+
+    const detected = objectionPatterns.some(pattern => pattern.test(transcript));
+    const handled = detected && /however|but here's|let me explain|actually/i.test(transcript);
+
+    return { detected, handled };
+  }
+
+  // Detect closing attempts
+  detectClosingAttempts(transcript) {
+    const closingPatterns = [
+      /ready to move forward|let's get started|sign up today/i,
+      /what do you think|does that work|sound good/i,
+      /next steps|move ahead|schedule/i
+    ];
+
+    return closingPatterns.some(pattern => pattern.test(transcript));
+  }
+
+  // Analyze sentiment
+  analyzeSentiment(transcript) {
+    const positiveWords = ['great', 'excellent', 'perfect', 'love', 'excited'];
+    const negativeWords = ['no', 'problem', 'issue', 'concern', 'worried'];
+    
+    let score = 0;
+    positiveWords.forEach(word => {
+      if (transcript.toLowerCase().includes(word)) score += 1;
+    });
+    negativeWords.forEach(word => {
+      if (transcript.toLowerCase().includes(word)) score -= 1;
+    });
+    
+    if (score > 0) return 'positive';
+    if (score < 0) return 'negative';
+    return 'neutral';
+  }
+
+  // Get Harvey's response to customer emotions
+  getEmotionResponse(emotion) {
+    const emotionResponses = {
+      'frustrated': "Customer's getting frustrated. Stay calm and redirect to value.",
+      'excited': "They're excited! This is your moment. Push for the close.",
+      'confused': "They're lost. Simplify your message and clarify the benefit.",
+      'skeptical': "Skepticism detected. Address concerns directly with proof.",
+      'interested': "Interest is high. Time to present your strongest value proposition.",
+      'bored': "You're losing them. Change your approach immediately.",
+      'angry': "Customer anger detected. Acknowledge and defuse before proceeding."
+    };
+
+    return emotionResponses[emotion] || null;
+  }
 }
 
 // Export singleton instance

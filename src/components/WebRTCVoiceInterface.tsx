@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
-  Box,
   Button,
   Card,
   CardContent,
@@ -320,22 +319,22 @@ export const WebRTCVoiceInterface: React.FC<WebRTCVoiceInterfaceProps> = ({
   return (
     <Card>
       <CardContent>
-        <Box display="flex" flexDirection="column" gap={2}>
-          <Box display="flex" justifyContent="space-between" alignItems="center">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Typography variant="h6">Voice Assistant</Typography>
             {isConnected && (
               <Tooltip title={`Latency: ${connectionQuality.latency.toFixed(0)}ms`}>
-                <Box display="flex" alignItems="center" gap={0.5}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                   {getConnectionIcon()}
                   <Typography variant="caption" color="textSecondary">
                     {connectionQuality.level}
                   </Typography>
-                </Box>
+                </div>
               </Tooltip>
             )}
-          </Box>
+          </div>
 
-          <Box display="flex" justifyContent="center" gap={2}>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '16px' }}>
             <Tooltip title={isConnected ? 'Disconnect' : 'Connect'}>
               <span>
                 <IconButton
@@ -387,10 +386,10 @@ export const WebRTCVoiceInterface: React.FC<WebRTCVoiceInterfaceProps> = ({
                 </Tooltip>
               </>
             )}
-          </Box>
+          </div>
 
           {isConnected && (
-            <Box>
+            <div>
               <LinearProgress
                 variant="determinate"
                 value={audioLevel * 100}
@@ -406,17 +405,17 @@ export const WebRTCVoiceInterface: React.FC<WebRTCVoiceInterfaceProps> = ({
                   }
                 }}
               />
-            </Box>
+            </div>
           )}
 
           {showTranscript && (transcript || interimTranscript) && (
             <Fade in>
-              <Box
-                sx={{
-                  p: 2,
-                  backgroundColor: theme => theme.palette.grey[100],
-                  borderRadius: 1,
-                  maxHeight: 200,
+              <div
+                style={{
+                  padding: '16px',
+                  backgroundColor: '#f5f5f5',
+                  borderRadius: '4px',
+                  maxHeight: '200px',
                   overflowY: 'auto'
                 }}
               >
@@ -428,7 +427,7 @@ export const WebRTCVoiceInterface: React.FC<WebRTCVoiceInterfaceProps> = ({
                     </span>
                   )}
                 </Typography>
-              </Box>
+              </div>
             </Fade>
           )}
 
@@ -450,7 +449,7 @@ export const WebRTCVoiceInterface: React.FC<WebRTCVoiceInterfaceProps> = ({
               />
             </Stack>
           )}
-        </Box>
+        </div>
       </CardContent>
 
       <audio ref={remoteAudioRef} style={{ display: 'none' }} />
