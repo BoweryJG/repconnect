@@ -402,13 +402,14 @@ export const HarveySyndicate: React.FC = () => {
                   <Button
                     fullWidth
                     variant="contained"
+                    onClick={() => window.location.href = '/harvey/warroom'}
                     sx={{
                       background: 'linear-gradient(135deg, #6366F1 0%, #EC4899 100%)',
                       py: 1.5,
                       fontWeight: 700,
                     }}
                   >
-                    Challenge Harvey
+                    Enter War Room
                   </Button>
                 </div>
               </Paper>

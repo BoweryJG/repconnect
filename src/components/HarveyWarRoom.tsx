@@ -269,6 +269,20 @@ export const HarveyWarRoom: React.FC = () => {
             <Typography variant="h5" sx={{ color: 'text.secondary' }}>
               Live Performance Theater
             </Typography>
+            <Button
+              onClick={() => window.location.href = '/harvey'}
+              sx={{
+                mt: 2,
+                color: '#FFD700',
+                border: '1px solid rgba(255, 215, 0, 0.3)',
+                '&:hover': {
+                  background: 'rgba(255, 215, 0, 0.1)',
+                  borderColor: '#FFD700',
+                },
+              }}
+            >
+              ← Back to Syndicate
+            </Button>
           </div>
         </motion.div>
 
