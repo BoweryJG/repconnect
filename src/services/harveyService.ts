@@ -380,6 +380,38 @@ class HarveyService {
     };
   }
 
+  // Update coaching mode
+  async updateCoachingMode(mode: 'off' | 'gentle' | 'normal' | 'aggressive' | 'brutal'): Promise<void> {
+    try {
+      await fetch(`${this.baseUrl}/api/harvey/coaching/mode`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('harvey_token')}`,
+        },
+        body: JSON.stringify({ mode }),
+      });
+    } catch (error) {
+      console.error('Error updating coaching mode:', error);
+    }
+  }
+
+  // Update Harvey modes
+  async updateModes(modes: Partial<any>): Promise<void> {
+    try {
+      await fetch(`${this.baseUrl}/api/harvey/modes`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('harvey_token')}`,
+        },
+        body: JSON.stringify(modes),
+      });
+    } catch (error) {
+      console.error('Error updating Harvey modes:', error);
+    }
+  }
+
   // Clean up resources
   disconnect(): void {
     if (this.socket) {

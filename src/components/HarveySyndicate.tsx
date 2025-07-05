@@ -15,6 +15,9 @@ import {
   Badge,
   Divider,
   CircularProgress,
+  SpeedDial,
+  SpeedDialAction,
+  SpeedDialIcon,
 } from '@mui/material';
 import {
   EmojiEvents,
@@ -28,11 +31,15 @@ import {
   Psychology,
   Nightlight,
   VolumeUp,
+  Settings,
+  Chat,
+  PowerSettingsNew,
 } from '@mui/icons-material';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useStore } from '../store/useStore';
 import { harveyService } from '../services/harveyService';
 import { harveyWebRTC } from '../services/harveyWebRTC';
+import { HarveyControlPanel } from './HarveyControlPanel';
 
 interface HarveyMetrics {
   reputationPoints: number;
@@ -65,6 +72,7 @@ export const HarveySyndicate: React.FC = () => {
   const [leaderboard, setLeaderboard] = useState<any[]>([]);
   const [hotLeads, setHotLeads] = useState<any[]>([]);
   const [isAfterDark, setIsAfterDark] = useState(false);
+  const [showControlPanel, setShowControlPanel] = useState(false);
   
   const audioRef = useRef<HTMLAudioElement>(null);
   const { user } = useStore();
@@ -625,6 +633,45 @@ export const HarveySyndicate: React.FC = () => {
 
       {/* Hidden audio element for Harvey's voice */}
       <audio ref={audioRef} style={{ display: 'none' }} />
+      
+      {/* Harvey Control Panel Dialog */}
+      <HarveyControlPanel 
+        open={showControlPanel} 
+        onClose={() => setShowControlPanel(false)} 
+      />
+      
+      {/* Floating Action Button for Settings */}
+      <SpeedDial
+        ariaLabel="Harvey settings"
+        sx={{ position: 'fixed', bottom: 16, right: 16 }}
+        icon={<SpeedDialIcon openIcon={<Settings />} />}
+      >
+        <SpeedDialAction
+          icon={<Settings />}
+          tooltipTitle="Harvey Settings"
+          onClick={() => setShowControlPanel(true)}
+        />
+        <SpeedDialAction
+          icon={<Chat />}
+          tooltipTitle="Chat with Harvey"
+          onClick={() => setShowControlPanel(true)}
+        />
+        <SpeedDialAction
+          icon={<PowerSettingsNew />}
+          tooltipTitle="Toggle Harvey"
+          onClick={() => {
+            const harveyEnabled = localStorage.getItem('harveyModes') 
+              ? JSON.parse(localStorage.getItem('harveyModes')!).enabled 
+              : true;
+            const newModes = { 
+              ...JSON.parse(localStorage.getItem('harveyModes') || '{}'), 
+              enabled: !harveyEnabled 
+            };
+            localStorage.setItem('harveyModes', JSON.stringify(newModes));
+            window.location.reload(); // Quick toggle requires reload
+          }}
+        />
+      </SpeedDial>
     </Box>
   );
 };
