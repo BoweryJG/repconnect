@@ -64,11 +64,13 @@ interface HarveyUpdate {
 class HarveyService {
   private socket: Socket | null = null;
   private baseUrl: string;
+  private userId: string;
   private updateCallbacks: ((update: HarveyUpdate) => void)[] = [];
   private metricsCache: HarveyMetrics | null = null;
 
   constructor() {
     this.baseUrl = process.env.REACT_APP_HARVEY_API_URL || 'https://osbackend-zl1h.onrender.com';
+    this.userId = localStorage.getItem('harvey_user_id') || 'demo-user';
   }
 
   // Initialize socket connection for real-time updates
@@ -378,31 +380,6 @@ class HarveyService {
     }
   }
 
-  // Submit voice command
-  async submitVoiceCommand(command: string): Promise<{ action: string; response: string }> {
-    try {
-      const response = await fetch(`${this.baseUrl}/api/harvey/voice/command`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('harvey_token')}`,
-        },
-        body: JSON.stringify({ command }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to process voice command');
-      }
-
-      return await response.json();
-    } catch (error) {
-      console.error('Error processing voice command:', error);
-      return {
-        action: 'error',
-        response: "Speak clearly. I don't have time for mumbling.",
-      };
-    }
-  }
 
   private getDefaultMetrics(): HarveyMetrics {
     return {
