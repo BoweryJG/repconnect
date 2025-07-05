@@ -6,12 +6,6 @@ interface DeepgramConfig {
   apiUrl: string;
   model: string;
   version: string;
-  features: {
-    transcription: boolean;
-    synthesis: boolean;
-    emotion: boolean;
-    moshiProxy: boolean; // Enable Moshi proxy mode
-  };
 }
 
 interface AudioBuffer {
@@ -32,13 +26,7 @@ export class DeepgramBridge extends EventEmitter {
       apiKey: process.env.REACT_APP_DEEPGRAM_API_KEY || '',
       apiUrl: 'wss://api.deepgram.com/v1/listen',
       model: 'nova-2',
-      version: 'latest',
-      features: {
-        transcription: true,
-        synthesis: true,
-        emotion: true,
-        moshiProxy: true // Enable Moshi integration through Deepgram
-      }
+      version: 'latest'
     };
 
     this.setupWebRTCAudioHandler();
@@ -142,16 +130,6 @@ export class DeepgramBridge extends EventEmitter {
         vad_events: 'true'
       });
 
-      // Add Moshi proxy parameters if enabled
-      if (this.config.features.moshiProxy) {
-        params.append('moshi_proxy', 'true');
-        params.append('moshi_api_key', process.env.REACT_APP_MOSHI_API_KEY || '');
-        params.append('moshi_features', JSON.stringify({
-          synthesis: this.config.features.synthesis,
-          emotion: this.config.features.emotion
-        }));
-      }
-
       const url = `${this.config.apiUrl}?${params.toString()}`;
       
       const ws = new WebSocket(url, {
@@ -164,10 +142,10 @@ export class DeepgramBridge extends EventEmitter {
       ws.binaryType = 'arraybuffer';
 
       ws.onopen = () => {
-        console.log(`Connected to Deepgram (with Moshi proxy) for session ${sessionId}`);
+        console.log(`Connected to Deepgram for session ${sessionId}`);
         this.deepgramConnections.set(sessionId, ws);
         
-        // Send keep-alive message
+        // Send keep-alive message periodically
         const keepAlive = setInterval(() => {
           if (ws.readyState === WebSocket.OPEN) {
             ws.send(JSON.stringify({ type: 'KeepAlive' }));
@@ -176,6 +154,7 @@ export class DeepgramBridge extends EventEmitter {
           }
         }, 10000);
         
+        this.emit('ready', sessionId);
         resolve();
       };
 
@@ -239,25 +218,13 @@ export class DeepgramBridge extends EventEmitter {
       }
     }
 
-    // Handle Moshi proxy responses
-    if (message.moshi_response) {
-      switch (message.moshi_response.type) {
-        case 'synthesis':
-          this.handleMoshiSynthesis(sessionId, message.moshi_response);
-          break;
-          
-        case 'emotion':
-          this.emit('emotion', {
-            sessionId,
-            emotion: message.moshi_response.emotion,
-            confidence: message.moshi_response.confidence
-          });
-          break;
-          
-        case 'ready':
-          this.emit('ready', sessionId);
-          break;
-      }
+    // Handle VAD (Voice Activity Detection) events
+    if (message.speech_final !== undefined) {
+      this.emit('speech_final', {
+        sessionId,
+        duration: message.duration,
+        timestamp: Date.now()
+      });
     }
 
     // Handle metadata
@@ -277,31 +244,25 @@ export class DeepgramBridge extends EventEmitter {
     }
   }
 
-  private handleMoshiSynthesis(sessionId: string, moshiResponse: any): void {
-    // Decode audio from Moshi response
-    const audioBuffer = Buffer.from(moshiResponse.audio, 'base64');
-    const int16Audio = new Int16Array(audioBuffer.buffer, audioBuffer.byteOffset, audioBuffer.length / 2);
-
-    this.emit('synthesis', {
-      sessionId,
-      audio: int16Audio,
-      text: moshiResponse.text,
-      duration: moshiResponse.duration
-    });
+  // Simplified emotion detection based on speech patterns
+  private detectEmotionFromSpeech(transcript: string, confidence: number): void {
+    // This is a placeholder - in production you'd use more sophisticated analysis
+    // For now, we can analyze speech patterns, pace, etc.
+    // Deepgram doesn't provide emotion detection out of the box
   }
 
   async sendText(sessionId: string, text: string): Promise<void> {
-    const connection = this.deepgramConnections.get(sessionId);
-    if (!connection || connection.readyState !== WebSocket.OPEN) {
-      throw new Error(`No active Deepgram connection for session ${sessionId}`);
-    }
-
-    // Send text for Moshi synthesis through Deepgram proxy
-    connection.send(JSON.stringify({
-      type: 'InjectText',
+    // Deepgram is primarily for transcription, not synthesis
+    // This method is here for API compatibility but won't do synthesis
+    console.warn('Deepgram does not support text synthesis. Consider using a TTS service.');
+    
+    // Emit a mock response for compatibility
+    this.emit('synthesis', {
+      sessionId,
+      audio: new Int16Array(0),
       text: text,
-      moshi_synthesis: true
-    }));
+      duration: 0
+    });
   }
 
   async disconnect(sessionId: string): Promise<void> {
@@ -336,6 +297,12 @@ export class DeepgramBridge extends EventEmitter {
   isConnected(sessionId: string): boolean {
     const connection = this.deepgramConnections.get(sessionId);
     return connection?.readyState === WebSocket.OPEN;
+  }
+
+  // Method to match Moshi bridge interface
+  async connectToMoshi(sessionId: string): Promise<void> {
+    // Redirect to Deepgram
+    return this.connectToDeepgram(sessionId);
   }
 }
 
