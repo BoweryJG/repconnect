@@ -121,11 +121,13 @@ export const HarveyWarRoom: React.FC = () => {
     return () => {
       unsubscribe();
       // Stop all audio streams
-      Object.values(audioRefs.current).forEach(audio => {
+      const currentAudioRefs = audioRefs.current;
+      Object.values(currentAudioRefs).forEach(audio => {
         audio.pause();
         audio.src = '';
       });
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const loadActiveCalls = async () => {

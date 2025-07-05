@@ -86,6 +86,7 @@ export const HarveySyndicate: React.FC = () => {
       clearInterval(interval);
       harveyWebRTC.disconnect();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const initializeHarvey = async () => {
