@@ -135,8 +135,26 @@ class HarveyService {
       }
 
       const data = await response.json();
-      this.metricsCache = data.metrics;
-      return data;
+      
+      // Handle both old format (direct metrics) and new format (wrapped in object)
+      if (data.metrics && data.leaderboard) {
+        // New format: { metrics: {...}, leaderboard: [...] }
+        this.metricsCache = data.metrics;
+        return data;
+      } else {
+        // Old format: direct metrics object - convert to expected format
+        const metrics = {
+          ...data,
+          harveyStatus: data.status || 'rookie',
+          dailyVerdict: null,
+          activeTrials: data.activeTrials || []
+        };
+        this.metricsCache = metrics;
+        return {
+          metrics,
+          leaderboard: []
+        };
+      }
     } catch (error) {
       console.error('Error fetching Harvey metrics:', error);
       // Return cached data if available
