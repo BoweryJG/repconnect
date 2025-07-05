@@ -21,7 +21,7 @@ import {
   Speed
 } from '@mui/icons-material';
 import { WebRTCVoiceInterface } from './WebRTCVoiceInterface';
-import moshiWebRTCBridge from '../services/moshiWebRTCBridge';
+import voiceBridgeFactory from '../services/voiceBridgeFactory';
 import { harveyCoach } from '../services/harveyCoach';
 
 interface HarveyVoiceCoachProps {
@@ -60,8 +60,9 @@ export const HarveyVoiceCoach: React.FC<HarveyVoiceCoachProps> = ({
   useEffect(() => {
     if (isActive && sessionId) {
       // Set up Harvey Coach listeners
-      moshiWebRTCBridge.on('transcript', handleTranscriptAnalysis);
-      moshiWebRTCBridge.on('emotion', handleEmotionDetection);
+      const voiceBridge = voiceBridgeFactory.getBridge();
+      voiceBridge.on('transcript', handleTranscriptAnalysis);
+      voiceBridge.on('emotion', handleEmotionDetection);
 
       // Initialize Harvey's voice coaching mode
       harveyCoach.startVoiceCoaching(repId, {
@@ -71,8 +72,9 @@ export const HarveyVoiceCoach: React.FC<HarveyVoiceCoachProps> = ({
       });
 
       return () => {
-        moshiWebRTCBridge.off('transcript', handleTranscriptAnalysis);
-        moshiWebRTCBridge.off('emotion', handleEmotionDetection);
+        const voiceBridge = voiceBridgeFactory.getBridge();
+        voiceBridge.off('transcript', handleTranscriptAnalysis);
+        voiceBridge.off('emotion', handleEmotionDetection);
         harveyCoach.stopVoiceCoaching();
       };
     }
@@ -146,7 +148,8 @@ export const HarveyVoiceCoach: React.FC<HarveyVoiceCoachProps> = ({
     // Harvey can inject audio coaching directly into the call
     if (intervention.type === 'audio' && intervention.urgency === 'high') {
       try {
-        await moshiWebRTCBridge.sendText(sessionId, intervention.message);
+        const voiceBridge = voiceBridgeFactory.getBridge();
+        await voiceBridge.sendText(sessionId, intervention.message);
       } catch (error) {
         console.error('Failed to send Harvey intervention:', error);
       }

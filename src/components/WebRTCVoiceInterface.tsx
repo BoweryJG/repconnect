@@ -29,7 +29,7 @@ import {
 } from '@mui/icons-material';
 import webRTCVoiceService from '../services/webRTCVoiceService';
 import { webRTCSignalingService } from '../services/webRTCSignalingService';
-import moshiWebRTCBridge from '../services/moshiWebRTCBridge';
+import voiceBridgeFactory from '../services/voiceBridgeFactory';
 
 interface WebRTCVoiceInterfaceProps {
   sessionId?: string;
@@ -84,10 +84,11 @@ export const WebRTCVoiceInterface: React.FC<WebRTCVoiceInterfaceProps> = ({
         webRTCVoiceService.on('error', handleError);
         webRTCVoiceService.on('remote-stream', handleRemoteStream);
 
-        // Set up Moshi bridge listeners
-        moshiWebRTCBridge.on('transcript', handleMoshiTranscript);
-        moshiWebRTCBridge.on('emotion', handleEmotion);
-        moshiWebRTCBridge.on('error', handleMoshiError);
+        // Set up voice bridge listeners
+        const voiceBridge = voiceBridgeFactory.getBridge();
+        voiceBridge.on('transcript', handleMoshiTranscript);
+        voiceBridge.on('emotion', handleEmotion);
+        voiceBridge.on('error', handleMoshiError);
 
         if (autoConnect && sessionId) {
           await connect();
@@ -106,7 +107,8 @@ export const WebRTCVoiceInterface: React.FC<WebRTCVoiceInterfaceProps> = ({
         cancelAnimationFrame(animationFrameRef.current);
       }
       webRTCVoiceService.removeAllListeners();
-      moshiWebRTCBridge.removeAllListeners();
+      const voiceBridge = voiceBridgeFactory.getBridge();
+      voiceBridge.removeAllListeners();
     };
   }, []);
 
@@ -183,8 +185,13 @@ export const WebRTCVoiceInterface: React.FC<WebRTCVoiceInterfaceProps> = ({
       // Start WebRTC session
       await webRTCVoiceService.startVoiceSession(newSessionId);
       
-      // Connect to Moshi
-      await moshiWebRTCBridge.connectToMoshi(newSessionId);
+      // Connect to voice service (Deepgram or Moshi)
+      const voiceBridge = voiceBridgeFactory.getBridge();
+      if (voiceBridgeFactory.isUsingDeepgram()) {
+        await (voiceBridge as any).connectToDeepgram(newSessionId);
+      } else {
+        await (voiceBridge as any).connectToMoshi(newSessionId);
+      }
 
       // Join signaling room
       webRTCSignalingService.joinSession(newSessionId);
@@ -201,7 +208,8 @@ export const WebRTCVoiceInterface: React.FC<WebRTCVoiceInterfaceProps> = ({
     try {
       if (sessionId) {
         await webRTCVoiceService.endVoiceSession(sessionId);
-        await moshiWebRTCBridge.disconnect(sessionId);
+        const voiceBridge = voiceBridgeFactory.getBridge();
+        await voiceBridge.disconnect(sessionId);
         webRTCSignalingService.leaveSession(sessionId);
       }
     } catch (err) {
