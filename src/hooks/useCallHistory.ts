@@ -160,7 +160,7 @@ export const useCallHistory = (options: UseCallHistoryOptions = {}) => {
     const channel = supabase
       .channel('call-updates')
       .on(
-        'postgres_changes',
+        'postgres_changes' as const,
         { 
           event: '*', 
           schema: 'public', 
@@ -173,7 +173,7 @@ export const useCallHistory = (options: UseCallHistoryOptions = {}) => {
         }
       )
       .on(
-        'postgres_changes',
+        'postgres_changes' as const,
         { 
           event: '*', 
           schema: 'public', 

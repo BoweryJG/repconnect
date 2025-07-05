@@ -54,6 +54,9 @@ class PhoneService {
     }
   });
 
+  // Default to WebRTC for voice calls
+  private defaultCallMethod = 'webrtc';
+
   // Phone Number Management
   async getPhoneNumbers(): Promise<PhoneNumber[]> {
     const { data: numbers, error } = await supabase
@@ -100,17 +103,62 @@ class PhoneService {
     }
   }
 
-  // Call Management
-  async initiateCall(from: string, to: string, recordCall = true) {
+  // Call Management - Prefer WebRTC by default
+  async initiateCall(from: string, to: string, recordCall = true, method = this.defaultCallMethod) {
     try {
-      const response = await this.apiClient.post('/calls/initiate', {
-        from,
-        to,
-        recordCall
+      if (method === 'webrtc') {
+        return await this.startWebRTCCall(from, to);
+      } else {
+        const response = await this.apiClient.post('/calls/initiate', {
+          from,
+          to,
+          recordCall
+        });
+        return response.data;
+      }
+    } catch (error) {
+      console.error('Error initiating call:', error);
+      throw error;
+    }
+  }
+
+  // WebRTC Voice Calling
+  async startWebRTCCall(from: string, to: string) {
+    try {
+      const response = await this.apiClient.post('/webrtc/start-session', {
+        sessionId: `webrtc_${Date.now()}`,
+        clientInfo: {
+          from,
+          to,
+          userAgent: navigator.userAgent,
+          timestamp: new Date().toISOString()
+        }
       });
       return response.data;
     } catch (error) {
-      console.error('Error initiating call:', error);
+      console.error('Error starting WebRTC call:', error);
+      throw error;
+    }
+  }
+
+  async endWebRTCCall(sessionId: string) {
+    try {
+      const response = await this.apiClient.post('/webrtc/end-session', {
+        sessionId
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error ending WebRTC call:', error);
+      throw error;
+    }
+  }
+
+  async getWebRTCSessions() {
+    try {
+      const response = await this.apiClient.get('/webrtc/sessions');
+      return response.data.sessions;
+    } catch (error) {
+      console.error('Error getting WebRTC sessions:', error);
       throw error;
     }
   }
@@ -238,14 +286,14 @@ class PhoneService {
     return supabase
       .channel(`calls:${phoneNumber}`)
       .on(
-        'postgres_changes',
+        'postgres_changes' as const,
         {
           event: 'INSERT',
           schema: 'public',
           table: 'call_logs',
           filter: `to_number=eq.${phoneNumber}`
         },
-        callback
+        (payload: any) => callback(payload.new as CallLog)
       )
       .subscribe();
   }
@@ -254,14 +302,14 @@ class PhoneService {
     return supabase
       .channel(`sms:${phoneNumber}`)
       .on(
-        'postgres_changes',
+        'postgres_changes' as const,
         {
           event: 'INSERT',
           schema: 'public',
           table: 'sms_messages',
           filter: `to_number=eq.${phoneNumber},direction=eq.inbound`
         },
-        callback
+        (payload: any) => callback(payload.new as SMSMessage)
       )
       .subscribe();
   }

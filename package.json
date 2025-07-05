@@ -2,6 +2,7 @@
   "name": "pipeline",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "dependencies": {
     "@emotion/css": "^11.13.5",
     "@emotion/react": "^11.14.0",
@@ -45,6 +46,7 @@
     "typescript": "^4.9.5",
     "web-vitals": "^2.1.4",
     "web-vitals-reporter": "^1.0.0",
+    "ws": "^8.14.2",
     "xlsx": "^0.18.5",
     "zustand": "^5.0.5"
   },
@@ -52,7 +54,12 @@
     "start": "react-scripts start",
     "build": "GENERATE_SOURCEMAP=false react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "harvey:deploy": "./deployHarvey.sh",
+    "harvey:init": "node initializeHarveyForAllReps.js",
+    "harvey:start": "NODE_ENV=production node startHarvey.js",
+    "harvey:monitor": "node monitorHarvey.js",
+    "harvey:test": "node src/test/testHarveyCoach.js"
   },
   "eslintConfig": {
     "extends": [
