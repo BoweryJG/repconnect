@@ -75,7 +75,6 @@ export const HarveySyndicate: React.FC = () => {
   const [showControlPanel, setShowControlPanel] = useState(false);
   
   const audioRef = useRef<HTMLAudioElement>(null);
-  const { user } = useStore();
 
   useEffect(() => {
     // Initialize Harvey connection
@@ -100,7 +99,7 @@ export const HarveySyndicate: React.FC = () => {
     try {
       // Initialize WebRTC connection
       await harveyWebRTC.connect({
-        userId: user?.id || 'demo',
+        userId: 'demo', // Using demo user for now
         onConnectionChange: (connected) => setIsConnected(connected),
         onAudioReceived: (audioData) => {
           // Play Harvey's voice

@@ -239,8 +239,10 @@ export const HarveyControlPanel: React.FC<HarveyControlPanelProps> = ({
     }`);
   };
 
+  const padding = embedded ? 2 : 3;
+  
   const content = (
-    <Box sx={{ p: embedded ? 2 : 3 }}>
+    <Box sx={{ p: padding }}>
       {/* Header */}
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
