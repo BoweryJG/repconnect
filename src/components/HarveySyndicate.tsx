@@ -304,8 +304,8 @@ export const HarveySyndicate: React.FC = () => {
               </Badge>
               
               <div>
-                <Typography variant="h6" sx={{ color: getStatusColor(metrics.harveyStatus) }}>
-                  {metrics.harveyStatus.toUpperCase()} STATUS
+                <Typography variant="h6" sx={{ color: getStatusColor(metrics.harveyStatus || 'rookie') }}>
+                  {(metrics.harveyStatus || 'rookie').toUpperCase()} STATUS
                 </Typography>
                 <Typography variant="caption" sx={{ color: 'text.secondary' }}>
                   {isConnected ? 'Harvey is watching' : 'Reconnecting...'}

@@ -110,9 +110,19 @@ class HarveyWebRTC {
   }
 
   private async connectWebSocket(): Promise<void> {
+    // Close existing websocket if any
+    if (this.websocket) {
+      this.websocket.close();
+    }
+    
     const wsUrl = process.env.REACT_APP_HARVEY_WS_URL || 'wss://osbackend-zl1h.onrender.com/harvey-ws';
     
-    this.websocket = new WebSocket(wsUrl);
+    try {
+      this.websocket = new WebSocket(wsUrl);
+    } catch (error) {
+      console.error('Failed to create WebSocket:', error);
+      return;
+    }
     
     this.websocket.onopen = async () => {
       console.log('Connected to Harvey signaling server');
@@ -160,9 +170,12 @@ class HarveyWebRTC {
       console.error('Harvey WebSocket error:', error);
     };
     
-    this.websocket.onclose = () => {
-      console.log('Disconnected from Harvey signaling server');
-      this.attemptReconnect();
+    this.websocket.onclose = (event) => {
+      console.log('Disconnected from Harvey signaling server', event.code, event.reason);
+      // Only attempt reconnect if it wasn't a manual close
+      if (event.code !== 1000) {
+        this.attemptReconnect();
+      }
     };
   }
 
@@ -186,11 +199,22 @@ class HarveyWebRTC {
   private startVoiceAnalysis(): void {
     if (!this.localStream || !this.audioContext) return;
     
-    // Create analyser node
-    const source = this.audioContext.createMediaStreamSource(this.localStream);
-    this.analyser = this.audioContext.createAnalyser();
-    this.analyser.fftSize = 2048;
-    source.connect(this.analyser);
+    // Check if audio context is in a valid state
+    if (this.audioContext.state === 'closed') {
+      console.warn('Audio context is closed, cannot start voice analysis');
+      return;
+    }
+    
+    try {
+      // Create analyser node
+      const source = this.audioContext.createMediaStreamSource(this.localStream);
+      this.analyser = this.audioContext.createAnalyser();
+      this.analyser.fftSize = 2048;
+      source.connect(this.analyser);
+    } catch (error) {
+      console.error('Failed to set up voice analysis:', error);
+      return;
+    }
     
     // Start analysis loop
     this.voiceAnalysisInterval = setInterval(() => {
@@ -305,11 +329,17 @@ class HarveyWebRTC {
   private attemptReconnect(): void {
     if (this.reconnectTimer) return;
     
+    // Don't reconnect if we're already connected or connecting
+    if (this.websocket?.readyState === WebSocket.CONNECTING || 
+        this.websocket?.readyState === WebSocket.OPEN) {
+      return;
+    }
+    
     console.log('Attempting to reconnect to Harvey...');
     this.reconnectTimer = setTimeout(() => {
       this.reconnectTimer = null;
-      if (this.config) {
-        this.connect(this.config);
+      if (this.config && (!this.websocket || this.websocket.readyState === WebSocket.CLOSED)) {
+        this.connectWebSocket();
       }
     }, 5000);
   }
