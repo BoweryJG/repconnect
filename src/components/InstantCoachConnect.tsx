@@ -58,6 +58,8 @@ export default function InstantCoachConnect() {
   const [availableCoaches, setAvailableCoaches] = useState<CoachSpecialization[]>([]);
   const [loading, setLoading] = useState(false);
   const [connecting, setConnecting] = useState<string | null>(null);
+  const [activeSession, setActiveSession] = useState<any>(null);
+  const [sessionTime, setSessionTime] = useState(0);
 
   useEffect(() => {
     if (selectedCategory) {
@@ -65,10 +67,23 @@ export default function InstantCoachConnect() {
     }
   }, [selectedCategory]);
 
+  // Timer for active session
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (activeSession) {
+      interval = setInterval(() => {
+        setSessionTime(prev => prev + 1);
+      }, 1000);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [activeSession]);
+
   const loadAvailableCoaches = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`http://localhost:3001/api/coaching/available-coaches/${selectedCategory}`);
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/coaching/available-coaches/${selectedCategory}`);
       if (!response.ok) throw new Error('Failed to fetch coaches');
       
       const data = await response.json();
@@ -83,7 +98,7 @@ export default function InstantCoachConnect() {
   const connectToCoach = async (coachId: string, coachName: string) => {
     setConnecting(coachId);
     try {
-      const response = await fetch('http://localhost:3001/api/coaching/start-session', {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/coaching/start-session`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -100,8 +115,38 @@ export default function InstantCoachConnect() {
       
       const data = await response.json();
       
-      // In real implementation, this would initiate WebRTC connection
-      alert(`Starting session with ${coachName}! Session ID: ${data.session.id}`);
+      // Request microphone permission and start WebRTC
+      try {
+        console.log('🎤 Requesting microphone permission...');
+        const stream = await navigator.mediaDevices.getUserMedia({ 
+          audio: true, 
+          video: false 
+        });
+        
+        console.log('✅ Microphone access granted');
+        console.log('🔊 Audio tracks:', stream.getAudioTracks().length);
+        
+        // Start the active session UI
+        const sessionData = {
+          sessionId: data.session.id,
+          roomId: data.session.webrtc_room_id,
+          coachId: coachId,
+          coachName: coachName,
+          stream: stream,
+          startTime: new Date()
+        };
+        
+        setActiveSession(sessionData);
+        setSessionTime(0);
+        
+        // Store globally for other components
+        window.currentCoachingSession = sessionData;
+        
+      } catch (micError) {
+        console.error('❌ Microphone access denied:', micError);
+        alert(`Session created but microphone access was denied. 
+Please enable microphone permissions and try again.`);
+      }
 
     } catch (error) {
       console.error('Error connecting to coach:', error);
@@ -110,6 +155,119 @@ export default function InstantCoachConnect() {
       setConnecting(null);
     }
   };
+
+  const endSession = async () => {
+    if (!activeSession) return;
+    
+    try {
+      // Stop microphone stream
+      if (activeSession.stream) {
+        activeSession.stream.getTracks().forEach((track: MediaStreamTrack) => track.stop());
+      }
+      
+      // End session in backend
+      await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/coaching/end-session`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sessionId: activeSession.sessionId,
+          notes: `Session duration: ${Math.floor(sessionTime / 60)}:${(sessionTime % 60).toString().padStart(2, '0')}`
+        })
+      });
+      
+      // Clear session state
+      setActiveSession(null);
+      setSessionTime(0);
+      window.currentCoachingSession = null;
+      
+    } catch (error) {
+      console.error('Error ending session:', error);
+    }
+  };
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  // If there's an active session, show the coaching interface
+  if (activeSession) {
+    return (
+      <div style={{ 
+        maxWidth: 800, 
+        margin: '0 auto', 
+        padding: '24px',
+        paddingTop: '64px' 
+      }}>
+        <Card sx={{ 
+          background: 'linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)',
+          border: '1px solid rgba(255,255,255,0.1)',
+          color: 'white'
+        }}>
+          <CardHeader
+            title={
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <Psychology color="primary" />
+                  <Typography variant="h5" sx={{ color: 'white' }}>
+                    Coaching with {activeSession.coachName}
+                  </Typography>
+                </div>
+                <Typography variant="h4" sx={{ color: '#00d4ff', fontFamily: 'monospace' }}>
+                  {formatTime(sessionTime)}
+                </Typography>
+              </div>
+            }
+            sx={{ pb: 1 }}
+          />
+          <CardContent>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px' }}>
+              <Chip 
+                icon={<Mic />} 
+                label="Microphone Active" 
+                color="success" 
+                variant="outlined"
+              />
+              <Chip 
+                icon={<GpsFixed />} 
+                label={`Room: ${activeSession.roomId.split('-').pop()}`}
+                color="info" 
+                variant="outlined"
+              />
+            </div>
+            
+            <Paper sx={{ 
+              p: 3, 
+              mb: 3, 
+              background: 'rgba(0,0,0,0.3)',
+              border: '1px solid rgba(255,255,255,0.1)'
+            }}>
+              <Typography variant="h6" gutterBottom sx={{ color: '#00d4ff' }}>
+                <AutoAwesome /> AI Coach is ready to help you practice!
+              </Typography>
+              <Typography variant="body1" color="text.secondary">
+                Start speaking to begin your practice session. The AI coach will respond with feedback, 
+                questions, and guidance specific to {selectedCategory} procedures.
+              </Typography>
+            </Paper>
+            
+            <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
+              <Button
+                variant="contained"
+                color="error"
+                size="large"
+                onClick={endSession}
+                startIcon={<Phone />}
+              >
+                End Session
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div 
