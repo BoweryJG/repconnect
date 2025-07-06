@@ -135,19 +135,27 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSucce
 
         {/* Luxury Screws - 4 corners */}
         <div 
-          ref={el => el && (screwRefs.current[0] = el)} 
+          ref={el => {
+            if (el) screwRefs.current[0] = el;
+          }} 
           className="screw screw-tl"
         />
         <div 
-          ref={el => el && (screwRefs.current[1] = el)} 
+          ref={el => {
+            if (el) screwRefs.current[1] = el;
+          }} 
           className="screw screw-tr"
         />
         <div 
-          ref={el => el && (screwRefs.current[2] = el)} 
+          ref={el => {
+            if (el) screwRefs.current[2] = el;
+          }} 
           className="screw screw-bl"
         />
         <div 
-          ref={el => el && (screwRefs.current[3] = el)} 
+          ref={el => {
+            if (el) screwRefs.current[3] = el;
+          }} 
           className="screw screw-br"
         />
 
