@@ -33,6 +33,8 @@ import { CornerScrews } from './components/effects/PrecisionScrew';
 import { AuthProvider, useAuth } from './auth/AuthContext';
 import { LoginModal } from './components/auth/LoginModal';
 import { SubscriptionModal } from './components/auth/SubscriptionModal';
+import { DEMO_CONTACTS } from './lib/demoData';
+import { usageTracker } from './lib/usageTracking';
 
 // Lazy load heavy components
 const MissionControlDashboard = React.lazy(() => import('./components/MissionControlDashboard').then(module => ({ default: module.MissionControlDashboard })));
@@ -51,6 +53,8 @@ function AppContent() {
   const [viewMode, setViewMode] = useState<'rolodex' | 'grid'>('rolodex');
   const [gridDimensions, setGridDimensions] = useState({ width: 1200, height: 600 });
   const gridContainerRef = useRef<HTMLDivElement>(null);
+  const [isDemoMode, setIsDemoMode] = useState(true);
+  const [showUsageWarning, setShowUsageWarning] = useState(false);
   
   const {
     contacts,
@@ -121,12 +125,21 @@ function AppContent() {
     }
   }, [profile, setSubscriptionTier]);
 
-  // Show login modal if not authenticated
+  // Handle demo mode and authentication
   useEffect(() => {
-    if (!user && !showLoginModal) {
-      setShowLoginModal(true);
+    if (user) {
+      setIsDemoMode(false);
+      // Load real contacts when authenticated
+    } else {
+      // Check if user has exceeded demo usage
+      if (usageTracker.hasExceededLimit() && !showLoginModal) {
+        setShowLoginModal(true);
+      } else {
+        // Load demo contacts
+        setContacts(DEMO_CONTACTS as any);
+      }
     }
-  }, [user, showLoginModal, setShowLoginModal]);
+  }, [user, showLoginModal, setShowLoginModal, setContacts]);
 
   // Initialize adaptive renderer
   useEffect(() => {
@@ -158,7 +171,25 @@ function AppContent() {
     };
   }, [viewMode]);
 
+  const checkUsageAndProceed = (action: keyof ReturnType<typeof usageTracker.getUsageStats>['features']) => {
+    if (!user) {
+      const shouldBlock = usageTracker.trackAction(action);
+      if (shouldBlock) {
+        setShowLoginModal(true);
+        return false;
+      }
+      
+      const remaining = usageTracker.getRemainingActions();
+      if (remaining <= 3 && remaining > 0) {
+        setShowUsageWarning(true);
+        setTimeout(() => setShowUsageWarning(false), 5000);
+      }
+    }
+    return true;
+  };
+
   const handleMakeCall = async (contact: any) => {
+    if (!checkUsageAndProceed('callsInitiated')) return;
     // Format the phone number to ensure it has country code
     let formattedNumber = contact.phoneNumber.replace(/\D/g, '');
     if (!formattedNumber.startsWith('1') && formattedNumber.length === 10) {
@@ -199,6 +230,7 @@ function AppContent() {
   };
 
   const handleDialNumber = async (phoneNumber: string) => {
+    if (!checkUsageAndProceed('dialerOpened')) return;
     console.log('🔍 [APP DEBUG] Starting dial process for:', phoneNumber);
     
     // Format the phone number to ensure it has country code
@@ -319,6 +351,53 @@ function AppContent() {
       >
         {/* Subtle Pipeline Background */}
         <SubtlePipelineBackground />
+        
+        {/* Usage Warning Banner */}
+        {showUsageWarning && !user && (
+          <motion.div
+            initial={{ y: -100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: -100, opacity: 0 }}
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              background: 'linear-gradient(90deg, #FF6B35 0%, #F53969 100%)',
+              padding: '12px 24px',
+              textAlign: 'center',
+              zIndex: 1000,
+              boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)',
+            }}
+          >
+            <Typography variant="body2" sx={{ color: 'white', fontWeight: 600 }}>
+              ⚡ {usageTracker.getRemainingActions()} free actions remaining. Sign in to unlock unlimited access!
+            </Typography>
+          </motion.div>
+        )}
+        
+        {/* Demo Mode Banner */}
+        {isDemoMode && !showUsageWarning && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              background: 'linear-gradient(90deg, #4B96DC 0%, #00d4ff 100%)',
+              padding: '8px 24px',
+              textAlign: 'center',
+              zIndex: 1000,
+              boxShadow: '0 2px 10px rgba(0, 0, 0, 0.2)',
+            }}
+          >
+            <Typography variant="body2" sx={{ color: 'white', fontWeight: 500 }}>
+              🎯 Demo Mode - Explore RepConnect with sample data. {usageTracker.getRemainingActions()} actions remaining.
+            </Typography>
+          </motion.div>
+        )}
         
         {/* Main App */}
         <div style={{ position: 'relative', zIndex: 1 }}>

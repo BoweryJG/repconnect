@@ -123,151 +123,65 @@
     50% { transform: scale(1.02); opacity: 0.2; }
 }
 
-/* 4-Point Luxury Screws */
+/* 4-Point Luxury Screws - Tiny Slotted Design */
 .screw {
     position: absolute;
-    width: 16px;
-    height: 16px;
-    background: radial-gradient(circle at 35% 35%, #e0e0e0 0%, #b8b8b8 15%, #888 40%, #555 70%, #222 100%);
+    width: 4px;
+    height: 4px;
+    background: radial-gradient(circle at 30% 30%, #d0d0d0 0%, #a8a8a8 20%, #808080 50%, #606060 100%);
     border-radius: 50%;
     box-shadow: 
-        inset 0 1px 2px rgba(255,255,255,0.5),
-        inset 0 -1px 2px rgba(0,0,0,0.6),
-        0 1px 3px rgba(0,0,0,0.8),
-        0 0 8px rgba(0,0,0,0.3);
+        inset 0 0.25px 0.5px rgba(255,255,255,0.6),
+        inset 0 -0.25px 0.5px rgba(0,0,0,0.4),
+        0 0.5px 1px rgba(0,0,0,0.6);
     z-index: 10;
     transition: transform 0.4s ease;
     transform-origin: center center;
 }
 
+/* Slotted screw design - single horizontal slot */
 .screw::before {
     content: '';
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 70%;
-    height: 1px;
+    width: 80%;
+    height: 0.5px;
     background: linear-gradient(90deg, 
-        transparent, 
-        rgba(0,0,0,0.7) 20%, 
-        rgba(0,0,0,0.7) 80%, 
-        transparent
+        transparent 5%, 
+        rgba(0,0,0,0.6) 15%, 
+        rgba(0,0,0,0.6) 85%, 
+        transparent 95%
     );
     transform: translate(-50%, -50%);
 }
 
+/* Remove the vertical line for slotted design */
 .screw::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 1px;
-    height: 70%;
-    background: linear-gradient(180deg, 
-        transparent, 
-        rgba(0,0,0,0.7) 20%, 
-        rgba(0,0,0,0.7) 80%, 
-        transparent
-    );
-    transform: translate(-50%, -50%);
+    display: none;
 }
 
 .screw-tl { 
-    top: 20px; 
-    left: 20px; 
-    animation: screwIdle 12s ease-in-out infinite;
-    animation-delay: 0s;
+    top: 12px; 
+    left: 12px; 
 }
 .screw-tr { 
-    top: 20px; 
-    right: 20px; 
-    animation: screwIdle 12s ease-in-out infinite;
-    animation-delay: 3s;
+    top: 12px; 
+    right: 12px; 
 }
 .screw-bl { 
-    bottom: 20px; 
-    left: 20px; 
-    animation: screwIdle 12s ease-in-out infinite;
-    animation-delay: 6s;
+    bottom: 12px; 
+    left: 12px; 
 }
 .screw-br { 
-    bottom: 20px; 
-    right: 20px; 
-    animation: screwIdle 12s ease-in-out infinite;
-    animation-delay: 9s;
+    bottom: 12px; 
+    right: 12px; 
 }
 
-/* Add jewel center to screws */
-.screw-tl::before,
-.screw-tr::before,
-.screw-bl::before,
-.screw-br::before {
-    width: 70%;
-    height: 1px;
-}
-
-/* Screw idle animation with better timing */
-@keyframes screwIdle {
-    0%, 100% { transform: rotate(0deg); }
-    25% { transform: rotate(2deg); }
-    50% { transform: rotate(-1.5deg); }
-    75% { transform: rotate(1deg); }
-}
+/* Remove screw animations - keep them static and minimal */
 
 
-/* Power Rail */
-.power-rail {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 80%;
-    height: 2px;
-    background: linear-gradient(to right,
-        transparent,
-        rgba(0, 212, 255, 0.2),
-        rgba(0, 212, 255, 0.1),
-        rgba(0, 212, 255, 0.2),
-        transparent
-    );
-    overflow: hidden;
-}
-
-.power-rail::after {
-    content: '';
-    position: absolute;
-    height: 100%;
-    width: 20%;
-    background: linear-gradient(to right, transparent, var(--gem-primary), transparent);
-    animation: powerFlow 4s infinite linear;
-    box-shadow: 0 0 10px var(--gem-primary);
-}
-
-@keyframes powerFlow {
-    from { left: -20%; }
-    to { left: 120%; }
-}
-
-/* Power Nodes */
-.power-node {
-    position: absolute;
-    top: -2px;
-    width: 6px;
-    height: 6px;
-    background: radial-gradient(circle, var(--gem-primary), transparent);
-    border-radius: 50%;
-    animation: nodePulse 2s infinite ease-in-out;
-}
-
-.power-node:nth-child(1) { left: 20%; animation-delay: 0s; }
-.power-node:nth-child(2) { left: 40%; animation-delay: 0.5s; }
-.power-node:nth-child(3) { left: 60%; animation-delay: 1s; }
-.power-node:nth-child(4) { left: 80%; animation-delay: 1.5s; }
-
-@keyframes nodePulse {
-    0%, 100% { transform: scale(1); opacity: 0.6; }
-    50% { transform: scale(1.5); opacity: 1; }
-}
+/* Removed power rail animation - keeping modal clean and minimal */
 
 /* Close Button */
 .close-btn {

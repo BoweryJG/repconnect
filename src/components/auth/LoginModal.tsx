@@ -56,12 +56,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSucce
         }
       });
 
-      // Power rail animation
-      tl.fromTo('.power-rail',
-        { scaleX: 0 },
-        { scaleX: 1, duration: 0.5, ease: "power2.inOut" },
-        "-=0.2"
-      );
+      // Removed power rail animation
     }
   }, [isOpen]);
 
@@ -125,13 +120,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSucce
         className="login-modal"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Power Rail */}
-        <div className="power-rail">
-          <div className="power-node"></div>
-          <div className="power-node"></div>
-          <div className="power-node"></div>
-          <div className="power-node"></div>
-        </div>
+        {/* Removed power rail - keeping design clean */}
 
         {/* Luxury Screws - 4 corners */}
         <div 
