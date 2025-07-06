@@ -35,6 +35,7 @@ import { LoginModal } from './components/auth/LoginModal';
 import { SubscriptionModal } from './components/auth/SubscriptionModal';
 import { DEMO_CONTACTS } from './lib/demoData';
 import { usageTracker } from './lib/usageTracking';
+import InstantCoachConnect from './components/InstantCoachConnect';
 
 // Lazy load heavy components
 const MissionControlDashboard = React.lazy(() => import('./components/MissionControlDashboard').then(module => ({ default: module.MissionControlDashboard })));
@@ -48,6 +49,7 @@ function AppContent() {
   const [showAISettings, setShowAISettings] = useState(false);
   const [showPerformance, setShowPerformance] = useState(false);
   const [showCallHistory, setShowCallHistory] = useState(false);
+  const [showCoachConnect, setShowCoachConnect] = useState(false);
   const [newContactName, setNewContactName] = useState('');
   const [newContactPhone, setNewContactPhone] = useState('');
   const [viewMode, setViewMode] = useState<'rolodex' | 'grid'>('rolodex');
@@ -410,6 +412,7 @@ function AppContent() {
             onAISettingsOpen={() => setShowAISettings(true)}
             onPerformanceOpen={() => setShowPerformance(true)}
             onCallHistoryOpen={() => setShowCallHistory(true)}
+            onCoachConnectOpen={() => setShowCoachConnect(true)}
           />
           
           <div style={{ padding: isMobile ? '8px' : '12px', paddingTop: isDemoMode || showUsageWarning ? (isMobile ? '120px' : '140px') : (isMobile ? '80px' : '96px') }}>
@@ -1022,6 +1025,55 @@ function AppContent() {
           onClose={() => setShowSubscriptionModal(false)}
           currentTier={subscriptionTier}
         />
+
+        {/* Coach Connect Modal */}
+        <AnimatePresence>
+          {showCoachConnect && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              style={{
+                position: 'fixed',
+                inset: 0,
+                zIndex: 1300,
+                background: 'rgba(0, 0, 0, 0.8)',
+              }}
+              onClick={() => setShowCoachConnect(false)}
+            >
+              <motion.div
+                initial={{ y: '100%' }}
+                animate={{ y: 0 }}
+                exit={{ y: '100%' }}
+                transition={{ type: 'spring', damping: 30, stiffness: 300 }}
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  background: '#0a0a0a',
+                  overflow: 'auto',
+                }}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <IconButton
+                  onClick={() => setShowCoachConnect(false)}
+                  sx={{
+                    position: 'absolute',
+                    top: 16,
+                    right: 16,
+                    zIndex: 1,
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    '&:hover': {
+                      background: 'rgba(255, 255, 255, 0.2)',
+                    },
+                  }}
+                >
+                  <CloseIcon />
+                </IconButton>
+                <InstantCoachConnect />
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
       </div>
   );

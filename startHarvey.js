@@ -1,13 +1,47 @@
 import harveyCallMonitor from './src/services/harveyCallMonitor.js';
 import harveyAPI from './src/services/harveyAPI.js';
 import http from 'http';
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_KEY
+);
 
 const PORT = process.env.HARVEY_PORT || 3001;
 
-// Create a simple HTTP server for Harvey
+// Helper function to parse JSON from request body
+function parseRequestBody(req) {
+  return new Promise((resolve) => {
+    let body = '';
+    req.on('data', chunk => {
+      body += chunk.toString();
+    });
+    req.on('end', () => {
+      try {
+        resolve(JSON.parse(body));
+      } catch {
+        resolve({});
+      }
+    });
+  });
+}
+
+// Create a simple HTTP server for Harvey + Coaching
 const server = http.createServer(async (req, res) => {
   res.setHeader('Content-Type', 'application/json');
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   
+  // Handle preflight requests
+  if (req.method === 'OPTIONS') {
+    res.writeHead(200);
+    res.end();
+    return;
+  }
+  
+  // Existing Harvey endpoints
   if (req.url === '/health' && req.method === 'GET') {
     const health = await harveyAPI.healthCheck();
     res.writeHead(200);
@@ -40,7 +74,107 @@ const server = http.createServer(async (req, res) => {
       res.writeHead(500);
       res.end(JSON.stringify({ error: error.message }));
     }
-  } else {
+  }
+  
+  // NEW COACHING ENDPOINTS
+  else if (req.url === '/api/coaching/start-session' && req.method === 'POST') {
+    try {
+      const body = await parseRequestBody(req);
+      const { repId, coachId, procedureCategory, sessionType = 'practice_pitch' } = body;
+
+      if (!repId || !coachId || !procedureCategory) {
+        res.writeHead(400);
+        res.end(JSON.stringify({ error: 'Missing required fields: repId, coachId, procedureCategory' }));
+        return;
+      }
+
+      // Check coach availability
+      const { data: availability } = await supabase
+        .from('coach_availability')
+        .select('is_available')
+        .eq('coach_id', coachId)
+        .single();
+
+      if (!availability?.is_available) {
+        res.writeHead(409);
+        res.end(JSON.stringify({ error: 'Coach is not available for instant sessions' }));
+        return;
+      }
+
+      // Create unique room ID
+      const roomId = `coach-${coachId}-rep-${repId}-${Date.now()}`;
+
+      // Create session record
+      const { data: session, error } = await supabase
+        .from('instant_coaching_sessions')
+        .insert({
+          rep_id: repId,
+          coach_id: coachId,
+          session_type: sessionType,
+          procedure_category: procedureCategory,
+          webrtc_room_id: roomId,
+          connection_status: 'pending',
+          session_goals: ['Practice product knowledge', 'Handle objections', 'Build confidence']
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      // Mark coach as busy
+      await supabase
+        .from('coach_availability')
+        .update({
+          is_available: false,
+          current_session_id: session.id,
+          updated_at: new Date().toISOString()
+        })
+        .eq('coach_id', coachId);
+
+      res.writeHead(200);
+      res.end(JSON.stringify({
+        success: true,
+        session: { ...session, roomId }
+      }));
+
+    } catch (error) {
+      console.error('Error starting coaching session:', error);
+      res.writeHead(500);
+      res.end(JSON.stringify({ error: 'Internal server error' }));
+    }
+  }
+  
+  else if (req.url.match(/^\/api\/coaching\/available-coaches\/(.+)$/) && req.method === 'GET') {
+    try {
+      const procedureCategory = req.url.match(/^\/api\/coaching\/available-coaches\/(.+)$/)[1];
+
+      const { data, error } = await supabase
+        .from('coach_procedure_specializations')
+        .select(`
+          *,
+          coach:sales_coach_agents(*),
+          availability:coach_availability(*)
+        `)
+        .eq('procedure_category', procedureCategory)
+        .eq('available_for_instant', true)
+        .eq('availability.is_available', true);
+
+      if (error) throw error;
+
+      res.writeHead(200);
+      res.end(JSON.stringify({
+        success: true,
+        coaches: data || []
+      }));
+
+    } catch (error) {
+      console.error('Error fetching coaches:', error);
+      res.writeHead(500);
+      res.end(JSON.stringify({ error: 'Failed to fetch available coaches' }));
+    }
+  }
+  
+  else {
     res.writeHead(404);
     res.end(JSON.stringify({ error: 'Not found', message: 'Harvey doesn\'t have time for invalid endpoints.' }));
   }
@@ -51,10 +185,13 @@ server.listen(PORT, () => {
   console.log(`🎯 Harvey Coach API running on port ${PORT}`);
   console.log('Harvey says: "I don\'t have dreams, I have goals. Now let\'s make some sales."');
   console.log('\n📡 Available endpoints:');
-  console.log(`  GET http://localhost:${PORT}/health`);
-  console.log(`  GET http://localhost:${PORT}/api/harvey/status`);
-  console.log(`  GET http://localhost:${PORT}/api/harvey/leaderboard`);
-  console.log(`  GET http://localhost:${PORT}/api/harvey/stats/:repId`);
+  console.log(`  GET  http://localhost:${PORT}/health`);
+  console.log(`  GET  http://localhost:${PORT}/api/harvey/status`);
+  console.log(`  GET  http://localhost:${PORT}/api/harvey/leaderboard`);
+  console.log(`  GET  http://localhost:${PORT}/api/harvey/stats/:repId`);
+  console.log('\n🤖 NEW: Instant Coaching endpoints:');
+  console.log(`  POST http://localhost:${PORT}/api/coaching/start-session`);
+  console.log(`  GET  http://localhost:${PORT}/api/coaching/available-coaches/:category`);
 });
 
 // Start monitoring all reps

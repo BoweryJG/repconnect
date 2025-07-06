@@ -30,6 +30,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import HistoryIcon from '@mui/icons-material/History';
 import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh';
 import GavelIcon from '@mui/icons-material/Gavel';
+import PsychologyIcon from '@mui/icons-material/Psychology';
 import PersonIcon from '@mui/icons-material/Person';
 import DiamondIcon from '@mui/icons-material/Diamond';
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -60,6 +61,7 @@ interface PremiumNavbarProps {
   onAISettingsOpen?: () => void;
   onPerformanceOpen?: () => void;
   onCallHistoryOpen?: () => void;
+  onCoachConnectOpen?: () => void;
 }
 
 export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({ 
@@ -70,7 +72,8 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
   onMissionControlOpen,
   onAISettingsOpen,
   onPerformanceOpen,
-  onCallHistoryOpen
+  onCallHistoryOpen,
+  onCoachConnectOpen
 }) => {
   const theme = useTheme();
   const { isMobile } = useResponsive();
@@ -344,6 +347,7 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
               {[
                 { icon: <ContactsIcon />, label: 'Contacts', color: currentTheme.shift, onClick: () => window.scrollTo({ top: 0, behavior: 'smooth' }) },
                 { icon: <GavelIcon />, label: 'Harvey', color: '#FFD700', onClick: () => window.location.href = '/harvey' },
+                { icon: <PsychologyIcon />, label: 'Coach Connect', color: currentTheme.shift, onClick: onCoachConnectOpen },
                 { icon: <AutoFixHighIcon />, label: 'Enrich Leads', color: currentTheme.deep, onClick: () => window.open('/enrich', '_blank') },
                 { icon: <SyncIcon />, label: 'AI Sync', color: currentTheme.impossible, onClick: onSyncDashboardOpen },
                 { icon: <BarChartIcon />, label: 'Analytics', color: currentTheme.deep, onClick: onMissionControlOpen },
@@ -930,6 +934,32 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
               <div style={{ position: 'absolute', top: 3, right: 3, width: 2, height: 2, background: 'radial-gradient(circle, #999 0%, #666 100%)', borderRadius: '50%', opacity: 0.3 }} />
               <ListItemIcon sx={{ color: '#EC4899' }}><SyncIcon /></ListItemIcon>
               <ListItemText primary="AI Sync" />
+            </ListItemButton>
+
+            <ListItemButton 
+              onClick={() => {
+                onCoachConnectOpen?.();
+                setMobileMenuOpen(false);
+              }}
+              sx={{ 
+                borderRadius: '12px', 
+                marginBottom: 1,
+                background: 'rgba(255, 255, 255, 0.02)',
+                border: '1px solid rgba(255, 255, 255, 0.05)',
+                transition: 'all 0.3s ease',
+                position: 'relative',
+                overflow: 'visible',
+                '&:hover': {
+                  background: 'rgba(255, 255, 255, 0.05)',
+                  borderColor: 'rgba(0, 255, 255, 0.2)',
+                  transform: 'translateX(4px)',
+                },
+              }}
+            >
+              <div style={{ position: 'absolute', top: 3, left: 3, width: 2, height: 2, background: 'radial-gradient(circle, #999 0%, #666 100%)', borderRadius: '50%', opacity: 0.3 }} />
+              <div style={{ position: 'absolute', top: 3, right: 3, width: 2, height: 2, background: 'radial-gradient(circle, #999 0%, #666 100%)', borderRadius: '50%', opacity: 0.3 }} />
+              <ListItemIcon sx={{ color: '#00FFFF' }}><PsychologyIcon /></ListItemIcon>
+              <ListItemText primary="Coach Connect" />
             </ListItemButton>
 
             <ListItemButton 
