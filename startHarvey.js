@@ -148,18 +148,50 @@ const server = http.createServer(async (req, res) => {
     try {
       const procedureCategory = req.url.match(/^\/api\/coaching\/available-coaches\/(.+)$/)[1];
 
-      const { data, error } = await supabase
+      // Get specializations for the procedure category
+      const { data: specializations, error: specError } = await supabase
         .from('coach_procedure_specializations')
-        .select(`
-          *,
-          coach:sales_coach_agents(*),
-          availability:coach_availability(*)
-        `)
+        .select('*')
         .eq('procedure_category', procedureCategory)
-        .eq('available_for_instant', true)
-        .eq('availability.is_available', true);
+        .eq('available_for_instant', true);
 
-      if (error) throw error;
+      if (specError) throw specError;
+
+      if (!specializations || specializations.length === 0) {
+        res.writeHead(200);
+        res.end(JSON.stringify({
+          success: true,
+          coaches: []
+        }));
+        return;
+      }
+
+      // Get coach details and availability for these specializations
+      const coachIds = specializations.map(s => s.coach_id);
+      
+      const { data: coaches, error: coachError } = await supabase
+        .from('sales_coach_agents')
+        .select('*')
+        .in('id', coachIds);
+
+      if (coachError) throw coachError;
+
+      const { data: availability, error: availError } = await supabase
+        .from('coach_availability')
+        .select('*')
+        .in('coach_id', coachIds)
+        .eq('is_available', true);
+
+      if (availError) throw availError;
+
+      // Combine the data
+      const data = specializations
+        .filter(spec => availability.some(avail => avail.coach_id === spec.coach_id))
+        .map(spec => ({
+          ...spec,
+          coach: coaches.find(coach => coach.id === spec.coach_id),
+          availability: availability.find(avail => avail.coach_id === spec.coach_id)
+        }));
 
       res.writeHead(200);
       res.end(JSON.stringify({
