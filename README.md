@@ -48,6 +48,7 @@ RepConnect1 is the ultimate AI-powered sales CRM that revolutionizes how sales p
 - **🔥 Hot Streak Tracking** - Monitor your consecutive wins and momentum
 - **🌙 After Dark Mode** - Enhanced features for late-night closers
 - **🎮 Gamification** - Rookie → Closer → Partner → Legend progression
+- **📞 Harvey Pre-Call Whisper** - Personal pep talks before every call (only you hear them)
 
 ### ⚔️ Harvey War Room - Live Performance Monitoring
 - **🎯 Real-Time Call Visualization** - 3D sphere representation of active calls
@@ -93,10 +94,11 @@ RepConnect1 is the ultimate AI-powered sales CRM that revolutionizes how sales p
 
 ### Backend & Services
 - **Supabase** - PostgreSQL database with real-time subscriptions
-- **Twilio Voice API** - Voice calling infrastructure
+- **Twilio Voice API** - Voice calling infrastructure with Harvey whisper
 - **WebRTC** - Real-time communication
 - **Socket.IO** - Real-time bidirectional communication
 - **Deepgram** - Voice AI and transcription
+- **OpenAI GPT-4** - Call summaries and AI analysis
 - **Render** - Backend hosting at `https://osbackend-zl1h.onrender.com`
 
 ### AI & ML
@@ -456,6 +458,20 @@ https://repconnect1.netlify.app?debug=true
 
 ---
 
+## 🚀 Recent Updates
+
+### Harvey Pre-Call Whisper (NEW!)
+- **Personal Motivation** - Harvey gives you a quick pep talk before each call
+- **Customer Privacy** - Only you hear Harvey, customers hear professional greeting
+- **Customizable Messages** - Different styles: aggressive, motivational, quick
+- **Time-Based** - Different messages for morning, afternoon, evening
+- **2-3 Second Delay** - Quick messages like "Jason. Sales mode on. Let's go!"
+
+### Backend Migration
+- **Moved to Render** - All API endpoints now on `osbackend-zl1h.onrender.com`
+- **OpenAI GPT-4** - Enhanced call summaries with highest quality AI
+- **Improved Performance** - Direct backend calls, no serverless cold starts
+
 ## 🔒 Security
 
 ### Data Protection
@@ -466,8 +482,9 @@ https://repconnect1.netlify.app?debug=true
 
 ### Privacy
 - **Minimal Data Collection** - Only essential contact information
-- **No Call Recording Storage** - Transcriptions processed in real-time
+- **Call Recording Consent** - Clear notification before recording
 - **User Consent** - Microphone access requires explicit permission
+- **Harvey Whisper** - Pre-call messages only audible to sales rep
 
 ---
 
