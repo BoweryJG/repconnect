@@ -64,6 +64,16 @@ interface AppState {
   toggleAI: () => void;
   transcriptionEnabled: boolean;
   toggleTranscription: () => void;
+  
+  // Auth State
+  isAuthenticated: boolean;
+  setAuthenticated: (authenticated: boolean) => void;
+  showLoginModal: boolean;
+  setShowLoginModal: (show: boolean) => void;
+  showSubscriptionModal: boolean;
+  setShowSubscriptionModal: (show: boolean) => void;
+  subscriptionTier: string;
+  setSubscriptionTier: (tier: string) => void;
 }
 
 export const useStore = create<AppState>()(
@@ -77,6 +87,10 @@ export const useStore = create<AppState>()(
     performanceMode: 'ultra',
     aiEnabled: true,
     transcriptionEnabled: true,
+    isAuthenticated: false,
+    showLoginModal: false,
+    showSubscriptionModal: false,
+    subscriptionTier: 'free',
     
     // Contact actions
     addContact: (contact) => set((state) => ({
@@ -133,5 +147,11 @@ export const useStore = create<AppState>()(
     toggleTranscription: () => set((state) => ({ 
       transcriptionEnabled: !state.transcriptionEnabled 
     })),
+    
+    // Auth actions
+    setAuthenticated: (authenticated) => set({ isAuthenticated: authenticated }),
+    setShowLoginModal: (show) => set({ showLoginModal: show }),
+    setShowSubscriptionModal: (show) => set({ showSubscriptionModal: show }),
+    setSubscriptionTier: (tier) => set({ subscriptionTier: tier }),
   }))
 );
