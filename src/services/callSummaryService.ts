@@ -53,13 +53,13 @@ interface OpenRouterResponse {
 
 export class CallSummaryService {
   private supabase;
-  private openRouterApiKey: string;
-  private openRouterBaseUrl = 'https://openrouter.ai/api/v1';
+  private openAIApiKey: string;
+  private openAIBaseUrl = 'https://api.openai.com/v1';
 
   constructor() {
     const supabaseUrl = process.env.REACT_APP_SUPABASE_URL || process.env.SUPABASE_URL || '';
     const supabaseKey = process.env.REACT_APP_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY || '';
-    this.openRouterApiKey = process.env.OPENROUTER_API_KEY || '';
+    this.openAIApiKey = process.env.OPENAI_API_KEY || '';
     
     this.supabase = createClient(supabaseUrl, supabaseKey);
   }
@@ -68,9 +68,9 @@ export class CallSummaryService {
     const startTime = Date.now();
     
     try {
-      // Generate summary using OpenRouter
+      // Generate summary using OpenAI
       const prompt = this.buildPrompt(request.transcription, request.format || 'detailed');
-      const aiResponse = await this.callOpenRouter(prompt);
+      const aiResponse = await this.callOpenAI(prompt);
       
       const summary = this.parseAIResponse(aiResponse.choices[0].message.content);
       
@@ -79,7 +79,7 @@ export class CallSummaryService {
         callSid: request.callSid,
         summary,
         format: request.format || 'detailed',
-        aiModel: 'anthropic/claude-3-haiku',
+        aiModel: 'gpt-4-turbo-preview',
         processingTimeMs: Date.now() - startTime,
         tokenCount: {
           input: aiResponse.usage?.prompt_tokens || 0,
@@ -151,17 +151,15 @@ Important guidelines:
 5. For ${format} format, adjust the level of detail accordingly`;
   }
 
-  private async callOpenRouter(prompt: string): Promise<OpenRouterResponse> {
-    const response = await fetch(`${this.openRouterBaseUrl}/chat/completions`, {
+  private async callOpenAI(prompt: string): Promise<OpenRouterResponse> {
+    const response = await fetch(`${this.openAIBaseUrl}/chat/completions`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${this.openRouterApiKey}`,
-        'Content-Type': 'application/json',
-        'HTTP-Referer': process.env.APP_URL || 'http://localhost:3000',
-        'X-Title': 'Call Summary Service'
+        'Authorization': `Bearer ${this.openAIApiKey}`,
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: 'anthropic/claude-3-haiku',
+        model: 'gpt-4-turbo-preview',
         messages: [
           {
             role: 'system',
@@ -172,13 +170,13 @@ Important guidelines:
             content: prompt
           }
         ],
-        temperature: 0.3,
-        max_tokens: 2000
+        temperature: 0.7,
+        max_tokens: 4000
       })
     });
 
     if (!response.ok) {
-      throw new Error(`OpenRouter API error: ${response.statusText}`);
+      throw new Error(`OpenAI API error: ${response.statusText}`);
     }
 
     return await response.json();

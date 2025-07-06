@@ -6,9 +6,9 @@ const supabase = createClient(
   process.env.SUPABASE_ANON_KEY || ''
 );
 
-// OpenRouter configuration
-const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY || '';
-const OPENROUTER_BASE_URL = 'https://openrouter.ai/api/v1';
+// OpenAI configuration
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY || '';
+const OPENAI_BASE_URL = 'https://api.openai.com/v1';
 
 exports.handler = async (event, context) => {
   const headers = {

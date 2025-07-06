@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { Paper, Typography, Button, CircularProgress, Chip, Stack, Alert, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import { Refresh as RefreshIcon, Download as DownloadIcon } from '@mui/icons-material';
 
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:3001';
+
 interface CallSummaryViewProps {
   callSid: string;
   transcription?: string;
@@ -55,7 +57,7 @@ export const CallSummaryView: React.FC<CallSummaryViewProps> = ({ callSid, trans
     setError(null);
     
     try {
-      const response = await fetch(`/api/calls/${callSid}/summary`);
+      const response = await fetch(`${BACKEND_URL}/api/calls/${callSid}/summary`);
       if (response.ok) {
         const data = await response.json();
         setSummary(data);
@@ -83,7 +85,7 @@ export const CallSummaryView: React.FC<CallSummaryViewProps> = ({ callSid, trans
     setError(null);
 
     try {
-      const response = await fetch(`/api/calls/${callSid}/summary`, {
+      const response = await fetch(`${BACKEND_URL}/api/calls/${callSid}/summary`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -118,7 +120,7 @@ export const CallSummaryView: React.FC<CallSummaryViewProps> = ({ callSid, trans
     setError(null);
 
     try {
-      const response = await fetch(`/api/calls/${callSid}/summary/regenerate`, {
+      const response = await fetch(`${BACKEND_URL}/api/calls/${callSid}/summary/regenerate`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
