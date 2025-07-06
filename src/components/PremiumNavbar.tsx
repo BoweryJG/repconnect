@@ -30,9 +30,14 @@ import CloseIcon from '@mui/icons-material/Close';
 import HistoryIcon from '@mui/icons-material/History';
 import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh';
 import GavelIcon from '@mui/icons-material/Gavel';
+import PersonIcon from '@mui/icons-material/Person';
+import DiamondIcon from '@mui/icons-material/Diamond';
+import LogoutIcon from '@mui/icons-material/Logout';
 import { keyframes } from '@mui/material';
 import { useResponsive } from '../hooks/useResponsive';
 import { CornerScrews } from './effects/PrecisionScrew';
+import { useAuth } from '../auth/AuthContext';
+import { useStore } from '../store/useStore';
 
 // Animations
 const glassOscillate = keyframes`
@@ -77,6 +82,8 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
     shift: '0, 255, 255',
     deep: '255, 0, 170'
   });
+  const { user, profile, signOut } = useAuth();
+  const { setShowLoginModal, setShowSubscriptionModal, subscriptionTier } = useStore();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -554,6 +561,92 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                 >
                   <MoreHorizIcon sx={{ fontSize: 18 }} />
                 </IconButton>
+
+                {/* Divider */}
+                <div style={{
+                  width: 1,
+                  height: 24,
+                  background: alpha('#ffffff', 0.1),
+                  margin: '0 8px',
+                }} />
+
+                {/* User Authentication */}
+                {user ? (
+                  <>
+                    {/* Upgrade Button for Free Tier */}
+                    {subscriptionTier === 'free' && (
+                      <Button
+                        startIcon={<DiamondIcon sx={{ fontSize: 16 }} />}
+                        onClick={() => setShowSubscriptionModal(true)}
+                        sx={{
+                          px: 2,
+                          py: 0.75,
+                          borderRadius: '8px',
+                          background: `linear-gradient(135deg, rgba(${currentTheme.impossible}, 0.2), rgba(${currentTheme.shift}, 0.2))`,
+                          border: `1px solid rgba(${currentTheme.shift}, 0.3)`,
+                          color: 'white',
+                          fontSize: '12px',
+                          fontWeight: 600,
+                          textTransform: 'none',
+                          transition: 'all 0.3s ease',
+                          '&:hover': {
+                            background: `linear-gradient(135deg, rgba(${currentTheme.impossible}, 0.3), rgba(${currentTheme.shift}, 0.3))`,
+                            transform: 'translateY(-1px)',
+                            boxShadow: `0 4px 20px rgba(${currentTheme.shift}, 0.3)`,
+                          },
+                        } as any}
+                      >
+                        Upgrade
+                      </Button>
+                    )}
+
+                    {/* User Menu */}
+                    <Button
+                      startIcon={<PersonIcon sx={{ fontSize: 16 }} />}
+                      onClick={() => signOut()}
+                      sx={{
+                        px: 2,
+                        py: 0.75,
+                        borderRadius: '8px',
+                        background: alpha('#ffffff', 0.05),
+                        border: `1px solid ${alpha('#ffffff', 0.1)}`,
+                        color: 'text.secondary',
+                        fontSize: '12px',
+                        fontWeight: 500,
+                        textTransform: 'none',
+                        transition: 'all 0.3s ease',
+                        '&:hover': {
+                          background: alpha('#ffffff', 0.08),
+                          transform: 'translateY(-1px)',
+                        },
+                      } as any}
+                    >
+                      {profile?.full_name || user.email?.split('@')[0]}
+                    </Button>
+                  </>
+                ) : (
+                  <Button
+                    startIcon={<PersonIcon sx={{ fontSize: 16 }} />}
+                    onClick={() => setShowLoginModal(true)}
+                    sx={{
+                      px: 2,
+                      py: 0.75,
+                      borderRadius: '8px',
+                      background: `linear-gradient(135deg, ${theme.palette.primary.main}, rgb(${currentTheme.shift}))`,
+                      color: 'white',
+                      fontSize: '12px',
+                      fontWeight: 600,
+                      textTransform: 'none',
+                      transition: 'all 0.3s ease',
+                      '&:hover': {
+                        transform: 'translateY(-1px)',
+                        boxShadow: `0 4px 20px ${alpha(theme.palette.primary.main, 0.4)}`,
+                      },
+                    } as any}
+                  >
+                    Sign In
+                  </Button>
+                )}
               </>
             )}
 
@@ -712,6 +805,59 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
               <ListItemIcon><TimelineIcon /></ListItemIcon>
               <ListItemText primary="Performance" />
             </ListItemButton>
+
+            <Divider sx={{ my: 2, borderColor: 'rgba(255, 255, 255, 0.1)' }} />
+
+            {/* Authentication Items */}
+            {user ? (
+              <>
+                {subscriptionTier === 'free' && (
+                  <ListItemButton 
+                    onClick={() => {
+                      setShowSubscriptionModal(true);
+                      setMobileMenuOpen(false);
+                    }}
+                    sx={{ 
+                      borderRadius: '12px', 
+                      marginBottom: 8,
+                      background: 'linear-gradient(135deg, rgba(75, 150, 220, 0.1), rgba(0, 212, 255, 0.1))',
+                      border: '1px solid rgba(0, 212, 255, 0.2)',
+                    }}
+                  >
+                    <ListItemIcon><DiamondIcon sx={{ color: '#00d4ff' }} /></ListItemIcon>
+                    <ListItemText primary="Upgrade to Pro" />
+                  </ListItemButton>
+                )}
+                <ListItemButton 
+                  onClick={() => {
+                    signOut();
+                    setMobileMenuOpen(false);
+                  }}
+                  sx={{ borderRadius: '12px' }}
+                >
+                  <ListItemIcon><LogoutIcon /></ListItemIcon>
+                  <ListItemText 
+                    primary="Sign Out" 
+                    secondary={profile?.full_name || user.email}
+                  />
+                </ListItemButton>
+              </>
+            ) : (
+              <ListItemButton 
+                onClick={() => {
+                  setShowLoginModal(true);
+                  setMobileMenuOpen(false);
+                }}
+                sx={{ 
+                  borderRadius: '12px',
+                  background: 'linear-gradient(135deg, rgba(75, 150, 220, 0.1), rgba(0, 212, 255, 0.1))',
+                  border: '1px solid rgba(0, 212, 255, 0.2)',
+                }}
+              >
+                <ListItemIcon><PersonIcon sx={{ color: '#4B96DC' }} /></ListItemIcon>
+                <ListItemText primary="Sign In" />
+              </ListItemButton>
+            )}
           </List>
         </div>
       </Drawer>

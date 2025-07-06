@@ -10,6 +10,7 @@ import { PublicEnrichedDemo } from './components/PublicEnrichedDemo';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { HarveySyndicate } from './components/HarveySyndicate';
 import { HarveyWarRoom } from './components/HarveyWarRoom';
+import { AuthCallback } from './pages/AuthCallback';
 
 export const AppRouter: React.FC = () => {
   return (
@@ -29,6 +30,9 @@ export const AppRouter: React.FC = () => {
             {/* Harvey Syndicate routes */}
             <Route path="/harvey" element={<HarveySyndicate />} />
             <Route path="/harvey/warroom" element={<HarveyWarRoom />} />
+            
+            {/* Auth callback route */}
+            <Route path="/auth/callback" element={<AuthCallback />} />
             
             {/* Redirect any unknown routes to home */}
             <Route path="*" element={<Navigate to="/" replace />} />

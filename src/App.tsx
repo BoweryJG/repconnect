@@ -30,12 +30,16 @@ import { useResponsive } from './hooks/useResponsive';
 import { CallHistoryDashboard } from './components/CallHistoryDashboard';
 import { CompactEnrichmentWidget } from './components/CompactEnrichmentWidget';
 import { CornerScrews } from './components/effects/PrecisionScrew';
+import { AuthProvider, useAuth } from './auth/AuthContext';
+import { LoginModal } from './components/auth/LoginModal';
+import { SubscriptionModal } from './components/auth/SubscriptionModal';
 
 // Lazy load heavy components
 const MissionControlDashboard = React.lazy(() => import('./components/MissionControlDashboard').then(module => ({ default: module.MissionControlDashboard })));
 
-function App() {
+function AppContent() {
   const { isMobile } = useResponsive();
+  const { user, profile } = useAuth();
   const [showDialer, setShowDialer] = useState(false);
   const [showMissionControl, setShowMissionControl] = useState(false);
   const [showSyncDashboard, setShowSyncDashboard] = useState(false);
@@ -58,6 +62,12 @@ function App() {
     setCallInProgress,
     aiEnabled,
     toggleAI,
+    showLoginModal,
+    setShowLoginModal,
+    showSubscriptionModal,
+    setShowSubscriptionModal,
+    subscriptionTier,
+    setSubscriptionTier,
   } = useStore();
 
   // Load contacts from Supabase on mount
@@ -103,6 +113,20 @@ function App() {
     console.log('useEffect running, calling loadContacts...');
     loadContacts();
   }, [loadContacts]);
+
+  // Update subscription tier when profile changes
+  useEffect(() => {
+    if (profile?.subscription?.tier) {
+      setSubscriptionTier(profile.subscription.tier);
+    }
+  }, [profile, setSubscriptionTier]);
+
+  // Show login modal if not authenticated
+  useEffect(() => {
+    if (!user && !showLoginModal) {
+      setShowLoginModal(true);
+    }
+  }, [user, showLoginModal, setShowLoginModal]);
 
   // Initialize adaptive renderer
   useEffect(() => {
@@ -900,7 +924,35 @@ function App() {
           )}
         </AnimatePresence>
 
+        {/* Login Modal */}
+        <LoginModal
+          isOpen={showLoginModal}
+          onClose={() => setShowLoginModal(false)}
+          onSuccess={() => {
+            setShowLoginModal(false);
+            // Optionally show subscription modal for new users
+            if (profile?.subscription?.tier === 'free') {
+              setTimeout(() => setShowSubscriptionModal(true), 500);
+            }
+          }}
+        />
+
+        {/* Subscription Modal */}
+        <SubscriptionModal
+          isOpen={showSubscriptionModal}
+          onClose={() => setShowSubscriptionModal(false)}
+          currentTier={subscriptionTier}
+        />
+
       </div>
+  );
+}
+
+function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   );
 }
 
