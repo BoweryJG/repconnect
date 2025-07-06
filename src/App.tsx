@@ -360,7 +360,7 @@ function AppContent() {
             exit={{ y: -100, opacity: 0 }}
             style={{
               position: 'fixed',
-              top: 0,
+              top: isMobile ? 64 : 76,
               left: 0,
               right: 0,
               background: 'linear-gradient(90deg, #FF6B35 0%, #F53969 100%)',
@@ -383,7 +383,7 @@ function AppContent() {
             animate={{ opacity: 1 }}
             style={{
               position: 'fixed',
-              top: 0,
+              top: isMobile ? 64 : 76,
               left: 0,
               right: 0,
               background: 'linear-gradient(90deg, #4B96DC 0%, #00d4ff 100%)',
@@ -412,7 +412,7 @@ function AppContent() {
             onCallHistoryOpen={() => setShowCallHistory(true)}
           />
           
-          <div style={{ padding: isMobile ? '8px' : '12px', paddingTop: isMobile ? '80px' : '96px' }}>
+          <div style={{ padding: isMobile ? '8px' : '12px', paddingTop: isDemoMode || showUsageWarning ? (isMobile ? '120px' : '140px') : (isMobile ? '80px' : '96px') }}>
             <Container maxWidth="xl" sx={{ pb: { xs: 4, sm: 8 }, px: { xs: 2, sm: 4 } }}>
             {/* Add Contact Section */}
             <motion.div

@@ -162,24 +162,23 @@
 }
 
 .screw-tl { 
-    top: 12px; 
-    left: 12px; 
+    top: 8px; 
+    left: 8px; 
 }
 .screw-tr { 
-    top: 12px; 
-    right: 12px; 
+    top: 8px; 
+    right: 8px; 
 }
 .screw-bl { 
-    bottom: 12px; 
-    left: 12px; 
+    bottom: 8px; 
+    left: 8px; 
 }
 .screw-br { 
-    bottom: 12px; 
-    right: 12px; 
+    bottom: 8px; 
+    right: 8px; 
 }
 
 /* Remove screw animations - keep them static and minimal */
-
 
 /* Removed power rail animation - keeping modal clean and minimal */
 

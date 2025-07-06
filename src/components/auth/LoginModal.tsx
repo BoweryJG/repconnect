@@ -17,46 +17,41 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSucce
 
   useEffect(() => {
     if (isOpen && modalRef.current) {
-      // GSAP entrance animation
+      // Simple entrance animation
       const tl = gsap.timeline();
       
       tl.fromTo(modalRef.current, 
         { 
-          scale: 0.8, 
-          opacity: 0, 
-          rotationY: -15,
-          transformPerspective: 1000
+          scale: 0.9, 
+          opacity: 0
         },
         { 
           scale: 1, 
-          opacity: 1, 
-          rotationY: 0,
-          duration: 0.6,
-          ease: "back.out(1.2)"
+          opacity: 1,
+          duration: 0.4,
+          ease: "power2.out"
         }
       );
 
-      // Animate screws
+      // Simple screw appearance - no rotation
       screwRefs.current.forEach((screw, index) => {
         if (screw) {
           tl.fromTo(screw,
             { 
               scale: 0, 
-              rotation: -180 
+              opacity: 0
             },
             { 
               scale: 1, 
-              rotation: 0,
-              duration: 0.4,
-              ease: "back.out(2)",
-              delay: index * 0.1
+              opacity: 1,
+              duration: 0.2,
+              ease: "power2.out",
+              delay: index * 0.05
             },
-            "-=0.3"
+            "-=0.2"
           );
         }
       });
-
-      // Removed power rail animation
     }
   }, [isOpen]);
 
