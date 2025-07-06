@@ -43,8 +43,37 @@ export const CallInterface: React.FC<CallInterfaceProps> = ({ contact, onEndCall
   const [fullTranscript, setFullTranscript] = useState<string[]>([]);
   const waveformRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<number | null>(null);
+  const mediaStreamRef = useRef<MediaStream | null>(null);
 
   const { aiEnabled, transcriptionEnabled, activeCall } = useStore();
+
+  // Initialize microphone access
+  useEffect(() => {
+    const initializeMicrophone = async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ 
+          audio: {
+            echoCancellation: true,
+            noiseSuppression: true,
+            autoGainControl: true,
+          }
+        });
+        mediaStreamRef.current = stream;
+      } catch (error) {
+        console.error('Failed to access microphone:', error);
+        setTranscriptionError('Microphone access denied. Please allow microphone permissions and refresh.');
+      }
+    };
+
+    initializeMicrophone();
+
+    // Cleanup on unmount
+    return () => {
+      if (mediaStreamRef.current) {
+        mediaStreamRef.current.getTracks().forEach(track => track.stop());
+      }
+    };
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -146,6 +175,18 @@ export const CallInterface: React.FC<CallInterfaceProps> = ({ contact, onEndCall
       };
     }
   }, [transcriptionEnabled, aiEnabled, callSid, activeCall]);
+
+  const toggleMicrophone = () => {
+    if (mediaStreamRef.current) {
+      const audioTracks = mediaStreamRef.current.getAudioTracks();
+      audioTracks.forEach(track => {
+        track.enabled = !track.enabled;
+      });
+      setIsMuted(!isMuted);
+    } else {
+      setTranscriptionError('Microphone not available. Please refresh and allow microphone access.');
+    }
+  };
 
   const formatDuration = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -346,7 +387,7 @@ export const CallInterface: React.FC<CallInterfaceProps> = ({ contact, onEndCall
         <div style={{ display: 'flex', justifyContent: 'center', gap: '16px' }}>
           <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
             <IconButton
-              onClick={() => setIsMuted(!isMuted)}
+              onClick={toggleMicrophone}
               sx={{
                 width: 56,
                 height: 56,
