@@ -143,7 +143,7 @@ const harveyAPI = new HarveyAPI();
 // Auto-initialize if reps are available
 export async function autoInitialize() {
   try {
-    const { supabase } = await import('../lib/supabase.ts');
+    const { supabase } = await import('../lib/supabase.js');
     
     // Get all active sales reps
     const { data: reps, error } = await supabase
