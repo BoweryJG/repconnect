@@ -38,6 +38,7 @@ import { useResponsive } from '../hooks/useResponsive';
 import { CornerScrews } from './effects/PrecisionScrew';
 import { useAuth } from '../auth/AuthContext';
 import { useStore } from '../store/useStore';
+import { UserAvatar } from './UserAvatar';
 
 // Animations
 const glassOscillate = keyframes`
@@ -319,7 +320,7 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                   marginTop: '2px',
                 } as any}
               >
-                Pipeline
+                RepConnect
               </Typography>
             </div>
           </motion.div>
@@ -570,7 +571,7 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                   margin: '0 8px',
                 }} />
 
-                {/* User Authentication */}
+                {/* User Authentication - Always Show */}
                 {user ? (
                   <>
                     {/* Upgrade Button for Free Tier */}
@@ -600,29 +601,14 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                       </Button>
                     )}
 
-                    {/* User Menu */}
-                    <Button
-                      startIcon={<PersonIcon sx={{ fontSize: 16 }} />}
+                    {/* User Avatar with Dropdown */}
+                    <UserAvatar
+                      user={user}
+                      profile={profile}
+                      size={32}
+                      showInitials={true}
                       onClick={() => signOut()}
-                      sx={{
-                        px: 2,
-                        py: 0.75,
-                        borderRadius: '8px',
-                        background: alpha('#ffffff', 0.05),
-                        border: `1px solid ${alpha('#ffffff', 0.1)}`,
-                        color: 'text.secondary',
-                        fontSize: '12px',
-                        fontWeight: 500,
-                        textTransform: 'none',
-                        transition: 'all 0.3s ease',
-                        '&:hover': {
-                          background: alpha('#ffffff', 0.08),
-                          transform: 'translateY(-1px)',
-                        },
-                      } as any}
-                    >
-                      {profile?.full_name || user.email?.split('@')[0]}
-                    </Button>
+                    />
                   </>
                 ) : (
                   <Button
@@ -683,21 +669,127 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
         sx={{
           '& .MuiDrawer-paper': {
             width: 280,
-            background: '#0a0a0a',
+            background: 'linear-gradient(135deg, rgba(26, 26, 26, 0.98) 0%, rgba(30, 30, 30, 0.95) 100%)',
             borderLeft: '1px solid rgba(255, 255, 255, 0.1)',
+            position: 'relative',
+            overflow: 'visible',
           },
         }}
       >
+        {/* Tiny Screws in Corners */}
+        <div style={{
+          position: 'absolute',
+          top: 4,
+          left: 4,
+          width: 4,
+          height: 4,
+          background: 'radial-gradient(circle at 30% 30%, #d0d0d0 0%, #a8a8a8 20%, #808080 50%, #606060 100%)',
+          borderRadius: '50%',
+          boxShadow: 'inset 0 0.25px 0.5px rgba(255,255,255,0.6), inset 0 -0.25px 0.5px rgba(0,0,0,0.4), 0 0.5px 1px rgba(0,0,0,0.6)',
+          zIndex: 10,
+        }}>
+          <div style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            width: '80%',
+            height: '0.5px',
+            background: 'linear-gradient(90deg, transparent 5%, rgba(0,0,0,0.6) 15%, rgba(0,0,0,0.6) 85%, transparent 95%)',
+            transform: 'translate(-50%, -50%)',
+          }} />
+        </div>
+        <div style={{
+          position: 'absolute',
+          top: 4,
+          right: 4,
+          width: 4,
+          height: 4,
+          background: 'radial-gradient(circle at 30% 30%, #d0d0d0 0%, #a8a8a8 20%, #808080 50%, #606060 100%)',
+          borderRadius: '50%',
+          boxShadow: 'inset 0 0.25px 0.5px rgba(255,255,255,0.6), inset 0 -0.25px 0.5px rgba(0,0,0,0.4), 0 0.5px 1px rgba(0,0,0,0.6)',
+          zIndex: 10,
+        }}>
+          <div style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            width: '80%',
+            height: '0.5px',
+            background: 'linear-gradient(90deg, transparent 5%, rgba(0,0,0,0.6) 15%, rgba(0,0,0,0.6) 85%, transparent 95%)',
+            transform: 'translate(-50%, -50%)',
+          }} />
+        </div>
+        <div style={{
+          position: 'absolute',
+          bottom: 4,
+          left: 4,
+          width: 4,
+          height: 4,
+          background: 'radial-gradient(circle at 30% 30%, #d0d0d0 0%, #a8a8a8 20%, #808080 50%, #606060 100%)',
+          borderRadius: '50%',
+          boxShadow: 'inset 0 0.25px 0.5px rgba(255,255,255,0.6), inset 0 -0.25px 0.5px rgba(0,0,0,0.4), 0 0.5px 1px rgba(0,0,0,0.6)',
+          zIndex: 10,
+        }}>
+          <div style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            width: '80%',
+            height: '0.5px',
+            background: 'linear-gradient(90deg, transparent 5%, rgba(0,0,0,0.6) 15%, rgba(0,0,0,0.6) 85%, transparent 95%)',
+            transform: 'translate(-50%, -50%)',
+          }} />
+        </div>
+        <div style={{
+          position: 'absolute',
+          bottom: 4,
+          right: 4,
+          width: 4,
+          height: 4,
+          background: 'radial-gradient(circle at 30% 30%, #d0d0d0 0%, #a8a8a8 20%, #808080 50%, #606060 100%)',
+          borderRadius: '50%',
+          boxShadow: 'inset 0 0.25px 0.5px rgba(255,255,255,0.6), inset 0 -0.25px 0.5px rgba(0,0,0,0.4), 0 0.5px 1px rgba(0,0,0,0.6)',
+          zIndex: 10,
+        }}>
+          <div style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            width: '80%',
+            height: '0.5px',
+            background: 'linear-gradient(90deg, transparent 5%, rgba(0,0,0,0.6) 15%, rgba(0,0,0,0.6) 85%, transparent 95%)',
+            transform: 'translate(-50%, -50%)',
+          }} />
+        </div>
+        
         <div style={{ padding: 16 }}>
           {/* Header */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
-            <Typography variant="h6" sx={{ fontWeight: 600 } as any}>
-              Menu
+          <div style={{ 
+            display: 'flex', 
+            justifyContent: 'space-between', 
+            alignItems: 'center', 
+            marginBottom: 24,
+            paddingBottom: 16,
+            borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
+          }}>
+            <Typography variant="h6" sx={{ 
+              fontWeight: 700,
+              background: 'linear-gradient(135deg, #4B96DC, #00d4ff)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              letterSpacing: '0.5px',
+            } as any}>
+              REPCONNECT
             </Typography>
             <IconButton 
               onClick={() => setMobileMenuOpen(false)}
               sx={{ 
-                color: 'rgba(255, 255, 255, 0.7)'
+                color: 'rgba(255, 255, 255, 0.7)',
+                '&:hover': {
+                  color: 'rgba(255, 255, 255, 0.9)',
+                  background: 'rgba(255, 255, 255, 0.05)',
+                }
               } as any}
             >
               <CloseIcon />
@@ -705,15 +797,45 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
           </div>
 
           {/* Menu Items */}
-          <List>
+          <List sx={{ padding: 0 }}>
+            {/* Main Navigation Section */}
+            <Typography variant="caption" sx={{ 
+              color: 'rgba(255, 255, 255, 0.4)',
+              textTransform: 'uppercase',
+              letterSpacing: '1px',
+              fontSize: '10px',
+              fontWeight: 600,
+              display: 'block',
+              marginBottom: 1,
+              paddingLeft: 2,
+            }}>
+              Navigation
+            </Typography>
+            
             <ListItemButton 
               onClick={() => {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
                 setMobileMenuOpen(false);
               }}
-              sx={{ borderRadius: '12px', marginBottom: 8 }}
+              sx={{ 
+                borderRadius: '12px', 
+                marginBottom: 1,
+                background: 'rgba(255, 255, 255, 0.02)',
+                border: '1px solid rgba(255, 255, 255, 0.05)',
+                transition: 'all 0.3s ease',
+                position: 'relative',
+                overflow: 'visible',
+                '&:hover': {
+                  background: 'rgba(255, 255, 255, 0.05)',
+                  borderColor: 'rgba(0, 212, 255, 0.2)',
+                  transform: 'translateX(4px)',
+                },
+              }}
             >
-              <ListItemIcon><ContactsIcon /></ListItemIcon>
+              {/* Tiny corner screws for menu item */}
+              <div style={{ position: 'absolute', top: 3, left: 3, width: 2, height: 2, background: 'radial-gradient(circle, #999 0%, #666 100%)', borderRadius: '50%', opacity: 0.3 }} />
+              <div style={{ position: 'absolute', top: 3, right: 3, width: 2, height: 2, background: 'radial-gradient(circle, #999 0%, #666 100%)', borderRadius: '50%', opacity: 0.3 }} />
+              <ListItemIcon sx={{ color: '#00d4ff' }}><ContactsIcon /></ListItemIcon>
               <ListItemText primary="Contacts" />
             </ListItemButton>
 
@@ -722,9 +844,24 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                 window.location.href = '/harvey';
                 setMobileMenuOpen(false);
               }}
-              sx={{ borderRadius: '12px', marginBottom: 8 }}
+              sx={{ 
+                borderRadius: '12px', 
+                marginBottom: 1,
+                background: 'rgba(255, 255, 255, 0.02)',
+                border: '1px solid rgba(255, 255, 255, 0.05)',
+                transition: 'all 0.3s ease',
+                position: 'relative',
+                overflow: 'visible',
+                '&:hover': {
+                  background: 'rgba(255, 255, 255, 0.05)',
+                  borderColor: 'rgba(255, 215, 0, 0.2)',
+                  transform: 'translateX(4px)',
+                },
+              }}
             >
-              <ListItemIcon><GavelIcon /></ListItemIcon>
+              <div style={{ position: 'absolute', top: 3, left: 3, width: 2, height: 2, background: 'radial-gradient(circle, #999 0%, #666 100%)', borderRadius: '50%', opacity: 0.3 }} />
+              <div style={{ position: 'absolute', top: 3, right: 3, width: 2, height: 2, background: 'radial-gradient(circle, #999 0%, #666 100%)', borderRadius: '50%', opacity: 0.3 }} />
+              <ListItemIcon sx={{ color: '#FFD700' }}><GavelIcon /></ListItemIcon>
               <ListItemText primary="Harvey Syndicate" />
             </ListItemButton>
 
@@ -733,20 +870,65 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                 window.open('/enrich', '_blank');
                 setMobileMenuOpen(false);
               }}
-              sx={{ borderRadius: '12px', marginBottom: 8 }}
+              sx={{ 
+                borderRadius: '12px', 
+                marginBottom: 3,
+                background: 'rgba(255, 255, 255, 0.02)',
+                border: '1px solid rgba(255, 255, 255, 0.05)',
+                transition: 'all 0.3s ease',
+                position: 'relative',
+                overflow: 'visible',
+                '&:hover': {
+                  background: 'rgba(255, 255, 255, 0.05)',
+                  borderColor: 'rgba(139, 92, 246, 0.2)',
+                  transform: 'translateX(4px)',
+                },
+              }}
             >
-              <ListItemIcon><AutoFixHighIcon /></ListItemIcon>
+              <div style={{ position: 'absolute', top: 3, left: 3, width: 2, height: 2, background: 'radial-gradient(circle, #999 0%, #666 100%)', borderRadius: '50%', opacity: 0.3 }} />
+              <div style={{ position: 'absolute', top: 3, right: 3, width: 2, height: 2, background: 'radial-gradient(circle, #999 0%, #666 100%)', borderRadius: '50%', opacity: 0.3 }} />
+              <ListItemIcon sx={{ color: '#8B5CF6' }}><AutoFixHighIcon /></ListItemIcon>
               <ListItemText primary="Enrich Leads" />
             </ListItemButton>
+
+            {/* Tools Section */}
+            <Typography variant="caption" sx={{ 
+              color: 'rgba(255, 255, 255, 0.4)',
+              textTransform: 'uppercase',
+              letterSpacing: '1px',
+              fontSize: '10px',
+              fontWeight: 600,
+              display: 'block',
+              marginBottom: 1,
+              marginTop: 2,
+              paddingLeft: 2,
+            }}>
+              Tools
+            </Typography>
 
             <ListItemButton 
               onClick={() => {
                 onSyncDashboardOpen?.();
                 setMobileMenuOpen(false);
               }}
-              sx={{ borderRadius: '12px', marginBottom: 8 }}
+              sx={{ 
+                borderRadius: '12px', 
+                marginBottom: 1,
+                background: 'rgba(255, 255, 255, 0.02)',
+                border: '1px solid rgba(255, 255, 255, 0.05)',
+                transition: 'all 0.3s ease',
+                position: 'relative',
+                overflow: 'visible',
+                '&:hover': {
+                  background: 'rgba(255, 255, 255, 0.05)',
+                  borderColor: 'rgba(236, 72, 153, 0.2)',
+                  transform: 'translateX(4px)',
+                },
+              }}
             >
-              <ListItemIcon><SyncIcon /></ListItemIcon>
+              <div style={{ position: 'absolute', top: 3, left: 3, width: 2, height: 2, background: 'radial-gradient(circle, #999 0%, #666 100%)', borderRadius: '50%', opacity: 0.3 }} />
+              <div style={{ position: 'absolute', top: 3, right: 3, width: 2, height: 2, background: 'radial-gradient(circle, #999 0%, #666 100%)', borderRadius: '50%', opacity: 0.3 }} />
+              <ListItemIcon sx={{ color: '#EC4899' }}><SyncIcon /></ListItemIcon>
               <ListItemText primary="AI Sync" />
             </ListItemButton>
 
@@ -755,9 +937,24 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                 onMissionControlOpen?.();
                 setMobileMenuOpen(false);
               }}
-              sx={{ borderRadius: '12px', marginBottom: 8 }}
+              sx={{ 
+                borderRadius: '12px', 
+                marginBottom: 1,
+                background: 'rgba(255, 255, 255, 0.02)',
+                border: '1px solid rgba(255, 255, 255, 0.05)',
+                transition: 'all 0.3s ease',
+                position: 'relative',
+                overflow: 'visible',
+                '&:hover': {
+                  background: 'rgba(255, 255, 255, 0.05)',
+                  borderColor: 'rgba(75, 212, 142, 0.2)',
+                  transform: 'translateX(4px)',
+                },
+              }}
             >
-              <ListItemIcon><BarChartIcon /></ListItemIcon>
+              <div style={{ position: 'absolute', top: 3, left: 3, width: 2, height: 2, background: 'radial-gradient(circle, #999 0%, #666 100%)', borderRadius: '50%', opacity: 0.3 }} />
+              <div style={{ position: 'absolute', top: 3, right: 3, width: 2, height: 2, background: 'radial-gradient(circle, #999 0%, #666 100%)', borderRadius: '50%', opacity: 0.3 }} />
+              <ListItemIcon sx={{ color: '#4BD48E' }}><BarChartIcon /></ListItemIcon>
               <ListItemText primary="Analytics" />
             </ListItemButton>
 
@@ -766,21 +963,63 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                 onCallHistoryOpen?.();
                 setMobileMenuOpen(false);
               }}
-              sx={{ borderRadius: '12px', marginBottom: 8 }}
+              sx={{ 
+                borderRadius: '12px', 
+                marginBottom: 3,
+                background: 'rgba(255, 255, 255, 0.02)',
+                border: '1px solid rgba(255, 255, 255, 0.05)',
+                transition: 'all 0.3s ease',
+                position: 'relative',
+                overflow: 'visible',
+                '&:hover': {
+                  background: 'rgba(255, 255, 255, 0.05)',
+                  borderColor: 'rgba(99, 102, 241, 0.2)',
+                  transform: 'translateX(4px)',
+                },
+              }}
             >
-              <ListItemIcon><HistoryIcon /></ListItemIcon>
+              <div style={{ position: 'absolute', top: 3, left: 3, width: 2, height: 2, background: 'radial-gradient(circle, #999 0%, #666 100%)', borderRadius: '50%', opacity: 0.3 }} />
+              <div style={{ position: 'absolute', top: 3, right: 3, width: 2, height: 2, background: 'radial-gradient(circle, #999 0%, #666 100%)', borderRadius: '50%', opacity: 0.3 }} />
+              <ListItemIcon sx={{ color: '#6366F1' }}><HistoryIcon /></ListItemIcon>
               <ListItemText primary="Call History" />
             </ListItemButton>
 
-            <Divider sx={{ margin: 16 }} />
+            <Divider sx={{ my: 2, borderColor: 'rgba(255, 255, 255, 0.05)' }} />
+
+            {/* Settings Section */}
+            <Typography variant="caption" sx={{ 
+              color: 'rgba(255, 255, 255, 0.4)',
+              textTransform: 'uppercase',
+              letterSpacing: '1px',
+              fontSize: '10px',
+              fontWeight: 600,
+              display: 'block',
+              marginBottom: 1,
+              paddingLeft: 2,
+            }}>
+              Settings
+            </Typography>
 
             {/* AI Toggle */}
-            <ListItem sx={{ borderRadius: '12px', marginBottom: 8 }}>
+            <ListItem sx={{ 
+              borderRadius: '12px', 
+              marginBottom: 1,
+              background: 'rgba(255, 255, 255, 0.02)',
+              border: '1px solid rgba(255, 255, 255, 0.05)',
+            }}>
               <ListItemText primary="AI Assistant" />
               <Switch
                 edge="end"
                 checked={aiEnabled}
                 onChange={onAIToggle}
+                sx={{
+                  '& .MuiSwitch-switchBase.Mui-checked': {
+                    color: '#00d4ff',
+                  },
+                  '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+                    backgroundColor: '#00d4ff',
+                  },
+                }}
               />
             </ListItem>
 
@@ -789,9 +1028,24 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                 onAISettingsOpen?.();
                 setMobileMenuOpen(false);
               }}
-              sx={{ borderRadius: '12px', marginBottom: 8 }}
+              sx={{ 
+                borderRadius: '12px', 
+                marginBottom: 1,
+                background: 'rgba(255, 255, 255, 0.02)',
+                border: '1px solid rgba(255, 255, 255, 0.05)',
+                transition: 'all 0.3s ease',
+                position: 'relative',
+                overflow: 'visible',
+                '&:hover': {
+                  background: 'rgba(255, 255, 255, 0.05)',
+                  borderColor: 'rgba(255, 255, 255, 0.1)',
+                  transform: 'translateX(4px)',
+                },
+              }}
             >
-              <ListItemIcon><SettingsIcon /></ListItemIcon>
+              <div style={{ position: 'absolute', top: 3, left: 3, width: 2, height: 2, background: 'radial-gradient(circle, #999 0%, #666 100%)', borderRadius: '50%', opacity: 0.3 }} />
+              <div style={{ position: 'absolute', top: 3, right: 3, width: 2, height: 2, background: 'radial-gradient(circle, #999 0%, #666 100%)', borderRadius: '50%', opacity: 0.3 }} />
+              <ListItemIcon sx={{ color: 'rgba(255, 255, 255, 0.6)' }}><SettingsIcon /></ListItemIcon>
               <ListItemText primary="AI Settings" />
             </ListItemButton>
 
@@ -800,9 +1054,24 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                 onPerformanceOpen?.();
                 setMobileMenuOpen(false);
               }}
-              sx={{ borderRadius: '12px', marginBottom: 8 }}
+              sx={{ 
+                borderRadius: '12px', 
+                marginBottom: 3,
+                background: 'rgba(255, 255, 255, 0.02)',
+                border: '1px solid rgba(255, 255, 255, 0.05)',
+                transition: 'all 0.3s ease',
+                position: 'relative',
+                overflow: 'visible',
+                '&:hover': {
+                  background: 'rgba(255, 255, 255, 0.05)',
+                  borderColor: 'rgba(255, 255, 255, 0.1)',
+                  transform: 'translateX(4px)',
+                },
+              }}
             >
-              <ListItemIcon><TimelineIcon /></ListItemIcon>
+              <div style={{ position: 'absolute', top: 3, left: 3, width: 2, height: 2, background: 'radial-gradient(circle, #999 0%, #666 100%)', borderRadius: '50%', opacity: 0.3 }} />
+              <div style={{ position: 'absolute', top: 3, right: 3, width: 2, height: 2, background: 'radial-gradient(circle, #999 0%, #666 100%)', borderRadius: '50%', opacity: 0.3 }} />
+              <ListItemIcon sx={{ color: 'rgba(255, 255, 255, 0.6)' }}><TimelineIcon /></ListItemIcon>
               <ListItemText primary="Performance" />
             </ListItemButton>
 
@@ -822,8 +1091,12 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                       marginBottom: 8,
                       background: 'linear-gradient(135deg, rgba(75, 150, 220, 0.1), rgba(0, 212, 255, 0.1))',
                       border: '1px solid rgba(0, 212, 255, 0.2)',
+                      position: 'relative',
+                      overflow: 'visible',
                     }}
                   >
+                    <div style={{ position: 'absolute', top: 3, left: 3, width: 2, height: 2, background: 'radial-gradient(circle, #aaa 0%, #777 100%)', borderRadius: '50%', opacity: 0.4 }} />
+                    <div style={{ position: 'absolute', top: 3, right: 3, width: 2, height: 2, background: 'radial-gradient(circle, #aaa 0%, #777 100%)', borderRadius: '50%', opacity: 0.4 }} />
                     <ListItemIcon><DiamondIcon sx={{ color: '#00d4ff' }} /></ListItemIcon>
                     <ListItemText primary="Upgrade to Pro" />
                   </ListItemButton>
@@ -833,8 +1106,22 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                     signOut();
                     setMobileMenuOpen(false);
                   }}
-                  sx={{ borderRadius: '12px' }}
+                  sx={{ 
+                    borderRadius: '12px',
+                    background: 'rgba(255, 255, 255, 0.02)',
+                    border: '1px solid rgba(255, 255, 255, 0.05)',
+                    position: 'relative',
+                    overflow: 'visible',
+                    transition: 'all 0.3s ease',
+                    '&:hover': {
+                      background: 'rgba(255, 255, 255, 0.05)',
+                      borderColor: 'rgba(255, 255, 255, 0.1)',
+                      transform: 'translateX(4px)',
+                    },
+                  }}
                 >
+                  <div style={{ position: 'absolute', top: 3, left: 3, width: 2, height: 2, background: 'radial-gradient(circle, #999 0%, #666 100%)', borderRadius: '50%', opacity: 0.3 }} />
+                  <div style={{ position: 'absolute', top: 3, right: 3, width: 2, height: 2, background: 'radial-gradient(circle, #999 0%, #666 100%)', borderRadius: '50%', opacity: 0.3 }} />
                   <ListItemIcon><LogoutIcon /></ListItemIcon>
                   <ListItemText 
                     primary="Sign Out" 
@@ -852,8 +1139,12 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                   borderRadius: '12px',
                   background: 'linear-gradient(135deg, rgba(75, 150, 220, 0.1), rgba(0, 212, 255, 0.1))',
                   border: '1px solid rgba(0, 212, 255, 0.2)',
+                  position: 'relative',
+                  overflow: 'visible',
                 }}
               >
+                <div style={{ position: 'absolute', top: 3, left: 3, width: 2, height: 2, background: 'radial-gradient(circle, #aaa 0%, #777 100%)', borderRadius: '50%', opacity: 0.4 }} />
+                <div style={{ position: 'absolute', top: 3, right: 3, width: 2, height: 2, background: 'radial-gradient(circle, #aaa 0%, #777 100%)', borderRadius: '50%', opacity: 0.4 }} />
                 <ListItemIcon><PersonIcon sx={{ color: '#4B96DC' }} /></ListItemIcon>
                 <ListItemText primary="Sign In" />
               </ListItemButton>
