@@ -73,6 +73,10 @@ export class DeepgramWebRTCBridge extends EventEmitter {
   }
 
   private resampleAudio(input: Int16Array, inputRate: number, outputRate: number): Int16Array {
+    if (!input || input.length === 0) {
+      return new Int16Array(0);
+    }
+    
     if (inputRate === outputRate) {
       return input;
     }
@@ -98,19 +102,21 @@ export class DeepgramWebRTCBridge extends EventEmitter {
 
   private processAudioBuffers(): void {
     this.audioBuffers.forEach((buffer, sessionId) => {
-      if (buffer.buffer.length === 0) return;
+      if (!buffer || !buffer.buffer || buffer.buffer.length === 0) return;
 
       const connection = this.liveConnections.get(sessionId);
       if (!connection) return;
 
       // Combine buffered audio chunks
-      const totalLength = buffer.buffer.reduce((sum, chunk) => sum + chunk.length, 0);
+      const totalLength = buffer.buffer.reduce((sum, chunk) => sum + (chunk?.length || 0), 0);
       const combinedAudio = new Int16Array(totalLength);
       let offset = 0;
 
       buffer.buffer.forEach(chunk => {
-        combinedAudio.set(chunk, offset);
-        offset += chunk.length;
+        if (chunk && chunk.length > 0) {
+          combinedAudio.set(chunk, offset);
+          offset += chunk.length;
+        }
       });
 
       // Clear buffer

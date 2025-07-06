@@ -215,13 +215,24 @@ class HarveyWebRTC {
   }
 
   private analyzeVoice(dataArray: Uint8Array): VoiceAnalysis {
+    // Check if dataArray is valid
+    if (!dataArray || dataArray.length === 0) {
+      return {
+        confidence: 0,
+        pace: 'normal',
+        tone: 'uncertain',
+        volume: 0,
+        sentiment: 0,
+      };
+    }
+    
     // Calculate volume
     const volume = dataArray.reduce((sum, val) => sum + val, 0) / dataArray.length;
     
     // Analyze frequency distribution for tone
-    const lowFreq = dataArray.slice(0, dataArray.length / 4).reduce((sum, val) => sum + val, 0);
-    const midFreq = dataArray.slice(dataArray.length / 4, dataArray.length / 2).reduce((sum, val) => sum + val, 0);
-    const highFreq = dataArray.slice(dataArray.length / 2).reduce((sum, val) => sum + val, 0);
+    const lowFreq = dataArray.slice(0, Math.floor(dataArray.length / 4)).reduce((sum, val) => sum + val, 0);
+    const midFreq = dataArray.slice(Math.floor(dataArray.length / 4), Math.floor(dataArray.length / 2)).reduce((sum, val) => sum + val, 0);
+    const highFreq = dataArray.slice(Math.floor(dataArray.length / 2)).reduce((sum, val) => sum + val, 0);
     
     // Determine tone based on frequency distribution
     let tone: VoiceAnalysis['tone'] = 'confident';

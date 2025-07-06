@@ -77,11 +77,15 @@ class HarveyService {
   private initializeSocket(): void {
     if (this.socket) return;
 
-    this.socket = io(this.baseUrl, {
+    // Connect to harvey-ws namespace
+    this.socket = io(`${this.baseUrl}/harvey-ws`, {
       transports: ['websocket'],
       reconnection: true,
       reconnectionAttempts: 5,
       reconnectionDelay: 1000,
+      auth: {
+        userId: this.userId
+      }
     });
 
     this.socket.on('connect', () => {

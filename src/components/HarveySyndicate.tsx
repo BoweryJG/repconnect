@@ -134,11 +134,19 @@ export const HarveySyndicate: React.FC = () => {
       
       // Load initial metrics
       const data = await harveyService.getMetrics();
-      setMetrics(data.metrics);
-      setLeaderboard(data.leaderboard);
+      if (data && data.metrics) {
+        setMetrics({
+          ...metrics,
+          ...data.metrics,
+          activeTrials: data.metrics.activeTrials || []
+        });
+      }
+      if (data && data.leaderboard) {
+        setLeaderboard(data.leaderboard || []);
+      }
       
       // Get daily verdict if not already received
-      if (!data.metrics.dailyVerdict) {
+      if (data && data.metrics && !data.metrics.dailyVerdict) {
         const verdict = await harveyService.getDailyVerdict();
         setMetrics(prev => ({ ...prev, dailyVerdict: verdict }));
         
@@ -153,12 +161,16 @@ export const HarveySyndicate: React.FC = () => {
       
       // Subscribe to real-time updates
       harveyService.subscribeToUpdates((update) => {
-        if (update.type === 'metrics') {
-          setMetrics(update.data);
-        } else if (update.type === 'leaderboard') {
-          setLeaderboard(update.data);
-        } else if (update.type === 'hotLead') {
-          setHotLeads(prev => [update.data, ...prev].slice(0, 5));
+        if (update.type === 'metrics' && update.data) {
+          setMetrics(prev => ({
+            ...prev,
+            ...update.data,
+            activeTrials: update.data.activeTrials || []
+          }));
+        } else if (update.type === 'leaderboard' && update.data) {
+          setLeaderboard(update.data || []);
+        } else if (update.type === 'hotLead' && update.data) {
+          setHotLeads(prev => [update.data, ...(prev || [])].slice(0, 5));
         }
       });
       
@@ -484,7 +496,7 @@ export const HarveySyndicate: React.FC = () => {
                   The Elite
                 </Typography>
                 
-                {leaderboard.map((rep, index) => (
+                {leaderboard && leaderboard.map((rep, index) => (
                   <div
                     key={rep.id}
                     style={{
@@ -493,7 +505,7 @@ export const HarveySyndicate: React.FC = () => {
                       justifyContent: 'space-between',
                       paddingTop: '12px',
                       paddingBottom: '12px',
-                      borderBottom: index < leaderboard.length - 1 ? '1px solid rgba(255, 255, 255, 0.1)' : 'none',
+                      borderBottom: index < (leaderboard?.length || 0) - 1 ? '1px solid rgba(255, 255, 255, 0.1)' : 'none',
                     }}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
@@ -558,7 +570,7 @@ export const HarveySyndicate: React.FC = () => {
                   />
                 </div>
                 
-                {hotLeads.length === 0 ? (
+                {!hotLeads || hotLeads.length === 0 ? (
                   <div style={{ textAlign: 'center', paddingTop: '32px', paddingBottom: '32px' }}>
                     <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                       No hot leads right now. Harvey is hunting...
@@ -614,7 +626,7 @@ export const HarveySyndicate: React.FC = () => {
         </Grid>
 
         {/* Active Trials Section */}
-        {metrics.activeTrials.length > 0 && (
+        {metrics.activeTrials && metrics.activeTrials.length > 0 && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
