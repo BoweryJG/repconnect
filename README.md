@@ -67,6 +67,7 @@ RepConnect1 is the ultimate AI-powered sales CRM that revolutionizes how sales p
 
 ### 📞 Advanced Communication
 - **☎️ Twilio Integration** - Direct calling with auto-dial and retry logic
+- **👥 Multi-Rep Support** - Each sales rep gets their own number and Harvey coach
 - **🎧 WebRTC Voice** - Real-time audio streaming and analysis
 - **📱 Quantum Dialer** - Futuristic dialing interface with advanced features
 - **📝 Live Transcription** - Real-time call transcription and sentiment analysis
@@ -343,6 +344,37 @@ Adjust performance settings for different devices:
 
 ---
 
+## 👥 Multi-Rep Setup Guide
+
+### Setting Up Multiple Sales Reps
+
+1. **Buy Twilio Numbers** - One per rep ($1/month each)
+2. **Configure Webhooks** - Point all numbers to your backend
+3. **Update Backend Config**:
+   ```javascript
+   const repConfig = {
+     '+18454090692': {
+       name: 'Jason',
+       forwardTo: '+12015231306',
+       harveyStyle: 'quick'
+     },
+     '+18454090693': {
+       name: 'Sarah',
+       forwardTo: '+19175551234',
+       harveyStyle: 'motivational'
+     }
+   };
+   ```
+4. **Deploy** - Each rep gets personalized Harvey coaching
+
+### Harvey Styles by Rep Personality
+- **quick** - "Sarah. Sales mode on. Let's go!"
+- **aggressive** - "Time to dominate! Close hard!"
+- **motivational** - "You've got this! Show them why!"
+- **confidence** - "You're the expert here. Execute!"
+
+---
+
 ## 🎯 API Reference
 
 ### Harvey Service API
@@ -466,6 +498,13 @@ https://repconnect1.netlify.app?debug=true
 - **Customizable Messages** - Different styles: aggressive, motivational, quick
 - **Time-Based** - Different messages for morning, afternoon, evening
 - **2-3 Second Delay** - Quick messages like "Jason. Sales mode on. Let's go!"
+
+### Multi-Rep Support (NEW!)
+- **Individual Twilio Numbers** - Each rep gets their own phone number
+- **Personalized Harvey** - Custom messages and styles per rep
+- **Automatic Routing** - Calls route to the right rep automatically
+- **Easy Scaling** - Add new reps by updating config and buying numbers
+- **Cost Effective** - Only $1/month per rep + usage
 
 ### Backend Migration
 - **Moved to Render** - All API endpoints now on `osbackend-zl1h.onrender.com`
