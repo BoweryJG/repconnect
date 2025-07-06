@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CircularProgress, Box, Typography } from '@mui/material';
+import { CircularProgress, Typography } from '@mui/material';
 
 export const AuthCallback: React.FC = () => {
   const navigate = useNavigate();
@@ -14,8 +14,8 @@ export const AuthCallback: React.FC = () => {
   }, [navigate]);
 
   return (
-    <Box
-      sx={{
+    <div
+      style={{
         height: '100vh',
         display: 'flex',
         flexDirection: 'column',
@@ -28,6 +28,6 @@ export const AuthCallback: React.FC = () => {
       <Typography variant="h6" sx={{ color: 'text.secondary' }}>
         Completing authentication...
       </Typography>
-    </Box>
+    </div>
   );
 };
