@@ -116,7 +116,6 @@ function AppContent() {
   }, [setContacts]);
 
   useEffect(() => {
-    console.log('useEffect running, calling loadContacts...');
     loadContacts();
   }, [loadContacts]);
 
