@@ -1,20 +1,11 @@
+# Netlify configuration
+# No functions needed - all API calls go directly to osbackend
+
 [build]
-  functions = "netlify/functions"
+  publish = "build"
 
+# Redirect all client-side routes to index.html for React Router
 [[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/twilio-proxy/:splat"
+  from = "/*"
+  to = "/index.html"
   status = 200
-
-[[redirects]]
-  from = "/api/calls/*/summary"
-  to = "/.netlify/functions/call-summary"
-  status = 200
-
-[[redirects]]
-  from = "/api/calls/*/summary/regenerate"
-  to = "/.netlify/functions/call-summary"
-  status = 200
-
-[functions]
-  node_bundler = "esbuild"

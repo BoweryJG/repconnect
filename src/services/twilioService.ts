@@ -1,15 +1,11 @@
 import axios from 'axios';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'https://osbackend-zl1h.onrender.com';
-const USE_PROXY = false;
-const PROXY_URL = '/.netlify/functions/twilio-proxy';
 
 export const twilioService = {
   async makeCall(to: string, from?: string, message?: string, options?: any) {
     try {
-      const url = USE_PROXY
-        ? `${PROXY_URL}/api/twilio/make-call`
-        : `${BACKEND_URL}/api/twilio/make-call`;
+      const url = `${BACKEND_URL}/api/twilio/make-call`;
       
       const fromNumber = from || process.env.REACT_APP_TWILIO_PHONE_NUMBER;
       
@@ -18,9 +14,7 @@ export const twilioService = {
         from: fromNumber,
         message,
         url,
-        useProxy: USE_PROXY,
-        backendUrl: BACKEND_URL,
-        proxyUrl: PROXY_URL
+        backendUrl: BACKEND_URL
       });
         
       const response = await axios.post(url, {
@@ -46,9 +40,7 @@ export const twilioService = {
 
   async sendSMS(to: string, body: string, from?: string) {
     try {
-      const url = USE_PROXY 
-        ? `${PROXY_URL}/api/twilio/send-sms`
-        : `${BACKEND_URL}/api/twilio/send-sms`;
+      const url = `${BACKEND_URL}/api/twilio/send-sms`;
         
       const response = await axios.post(url, {
         to,
@@ -64,9 +56,7 @@ export const twilioService = {
 
   async getCallRecordings(callSid: string) {
     try {
-      const url = USE_PROXY 
-        ? `${PROXY_URL}/api/twilio/recordings/${callSid}`
-        : `${BACKEND_URL}/api/twilio/recordings/${callSid}`;
+      const url = `${BACKEND_URL}/api/twilio/recordings/${callSid}`;
         
       const response = await axios.get(url);
       return response.data;
