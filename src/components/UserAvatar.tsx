@@ -57,17 +57,24 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
   const initials = getInitials(displayName);
 
   return (
-    <Box
+    <div
       onClick={onClick}
-      sx={{
+      style={{
         cursor: onClick ? 'pointer' : 'default',
         display: 'flex',
         alignItems: 'center',
-        gap: 1,
+        gap: '8px',
         transition: 'all 0.3s ease',
-        '&:hover': onClick ? {
-          transform: 'translateY(-1px)',
-        } : {},
+      }}
+      onMouseEnter={(e) => {
+        if (onClick) {
+          e.currentTarget.style.transform = 'translateY(-1px)';
+        }
+      }}
+      onMouseLeave={(e) => {
+        if (onClick) {
+          e.currentTarget.style.transform = 'translateY(0)';
+        }
       }}
     >
       <Avatar
@@ -99,6 +106,6 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
           {displayName.split(' ')[0]}
         </Typography>
       )}
-    </Box>
+    </div>
   );
 };
