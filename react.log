@@ -116,3 +116,794 @@ src/components/InstantCoachConnect.tsx
 
 webpack compiled with 2 warnings
 No issues found.
+Compiling...
+Compiled with warnings.
+
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+[eslint] 
+src/components/InstantCoachConnect.tsx
+  Line 63:6:  React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+Search for the keywords to learn more about each warning.
+To ignore, add // eslint-disable-next-line to the line before.
+
+WARNING in ./node_modules/@mediapipe/tasks-vision/vision_bundle.mjs
+Module Warning (from ./node_modules/source-map-loader/dist/cjs.js):
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+WARNING in [eslint] 
+src/components/InstantCoachConnect.tsx
+  Line 63:6:  React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+webpack compiled with 2 warnings
+No issues found.
+Compiling...
+Compiled with warnings.
+
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+[eslint] 
+src/components/InstantCoachConnect.tsx
+  Line 63:6:  React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+Search for the keywords to learn more about each warning.
+To ignore, add // eslint-disable-next-line to the line before.
+
+WARNING in ./node_modules/@mediapipe/tasks-vision/vision_bundle.mjs
+Module Warning (from ./node_modules/source-map-loader/dist/cjs.js):
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+WARNING in [eslint] 
+src/components/InstantCoachConnect.tsx
+  Line 63:6:  React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+webpack compiled with 2 warnings
+No issues found.
+Compiling...
+Compiled with warnings.
+
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+[eslint] 
+src/components/InstantCoachConnect.tsx
+  Line 63:6:  React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+Search for the keywords to learn more about each warning.
+To ignore, add // eslint-disable-next-line to the line before.
+
+WARNING in ./node_modules/@mediapipe/tasks-vision/vision_bundle.mjs
+Module Warning (from ./node_modules/source-map-loader/dist/cjs.js):
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+WARNING in [eslint] 
+src/components/InstantCoachConnect.tsx
+  Line 63:6:  React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+webpack compiled with 2 warnings
+No issues found.
+Compiling...
+Compiled with warnings.
+
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+[eslint] 
+src/components/InstantCoachConnect.tsx
+  Line 63:6:  React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+Search for the keywords to learn more about each warning.
+To ignore, add // eslint-disable-next-line to the line before.
+
+WARNING in ./node_modules/@mediapipe/tasks-vision/vision_bundle.mjs
+Module Warning (from ./node_modules/source-map-loader/dist/cjs.js):
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+WARNING in [eslint] 
+src/components/InstantCoachConnect.tsx
+  Line 63:6:  React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+webpack compiled with 2 warnings
+No issues found.
+Compiling...
+Compiled with warnings.
+
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+[eslint] 
+src/App.tsx
+  Line 39:10:  'ToastProvider' is defined but never used  @typescript-eslint/no-unused-vars
+  Line 39:25:  'useToast' is defined but never used       @typescript-eslint/no-unused-vars
+
+src/components/InstantCoachConnect.tsx
+  Line 63:6:  React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+Search for the keywords to learn more about each warning.
+To ignore, add // eslint-disable-next-line to the line before.
+
+WARNING in ./node_modules/@mediapipe/tasks-vision/vision_bundle.mjs
+Module Warning (from ./node_modules/source-map-loader/dist/cjs.js):
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+WARNING in [eslint] 
+src/App.tsx
+  Line 39:10:  'ToastProvider' is defined but never used  @typescript-eslint/no-unused-vars
+  Line 39:25:  'useToast' is defined but never used       @typescript-eslint/no-unused-vars
+
+src/components/InstantCoachConnect.tsx
+  Line 63:6:  React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+webpack compiled with 2 warnings
+Files successfully emitted, waiting for typecheck results...
+Issues checking in progress...
+No issues found.
+Compiling...
+Compiled with warnings.
+
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+[eslint] 
+src/App.tsx
+  Line 39:10:  'ToastProvider' is defined but never used         @typescript-eslint/no-unused-vars
+  Line 47:11:  'showSuccess' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  Line 47:24:  'showError' is assigned a value but never used    @typescript-eslint/no-unused-vars
+  Line 47:35:  'showWarning' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  Line 47:48:  'showInfo' is assigned a value but never used     @typescript-eslint/no-unused-vars
+
+src/components/InstantCoachConnect.tsx
+  Line 63:6:  React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+Search for the keywords to learn more about each warning.
+To ignore, add // eslint-disable-next-line to the line before.
+
+WARNING in ./node_modules/@mediapipe/tasks-vision/vision_bundle.mjs
+Module Warning (from ./node_modules/source-map-loader/dist/cjs.js):
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+WARNING in [eslint] 
+src/App.tsx
+  Line 39:10:  'ToastProvider' is defined but never used         @typescript-eslint/no-unused-vars
+  Line 47:11:  'showSuccess' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  Line 47:24:  'showError' is assigned a value but never used    @typescript-eslint/no-unused-vars
+  Line 47:35:  'showWarning' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  Line 47:48:  'showInfo' is assigned a value but never used     @typescript-eslint/no-unused-vars
+
+src/components/InstantCoachConnect.tsx
+  Line 63:6:  React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+webpack compiled with 2 warnings
+Files successfully emitted, waiting for typecheck results...
+Issues checking in progress...
+No issues found.
+Compiling...
+Compiled with warnings.
+
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+[eslint] 
+src/App.tsx
+  Line 39:10:  'ToastProvider' is defined but never used         @typescript-eslint/no-unused-vars
+  Line 47:11:  'showSuccess' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  Line 47:35:  'showWarning' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  Line 47:48:  'showInfo' is assigned a value but never used     @typescript-eslint/no-unused-vars
+
+src/components/InstantCoachConnect.tsx
+  Line 63:6:  React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+Search for the keywords to learn more about each warning.
+To ignore, add // eslint-disable-next-line to the line before.
+
+WARNING in ./node_modules/@mediapipe/tasks-vision/vision_bundle.mjs
+Module Warning (from ./node_modules/source-map-loader/dist/cjs.js):
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+WARNING in [eslint] 
+src/App.tsx
+  Line 39:10:  'ToastProvider' is defined but never used         @typescript-eslint/no-unused-vars
+  Line 47:11:  'showSuccess' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  Line 47:35:  'showWarning' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  Line 47:48:  'showInfo' is assigned a value but never used     @typescript-eslint/no-unused-vars
+
+src/components/InstantCoachConnect.tsx
+  Line 63:6:  React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+webpack compiled with 2 warnings
+Files successfully emitted, waiting for typecheck results...
+Issues checking in progress...
+No issues found.
+Compiling...
+Compiled with warnings.
+
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+[eslint] 
+src/App.tsx
+  Line 39:10:  'ToastProvider' is defined but never used         @typescript-eslint/no-unused-vars
+  Line 47:35:  'showWarning' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  Line 47:48:  'showInfo' is assigned a value but never used     @typescript-eslint/no-unused-vars
+
+src/components/InstantCoachConnect.tsx
+  Line 63:6:  React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+Search for the keywords to learn more about each warning.
+To ignore, add // eslint-disable-next-line to the line before.
+
+WARNING in ./node_modules/@mediapipe/tasks-vision/vision_bundle.mjs
+Module Warning (from ./node_modules/source-map-loader/dist/cjs.js):
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+WARNING in [eslint] 
+src/App.tsx
+  Line 39:10:  'ToastProvider' is defined but never used         @typescript-eslint/no-unused-vars
+  Line 47:35:  'showWarning' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  Line 47:48:  'showInfo' is assigned a value but never used     @typescript-eslint/no-unused-vars
+
+src/components/InstantCoachConnect.tsx
+  Line 63:6:  React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+webpack compiled with 2 warnings
+Files successfully emitted, waiting for typecheck results...
+Issues checking in progress...
+No issues found.
+Compiling...
+Compiled with warnings.
+
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+[eslint] 
+src/App.tsx
+  Line 47:35:  'showWarning' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  Line 47:48:  'showInfo' is assigned a value but never used     @typescript-eslint/no-unused-vars
+
+src/components/InstantCoachConnect.tsx
+  Line 63:6:  React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+Search for the keywords to learn more about each warning.
+To ignore, add // eslint-disable-next-line to the line before.
+
+WARNING in ./node_modules/@mediapipe/tasks-vision/vision_bundle.mjs
+Module Warning (from ./node_modules/source-map-loader/dist/cjs.js):
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+WARNING in [eslint] 
+src/App.tsx
+  Line 47:35:  'showWarning' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  Line 47:48:  'showInfo' is assigned a value but never used     @typescript-eslint/no-unused-vars
+
+src/components/InstantCoachConnect.tsx
+  Line 63:6:  React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+webpack compiled with 2 warnings
+Files successfully emitted, waiting for typecheck results...
+Issues checking in progress...
+No issues found.
+Compiling...
+Compiled with warnings.
+
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+[eslint] 
+src/components/InstantCoachConnect.tsx
+  Line 63:6:  React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+Search for the keywords to learn more about each warning.
+To ignore, add // eslint-disable-next-line to the line before.
+
+WARNING in ./node_modules/@mediapipe/tasks-vision/vision_bundle.mjs
+Module Warning (from ./node_modules/source-map-loader/dist/cjs.js):
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+WARNING in [eslint] 
+src/components/InstantCoachConnect.tsx
+  Line 63:6:  React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+webpack compiled with 2 warnings
+Files successfully emitted, waiting for typecheck results...
+Issues checking in progress...
+No issues found.
+Compiling...
+Compiled with warnings.
+
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+[eslint] 
+src/components/InstantCoachConnect.tsx
+  Line 63:6:  React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+Search for the keywords to learn more about each warning.
+To ignore, add // eslint-disable-next-line to the line before.
+
+WARNING in ./node_modules/@mediapipe/tasks-vision/vision_bundle.mjs
+Module Warning (from ./node_modules/source-map-loader/dist/cjs.js):
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+WARNING in [eslint] 
+src/components/InstantCoachConnect.tsx
+  Line 63:6:  React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+webpack compiled with 2 warnings
+No issues found.
+Compiling...
+Compiled with warnings.
+
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+[eslint] 
+src/components/InstantCoachConnect.tsx
+  Line 63:6:  React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+Search for the keywords to learn more about each warning.
+To ignore, add // eslint-disable-next-line to the line before.
+
+WARNING in ./node_modules/@mediapipe/tasks-vision/vision_bundle.mjs
+Module Warning (from ./node_modules/source-map-loader/dist/cjs.js):
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+WARNING in [eslint] 
+src/components/InstantCoachConnect.tsx
+  Line 63:6:  React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+webpack compiled with 2 warnings
+ERROR in src/utils/toast.example.tsx:64:41
+TS18046: 'error' is of type 'unknown'.
+    62 |   } catch (error) {
+    63 |     // Show error notification
+  > 64 |     toast.error(`Failed to load data: ${error.message}`);
+       |                                         ^^^^^
+    65 |     throw error;
+    66 |   }
+    67 | };
+
+Compiling...
+Compiled with warnings.
+
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+[eslint] 
+src/components/InstantCoachConnect.tsx
+  Line 63:6:  React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+Search for the keywords to learn more about each warning.
+To ignore, add // eslint-disable-next-line to the line before.
+
+WARNING in ./node_modules/@mediapipe/tasks-vision/vision_bundle.mjs
+Module Warning (from ./node_modules/source-map-loader/dist/cjs.js):
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+WARNING in [eslint] 
+src/components/InstantCoachConnect.tsx
+  Line 63:6:  React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+webpack compiled with 2 warnings
+Files successfully emitted, waiting for typecheck results...
+Issues checking in progress...
+ERROR in src/utils/toast.example.tsx:64:41
+TS18046: 'error' is of type 'unknown'.
+    62 |   } catch (error) {
+    63 |     // Show error notification
+  > 64 |     toast.error(`Failed to load data: ${error.message}`);
+       |                                         ^^^^^
+    65 |     throw error;
+    66 |   }
+    67 | };
+
+Compiling...
+Compiled with warnings.
+
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+[eslint] 
+src/components/InstantCoachConnect.tsx
+  Line 63:6:  React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+Search for the keywords to learn more about each warning.
+To ignore, add // eslint-disable-next-line to the line before.
+
+WARNING in ./node_modules/@mediapipe/tasks-vision/vision_bundle.mjs
+Module Warning (from ./node_modules/source-map-loader/dist/cjs.js):
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+WARNING in [eslint] 
+src/components/InstantCoachConnect.tsx
+  Line 63:6:  React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+webpack compiled with 2 warnings
+Files successfully emitted, waiting for typecheck results...
+Issues checking in progress...
+ERROR in src/utils/toast.example.tsx:64:41
+TS18046: 'error' is of type 'unknown'.
+    62 |   } catch (error) {
+    63 |     // Show error notification
+  > 64 |     toast.error(`Failed to load data: ${error.message}`);
+       |                                         ^^^^^
+    65 |     throw error;
+    66 |   }
+    67 | };
+
+Compiling...
+Compiled with warnings.
+
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+[eslint] 
+src/components/InstantCoachConnect.tsx
+  Line 64:6:  React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+Search for the keywords to learn more about each warning.
+To ignore, add // eslint-disable-next-line to the line before.
+
+WARNING in ./node_modules/@mediapipe/tasks-vision/vision_bundle.mjs
+Module Warning (from ./node_modules/source-map-loader/dist/cjs.js):
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+WARNING in [eslint] 
+src/components/InstantCoachConnect.tsx
+  Line 64:6:  React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+webpack compiled with 2 warnings
+Files successfully emitted, waiting for typecheck results...
+Issues checking in progress...
+ERROR in src/utils/toast.example.tsx:64:41
+TS18046: 'error' is of type 'unknown'.
+    62 |   } catch (error) {
+    63 |     // Show error notification
+  > 64 |     toast.error(`Failed to load data: ${error.message}`);
+       |                                         ^^^^^
+    65 |     throw error;
+    66 |   }
+    67 | };
+
+Compiling...
+Compiled with warnings.
+
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+[eslint] 
+src/components/InstantCoachConnect.tsx
+  Line 64:6:  React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+Search for the keywords to learn more about each warning.
+To ignore, add // eslint-disable-next-line to the line before.
+
+WARNING in ./node_modules/@mediapipe/tasks-vision/vision_bundle.mjs
+Module Warning (from ./node_modules/source-map-loader/dist/cjs.js):
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+WARNING in [eslint] 
+src/components/InstantCoachConnect.tsx
+  Line 64:6:  React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+webpack compiled with 2 warnings
+ERROR in src/utils/toast.example.tsx:64:41
+TS18046: 'error' is of type 'unknown'.
+    62 |   } catch (error) {
+    63 |     // Show error notification
+  > 64 |     toast.error(`Failed to load data: ${error.message}`);
+       |                                         ^^^^^
+    65 |     throw error;
+    66 |   }
+    67 | };
+
+Compiling...
+Compiled with warnings.
+
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+[eslint] 
+src/components/InstantCoachConnect.tsx
+  Line 64:6:  React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+Search for the keywords to learn more about each warning.
+To ignore, add // eslint-disable-next-line to the line before.
+
+WARNING in ./node_modules/@mediapipe/tasks-vision/vision_bundle.mjs
+Module Warning (from ./node_modules/source-map-loader/dist/cjs.js):
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+WARNING in [eslint] 
+src/components/InstantCoachConnect.tsx
+  Line 64:6:  React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+webpack compiled with 2 warnings
+ERROR in src/utils/toast.example.tsx:64:41
+TS18046: 'error' is of type 'unknown'.
+    62 |   } catch (error) {
+    63 |     // Show error notification
+  > 64 |     toast.error(`Failed to load data: ${error.message}`);
+       |                                         ^^^^^
+    65 |     throw error;
+    66 |   }
+    67 | };
+
+Compiling...
+Compiled with warnings.
+
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+[eslint] 
+src/components/InstantCoachConnect.tsx
+  Line 64:6:  React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+Search for the keywords to learn more about each warning.
+To ignore, add // eslint-disable-next-line to the line before.
+
+WARNING in ./node_modules/@mediapipe/tasks-vision/vision_bundle.mjs
+Module Warning (from ./node_modules/source-map-loader/dist/cjs.js):
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+WARNING in [eslint] 
+src/components/InstantCoachConnect.tsx
+  Line 64:6:  React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+webpack compiled with 2 warnings
+ERROR in src/utils/toast.example.tsx:64:41
+TS18046: 'error' is of type 'unknown'.
+    62 |   } catch (error) {
+    63 |     // Show error notification
+  > 64 |     toast.error(`Failed to load data: ${error.message}`);
+       |                                         ^^^^^
+    65 |     throw error;
+    66 |   }
+    67 | };
+
+Compiling...
+Compiled with warnings.
+
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+[eslint] 
+src/components/InstantCoachConnect.tsx
+  Line 64:6:  React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+Search for the keywords to learn more about each warning.
+To ignore, add // eslint-disable-next-line to the line before.
+
+WARNING in ./node_modules/@mediapipe/tasks-vision/vision_bundle.mjs
+Module Warning (from ./node_modules/source-map-loader/dist/cjs.js):
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+WARNING in [eslint] 
+src/components/InstantCoachConnect.tsx
+  Line 64:6:  React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+webpack compiled with 2 warnings
+ERROR in src/utils/toast.example.tsx:64:41
+TS18046: 'error' is of type 'unknown'.
+    62 |   } catch (error) {
+    63 |     // Show error notification
+  > 64 |     toast.error(`Failed to load data: ${error.message}`);
+       |                                         ^^^^^
+    65 |     throw error;
+    66 |   }
+    67 | };
+
+Compiling...
+Compiled with warnings.
+
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+[eslint] 
+src/components/InstantCoachConnect.tsx
+  Line 64:6:  React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+Search for the keywords to learn more about each warning.
+To ignore, add // eslint-disable-next-line to the line before.
+
+WARNING in ./node_modules/@mediapipe/tasks-vision/vision_bundle.mjs
+Module Warning (from ./node_modules/source-map-loader/dist/cjs.js):
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+WARNING in [eslint] 
+src/components/InstantCoachConnect.tsx
+  Line 64:6:  React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+webpack compiled with 2 warnings
+Files successfully emitted, waiting for typecheck results...
+Issues checking in progress...
+ERROR in src/utils/toast.example.tsx:64:41
+TS18046: 'error' is of type 'unknown'.
+    62 |   } catch (error) {
+    63 |     // Show error notification
+  > 64 |     toast.error(`Failed to load data: ${error.message}`);
+       |                                         ^^^^^
+    65 |     throw error;
+    66 |   }
+    67 | };
+
+Compiling...
+Compiled with warnings.
+
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+[eslint] 
+src/components/InstantCoachConnect.tsx
+  Line 64:6:  React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+Search for the keywords to learn more about each warning.
+To ignore, add // eslint-disable-next-line to the line before.
+
+WARNING in ./node_modules/@mediapipe/tasks-vision/vision_bundle.mjs
+Module Warning (from ./node_modules/source-map-loader/dist/cjs.js):
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+WARNING in [eslint] 
+src/components/InstantCoachConnect.tsx
+  Line 64:6:  React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+webpack compiled with 2 warnings
+ERROR in src/utils/toast.example.tsx:64:41
+TS18046: 'error' is of type 'unknown'.
+    62 |   } catch (error) {
+    63 |     // Show error notification
+  > 64 |     toast.error(`Failed to load data: ${error.message}`);
+       |                                         ^^^^^
+    65 |     throw error;
+    66 |   }
+    67 | };
+
+Compiling...
+Compiled with warnings.
+
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+[eslint] 
+src/components/InstantCoachConnect.tsx
+  Line 64:6:  React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+Search for the keywords to learn more about each warning.
+To ignore, add // eslint-disable-next-line to the line before.
+
+WARNING in ./node_modules/@mediapipe/tasks-vision/vision_bundle.mjs
+Module Warning (from ./node_modules/source-map-loader/dist/cjs.js):
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+WARNING in [eslint] 
+src/components/InstantCoachConnect.tsx
+  Line 64:6:  React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+webpack compiled with 2 warnings
+ERROR in src/utils/toast.example.tsx:64:41
+TS18046: 'error' is of type 'unknown'.
+    62 |   } catch (error) {
+    63 |     // Show error notification
+  > 64 |     toast.error(`Failed to load data: ${error.message}`);
+       |                                         ^^^^^
+    65 |     throw error;
+    66 |   }
+    67 | };
+
+Compiling...
+Compiled with warnings.
+
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+[eslint] 
+src/components/InstantCoachConnect.tsx
+  Line 64:6:  React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src/services/twilioService.ts
+  Line 2:8:    'logger' is defined but never used               @typescript-eslint/no-unused-vars
+  Line 11:13:  'fromNumber' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+Search for the keywords to learn more about each warning.
+To ignore, add // eslint-disable-next-line to the line before.
+
+WARNING in ./node_modules/@mediapipe/tasks-vision/vision_bundle.mjs
+Module Warning (from ./node_modules/source-map-loader/dist/cjs.js):
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+WARNING in [eslint] 
+src/components/InstantCoachConnect.tsx
+  Line 64:6:  React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src/services/twilioService.ts
+  Line 2:8:    'logger' is defined but never used               @typescript-eslint/no-unused-vars
+  Line 11:13:  'fromNumber' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+webpack compiled with 2 warnings
+ERROR in src/utils/toast.example.tsx:64:41
+TS18046: 'error' is of type 'unknown'.
+    62 |   } catch (error) {
+    63 |     // Show error notification
+  > 64 |     toast.error(`Failed to load data: ${error.message}`);
+       |                                         ^^^^^
+    65 |     throw error;
+    66 |   }
+    67 | };
+
+Compiling...
+Compiled with warnings.
+
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+[eslint] 
+src/auth/AuthContext.tsx
+  Line 177:15:  'data' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+src/components/InstantCoachConnect.tsx
+  Line 64:6:  React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src/services/twilioService.ts
+  Line 2:8:    'logger' is defined but never used               @typescript-eslint/no-unused-vars
+  Line 11:13:  'fromNumber' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+Search for the keywords to learn more about each warning.
+To ignore, add // eslint-disable-next-line to the line before.
+
+WARNING in ./node_modules/@mediapipe/tasks-vision/vision_bundle.mjs
+Module Warning (from ./node_modules/source-map-loader/dist/cjs.js):
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+WARNING in [eslint] 
+src/auth/AuthContext.tsx
+  Line 177:15:  'data' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+src/components/InstantCoachConnect.tsx
+  Line 64:6:  React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src/services/twilioService.ts
+  Line 2:8:    'logger' is defined but never used               @typescript-eslint/no-unused-vars
+  Line 11:13:  'fromNumber' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+webpack compiled with 2 warnings
+ERROR in src/utils/toast.example.tsx:64:41
+TS18046: 'error' is of type 'unknown'.
+    62 |   } catch (error) {
+    63 |     // Show error notification
+  > 64 |     toast.error(`Failed to load data: ${error.message}`);
+       |                                         ^^^^^
+    65 |     throw error;
+    66 |   }
+    67 | };
+
+Compiling...
+Compiled with warnings.
+
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+[eslint] 
+src/auth/AuthContext.tsx
+  Line 177:15:  'data' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+src/components/InstantCoachConnect.tsx
+  Line 64:6:  React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src/services/twilioService.ts
+  Line 2:8:    'logger' is defined but never used               @typescript-eslint/no-unused-vars
+  Line 11:13:  'fromNumber' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+src/store/useStore.ts
+  Line 3:8:  'logger' is defined but never used  @typescript-eslint/no-unused-vars
+
+Search for the keywords to learn more about each warning.
+To ignore, add // eslint-disable-next-line to the line before.
+
+WARNING in ./node_modules/@mediapipe/tasks-vision/vision_bundle.mjs
+Module Warning (from ./node_modules/source-map-loader/dist/cjs.js):
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+WARNING in [eslint] 
+src/auth/AuthContext.tsx
+  Line 177:15:  'data' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+src/components/InstantCoachConnect.tsx
+  Line 64:6:  React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src/services/twilioService.ts
+  Line 2:8:    'logger' is defined but never used               @typescript-eslint/no-unused-vars
+  Line 11:13:  'fromNumber' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+src/store/useStore.ts
+  Line 3:8:  'logger' is defined but never used  @typescript-eslint/no-unused-vars
+
+webpack compiled with 2 warnings
+ERROR in src/utils/toast.example.tsx:64:41
+TS18046: 'error' is of type 'unknown'.
+    62 |   } catch (error) {
+    63 |     // Show error notification
+  > 64 |     toast.error(`Failed to load data: ${error.message}`);
+       |                                         ^^^^^
+    65 |     throw error;
+    66 |   }
+    67 | };
+
+The build failed because the process exited too early. This probably means the system ran out of memory or someone called `kill -9` on the process.

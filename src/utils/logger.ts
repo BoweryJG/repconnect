@@ -1,0 +1,139 @@
+/**
+ * Production-ready logger utility
+ * Only logs in development mode, silent in production
+ */
+
+type LogLevel = 'log' | 'error' | 'warn' | 'info' | 'debug';
+
+class Logger {
+  private isDevelopment: boolean;
+
+  constructor() {
+    // Check multiple environment variables to determine if we're in development
+    const nodeEnv = process.env.NODE_ENV;
+    const reactAppEnv = process.env.REACT_APP_ENV;
+    
+    this.isDevelopment = 
+      nodeEnv === 'development' || 
+      reactAppEnv === 'development' ||
+      (!nodeEnv && !reactAppEnv); // Default to development if no env is set
+  }
+
+  private shouldLog(): boolean {
+    return this.isDevelopment;
+  }
+
+  private formatMessage(level: LogLevel, ...args: any[]): any[] {
+    const timestamp = new Date().toISOString();
+    const prefix = `[${timestamp}] [${level.toUpperCase()}]`;
+    return [prefix, ...args];
+  }
+
+  log(...args: any[]): void {
+    if (this.shouldLog()) {
+      console.log(...this.formatMessage('log', ...args));
+    }
+  }
+
+  error(...args: any[]): void {
+    if (this.shouldLog()) {
+      console.error(...this.formatMessage('error', ...args));
+    }
+  }
+
+  warn(...args: any[]): void {
+    if (this.shouldLog()) {
+      console.warn(...this.formatMessage('warn', ...args));
+    }
+  }
+
+  info(...args: any[]): void {
+    if (this.shouldLog()) {
+      console.info(...this.formatMessage('info', ...args));
+    }
+  }
+
+  debug(...args: any[]): void {
+    if (this.shouldLog()) {
+      console.debug(...this.formatMessage('debug', ...args));
+    }
+  }
+
+  /**
+   * Utility method to log only in development without formatting
+   * Useful for quick debugging
+   */
+  dev(...args: any[]): void {
+    if (this.shouldLog()) {
+      console.log(...args);
+    }
+  }
+
+  /**
+   * Group related log messages
+   */
+  group(label: string): void {
+    if (this.shouldLog()) {
+      console.group(label);
+    }
+  }
+
+  groupEnd(): void {
+    if (this.shouldLog()) {
+      console.groupEnd();
+    }
+  }
+
+  /**
+   * Log tabular data
+   */
+  table(data: any): void {
+    if (this.shouldLog()) {
+      console.table(data);
+    }
+  }
+
+  /**
+   * Measure time between operations
+   */
+  time(label: string): void {
+    if (this.shouldLog()) {
+      console.time(label);
+    }
+  }
+
+  timeEnd(label: string): void {
+    if (this.shouldLog()) {
+      console.timeEnd(label);
+    }
+  }
+
+  /**
+   * Clear the console (development only)
+   */
+  clear(): void {
+    if (this.shouldLog()) {
+      console.clear();
+    }
+  }
+}
+
+// Create and export a singleton instance
+const logger = new Logger();
+
+export default logger;
+
+// Also export individual methods for convenience
+export const { log, error, warn, info, debug, dev, group, groupEnd, table, time, timeEnd, clear } = logger;
+
+// Example usage:
+// import logger from '@/utils/logger';
+// logger.log('Hello world');
+// logger.error('An error occurred', error);
+// logger.info('User logged in', { userId: 123 });
+// logger.debug('Debug information', data);
+
+// Or import individual methods:
+// import { log, error, warn } from '@/utils/logger';
+// log('Hello world');
+// error('An error occurred');

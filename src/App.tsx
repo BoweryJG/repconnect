@@ -36,6 +36,8 @@ import { SubscriptionModal } from './components/auth/SubscriptionModal';
 import { DEMO_CONTACTS } from './lib/demoData';
 import { usageTracker } from './lib/usageTracking';
 import InstantCoachConnect from './components/InstantCoachConnect';
+import { ToastProvider, useToast } from './utils/toast';
+import logger from './utils/logger';
 
 // Lazy load heavy components
 const MissionControlDashboard = React.lazy(() => import('./components/MissionControlDashboard').then(module => ({ default: module.MissionControlDashboard })));
@@ -43,6 +45,7 @@ const MissionControlDashboard = React.lazy(() => import('./components/MissionCon
 function AppContent() {
   const { isMobile } = useResponsive();
   const { user, profile } = useAuth();
+  const { showSuccess, showError } = useToast();
   const [showDialer, setShowDialer] = useState(false);
   const [showMissionControl, setShowMissionControl] = useState(false);
   const [showSyncDashboard, setShowSyncDashboard] = useState(false);
@@ -57,7 +60,7 @@ function AppContent() {
   
   // Debug grid dimensions
   useEffect(() => {
-    console.log('Grid dimensions updated:', gridDimensions);
+    logger.debug('Grid dimensions updated:', gridDimensions);
   }, [gridDimensions]);
   const gridContainerRef = useRef<HTMLDivElement>(null);
   const [isDemoMode, setIsDemoMode] = useState(true);
@@ -90,12 +93,12 @@ function AppContent() {
         .order('created_at', { ascending: false });
       
       if (error) {
-        console.error('Supabase error:', error);
+        logger.error('Supabase error:', error);
         throw error;
       }
       
-      console.log('Loaded contacts:', data?.length || 0);
-      console.log('First contact:', data?.[0]); // Debug first contact
+      logger.info('Loaded contacts:', data?.length || 0);
+      logger.debug('First contact:', data?.[0]); // Debug first contact
       
       // Convert Supabase data to Contact format and set all at once
       const formattedContacts = data?.map(contact => ({
@@ -116,7 +119,7 @@ function AppContent() {
       // Set all contacts at once, replacing any existing ones
       setContacts(formattedContacts);
     } catch (error) {
-      console.error('Error loading contacts:', error);
+      logger.error('Error loading contacts:', error);
     }
   }, [setContacts]);
 
@@ -225,19 +228,19 @@ function AppContent() {
         created_at: new Date().toISOString(),
       });
     } catch (error: any) {
-      console.error('Error making call:', error);
+      logger.error('Error making call:', error);
       setCallInProgress(false);
       setActiveCall(null);
       
       // Show user-friendly error message
       const errorMessage = error.response?.data?.error || error.response?.data?.details?.error || error.message || 'Unknown error';
-      alert(`Call failed: ${errorMessage}\n\nPlease check:\n- Phone number is valid\n- Twilio account is active\n- Backend server is running`);
+      showError(`Call failed: ${errorMessage}. Please check that the phone number is valid and Twilio account is active.`);
     }
   };
 
   const handleDialNumber = async (phoneNumber: string) => {
     if (!checkUsageAndProceed('dialerOpened')) return;
-    console.log('🔍 [APP DEBUG] Starting dial process for:', phoneNumber);
+    logger.debug('🔍 [APP DEBUG] Starting dial process for:', phoneNumber);
     
     // Format the phone number to ensure it has country code
     let formattedNumber = phoneNumber.replace(/\D/g, '');
@@ -246,7 +249,7 @@ function AppContent() {
     }
     formattedNumber = '+' + formattedNumber;
     
-    console.log('🔍 [APP DEBUG] Formatted number:', formattedNumber);
+    logger.debug('🔍 [APP DEBUG] Formatted number:', formattedNumber);
     
     setCallInProgress(true);
     setActiveCall({
@@ -259,7 +262,7 @@ function AppContent() {
     });
 
     try {
-      console.log('🔍 [APP DEBUG] Calling twilioService.makeCall...');
+      logger.debug('🔍 [APP DEBUG] Calling twilioService.makeCall...');
       const result = await twilioService.makeCall(
         formattedNumber,
         undefined,
@@ -267,7 +270,7 @@ function AppContent() {
         { enableStream: true } // Enable real-time transcription
       );
       
-      console.log('✅ [APP DEBUG] Call initiated successfully:', result);
+      logger.info('✅ [APP DEBUG] Call initiated successfully:', result);
       
       // Update activeCall with the call SID for transcription
       if (result.call && result.call.sid) {
@@ -286,12 +289,12 @@ function AppContent() {
         call_sid: result.call?.sid
       });
       
-      console.log('✅ [APP DEBUG] Call logged to database');
+      logger.info('✅ [APP DEBUG] Call logged to database');
       
       // Close dialer on success
       setShowDialer(false);
     } catch (error: any) {
-      console.error('❌ [APP DEBUG] Call failed:', {
+      logger.error('❌ [APP DEBUG] Call failed:', {
         error: error.message,
         response: error.response?.data,
         status: error.response?.status
@@ -301,7 +304,7 @@ function AppContent() {
       
       // Show user-friendly error message
       const errorMessage = error.response?.data?.error || error.response?.data?.details?.error || error.message || 'Unknown error';
-      alert(`Call failed: ${errorMessage}\n\nPlease check:\n- Phone number is valid\n- Twilio account is active\n- Backend server is running`);
+      showError(`Call failed: ${errorMessage}. Please check that the phone number is valid and Twilio account is active.`);
     }
   };
 
@@ -340,8 +343,10 @@ function AppContent() {
         
         setNewContactName('');
         setNewContactPhone('');
+        showSuccess('Contact added successfully!');
       } catch (error) {
-        console.error('Error adding contact:', error);
+        logger.error('Error adding contact:', error);
+        showError('Failed to add contact. Please try again.');
       }
     }
   };
@@ -764,7 +769,7 @@ function AppContent() {
                     onCall={handleMakeCall}
                     onToggleFavorite={(contact) => {
                       // TODO: Implement favorite toggle
-                      console.log('Toggle favorite:', contact);
+                      logger.log('Toggle favorite:', contact);
                     }}
                   />
                 </div>
@@ -1086,7 +1091,9 @@ function AppContent() {
 function App() {
   return (
     <AuthProvider>
-      <AppContent />
+      <ToastProvider>
+        <AppContent />
+      </ToastProvider>
     </AuthProvider>
   );
 }

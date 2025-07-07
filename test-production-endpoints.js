@@ -4,8 +4,8 @@
 import fetch from 'node-fetch';
 import { io } from 'socket.io-client';
 
-const BACKEND_URL = 'https://osbackend-zl1h.onrender.com';
-const DEEPGRAM_URL = 'wss://api.deepgram.com/v1/listen';
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'https://osbackend-zl1h.onrender.com';
+const DEEPGRAM_URL = process.env.REACT_APP_DEEPGRAM_API_URL || 'wss://api.deepgram.com/v1/listen';
 
 // Colors for console output
 const colors = {

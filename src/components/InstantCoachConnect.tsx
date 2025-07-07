@@ -18,6 +18,7 @@ import {
   Mic,
   Message
 } from '@mui/icons-material';
+import { toast } from '../utils/toast';
 
 interface Coach {
   id: string;
@@ -84,7 +85,8 @@ export default function InstantCoachConnect() {
       const data = await response.json();
       setAvailableCoaches(data.coaches || []);
     } catch (error) {
-          } finally {
+          toast.error('Failed to load available coaches');
+    } finally {
       setLoading(false);
     }
   }, [selectedCategory]);
@@ -133,12 +135,11 @@ export default function InstantCoachConnect() {
         (window as any).currentCoachingSession = sessionData;
         
       } catch (micError) {
-                alert(`Session created but microphone access was denied. 
-Please enable microphone permissions and try again.`);
+                toast.error('Session created but microphone access was denied. Please enable microphone permissions and try again.');
       }
 
     } catch (error) {
-            alert('Failed to connect to coach');
+            toast.error('Failed to connect to coach');
     } finally {
       setConnecting(null);
     }
@@ -169,7 +170,8 @@ Please enable microphone permissions and try again.`);
       (window as any).currentCoachingSession = null;
       
     } catch (error) {
-          }
+          toast.error('Failed to end session properly');
+    }
   };
 
   const formatTime = (seconds: number) => {

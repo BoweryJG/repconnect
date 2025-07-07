@@ -8,6 +8,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { keyframes } from '@mui/material';
 import { useResponsive } from '../hooks/useResponsive';
 import { Phone3DVisualizer } from './Phone3DVisualizer';
+import { toast } from '../utils/toast';
 
 const hologramPulse = keyframes`
   0% {
@@ -174,7 +175,7 @@ export const QuantumDialer: React.FC<QuantumDialerProps> = ({ isOpen, onClose, o
       // Don't clear the number or close immediately - let the parent handle that
       // This gives time to see any errors
     } else {
-            alert('Please enter at least 10 digits');
+            toast.warning('Please enter at least 10 digits');
     }
   };
 

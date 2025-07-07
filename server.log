@@ -1,0 +1,8 @@
+[dotenv@17.0.1] injecting env (4) from .env – [tip] encrypt with dotenvx: https://dotenvx.com
+[dotenv@17.0.1] injecting env (0) from .env – [tip] encrypt with dotenvx: https://dotenvx.com
+[dotenv@17.0.1] injecting env (0) from .env – [tip] encrypt with dotenvx: https://dotenvx.com
+[dotenv@17.0.1] injecting env (0) from .env – [tip] encrypt with dotenvx: https://dotenvx.com
+[2m[2025-07-07T12:36:52.452Z][0m [32mSUCCESS[0m 🚀 RepConnect Backend running on port 3001
+[2m[2025-07-07T12:36:52.452Z][0m [36mINFO[0m 📡 WebSocket server ready for coaching sessions
+[2m[2025-07-07T12:36:52.452Z][0m [36mINFO[0m 🎯 Coaching API available at http://localhost:3001/api/coaching
+[2m[2025-07-07T12:36:52.452Z][0m [36mINFO[0m 💚 Health check: http://localhost:3001/health

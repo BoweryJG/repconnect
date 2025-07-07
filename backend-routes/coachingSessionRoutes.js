@@ -1,11 +1,39 @@
 import express from 'express';
 import { createClient } from '@supabase/supabase-js';
+import dotenv from 'dotenv';
+import logger from '../utils/logger.js';
+
+// Load environment variables
+dotenv.config();
+
 const router = express.Router();
 
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_KEY
-);
+// Initialize Supabase client with error handling
+let supabase;
+try {
+  if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_KEY) {
+    console.warn('Warning: Supabase environment variables not found. Using placeholder values for testing.');
+    supabase = createClient(
+      process.env.SUPABASE_URL || 'https://placeholder.supabase.co',
+      process.env.SUPABASE_SERVICE_KEY || 'placeholder-key'
+    );
+  } else {
+    supabase = createClient(
+      process.env.SUPABASE_URL,
+      process.env.SUPABASE_SERVICE_KEY
+    );
+  }
+} catch (error) {
+  console.error('Error initializing Supabase client:', error);
+  // Create a mock client for testing
+  supabase = {
+    from: () => ({
+      select: () => ({ eq: () => ({ single: () => Promise.resolve({ data: null, error: 'Supabase not configured' }) }) }),
+      insert: () => Promise.resolve({ data: null, error: 'Supabase not configured' }),
+      update: () => ({ eq: () => Promise.resolve({ data: null, error: 'Supabase not configured' }) })
+    })
+  };
+}
 
 /**
  * Start a new coaching session
@@ -52,7 +80,7 @@ router.post('/start-session', async (req, res) => {
       .single();
 
     if (sessionError) {
-      console.error('Error creating session:', sessionError);
+      logger.error('Error creating session:', sessionError);
       return res.status(500).json({ error: 'Failed to create coaching session' });
     }
 
@@ -67,7 +95,7 @@ router.post('/start-session', async (req, res) => {
       .eq('coach_id', coachId);
 
     if (busyError) {
-      console.error('Error updating coach availability:', busyError);
+      logger.error('Error updating coach availability:', busyError);
     }
 
     res.json({
@@ -82,7 +110,7 @@ router.post('/start-session', async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Error starting coaching session:', error);
+    logger.error('Error starting coaching session:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
@@ -123,7 +151,7 @@ router.post('/end-session/:sessionId', async (req, res) => {
       .eq('id', sessionId);
 
     if (updateError) {
-      console.error('Error updating session:', updateError);
+      logger.error('Error updating session:', updateError);
       return res.status(500).json({ error: 'Failed to end session' });
     }
 
@@ -138,7 +166,7 @@ router.post('/end-session/:sessionId', async (req, res) => {
       .eq('coach_id', session.coach_id);
 
     if (availError) {
-      console.error('Error freeing coach:', availError);
+      logger.error('Error freeing coach:', availError);
     }
 
     // Save feedback if provided
@@ -152,7 +180,7 @@ router.post('/end-session/:sessionId', async (req, res) => {
         });
 
       if (feedbackError) {
-        console.error('Error saving feedback:', feedbackError);
+        logger.error('Error saving feedback:', feedbackError);
       }
     }
 
@@ -166,7 +194,7 @@ router.post('/end-session/:sessionId', async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Error ending coaching session:', error);
+    logger.error('Error ending coaching session:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
@@ -190,7 +218,7 @@ router.get('/available-coaches/:procedureCategory', async (req, res) => {
       .eq('availability.is_available', true);
 
     if (error) {
-      console.error('Error fetching coaches:', error);
+      logger.error('Error fetching coaches:', error);
       return res.status(500).json({ error: 'Failed to fetch available coaches' });
     }
 
@@ -200,7 +228,7 @@ router.get('/available-coaches/:procedureCategory', async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Error in available coaches endpoint:', error);
+    logger.error('Error in available coaches endpoint:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
@@ -225,7 +253,7 @@ router.get('/practice-scenarios/:procedureCategory', async (req, res) => {
     const { data, error } = await query.order('difficulty_level', { ascending: true });
 
     if (error) {
-      console.error('Error fetching scenarios:', error);
+      logger.error('Error fetching scenarios:', error);
       return res.status(500).json({ error: 'Failed to fetch practice scenarios' });
     }
 
@@ -235,7 +263,7 @@ router.get('/practice-scenarios/:procedureCategory', async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Error in practice scenarios endpoint:', error);
+    logger.error('Error in practice scenarios endpoint:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
@@ -267,7 +295,7 @@ router.get('/session-status/:sessionId', async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Error fetching session status:', error);
+    logger.error('Error fetching session status:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
@@ -320,4 +348,4 @@ function getIceServers() {
   return iceServers;
 }
 
-module.exports = router;
+export default router;

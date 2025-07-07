@@ -4,7 +4,7 @@ console.log('Testing with polling transport...');
 
 const socket = io('http://localhost:3001/call-transcription-ws', {
   path: '/agents-ws',
-  auth: { token: 'demo-token' },
+  auth: { token: process.env.TEST_AUTH_TOKEN || 'test-token-replace-with-env-var' },
   transports: ['polling', 'websocket']  // Try polling first
 });
 

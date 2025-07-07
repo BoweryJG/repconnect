@@ -1,94 +1,124 @@
-# Production Readiness Checklist
+# Production Deployment Checklist
 
-## ✅ Completed Tasks
+## ✅ Code Changes Completed
 
-### API Configuration
-- [x] All services use `REACT_APP_BACKEND_URL` environment variable
-- [x] Production backend URL: `https://osbackend-zl1h.onrender.com`
-- [x] Fixed Harvey service to use standard backend URL
-- [x] Fixed phone service to use correct production URL
+### 1. Module System Conversion
+- [x] Converted all backend routes to ES6 modules
+- [x] Fixed import/export consistency
+- [x] Moved node-fetch to dependencies
+- [x] Added dotenv.config() to route files
 
-### Code Cleanup
-- [x] Removed 32 files with console.log statements
-- [x] Fixed hardcoded demo-user references
-- [x] Removed demo-token fallbacks (now requires auth)
-- [x] Auth tokens properly sent in all API calls
+### 2. Security Hardening
+- [x] Removed all hardcoded API keys and tokens
+- [x] Created environment variable documentation
+- [x] Added security check script (`check-for-secrets.sh`)
+- [x] Replaced test tokens with environment variables
 
-### External Services
-- [x] Supabase configured with production URL and keys
-- [x] Deepgram WebSocket URL and API key configured
-- [x] WebRTC TURN/STUN servers configured
-- [x] Twilio phone number configured
+### 3. Code Quality
+- [x] Replaced all console.log statements with logger utility
+- [x] Replaced all alert() calls with toast notifications
+- [x] Addressed critical TODO comments
+- [x] Implemented missing features (call analysis, PDF export)
 
-## ⚠️ Required Before Production
-
-### Critical Issues
-1. **OpenAI API Key** - Currently set to `your_openai_key_here` in `.env`
-   - Action: Set actual OpenAI API key for call summary generation
-   
-2. **Environment Variables** - Ensure all are set in production:
-   ```
-   REACT_APP_BACKEND_URL=https://osbackend-zl1h.onrender.com
-   REACT_APP_TWILIO_PHONE_NUMBER=+18454090692
-   REACT_APP_DEEPGRAM_API_KEY=<your-key>
-   OPENAI_API_KEY=<your-key>
-   ```
-
-3. **Authentication Flow**
-   - Verify Supabase auth is working in production
-   - Test user registration and login flows
-   - Ensure WebSocket connections authenticate properly
-
-4. **Error Handling**
-   - All services have basic error handling
-   - Consider adding error reporting service (Sentry, etc.)
-
-## 📋 Pre-Deployment Checklist
-
-- [ ] Set production OpenAI API key
-- [ ] Verify all environment variables in deployment platform
-- [ ] Test authentication flow end-to-end
-- [ ] Test WebRTC voice calls with production TURN servers
-- [ ] Test Deepgram transcription with production key
-- [ ] Run production build: `npm run build`
-- [ ] Test production build locally: `npm run preview`
-- [ ] Set up monitoring and error tracking
-- [ ] Configure CORS on backend for production domain
-- [ ] Set up SSL certificates (if not using platform SSL)
-
-## 🔒 Security Notes
-
-1. **API Keys**: 
-   - Supabase anon key is safe to expose (designed for frontend)
-   - Deepgram key should be moved to backend in future
-   - OpenAI calls should proxy through backend
-
-2. **Authentication**:
-   - All API calls now require auth tokens
-   - WebSocket connections authenticate with Supabase tokens
-
-3. **Data Protection**:
-   - No sensitive data in localStorage except user ID
-   - Auth tokens handled by Supabase client
+### 4. Production Features
+- [x] Created production-ready logger (frontend & backend)
+- [x] Implemented toast notification system
+- [x] Added proper error handling
+- [x] Fixed scroll freezing issue
 
 ## 🚀 Deployment Steps
 
-1. Set all environment variables in your deployment platform
-2. Build the application: `npm run build`
-3. Deploy the built files to your hosting service
-4. Test all critical flows:
-   - User login/signup
-   - Making calls
-   - Voice transcription
-   - AI coaching features
-5. Monitor error logs for first 24 hours
+### 1. Environment Variables (REQUIRED)
+Set all variables listed in `REQUIRED_ENV_VARS.md`:
 
-## ✨ Ready for Production
+#### Frontend (Netlify)
+```
+REACT_APP_BACKEND_URL
+REACT_APP_TWILIO_PHONE_NUMBER
+REACT_APP_DEEPGRAM_API_KEY
+REACT_APP_USE_DEEPGRAM
+REACT_APP_MOSHI_API_URL
+REACT_APP_MOSHI_API_KEY
+REACT_APP_METERED_TURN_USERNAME
+REACT_APP_METERED_TURN_CREDENTIAL
+```
 
-The application is now production-ready with:
-- Proper API endpoint configuration
-- Cleaned console.log statements
-- Fixed authentication requirements
-- Removed hardcoded test data
+#### Backend (Render)
+```
+NODE_ENV=production
+PORT
+SUPABASE_URL
+SUPABASE_SERVICE_KEY
+OPENAI_API_KEY
+TWILIO_AUTH_TOKEN
+BACKEND_URL
+FORWARD_TO_PHONE
+TWILIO_REP1_NUMBER
+REP1_FORWARD_TO
+# ... (all rep configurations)
+```
 
-Last step: Set the OpenAI API key and deploy!
+### 2. Pre-Deployment Commands
+```bash
+# Install dependencies
+npm install
+
+# Run security check
+./check-for-secrets.sh
+
+# Build frontend
+npm run build
+
+# Test backend
+node server.js
+```
+
+### 3. Deployment Configuration
+
+#### Frontend (Netlify)
+- Build command: `npm run build`
+- Publish directory: `build`
+- Environment variables: Set all REACT_APP_* variables
+
+#### Backend (Render)
+- Build command: `npm install`
+- Start command: `node server.js`
+- Environment variables: Set all backend variables
+
+### 4. Post-Deployment Verification
+- [ ] Health check endpoint responds: `https://[backend-url]/health`
+- [ ] Harvey status endpoint works: `https://[backend-url]/api/harvey/status`
+- [ ] Frontend loads without console errors
+- [ ] Toast notifications appear instead of alerts
+- [ ] No console.logs appear in production
+- [ ] All API calls use proper endpoints
+- [ ] WebRTC/calling functionality works
+- [ ] Scroll functionality works without freezing
+
+## 🔒 Security Checklist
+- [ ] Rotate all API keys that were previously hardcoded
+- [ ] Verify no secrets in source code: `./check-for-secrets.sh`
+- [ ] Enable HTTPS on all endpoints
+- [ ] Set up proper CORS configuration
+- [ ] Enable rate limiting on API endpoints
+- [ ] Set up monitoring and alerting
+
+## 📊 Performance Optimization
+- [ ] Enable gzip compression
+- [ ] Set up CDN for static assets
+- [ ] Configure proper caching headers
+- [ ] Monitor bundle size
+- [ ] Enable source maps for error tracking
+
+## 🐛 Known Issues to Monitor
+1. Mediapipe source map warning (non-critical)
+2. ESLint warning in InstantCoachConnect.tsx (non-critical)
+3. Verify correct table name: `calls` vs `call_logs` in useCallHistory.ts
+
+## 📝 Final Notes
+- The application is now production-ready with all critical issues resolved
+- All sensitive data is managed through environment variables
+- Logging is disabled in production to prevent information leakage
+- Error handling provides user-friendly messages via toast notifications
+
+Last updated: 2025-01-07

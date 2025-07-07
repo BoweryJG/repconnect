@@ -5,9 +5,12 @@ import { createServer } from 'http';
 import { Server } from 'socket.io';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import logger from './utils/logger.js';
 
 // Import route handlers
 import coachingSessionRoutes from './backend-routes/coachingSessionRoutes.js';
+import callSummaryRoutes from './backend-routes/callSummaryRoutes.js';
+import twilioWebhookRoutes from './backend-routes/twilioWebhookRoutes.js';
 
 // Load environment variables
 dotenv.config();
@@ -47,6 +50,8 @@ app.get('/health', (req, res) => {
 
 // API Routes
 app.use('/api/coaching', coachingSessionRoutes);
+app.use('/api', callSummaryRoutes);
+app.use('/twilio', twilioWebhookRoutes);
 
 // Legacy Harvey endpoints (for compatibility)
 app.get('/api/harvey/status', (req, res) => {
@@ -61,13 +66,13 @@ app.get('/api/harvey/status', (req, res) => {
 
 // Socket.io for WebRTC signaling
 io.on('connection', (socket) => {
-  console.log('Client connected:', socket.id);
+  logger.info('Client connected:', socket.id);
 
   // Join coaching room
   socket.on('join-coaching-room', (data) => {
     const { roomId, sessionId, repId, coachId, userType } = data;
     socket.join(roomId);
-    console.log(`${userType} ${repId} joined coaching room ${roomId} for session ${sessionId}`);
+    logger.info(`${userType} ${repId} joined coaching room ${roomId} for session ${sessionId}`);
     
     // Notify other participants
     socket.to(roomId).emit('participant-joined', {
@@ -81,7 +86,7 @@ io.on('connection', (socket) => {
   socket.on('leave-coaching-room', (data) => {
     const { roomId, sessionId } = data;
     socket.leave(roomId);
-    console.log(`User left coaching room ${roomId}`);
+    logger.info(`User left coaching room ${roomId}`);
     
     // Notify other participants
     socket.to(roomId).emit('participant-left', { sessionId });
@@ -111,7 +116,7 @@ io.on('connection', (socket) => {
 
   // Handle disconnection
   socket.on('disconnect', () => {
-    console.log('Client disconnected:', socket.id);
+    logger.info('Client disconnected:', socket.id);
   });
 });
 
@@ -126,7 +131,7 @@ if (process.env.NODE_ENV === 'production') {
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-  console.error('Error:', err);
+  logger.error('Error:', err);
   res.status(500).json({ 
     error: 'Internal server error',
     message: process.env.NODE_ENV === 'development' ? err.message : 'Something went wrong'
@@ -143,21 +148,21 @@ app.use((req, res) => {
 
 // Start server
 server.listen(PORT, () => {
-  console.log(`🚀 RepConnect Backend running on port ${PORT}`);
-  console.log(`📡 WebSocket server ready for coaching sessions`);
-  console.log(`🎯 Coaching API available at http://localhost:${PORT}/api/coaching`);
-  console.log(`💚 Health check: http://localhost:${PORT}/health`);
+  logger.success(`🚀 RepConnect Backend running on port ${PORT}`);
+  logger.info(`📡 WebSocket server ready for coaching sessions`);
+  logger.info(`🎯 Coaching API available at http://localhost:${PORT}/api/coaching`);
+  logger.info(`💚 Health check: http://localhost:${PORT}/health`);
   
   if (process.env.NODE_ENV === 'development') {
-    console.log(`🔧 Development mode - CORS enabled for localhost:3000`);
+    logger.debug(`🔧 Development mode - CORS enabled for localhost:3000`);
   }
 });
 
 // Graceful shutdown
 process.on('SIGINT', () => {
-  console.log('\n🔥 Shutting down server...');
+  logger.warn('\n🔥 Shutting down server...');
   server.close(() => {
-    console.log('✅ Server closed. Goodbye!');
+    logger.info('✅ Server closed. Goodbye!');
     process.exit(0);
   });
 });

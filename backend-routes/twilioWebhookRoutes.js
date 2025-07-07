@@ -1,12 +1,18 @@
-const express = require('express');
+import express from 'express';
+import twilio from 'twilio';
+import { createClient } from '@supabase/supabase-js';
+import dotenv from 'dotenv';
+import logger from '../utils/logger.js';
+
+// Load environment variables
+dotenv.config();
+
 const router = express.Router();
-const twilio = require('twilio');
-const { createClient } = require('@supabase/supabase-js');
 
 // Initialize Supabase client
 const supabase = createClient(
-  process.env.SUPABASE_URL || '',
-  process.env.SUPABASE_SERVICE_KEY || ''
+  process.env.SUPABASE_URL || 'https://placeholder.supabase.co',
+  process.env.SUPABASE_SERVICE_KEY || 'placeholder-key'
 );
 
 // Twilio webhook validation (optional but recommended for security)
@@ -30,13 +36,13 @@ const validateTwilioRequest = (req, res, next) => {
 
 // POST /api/twilio/incoming-call
 router.post('/api/twilio/incoming-call', validateTwilioRequest, async (req, res) => {
-  console.log('Incoming call webhook:', req.body);
+  logger.info('Incoming call webhook:', req.body);
   
   const { CallSid, From, To, CallStatus } = req.body;
   const forwardTo = process.env.FORWARD_TO_PHONE;
   
   if (!forwardTo) {
-    console.error('FORWARD_TO_PHONE not configured');
+    logger.error('FORWARD_TO_PHONE not configured');
     return res.status(500).send('Configuration error');
   }
   
@@ -71,7 +77,7 @@ router.post('/api/twilio/incoming-call', validateTwilioRequest, async (req, res)
     res.type('text/xml');
     res.send(twiml.toString());
   } catch (error) {
-    console.error('Error handling incoming call:', error);
+    logger.error('Error handling incoming call:', error);
     
     // Return TwiML even on error to handle the call gracefully
     const twiml = new twilio.twiml.VoiceResponse();
@@ -84,7 +90,7 @@ router.post('/api/twilio/incoming-call', validateTwilioRequest, async (req, res)
 
 // POST /api/twilio/call-status
 router.post('/api/twilio/call-status', validateTwilioRequest, async (req, res) => {
-  console.log('Call status webhook:', req.body);
+  logger.info('Call status webhook:', req.body);
   
   const { 
     CallSid, 
@@ -109,14 +115,14 @@ router.post('/api/twilio/call-status', validateTwilioRequest, async (req, res) =
     
     res.status(200).send('OK');
   } catch (error) {
-    console.error('Error updating call status:', error);
+    logger.error('Error updating call status:', error);
     res.status(500).send('Error processing status update');
   }
 });
 
 // POST /api/twilio/recording-status
 router.post('/api/twilio/recording-status', validateTwilioRequest, async (req, res) => {
-  console.log('Recording status webhook:', req.body);
+  logger.info('Recording status webhook:', req.body);
   
   const {
     RecordingSid,
@@ -158,9 +164,9 @@ router.post('/api/twilio/recording-status', validateTwilioRequest, async (req, r
     
     res.status(200).send('OK');
   } catch (error) {
-    console.error('Error processing recording:', error);
+    logger.error('Error processing recording:', error);
     res.status(500).send('Error processing recording');
   }
 });
 
-module.exports = router;
+export default router;

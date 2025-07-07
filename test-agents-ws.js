@@ -8,7 +8,7 @@ const backendUrl = 'http://localhost:3001';
 const socket = io(backendUrl, {
   path: '/agents-ws',
   auth: {
-    token: 'demo-token'
+    token: process.env.TEST_AUTH_TOKEN || 'test-token-replace-with-env-var'
   },
   transports: ['websocket'],
   reconnection: false
@@ -26,7 +26,7 @@ socket.on('connect', () => {
   const transcriptionSocket = io(`${backendUrl}/call-transcription-ws`, {
     path: '/agents-ws',
     auth: {
-      token: 'demo-token'
+      token: process.env.TEST_AUTH_TOKEN || 'test-token-replace-with-env-var'
     },
     transports: ['websocket'],
     reconnection: false

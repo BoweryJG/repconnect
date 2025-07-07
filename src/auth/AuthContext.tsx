@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import { supabase } from '../lib/supabase';
 import { User, Session } from '@supabase/supabase-js';
+import logger from '../utils/logger';
 
 type AuthProviderType = 'google' | 'facebook';
 
@@ -59,13 +60,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         .single();
 
       if (error) {
-        console.error('Error fetching profile:', error);
+        logger.error('Error fetching profile:', error);
         return null;
       }
 
       return data as UserProfile;
     } catch (error) {
-      console.error('Error in fetchProfile:', error);
+      logger.error('Error in fetchProfile:', error);
       return null;
     }
   }, []);
@@ -92,7 +93,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           .single();
 
         if (error) {
-          console.error('Error creating profile:', error);
+          logger.error('Error creating profile:', error);
           return null;
         }
 
@@ -111,14 +112,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           .single();
 
         if (error) {
-          console.error('Error updating profile:', error);
+          logger.error('Error updating profile:', error);
           return existingProfile;
         }
 
         return data as UserProfile;
       }
     } catch (error) {
-      console.error('Error in createOrUpdateProfile:', error);
+      logger.error('Error in createOrUpdateProfile:', error);
       return null;
     }
   }, [fetchProfile]);
@@ -139,7 +140,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           }
         }
       } catch (error) {
-        console.error('Error initializing auth:', error);
+        logger.error('Error initializing auth:', error);
       } finally {
         setLoading(false);
       }
@@ -188,7 +189,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         throw error;
       }
     } catch (error) {
-      console.error('Sign in error:', error);
+      logger.error('Sign in error:', error);
       throw error;
     }
   }, []);
@@ -205,7 +206,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setSession(null);
       setProfile(null);
     } catch (error) {
-      console.error('Sign out error:', error);
+      logger.error('Sign out error:', error);
       throw error;
     }
   }, []);

@@ -1,12 +1,18 @@
-const express = require('express');
+import express from 'express';
+import { createClient } from '@supabase/supabase-js';
+import fetch from 'node-fetch';
+import logger from '../utils/logger.js';
+import dotenv from 'dotenv';
+
+// Load environment variables
+dotenv.config();
+
 const router = express.Router();
-const { createClient } = require('@supabase/supabase-js');
-const fetch = require('node-fetch');
 
 // Initialize Supabase client
 const supabase = createClient(
-  process.env.SUPABASE_URL || '',
-  process.env.SUPABASE_SERVICE_KEY || ''
+  process.env.SUPABASE_URL || 'https://placeholder.supabase.co',
+  process.env.SUPABASE_SERVICE_KEY || 'placeholder-key'
 );
 
 // OpenAI configuration
@@ -115,7 +121,7 @@ function parseAIResponse(content) {
       nextSteps: parsed.nextSteps || []
     };
   } catch (error) {
-    console.error('Error parsing AI response:', error);
+    logger.error('Error parsing AI response:', error);
     throw new Error('Failed to parse AI response');
   }
 }
@@ -141,7 +147,7 @@ router.get('/api/calls/:callSid/summary', async (req, res) => {
     
     return res.json(data.summary);
   } catch (error) {
-    console.error('Error fetching summary:', error);
+    logger.error('Error fetching summary:', error);
     return res.status(500).json({ error: 'Failed to fetch summary' });
   }
 });
@@ -194,7 +200,7 @@ router.post('/api/calls/:callSid/summary', async (req, res) => {
     
     return res.json(summary);
   } catch (error) {
-    console.error('Error generating summary:', error);
+    logger.error('Error generating summary:', error);
     return res.status(500).json({ error: 'Failed to generate summary' });
   }
 });
@@ -239,7 +245,7 @@ router.post('/api/calls/:callSid/summary/regenerate', async (req, res) => {
     
     return res.json(summary);
   } catch (error) {
-    console.error('Error regenerating summary:', error);
+    logger.error('Error regenerating summary:', error);
     return res.status(500).json({ error: 'Failed to regenerate summary' });
   }
 });
@@ -274,9 +280,9 @@ router.put('/api/calls/:callSid/summary', async (req, res) => {
     
     return res.json(data.summary);
   } catch (error) {
-    console.error('Error updating summary:', error);
+    logger.error('Error updating summary:', error);
     return res.status(500).json({ error: 'Failed to update summary' });
   }
 });
 
-module.exports = router;
+export default router;

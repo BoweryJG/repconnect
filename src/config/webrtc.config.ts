@@ -18,27 +18,29 @@ export const webRTCConfig = {
     { urls: 'stun:stun.voipbuster.com:3478' },
     
     // TURN servers (require credentials)
-    // Free TURN server from Metered (limited usage)
-    {
-      urls: 'turn:a.relay.metered.ca:80',
-      username: 'e8dd65c92aa8b4e9e9d68887',
-      credential: 'uWdWNmkhvyqTEuQu'
-    },
-    {
-      urls: 'turn:a.relay.metered.ca:80?transport=tcp',
-      username: 'e8dd65c92aa8b4e9e9d68887',
-      credential: 'uWdWNmkhvyqTEuQu'
-    },
-    {
-      urls: 'turn:a.relay.metered.ca:443',
-      username: 'e8dd65c92aa8b4e9e9d68887',
-      credential: 'uWdWNmkhvyqTEuQu'
-    },
-    {
-      urls: 'turn:a.relay.metered.ca:443?transport=tcp',
-      username: 'e8dd65c92aa8b4e9e9d68887',
-      credential: 'uWdWNmkhvyqTEuQu'
-    }
+    // Configure these through environment variables
+    ...(process.env.REACT_APP_METERED_TURN_USERNAME && process.env.REACT_APP_METERED_TURN_CREDENTIAL ? [
+      {
+        urls: 'turn:a.relay.metered.ca:80',
+        username: process.env.REACT_APP_METERED_TURN_USERNAME,
+        credential: process.env.REACT_APP_METERED_TURN_CREDENTIAL
+      },
+      {
+        urls: 'turn:a.relay.metered.ca:80?transport=tcp',
+        username: process.env.REACT_APP_METERED_TURN_USERNAME,
+        credential: process.env.REACT_APP_METERED_TURN_CREDENTIAL
+      },
+      {
+        urls: 'turn:a.relay.metered.ca:443',
+        username: process.env.REACT_APP_METERED_TURN_USERNAME,
+        credential: process.env.REACT_APP_METERED_TURN_CREDENTIAL
+      },
+      {
+        urls: 'turn:a.relay.metered.ca:443?transport=tcp',
+        username: process.env.REACT_APP_METERED_TURN_USERNAME,
+        credential: process.env.REACT_APP_METERED_TURN_CREDENTIAL
+      }
+    ] : [])
   ],
 
   // ICE gathering configuration

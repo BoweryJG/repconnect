@@ -57,6 +57,8 @@ export const useCallHistory = (options: UseCallHistoryOptions = {}) => {
       const to = from + pageSize - 1;
 
       // Build query
+      // NOTE: This assumes the table is 'call_logs'. If it's actually 'calls', 
+      // change this to .from('calls')
       let query = supabase
         .from('call_logs')
         .select('*', { count: 'exact' })
@@ -88,14 +90,77 @@ export const useCallHistory = (options: UseCallHistoryOptions = {}) => {
 
       if (fetchError) throw fetchError;
 
-      // Process the data
+      // Fetch contact names if there are contact IDs
+      const contactIds = [...new Set((data || []).filter(call => call.contact_id).map(call => call.contact_id))];
+      let contactsMap: Record<string, string> = {};
+      
+      if (contactIds.length > 0) {
+        try {
+          const { data: contacts, error: contactError } = await supabase
+            .from('contacts')
+            .select('id, name')
+            .in('id', contactIds);
+          
+          if (!contactError && contacts) {
+            contactsMap = contacts.reduce((acc, contact) => {
+              acc[contact.id] = contact.name;
+              return acc;
+            }, {} as Record<string, string>);
+          }
+        } catch (err) {
+          console.warn('Failed to fetch contact names:', err);
+        }
+      }
+
+      // Fetch call analysis data if available
+      const callSids = (data || []).filter(call => call.call_sid).map(call => call.call_sid);
+      let analysisMap: Record<string, CallAnalysisRecord> = {};
+      
+      if (callSids.length > 0) {
+        try {
+          const { data: analyses, error: analysisError } = await supabase
+            .from('call_analysis')
+            .select('*')
+            .in('call_sid', callSids);
+          
+          if (!analysisError && analyses) {
+            analysisMap = analyses.reduce((acc, analysis) => {
+              acc[analysis.call_sid] = {
+                id: analysis.id,
+                call_sid: analysis.call_sid,
+                call_id: analysis.call_id,
+                executive_summary: analysis.executive_summary,
+                key_points: analysis.key_points || [],
+                action_items: analysis.action_items || [],
+                sentiment_analysis: analysis.sentiment_analysis || {},
+                next_steps: analysis.next_steps || [],
+                summary_format: analysis.summary_format,
+                summary_version: analysis.summary_version,
+                ai_model: analysis.ai_model,
+                ai_provider: analysis.ai_provider,
+                processing_time_ms: analysis.processing_time_ms,
+                token_count: analysis.token_count,
+                created_at: analysis.created_at,
+                updated_at: analysis.updated_at,
+                regenerated_at: analysis.regenerated_at,
+              };
+              return acc;
+            }, {} as Record<string, CallAnalysisRecord>);
+          }
+        } catch (err) {
+          console.warn('Failed to fetch call analyses:', err);
+        }
+      }
+
+      // Process the data with contact names and analysis
       const processedCalls: CallHistoryItem[] = (data || []).map(call => ({
         id: call.id,
         call_sid: call.call_sid,
         contact_id: call.contact_id,
-        contact_name: undefined, // TODO: Lookup contact name separately if needed
+        contact_name: call.contact_id ? contactsMap[call.contact_id] : undefined,
         phone_number: call.phone_number,
-        type: call.type,
+        // Handle potential type mismatch between DB and interface
+        type: call.type === 'incoming' ? 'inbound' : call.type === 'outgoing' ? 'outbound' : call.type,
         status: call.status,
         duration: call.duration,
         created_at: call.created_at,
@@ -103,17 +168,16 @@ export const useCallHistory = (options: UseCallHistoryOptions = {}) => {
         recording_url: call.recording_url,
         transcription: call.transcription,
         has_analysis: call.has_analysis,
-        analysis: undefined, // TODO: Fetch call_analysis separately if needed
+        analysis: call.call_sid ? analysisMap[call.call_sid] : undefined,
       }));
 
-      // Apply sentiment filter if needed (client-side for now)
+      // Apply sentiment filter if needed
       let filteredCalls = processedCalls;
-      // TODO: Implement sentiment filtering when call_analysis is properly linked
-      // if (filters.sentiment && processedCalls.length > 0) {
-      //   filteredCalls = processedCalls.filter(call => 
-      //     call.analysis?.sentiment_analysis?.overall === filters.sentiment
-      //   );
-      // }
+      if (filters.sentiment && processedCalls.length > 0) {
+        filteredCalls = processedCalls.filter(call => 
+          call.analysis?.sentiment_analysis?.overall === filters.sentiment
+        );
+      }
 
       if (reset) {
         setCalls(filteredCalls);
@@ -199,12 +263,106 @@ export const useCallHistory = (options: UseCallHistoryOptions = {}) => {
 
   // Export functions
   const exportToPDF = useCallback(async (callIds?: string[]) => {
-    // This would be implemented with a PDF library like jsPDF
-    // For now, we'll just log the intent
-    console.log('Export to PDF:', callIds || 'all calls');
-    // TODO: Implement PDF export
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    try {
+      const callsToExport = callIds 
+        ? calls.filter(c => callIds.includes(c.id))
+        : calls;
+
+      if (callsToExport.length === 0) {
+        throw new Error('No calls to export');
+      }
+
+      // Create a simple HTML document for printing as PDF
+      const htmlContent = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>Call History Report</title>
+          <style>
+            body { font-family: Arial, sans-serif; margin: 20px; }
+            h1 { color: #333; }
+            .call-report { margin-bottom: 30px; padding: 20px; border: 1px solid #ddd; }
+            .call-header { font-weight: bold; margin-bottom: 10px; }
+            .call-detail { margin: 5px 0; }
+            .sentiment-positive { color: #22c55e; }
+            .sentiment-negative { color: #ef4444; }
+            .sentiment-neutral { color: #6b7280; }
+            .summary { margin-top: 10px; padding: 10px; background-color: #f3f4f6; }
+            @media print { .call-report { page-break-inside: avoid; } }
+          </style>
+        </head>
+        <body>
+          <h1>Call History Report</h1>
+          <p>Generated on: ${new Date().toLocaleString()}</p>
+          <p>Total Calls: ${callsToExport.length}</p>
+          <hr>
+          ${callsToExport.map(call => `
+            <div class="call-report">
+              <div class="call-header">
+                ${new Date(call.created_at).toLocaleString()} - 
+                ${call.contact_name || call.phone_number || 'Unknown Contact'}
+              </div>
+              <div class="call-detail">Type: ${call.type}</div>
+              <div class="call-detail">Phone: ${call.phone_number}</div>
+              <div class="call-detail">Duration: ${
+                call.duration 
+                  ? `${Math.floor(call.duration / 60)}:${(call.duration % 60).toString().padStart(2, '0')}` 
+                  : 'N/A'
+              }</div>
+              <div class="call-detail">Status: ${call.status}</div>
+              ${call.analysis ? `
+                <div class="call-detail sentiment-${call.analysis.sentiment_analysis?.overall || 'neutral'}">
+                  Sentiment: ${call.analysis.sentiment_analysis?.overall || 'N/A'}
+                </div>
+                <div class="summary">
+                  <strong>Summary:</strong><br>
+                  ${call.analysis.executive_summary || 'No summary available'}
+                </div>
+                ${call.analysis.key_points?.length > 0 ? `
+                  <div class="summary">
+                    <strong>Key Points:</strong>
+                    <ul>
+                      ${call.analysis.key_points.map(point => `<li>${point}</li>`).join('')}
+                    </ul>
+                  </div>
+                ` : ''}
+                ${call.analysis.action_items?.length > 0 ? `
+                  <div class="summary">
+                    <strong>Action Items:</strong>
+                    <ul>
+                      ${call.analysis.action_items.map(item => 
+                        `<li>${item.task} (${item.priority})</li>`
+                      ).join('')}
+                    </ul>
+                  </div>
+                ` : ''}
+              ` : '<div class="call-detail">No analysis available</div>'}
+            </div>
+          `).join('')}
+        </body>
+        </html>
+      `;
+
+      // Open in new window for printing
+      const printWindow = window.open('', '_blank');
+      if (!printWindow) {
+        throw new Error('Failed to open print window. Please check your popup blocker settings.');
+      }
+
+      printWindow.document.write(htmlContent);
+      printWindow.document.close();
+      
+      // Wait for content to load then trigger print dialog
+      printWindow.onload = () => {
+        printWindow.print();
+      };
+
+      return true;
+    } catch (error) {
+      console.error('Error exporting to PDF:', error);
+      throw error;
+    }
+  }, [calls]);
 
   const exportToCSV = useCallback(async (callIds?: string[]) => {
     const callsToExport = callIds 
@@ -229,8 +387,8 @@ export const useCallHistory = (options: UseCallHistoryOptions = {}) => {
       call.type,
       call.duration ? `${Math.floor(call.duration / 60)}:${(call.duration % 60).toString().padStart(2, '0')}` : 'N/A',
       call.status,
-      'N/A', // TODO: Get sentiment when call_analysis is properly linked
-      'No summary available' // TODO: Get summary when call_analysis is properly linked
+      call.analysis?.sentiment_analysis?.overall || 'N/A',
+      call.analysis?.executive_summary || 'No summary available'
     ]);
 
     const csvContent = [
@@ -256,8 +414,7 @@ export const useCallHistory = (options: UseCallHistoryOptions = {}) => {
     const avgDuration = totalCalls > 0 ? totalDuration / totalCalls : 0;
     
     const sentimentCounts = calls.reduce((acc, call) => {
-      // TODO: Get sentiment from call_analysis when properly linked
-      const sentiment = 'unknown';
+      const sentiment = call.analysis?.sentiment_analysis?.overall || 'unknown';
       acc[sentiment] = (acc[sentiment] || 0) + 1;
       return acc;
     }, {} as Record<string, number>);

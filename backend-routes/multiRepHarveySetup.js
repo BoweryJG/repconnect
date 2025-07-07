@@ -1,24 +1,25 @@
 // Multi-Rep Harvey Whisper Configuration
 
 // Rep configuration - map Twilio numbers to reps
+// Configure these in environment variables or database
 export const repConfig = {
-  '+18454090692': {
-    name: 'Jason',
-    forwardTo: '+12015231306',
-    harveyStyle: 'quick',
-    personalMessage: 'Jason. Sales mode on. Let\'s go!'
+  [process.env.TWILIO_REP1_NUMBER || '+18454090692']: {
+    name: process.env.REP1_NAME || 'Jason',
+    forwardTo: process.env.REP1_FORWARD_TO || '+12015231306',
+    harveyStyle: process.env.REP1_HARVEY_STYLE || 'quick',
+    personalMessage: process.env.REP1_MESSAGE || 'Jason. Sales mode on. Let\'s go!'
   },
-  '+18454090693': {
-    name: 'Sarah',
-    forwardTo: '+12125551234',
-    harveyStyle: 'motivational',
-    personalMessage: 'Sarah, you\'re a rockstar. Show them why!'
+  [process.env.TWILIO_REP2_NUMBER || '+18454090693']: {
+    name: process.env.REP2_NAME || 'Sarah',
+    forwardTo: process.env.REP2_FORWARD_TO || '+12125551234',
+    harveyStyle: process.env.REP2_HARVEY_STYLE || 'motivational',
+    personalMessage: process.env.REP2_MESSAGE || 'Sarah, you\'re a rockstar. Show them why!'
   },
-  '+18454090694': {
-    name: 'Mike',
-    forwardTo: '+13475551234',
-    harveyStyle: 'aggressive',
-    personalMessage: 'Mike! Time to dominate. Close this deal NOW!'
+  [process.env.TWILIO_REP3_NUMBER || '+18454090694']: {
+    name: process.env.REP3_NAME || 'Mike',
+    forwardTo: process.env.REP3_FORWARD_TO || '+13475551234',
+    harveyStyle: process.env.REP3_HARVEY_STYLE || 'aggressive',
+    personalMessage: process.env.REP3_MESSAGE || 'Mike! Time to dominate. Close this deal NOW!'
   },
   // Add more reps as needed
 };
