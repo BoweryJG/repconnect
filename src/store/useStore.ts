@@ -35,6 +35,21 @@ interface Call {
   callSid?: string;
 }
 
+interface Agent {
+  id: string;
+  name: string;
+  description: string;
+  avatar?: string;
+  voiceSettings?: {
+    voice?: string;
+    pitch?: number;
+    rate?: number;
+    volume?: number;
+  };
+  personality?: string;
+  specialties?: string[];
+}
+
 interface AppState {
   // Contacts
   contacts: Contact[];
@@ -75,7 +90,75 @@ interface AppState {
   setShowSubscriptionModal: (show: boolean) => void;
   subscriptionTier: string;
   setSubscriptionTier: (tier: string) => void;
+  
+  // Agents
+  agents: Agent[];
+  currentAgentId: string;
+  setCurrentAgent: (agentId: string) => void;
+  addAgent: (agent: Omit<Agent, 'id'>) => void;
+  updateAgent: (id: string, updates: Partial<Agent>) => void;
+  deleteAgent: (id: string) => void;
 }
+
+// Default agents
+const defaultAgents: Agent[] = [
+  {
+    id: 'harvey',
+    name: 'Harvey',
+    description: 'Professional sales closer with charm and confidence',
+    avatar: '🤵',
+    voiceSettings: {
+      voice: 'en-US-Neural2-D',
+      pitch: 0.9,
+      rate: 1.0,
+      volume: 1.0
+    },
+    personality: 'Confident, charming, persuasive',
+    specialties: ['Sales', 'Closing deals', 'Relationship building']
+  },
+  {
+    id: 'sophia',
+    name: 'Sophia',
+    description: 'Empathetic customer success specialist',
+    avatar: '👩‍💼',
+    voiceSettings: {
+      voice: 'en-US-Neural2-F',
+      pitch: 1.1,
+      rate: 0.95,
+      volume: 0.9
+    },
+    personality: 'Warm, understanding, patient',
+    specialties: ['Customer support', 'Problem solving', 'Retention']
+  },
+  {
+    id: 'alex',
+    name: 'Alex',
+    description: 'Technical expert and product specialist',
+    avatar: '👨‍💻',
+    voiceSettings: {
+      voice: 'en-US-Neural2-A',
+      pitch: 1.0,
+      rate: 1.1,
+      volume: 0.95
+    },
+    personality: 'Knowledgeable, analytical, helpful',
+    specialties: ['Technical support', 'Product demos', 'Training']
+  },
+  {
+    id: 'maya',
+    name: 'Maya',
+    description: 'Creative marketing strategist',
+    avatar: '👩‍🎨',
+    voiceSettings: {
+      voice: 'en-US-Neural2-C',
+      pitch: 1.05,
+      rate: 1.05,
+      volume: 1.0
+    },
+    personality: 'Creative, enthusiastic, strategic',
+    specialties: ['Marketing', 'Branding', 'Campaign planning']
+  }
+];
 
 export const useStore = create<AppState>()(
   subscribeWithSelector((set, get) => ({
@@ -92,6 +175,8 @@ export const useStore = create<AppState>()(
     showLoginModal: false,
     showSubscriptionModal: false,
     subscriptionTier: 'free',
+    agents: defaultAgents,
+    currentAgentId: 'harvey',
     
     // Contact actions
     addContact: (contact) => set((state) => ({
@@ -154,5 +239,26 @@ export const useStore = create<AppState>()(
     setShowLoginModal: (show) => set({ showLoginModal: show }),
     setShowSubscriptionModal: (show) => set({ showSubscriptionModal: show }),
     setSubscriptionTier: (tier) => set({ subscriptionTier: tier }),
+    
+    // Agent actions
+    setCurrentAgent: (agentId) => set({ currentAgentId: agentId }),
+    
+    addAgent: (agent) => set((state) => ({
+      agents: [...state.agents, {
+        ...agent,
+        id: crypto.randomUUID()
+      }]
+    })),
+    
+    updateAgent: (id, updates) => set((state) => ({
+      agents: state.agents.map(a => 
+        a.id === id ? { ...a, ...updates } : a
+      )
+    })),
+    
+    deleteAgent: (id) => set((state) => ({
+      agents: state.agents.filter(a => a.id !== id),
+      currentAgentId: state.currentAgentId === id ? state.agents[0]?.id || 'harvey' : state.currentAgentId
+    })),
   }))
 );

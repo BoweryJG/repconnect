@@ -42,6 +42,7 @@ import { HarveyLoadingScreen } from './components/HarveyLoadingScreen';
 import { HarveyActiveCallInterface } from './components/HarveyActiveCallInterface';
 import { HarveySettingsModal } from './components/HarveySettingsModal';
 import { harveyWebRTC } from './services/harveyWebRTC';
+import AgentSelector from './components/AgentSelector';
 
 // Lazy load heavy components
 const MissionControlDashboard = React.lazy(() => import('./components/MissionControlDashboard').then(module => ({ default: module.MissionControlDashboard })));
@@ -1182,6 +1183,9 @@ function AppContent() {
             </motion.div>
           )}
         </AnimatePresence>
+
+        {/* Agent Selector FAB */}
+        <AgentSelector />
 
       </div>
   );
