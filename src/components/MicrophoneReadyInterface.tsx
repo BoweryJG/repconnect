@@ -8,7 +8,6 @@ import {
   Chip,
   Stack,
   Fade,
-  Box,
   IconButton,
   Tooltip
 } from '@mui/material';
@@ -93,7 +92,7 @@ export const MicrophoneReadyInterface: React.FC<MicrophoneReadyInterfaceProps> =
     <Card sx={{ maxWidth: 500, margin: 'auto' }}>
       <CardContent sx={{ p: 3 }}>
         <Stack spacing={3} alignItems="center">
-          <Box sx={{ textAlign: "center" }}>
+          <div style={{ textAlign: "center" }}>
             <CheckCircle sx={{ fontSize: 48, color: 'success.main', mb: 1 }} />
             <Typography variant="h5" gutterBottom>
               Microphone Ready
@@ -105,7 +104,7 @@ export const MicrophoneReadyInterface: React.FC<MicrophoneReadyInterfaceProps> =
 
           {showAudioTest && (
             <Fade in={showAudioTest}>
-              <Box sx={{ width: '100%', textAlign: 'center' }}>
+              <div style={{ width: '100%', textAlign: 'center' }}>
                 <Typography variant="body2" gutterBottom>
                   Speak to test your microphone
                 </Typography>
@@ -125,7 +124,7 @@ export const MicrophoneReadyInterface: React.FC<MicrophoneReadyInterfaceProps> =
                   <Mic sx={{ fontSize: 16 }} />
                   <VolumeUp sx={{ fontSize: 16 }} />
                 </Stack>
-              </Box>
+              </div>
             </Fade>
           )}
 
@@ -140,7 +139,7 @@ export const MicrophoneReadyInterface: React.FC<MicrophoneReadyInterfaceProps> =
             </Fade>
           )}
 
-          <Box sx={{ width: '100%' }}>
+          <div style={{ width: '100%' }}>
             <Typography variant="subtitle2" gutterBottom>
               Select Chat Agent
             </Typography>
@@ -163,14 +162,14 @@ export const MicrophoneReadyInterface: React.FC<MicrophoneReadyInterfaceProps> =
                   <CardContent sx={{ py: 1.5, px: 2 }}>
                     <Stack direction="row" spacing={2} alignItems="center">
                       {getAgentIcon(agent.id)}
-                      <Box sx={{ flexGrow: 1 }}>
+                      <div style={{ flexGrow: 1 }}>
                         <Typography variant="subtitle2">
                           {agent.name}
                         </Typography>
                         <Typography variant="caption" color="text.secondary">
                           {agent.description}
                         </Typography>
-                      </Box>
+                      </div>
                       {selectedAgent === agent.id && (
                         <CheckCircle sx={{ color: 'primary.main', fontSize: 20 }} />
                       )}
@@ -179,7 +178,7 @@ export const MicrophoneReadyInterface: React.FC<MicrophoneReadyInterfaceProps> =
                 </Card>
               ))}
             </Stack>
-          </Box>
+          </div>
 
           <Stack direction="row" spacing={2} sx={{ width: '100%' }}>
             <Tooltip title="Audio Settings">

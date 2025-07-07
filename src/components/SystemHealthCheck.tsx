@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Paper, Typography, Chip, CircularProgress } from '@mui/material';
+import { Paper, Typography, Chip, CircularProgress } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ErrorIcon from '@mui/icons-material/Error';
 import { SERVICE_CONFIG, validateServiceConfig } from '../config/serviceConfig';
@@ -68,7 +68,7 @@ export const SystemHealthCheck = () => {
       <Typography variant="h6" gutterBottom>
         System Health
       </Typography>
-      <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
         {Object.entries(health).map(([service, status]) => (
           <Chip
             key={service}
@@ -78,7 +78,7 @@ export const SystemHealthCheck = () => {
             variant="outlined"
           />
         ))}
-      </Box>
+      </div>
       <Typography variant="caption" display="block" sx={{ mt: 1 }}>
         Backend: {SERVICE_CONFIG.backend.url}
       </Typography>
