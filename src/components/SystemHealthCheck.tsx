@@ -51,13 +51,13 @@ export const SystemHealthCheck = () => {
     setHealth(prev => ({ ...prev, database: 'healthy' }));
   };
 
-  const getStatusIcon = (status) => {
+  const getStatusIcon = (status: string) => {
     if (status === 'checking') return <CircularProgress size={16} />;
     if (status === 'healthy') return <CheckCircleIcon color="success" />;
     return <ErrorIcon color="error" />;
   };
 
-  const getStatusColor = (status) => {
+  const getStatusColor = (status: string) => {
     if (status === 'checking') return 'default';
     if (status === 'healthy') return 'success';
     return 'error';

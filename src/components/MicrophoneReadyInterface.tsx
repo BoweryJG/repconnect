@@ -93,7 +93,7 @@ export const MicrophoneReadyInterface: React.FC<MicrophoneReadyInterfaceProps> =
     <Card sx={{ maxWidth: 500, margin: 'auto' }}>
       <CardContent sx={{ p: 3 }}>
         <Stack spacing={3} alignItems="center">
-          <Box textAlign="center">
+          <Box sx={{ textAlign: "center" }}>
             <CheckCircle sx={{ fontSize: 48, color: 'success.main', mb: 1 }} />
             <Typography variant="h5" gutterBottom>
               Microphone Ready

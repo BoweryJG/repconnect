@@ -129,8 +129,15 @@ export const ActiveChatInterface: React.FC<ActiveChatInterfaceProps> = ({
     }
   };
 
+  const containerStyle = {
+    position: 'fixed' as const,
+    bottom: 20,
+    right: 20,
+    zIndex: 1300
+  };
+
   return (
-    <Box style={{ position: 'fixed', bottom: 20, right: 20, zIndex: 1300 }}>
+    <Box sx={containerStyle}>
       <Slide direction="up" in={isConnected}>
         <Card 
           sx={{ 

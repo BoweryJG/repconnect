@@ -130,7 +130,7 @@ export default function InstantCoachConnect() {
         setSessionTime(0);
         
         // Store globally for other components
-        window.currentCoachingSession = sessionData;
+        (window as any).currentCoachingSession = sessionData;
         
       } catch (micError) {
                 alert(`Session created but microphone access was denied. 
@@ -166,7 +166,7 @@ Please enable microphone permissions and try again.`);
       // Clear session state
       setActiveSession(null);
       setSessionTime(0);
-      window.currentCoachingSession = null;
+      (window as any).currentCoachingSession = null;
       
     } catch (error) {
           }
