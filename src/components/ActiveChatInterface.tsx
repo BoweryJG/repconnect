@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
-  Box,
   Card,
   CardContent,
   Typography,
@@ -148,7 +147,7 @@ export const ActiveChatInterface: React.FC<ActiveChatInterfaceProps> = ({
             boxShadow: 6
           }}
         >
-          <Box
+          <div
             style={{
               padding: 16,
               backgroundColor: '#1976d2',
@@ -166,7 +165,7 @@ export const ActiveChatInterface: React.FC<ActiveChatInterfaceProps> = ({
               >
                 <Psychology />
               </Avatar>
-              <Box>
+              <div>
                 <Typography variant="subtitle1" fontWeight="bold">
                   {agentName}
                 </Typography>
@@ -182,7 +181,7 @@ export const ActiveChatInterface: React.FC<ActiveChatInterfaceProps> = ({
                     sx={{ height: 20 }}
                   />
                 </Stack>
-              </Box>
+              </div>
             </Stack>
 
             <Stack direction="row" spacing={1}>
@@ -194,11 +193,11 @@ export const ActiveChatInterface: React.FC<ActiveChatInterfaceProps> = ({
                 {isMinimized ? <ExpandLess /> : <ExpandMore />}
               </IconButton>
             </Stack>
-          </Box>
+          </div>
 
           {!isMinimized && (
             <CardContent sx={{ flex: 1, p: 0, display: 'flex' }}>
-              <Box style={{ flex: 2, display: 'flex', flexDirection: 'column' }}>
+              <div style={{ flex: 2, display: 'flex', flexDirection: 'column' }}>
                 <Box
                   sx={{
                     flex: 1,
@@ -239,7 +238,7 @@ export const ActiveChatInterface: React.FC<ActiveChatInterfaceProps> = ({
                     ))}
                     <div ref={messagesEndRef} />
                   </Stack>
-                </Box>
+                </div>
 
                 <Paper
                   elevation={3}
@@ -292,18 +291,18 @@ export const ActiveChatInterface: React.FC<ActiveChatInterfaceProps> = ({
                     </Stack>
                   </Stack>
                 </Paper>
-              </Box>
+              </div>
 
               <Divider orientation="vertical" flexItem />
 
-              <Box style={{ flex: 1, display: 'flex', flexDirection: 'column', backgroundColor: '#fafafa' }}>
+              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', backgroundColor: '#fafafa' }}>
                 {showMetrics && (
-                  <Box style={{ padding: 16 }}>
+                  <div style={{ padding: 16 }}>
                     <Typography variant="subtitle2" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                       <Analytics /> Conversation Metrics
                     </Typography>
                     <Stack spacing={1.5}>
-                      <Box>
+                      <div>
                         <Stack direction="row" justifyContent="space-between" alignItems="center">
                           <Typography variant="caption">Talk Ratio</Typography>
                           <Typography variant="caption">{conversationMetrics.talkRatio}%</Typography>
@@ -313,7 +312,7 @@ export const ActiveChatInterface: React.FC<ActiveChatInterfaceProps> = ({
                           value={conversationMetrics.talkRatio}
                           sx={{ height: 6, borderRadius: 3 }}
                         />
-                      </Box>
+                      </div>
 
                       <Stack direction="row" spacing={1}>
                         <Chip
@@ -338,12 +337,12 @@ export const ActiveChatInterface: React.FC<ActiveChatInterfaceProps> = ({
                         </Typography>
                       </Stack>
                     </Stack>
-                  </Box>
+                  </div>
                 )}
 
                 <Divider />
 
-                <Box style={{ flex: 1, padding: 16, overflowY: 'auto' }}>
+                <div style={{ flex: 1, padding: 16, overflowY: 'auto' }}>
                   <Typography variant="subtitle2" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                     <TipsAndUpdates /> AI Coaching
                   </Typography>
@@ -370,8 +369,8 @@ export const ActiveChatInterface: React.FC<ActiveChatInterfaceProps> = ({
                       </Fade>
                     ))}
                   </Stack>
-                </Box>
-              </Box>
+                </div>
+              </div>
             </CardContent>
           )}
         </Card>
