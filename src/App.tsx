@@ -54,6 +54,11 @@ function AppContent() {
   const [newContactPhone, setNewContactPhone] = useState('');
   const [viewMode, setViewMode] = useState<'rolodex' | 'grid'>('rolodex');
   const [gridDimensions, setGridDimensions] = useState({ width: 1200, height: 600 });
+  
+  // Debug grid dimensions
+  useEffect(() => {
+    console.log('Grid dimensions updated:', gridDimensions);
+  }, [gridDimensions]);
   const gridContainerRef = useRef<HTMLDivElement>(null);
   const [isDemoMode, setIsDemoMode] = useState(true);
   const [showUsageWarning, setShowUsageWarning] = useState(false);
