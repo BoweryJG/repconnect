@@ -3,19 +3,19 @@
 
 export const SERVICE_CONFIG = {
   backend: {
-    url: 'https://osbackend-zl1h.onrender.com',
+    url: process.env.REACT_APP_BACKEND_URL || 'https://osbackend-zl1h.onrender.com',
     healthCheck: '/health'
   },
   supabase: {
-    url: 'https://cbopynuvhcymbumjnvay.supabase.co',
-    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNib3B5bnV2aGN5bWJ1bWpudmF5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM5OTUxNzMsImV4cCI6MjA1OTU3MTE3M30.UZElMkoHugIt984RtYWyfrRuv2rB67opQdCrFVPCfzU'
+    url: process.env.SUPABASE_URL || 'https://cbopynuvhcymbumjnvay.supabase.co',
+    anonKey: process.env.SUPABASE_SERVICE_KEY || ''
   },
   deepgram: {
-    url: 'wss://api.deepgram.com/v1/listen',
-    key: '4beb44e547c8ef520a575d343315b9d0dae38549'
+    url: process.env.REACT_APP_DEEPGRAM_API_URL || 'wss://api.deepgram.com/v1/listen',
+    key: process.env.REACT_APP_DEEPGRAM_API_KEY || ''
   },
   twilio: {
-    phoneNumber: '+18454090692'
+    phoneNumber: process.env.REACT_APP_TWILIO_PHONE_NUMBER || ''
   }
 };
 

@@ -131,7 +131,7 @@ async function runTests() {
   // Test Deepgram connection (just check if we can connect)
   log.info('Testing Deepgram WebSocket...');
   try {
-    const ws = new WebSocket(`${DEEPGRAM_URL}?encoding=linear16&sample_rate=48000&channels=1&token=4beb44e547c8ef520a575d343315b9d0dae38549`);
+    const ws = new WebSocket(`${DEEPGRAM_URL}?encoding=linear16&sample_rate=48000&channels=1&token=${process.env.REACT_APP_DEEPGRAM_API_KEY || ''}`);
     
     await new Promise((resolve, reject) => {
       const timeout = setTimeout(() => {

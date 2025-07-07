@@ -9,21 +9,21 @@ import { createClient } from '@supabase/supabase-js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Production configuration
+// Load configuration from environment
 const PRODUCTION_CONFIG = {
-  REACT_APP_BACKEND_URL: 'https://osbackend-zl1h.onrender.com',
-  REACT_APP_TWILIO_PHONE_NUMBER: '+18454090692',
-  HARVEY_PERSONALITY_MODE: 'aggressive',
-  HARVEY_INTERVENTION_THRESHOLD: 'medium',
-  HARVEY_VOICE_ENABLED: 'true',
-  REACT_APP_DEEPGRAM_API_URL: 'wss://api.deepgram.com/v1/listen',
-  REACT_APP_DEEPGRAM_API_KEY: '4beb44e547c8ef520a575d343315b9d0dae38549',
-  REACT_APP_USE_DEEPGRAM: 'true',
-  REACT_APP_MOSHI_API_URL: 'wss://api.piapi.ai/moshi/v1/stream',
-  REACT_APP_MOSHI_API_KEY: '4beb44e547c8ef520a575d343315b9d0dae38549',
-  OPENAI_API_KEY: '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',
-  SUPABASE_URL: 'https://cbopynuvhcymbumjnvay.supabase.co',
-  SUPABASE_SERVICE_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNib3B5bnV2aGN5bWJ1bWpudmF5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM5OTUxNzMsImV4cCI6MjA1OTU3MTE3M30.UZElMkoHugIt984RtYWyfrRuv2rB67opQdCrFVPCfzU'
+  REACT_APP_BACKEND_URL: process.env.REACT_APP_BACKEND_URL || 'https://osbackend-zl1h.onrender.com',
+  REACT_APP_TWILIO_PHONE_NUMBER: process.env.REACT_APP_TWILIO_PHONE_NUMBER,
+  HARVEY_PERSONALITY_MODE: process.env.HARVEY_PERSONALITY_MODE || 'aggressive',
+  HARVEY_INTERVENTION_THRESHOLD: process.env.HARVEY_INTERVENTION_THRESHOLD || 'medium',
+  HARVEY_VOICE_ENABLED: process.env.HARVEY_VOICE_ENABLED || 'true',
+  REACT_APP_DEEPGRAM_API_URL: process.env.REACT_APP_DEEPGRAM_API_URL || 'wss://api.deepgram.com/v1/listen',
+  REACT_APP_DEEPGRAM_API_KEY: process.env.REACT_APP_DEEPGRAM_API_KEY,
+  REACT_APP_USE_DEEPGRAM: process.env.REACT_APP_USE_DEEPGRAM || 'true',
+  REACT_APP_MOSHI_API_URL: process.env.REACT_APP_MOSHI_API_URL || 'wss://api.piapi.ai/moshi/v1/stream',
+  REACT_APP_MOSHI_API_KEY: process.env.REACT_APP_MOSHI_API_KEY,
+  OPENAI_API_KEY: process.env.OPENAI_API_KEY,
+  SUPABASE_URL: process.env.SUPABASE_URL,
+  SUPABASE_SERVICE_KEY: process.env.SUPABASE_SERVICE_KEY
 };
 
 console.log('🚀 RepConnect Production Setup\n');
