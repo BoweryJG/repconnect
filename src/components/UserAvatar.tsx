@@ -1,5 +1,5 @@
 import React from 'react';
-import { Avatar, Box, Typography } from '@mui/material';
+import { Avatar, Typography } from '@mui/material';
 import { User } from '@supabase/supabase-js';
 
 interface UserProfile {

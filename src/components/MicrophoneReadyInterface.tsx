@@ -100,7 +100,7 @@ export const MicrophoneReadyInterface: React.FC<MicrophoneReadyInterfaceProps> =
             <Typography variant="body2" color="text.secondary">
               Your microphone is initialized and working properly
             </Typography>
-          </Box>
+          </div>
 
           {showAudioTest && (
             <Fade in={showAudioTest}>

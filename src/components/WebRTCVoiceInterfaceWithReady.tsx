@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { WebRTCVoiceInterface } from './WebRTCVoiceInterface';
 import { MicrophoneReadyInterface } from './MicrophoneReadyInterface';
-import { Dialog, DialogContent, IconButton, Box } from '@mui/material';
+import { Dialog, DialogContent, IconButton } from '@mui/material';
 import { Close } from '@mui/icons-material';
 
 interface WebRTCVoiceInterfaceWithReadyProps {
