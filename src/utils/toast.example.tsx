@@ -61,7 +61,8 @@ export const utilityExample = async () => {
     return data;
   } catch (error) {
     // Show error notification
-    toast.error(`Failed to load data: ${error.message}`);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+    toast.error(`Failed to load data: ${errorMessage}`);
     throw error;
   }
 };
