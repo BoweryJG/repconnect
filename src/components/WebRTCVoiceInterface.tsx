@@ -93,8 +93,7 @@ export const WebRTCVoiceInterface: React.FC<WebRTCVoiceInterfaceProps> = ({
           await connect();
         }
       } catch (err) {
-        console.error('Failed to initialize WebRTC:', err);
-        setError('Failed to initialize voice service');
+                setError('Failed to initialize voice service');
       }
     };
 
@@ -112,21 +111,18 @@ export const WebRTCVoiceInterface: React.FC<WebRTCVoiceInterfaceProps> = ({
   }, []);
 
   const handleSessionConnected = useCallback((connectedSessionId: string) => {
-    console.log('Session connected:', connectedSessionId);
-    setIsConnected(true);
+        setIsConnected(true);
     setIsConnecting(false);
     startAudioLevelMonitoring();
   }, []);
 
   const handleSessionDisconnected = useCallback((disconnectedSessionId: string) => {
-    console.log('Session disconnected:', disconnectedSessionId);
-    setIsConnected(false);
+        setIsConnected(false);
     stopAudioLevelMonitoring();
   }, []);
 
   const handleError = useCallback((error: Error) => {
-    console.error('WebRTC error:', error);
-    setError(error.message);
+        setError(error.message);
     onError?.(error);
   }, [onError]);
 
@@ -134,8 +130,7 @@ export const WebRTCVoiceInterface: React.FC<WebRTCVoiceInterfaceProps> = ({
     if (remoteAudioRef.current) {
       remoteAudioRef.current.srcObject = data.stream;
       remoteAudioRef.current.play().catch(err => {
-        console.error('Failed to play remote audio:', err);
-      });
+              });
     }
   }, []);
 
@@ -162,8 +157,7 @@ export const WebRTCVoiceInterface: React.FC<WebRTCVoiceInterfaceProps> = ({
     emotion: string;
     confidence: number;
   }) => {
-    console.log('Emotion detected:', data);
-  }, []);
+      }, []);
 
   const handleMoshiError = useCallback((data: { sessionId: string; error: Error }) => {
     if (data.sessionId === sessionId) {
@@ -195,8 +189,7 @@ export const WebRTCVoiceInterface: React.FC<WebRTCVoiceInterfaceProps> = ({
       // Join signaling room
       webRTCSignalingService.joinSession(newSessionId);
     } catch (err) {
-      console.error('Failed to connect:', err);
-      setError(err instanceof Error ? err.message : 'Failed to connect');
+            setError(err instanceof Error ? err.message : 'Failed to connect');
       setIsConnecting(false);
     }
   };
@@ -212,8 +205,7 @@ export const WebRTCVoiceInterface: React.FC<WebRTCVoiceInterfaceProps> = ({
         webRTCSignalingService.leaveSession(sessionId);
       }
     } catch (err) {
-      console.error('Failed to disconnect:', err);
-    } finally {
+          } finally {
       setIsConnected(false);
       setIsConnecting(false);
       setTranscript('');
@@ -295,8 +287,7 @@ export const WebRTCVoiceInterface: React.FC<WebRTCVoiceInterfaceProps> = ({
           }
         });
       } catch (err) {
-        console.error('Failed to get connection stats:', err);
-      }
+              }
     }, 2000);
 
     return () => clearInterval(interval);

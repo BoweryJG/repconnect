@@ -84,8 +84,7 @@ export default function InstantCoachConnect() {
       const data = await response.json();
       setAvailableCoaches(data.coaches || []);
     } catch (error) {
-      console.error('Error loading coaches:', error);
-    } finally {
+          } finally {
       setLoading(false);
     }
   }, [selectedCategory]);
@@ -112,14 +111,12 @@ export default function InstantCoachConnect() {
       
       // Request microphone permission and start WebRTC
       try {
-        console.log('🎤 Requesting microphone permission...');
-        const stream = await navigator.mediaDevices.getUserMedia({ 
+                const stream = await navigator.mediaDevices.getUserMedia({ 
           audio: true, 
           video: false 
         });
         
-        console.log('✅ Microphone access granted');
-        console.log('🔊 Audio tracks:', stream.getAudioTracks().length);
+                .length);
         
         // Start the active session UI
         const sessionData = {
@@ -138,14 +135,12 @@ export default function InstantCoachConnect() {
         window.currentCoachingSession = sessionData;
         
       } catch (micError) {
-        console.error('❌ Microphone access denied:', micError);
-        alert(`Session created but microphone access was denied. 
+                alert(`Session created but microphone access was denied. 
 Please enable microphone permissions and try again.`);
       }
 
     } catch (error) {
-      console.error('Error connecting to coach:', error);
-      alert('Failed to connect to coach');
+            alert('Failed to connect to coach');
     } finally {
       setConnecting(null);
     }
@@ -176,8 +171,7 @@ Please enable microphone permissions and try again.`);
       window.currentCoachingSession = null;
       
     } catch (error) {
-      console.error('Error ending session:', error);
-    }
+          }
   };
 
   const formatTime = (seconds: number) => {

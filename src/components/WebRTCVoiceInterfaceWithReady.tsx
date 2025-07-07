@@ -26,8 +26,7 @@ export const WebRTCVoiceInterfaceWithReady: React.FC<WebRTCVoiceInterfaceWithRea
         setMicrophoneInitialized(true);
         setShowReadyDialog(true);
       } catch (error) {
-        console.error('Microphone permission denied:', error);
-        setMicrophoneInitialized(false);
+                setMicrophoneInitialized(false);
       }
     };
 
@@ -44,8 +43,7 @@ export const WebRTCVoiceInterfaceWithReady: React.FC<WebRTCVoiceInterfaceWithRea
   }, []);
 
   const handleAudioSettings = useCallback(() => {
-    console.log('Opening audio settings...');
-  }, []);
+      }, []);
 
   const handleAudioLevel = useCallback((level: number) => {
     setAudioLevel(level);

@@ -9,14 +9,7 @@ export const twilioService = {
       
       const fromNumber = from || process.env.REACT_APP_TWILIO_PHONE_NUMBER;
       
-      console.log('🔍 [DIALER DEBUG] Making call with config:', {
-        to,
-        from: fromNumber,
-        message,
-        url,
-        backendUrl: BACKEND_URL
-      });
-        
+              
       const response = await axios.post(url, {
         to,
         message: message || "Hello! This is a call from RepConnect.",
@@ -24,17 +17,9 @@ export const twilioService = {
         metadata: options?.metadata || {}
       });
       
-      console.log('✅ [DIALER DEBUG] Call request successful:', response.data);
-      return response.data;
+            return response.data;
     } catch (error: any) {
-      console.error('❌ [DIALER DEBUG] Call request failed:', {
-        error: error.message,
-        response: error.response?.data,
-        status: error.response?.status,
-        url: error.config?.url,
-        requestData: error.config?.data
-      });
-      throw error;
+            throw error;
     }
   },
 
@@ -49,8 +34,7 @@ export const twilioService = {
       });
       return response.data;
     } catch (error) {
-      console.error('Error sending SMS:', error);
-      throw error;
+            throw error;
     }
   },
 
@@ -61,8 +45,7 @@ export const twilioService = {
       const response = await axios.get(url);
       return response.data;
     } catch (error) {
-      console.error('Error getting recordings:', error);
-      throw error;
+            throw error;
     }
   },
 };

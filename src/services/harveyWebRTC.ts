@@ -60,8 +60,7 @@ class HarveyWebRTC {
       this.startVoiceAnalysis();
       
     } catch (error) {
-      console.error('Failed to connect Harvey WebRTC:', error);
-      this.handleConnectionError(error);
+            this.handleConnectionError(error);
     }
   }
 
@@ -86,8 +85,7 @@ class HarveyWebRTC {
     // Handle connection state changes
     this.pc.onconnectionstatechange = () => {
       const state = this.pc?.connectionState;
-      console.log('Harvey WebRTC connection state:', state);
-      
+            
       if (state === 'connected') {
         this.isConnected = true;
         this.config?.onConnectionChange?.(true);
@@ -120,13 +118,11 @@ class HarveyWebRTC {
     try {
       this.websocket = new WebSocket(wsUrl);
     } catch (error) {
-      console.error('Failed to create WebSocket:', error);
-      return;
+            return;
     }
     
     this.websocket.onopen = async () => {
-      console.log('Connected to Harvey signaling server');
-      
+            
       // Send initial handshake
       this.websocket!.send(JSON.stringify({
         type: 'join',
@@ -167,12 +163,10 @@ class HarveyWebRTC {
     };
     
     this.websocket.onerror = (error) => {
-      console.error('Harvey WebSocket error:', error);
-    };
+          };
     
     this.websocket.onclose = (event) => {
-      console.log('Disconnected from Harvey signaling server', event.code, event.reason);
-      // Only attempt reconnect if it wasn't a manual close
+            // Only attempt reconnect if it wasn't a manual close
       if (event.code !== 1000) {
         this.attemptReconnect();
       }
@@ -201,8 +195,7 @@ class HarveyWebRTC {
     
     // Check if audio context is in a valid state
     if (this.audioContext.state === 'closed') {
-      console.warn('Audio context is closed, cannot start voice analysis');
-      return;
+            return;
     }
     
     try {
@@ -212,8 +205,7 @@ class HarveyWebRTC {
       this.analyser.fftSize = 2048;
       source.connect(this.analyser);
     } catch (error) {
-      console.error('Failed to set up voice analysis:', error);
-      return;
+            return;
     }
     
     // Start analysis loop
@@ -322,8 +314,7 @@ class HarveyWebRTC {
 
   private handleBattleMode(data: any): void {
     // Handle battle mode setup for competitive calling
-    console.log('Battle mode activated:', data);
-    // Implementation for split-screen battle mode
+        // Implementation for split-screen battle mode
   }
 
   private attemptReconnect(): void {
@@ -335,8 +326,7 @@ class HarveyWebRTC {
       return;
     }
     
-    console.log('Attempting to reconnect to Harvey...');
-    this.reconnectTimer = setTimeout(() => {
+        this.reconnectTimer = setTimeout(() => {
       this.reconnectTimer = null;
       if (this.config && (!this.websocket || this.websocket.readyState === WebSocket.CLOSED)) {
         this.connectWebSocket();
@@ -345,8 +335,7 @@ class HarveyWebRTC {
   }
 
   private handleConnectionError(error: any): void {
-    console.error('Harvey connection error:', error);
-    this.config?.onConnectionChange?.(false);
+        this.config?.onConnectionChange?.(false);
   }
 
   async startListening(): Promise<void> {

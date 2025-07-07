@@ -43,8 +43,7 @@ export const SyncDashboard: React.FC<SyncDashboardProps> = ({ onClose }) => {
       // Auto-start sync
       handleSyncQueue(queue.id);
     } catch (error) {
-      console.error('Failed to create queue:', error);
-    }
+          }
   };
 
   const handleSyncQueue = async (queueId: string) => {

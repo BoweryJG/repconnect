@@ -60,8 +60,7 @@ export const CallInterface: React.FC<CallInterfaceProps> = ({ contact, onEndCall
         });
         mediaStreamRef.current = stream;
       } catch (error) {
-        console.error('Failed to access microphone:', error);
-        setTranscriptionError('Microphone access denied. Please allow microphone permissions and refresh.');
+                setTranscriptionError('Microphone access denied. Please allow microphone permissions and refresh.');
       }
     };
 
@@ -157,8 +156,7 @@ export const CallInterface: React.FC<CallInterfaceProps> = ({ contact, onEndCall
         },
         // On error
         (error) => {
-          console.error('Transcription error:', error);
-          setTranscriptionError(error.message);
+                    setTranscriptionError(error.message);
           setIsTranscribing(false);
           setIsConnecting(false);
         },

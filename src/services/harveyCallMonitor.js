@@ -15,8 +15,7 @@ class HarveyCallMonitor {
 
   // Start monitoring a sales rep
   startMonitoring(repId, repName) {
-    console.log(`🎯 Harvey is now monitoring ${repName}'s calls`);
-    
+        
     // Initialize Harvey for this rep
     harveyCoach.initializeRep(repId, repName);
     
@@ -56,8 +55,7 @@ class HarveyCallMonitor {
 
   // When a call starts
   async onCallStarted(repId, callData) {
-    console.log(`📞 Call started by rep ${repId}`);
-    this.callStartTimes.set(callData.id, new Date());
+        this.callStartTimes.set(callData.id, new Date());
     
     // Check if they did research before the call
     const hasResearch = await this.checkPreCallResearch(repId, callData.contact_id);
@@ -79,8 +77,7 @@ class HarveyCallMonitor {
     const callDuration = callData.duration || 0;
     const outcome = callData.outcome;
     
-    console.log(`📞 Call ended: ${outcome}, duration: ${callDuration}s`);
-    
+        
     // Analyze based on outcome and duration
     if (outcome === 'unsuccessful' || outcome === 'no_decision') {
       // Failed call - immediate coaching

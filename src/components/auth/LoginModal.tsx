@@ -86,8 +86,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSucce
         });
       }
     } catch (error) {
-      console.error('Authentication error:', error);
-      // Error shake animation
+            // Error shake animation
       if (modalRef.current) {
         gsap.timeline()
           .to(modalRef.current, { x: -10, duration: 0.1 })

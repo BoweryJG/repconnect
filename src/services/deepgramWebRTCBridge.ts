@@ -137,8 +137,7 @@ export class DeepgramWebRTCBridge extends EventEmitter {
 
   async connectToDeepgram(sessionId: string): Promise<void> {
     if (this.liveConnections.has(sessionId)) {
-      console.warn(`Deepgram connection already exists for session ${sessionId}`);
-      return;
+            return;
     }
 
     try {
@@ -160,8 +159,7 @@ export class DeepgramWebRTCBridge extends EventEmitter {
 
       // Set up event handlers
       connection.on(LiveTranscriptionEvents.Open, () => {
-        console.log(`Connected to Deepgram for session ${sessionId}`);
-        this.emit('connected', sessionId);
+                this.emit('connected', sessionId);
       });
 
       connection.on(LiveTranscriptionEvents.Transcript, (data) => {
@@ -180,13 +178,11 @@ export class DeepgramWebRTCBridge extends EventEmitter {
       });
 
       connection.on(LiveTranscriptionEvents.Error, (error) => {
-        console.error(`Deepgram error for session ${sessionId}:`, error);
-        this.emit('error', { sessionId, error });
+                this.emit('error', { sessionId, error });
       });
 
       connection.on(LiveTranscriptionEvents.Close, () => {
-        console.log(`Deepgram connection closed for session ${sessionId}`);
-        this.liveConnections.delete(sessionId);
+                this.liveConnections.delete(sessionId);
         this.audioBuffers.delete(sessionId);
         this.emit('disconnected', sessionId);
       });
@@ -195,8 +191,7 @@ export class DeepgramWebRTCBridge extends EventEmitter {
       
       // Connection starts automatically when created with deepgram.listen.live()
     } catch (error) {
-      console.error('Failed to connect to Deepgram:', error);
-      throw error;
+            throw error;
     }
   }
 
@@ -249,13 +244,11 @@ export class DeepgramWebRTCBridge extends EventEmitter {
     try {
       // Note: Deepgram Voice Agent API is still in beta
       // This is a placeholder for when it's fully available
-      console.log('Voice Agent API integration coming soon');
-      
+            
       // For now, we'll use transcription + separate TTS
       await this.connectToDeepgram(sessionId);
     } catch (error) {
-      console.error('Failed to start voice agent:', error);
-      throw error;
+            throw error;
     }
   }
 
@@ -264,8 +257,7 @@ export class DeepgramWebRTCBridge extends EventEmitter {
     try {
       // For now, we'll skip TTS implementation since it's not critical for WebRTC voice
       // Deepgram SDK v4 TTS API is different and would need proper implementation
-      console.log('TTS requested for:', text);
-      
+            
       // Return empty audio buffer
       const emptyBuffer = new ArrayBuffer(0);
       
@@ -277,8 +269,7 @@ export class DeepgramWebRTCBridge extends EventEmitter {
 
       return emptyBuffer;
     } catch (error) {
-      console.error('TTS synthesis error:', error);
-      throw error;
+            throw error;
     }
   }
 

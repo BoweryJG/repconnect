@@ -36,14 +36,12 @@ class TranscriptionService {
       const { data: { session } } = await supabase.auth.getSession();
       
       const backendUrl = process.env.REACT_APP_BACKEND_URL || 'https://osbackend-zl1h.onrender.com';
-      console.log('[TranscriptionService] Connecting to:', `${backendUrl}/call-transcription-ws`);
-      console.log('[TranscriptionService] Auth token present:', !!session?.access_token);
-      
+                  
       // Connect to the namespace within the Socket.IO server
       this.socket = io(`${backendUrl}/call-transcription-ws`, {
         path: '/agents-ws',  // This is the Socket.IO server path
         auth: {
-          token: session?.access_token || 'demo-token'  // Use demo token if no session
+          token: session?.access_token || ''  // Require auth token
         },
         transports: ['websocket'],
         reconnection: true,
@@ -54,8 +52,7 @@ class TranscriptionService {
 
       this.setupEventListeners();
     } catch (error) {
-      console.error('Failed to connect to transcription service:', error);
-      this.handleReconnect();
+            this.handleReconnect();
     }
   }
 
@@ -63,8 +60,7 @@ class TranscriptionService {
     if (!this.socket) return;
 
     this.socket.on('connect', () => {
-      console.log('Connected to transcription service');
-      this.isConnected = true;
+            this.isConnected = true;
       this.reconnectAttempts = 0;
       
       // Re-subscribe to active sessions
@@ -74,13 +70,11 @@ class TranscriptionService {
     });
 
     this.socket.on('disconnect', () => {
-      console.log('Disconnected from transcription service');
-      this.isConnected = false;
+            this.isConnected = false;
     });
 
     this.socket.on('error', (error) => {
-      console.error('[TranscriptionService] Socket error:', error);
-      this.sessions.forEach(session => {
+            this.sessions.forEach(session => {
         session.onError(new Error(error.message || 'Connection error'));
       });
     });
@@ -88,13 +82,11 @@ class TranscriptionService {
     this.socket.on('connect_error', (error: any) => {
       // Only log first connection error to avoid console spam
       if (this.reconnectAttempts === 0) {
-        console.warn('[TranscriptionService] Unable to connect to backend transcription service. The app will continue without real-time transcription.');
-      }
+              }
     });
 
     this.socket.on('transcription:update', (data: any) => {
-      console.log('[TranscriptionService] Received transcription update:', data);
-      const session = this.sessions.get(data.callSid);
+            const session = this.sessions.get(data.callSid);
       if (session) {
         // Convert backend format to expected TranscriptionUpdate format
         const update: TranscriptionUpdate = {
@@ -108,8 +100,7 @@ class TranscriptionService {
         };
         session.onUpdate(update);
       } else {
-        console.warn('[TranscriptionService] No session found for callSid:', data.callSid);
-      }
+              }
     });
 
     this.socket.on('transcription:complete', (data: { callSid: string }) => {
@@ -121,12 +112,10 @@ class TranscriptionService {
     });
 
     this.socket.on('transcription:started', (data: any) => {
-      console.log('[TranscriptionService] Transcription started:', data);
-    });
+          });
 
     this.socket.on('transcription:error', (data: { callSid: string; error: string }) => {
-      console.error('[TranscriptionService] Transcription error:', data);
-      const session = this.sessions.get(data.callSid);
+            const session = this.sessions.get(data.callSid);
       if (session) {
         session.onError(new Error(data.error));
       }
@@ -135,8 +124,7 @@ class TranscriptionService {
 
   private handleReconnect() {
     if (this.reconnectAttempts >= this.maxReconnectAttempts) {
-      console.log('[TranscriptionService] Transcription service unavailable - continuing without real-time features');
-      return;
+            return;
     }
 
     this.reconnectAttempts++;
@@ -154,12 +142,9 @@ class TranscriptionService {
     onError: (error: Error) => void,
     onComplete: () => void
   ) {
-    console.log('[TranscriptionService] Starting transcription for call:', callSid);
-    console.log('[TranscriptionService] Socket connected:', this.isConnected);
-    
+            
     if (!this.socket || !this.isConnected) {
-      console.error('[TranscriptionService] Not connected to service');
-      onError(new Error('Not connected to transcription service'));
+            onError(new Error('Not connected to transcription service'));
       return;
     }
 
@@ -172,8 +157,7 @@ class TranscriptionService {
     });
 
     // Subscribe to transcription updates for this call
-    console.log('[TranscriptionService] Subscribing to call:', callSid);
-    this.socket.emit('subscribe:call', callSid);
+        this.socket.emit('subscribe:call', callSid);
   }
 
   public stopTranscription(callSid: string) {
@@ -196,8 +180,7 @@ class TranscriptionService {
       if (error) throw error;
       return data;
     } catch (error) {
-      console.error('Error fetching transcription:', error);
-      throw error;
+            throw error;
     }
   }
 

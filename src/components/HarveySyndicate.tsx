@@ -74,8 +74,7 @@ export const HarveySyndicate: React.FC = () => {
     try {
       initializeHarvey();
     } catch (error) {
-      console.warn('Harvey services not available in demo mode:', error);
-      // Set demo data for display
+            // Set demo data for display
       setMetrics({
         reputationPoints: 8750,
         currentStreak: 12,
@@ -111,7 +110,7 @@ export const HarveySyndicate: React.FC = () => {
       try {
         harveyWebRTC.disconnect();
       } catch (error) {
-        console.warn('Harvey disconnect error (demo mode):', error);
+        :', error);
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -154,8 +153,7 @@ export const HarveySyndicate: React.FC = () => {
         if (verdict.audio && audioRef.current) {
           audioRef.current.src = verdict.audio;
           audioRef.current.play().catch(err => {
-            console.log('Audio autoplay blocked, user interaction required');
-          });
+                      });
         }
       }
       
@@ -175,8 +173,7 @@ export const HarveySyndicate: React.FC = () => {
       });
       
     } catch (error) {
-      console.error('Failed to initialize Harvey:', error);
-      throw error; // Re-throw to be caught by useEffect
+            throw error; // Re-throw to be caught by useEffect
     }
   };
 
@@ -185,8 +182,7 @@ export const HarveySyndicate: React.FC = () => {
     try {
       harveyWebRTC.setMuted(!isMuted);
     } catch (error) {
-      console.warn('Harvey voice control not available:', error);
-    }
+          }
   };
 
   const startListening = async () => {
@@ -194,8 +190,7 @@ export const HarveySyndicate: React.FC = () => {
     try {
       await harveyWebRTC.startListening();
     } catch (error) {
-      console.warn('Harvey voice control not available:', error);
-    }
+          }
   };
 
   const stopListening = () => {
@@ -203,8 +198,7 @@ export const HarveySyndicate: React.FC = () => {
     try {
       harveyWebRTC.stopListening();
     } catch (error) {
-      console.warn('Harvey voice control not available:', error);
-    }
+          }
   };
 
   const getStatusColor = (status: string) => {

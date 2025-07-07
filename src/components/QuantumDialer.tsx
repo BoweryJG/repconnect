@@ -54,12 +54,7 @@ export const QuantumDialer: React.FC<QuantumDialerProps> = ({ isOpen, onClose, o
   // Debug logging for responsive detection
   useEffect(() => {
     if (isOpen) {
-      console.log('🔍 [DIALER DEBUG] Dialer opened with responsive state:', {
-        isMobile,
-        windowDimensions,
-        innerWidth: window.innerWidth,
-        innerHeight: window.innerHeight,
-        userAgent: navigator.userAgent.includes('Mobile') ? 'Mobile UA' : 'Desktop UA'
+       ? 'Mobile UA' : 'Desktop UA'
       });
     }
   }, [isOpen, isMobile, windowDimensions]);
@@ -176,13 +171,11 @@ export const QuantumDialer: React.FC<QuantumDialerProps> = ({ isOpen, onClose, o
 
   const handleDial = () => {
     if (phoneNumber.length >= 10) {
-      console.log('🔍 [DIALER DEBUG] Initiating call with number:', phoneNumber);
-      onDial(phoneNumber);
+            onDial(phoneNumber);
       // Don't clear the number or close immediately - let the parent handle that
       // This gives time to see any errors
     } else {
-      console.warn('❌ [DIALER DEBUG] Phone number too short:', phoneNumber);
-      alert('Please enter at least 10 digits');
+            alert('Please enter at least 10 digits');
     }
   };
 

@@ -78,8 +78,7 @@ class PhoneService {
       const response = await this.apiClient.post('/phone-numbers/search', params);
       return response.data;
     } catch (error) {
-      console.error('Error searching numbers:', error);
-      throw error;
+            throw error;
     }
   }
 
@@ -98,8 +97,7 @@ class PhoneService {
       });
       return response.data;
     } catch (error) {
-      console.error('Error provisioning number:', error);
-      throw error;
+            throw error;
     }
   }
 
@@ -117,8 +115,7 @@ class PhoneService {
         return response.data;
       }
     } catch (error) {
-      console.error('Error initiating call:', error);
-      throw error;
+            throw error;
     }
   }
 
@@ -136,8 +133,7 @@ class PhoneService {
       });
       return response.data;
     } catch (error) {
-      console.error('Error starting WebRTC call:', error);
-      throw error;
+            throw error;
     }
   }
 
@@ -148,8 +144,7 @@ class PhoneService {
       });
       return response.data;
     } catch (error) {
-      console.error('Error ending WebRTC call:', error);
-      throw error;
+            throw error;
     }
   }
 
@@ -158,8 +153,7 @@ class PhoneService {
       const response = await this.apiClient.get('/webrtc/sessions');
       return response.data.sessions;
     } catch (error) {
-      console.error('Error getting WebRTC sessions:', error);
-      throw error;
+            throw error;
     }
   }
 
@@ -195,8 +189,7 @@ class PhoneService {
       const response = await this.apiClient.get(`/calls/${callId}/recording`);
       return response.data;
     } catch (error) {
-      console.error('Error fetching recording:', error);
-      throw error;
+            throw error;
     }
   }
 
@@ -210,8 +203,7 @@ class PhoneService {
       });
       return response.data;
     } catch (error) {
-      console.error('Error sending SMS:', error);
-      throw error;
+            throw error;
     }
   }
 
@@ -254,8 +246,7 @@ class PhoneService {
       const response = await this.apiClient.get(`/usage/summary?${params}`);
       return response.data;
     } catch (error) {
-      console.error('Error fetching usage summary:', error);
-      throw error;
+            throw error;
     }
   }
 

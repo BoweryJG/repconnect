@@ -91,8 +91,7 @@ export const EnrichmentResults: React.FC = () => {
         }
       }
     } catch (error) {
-      console.error('Error loading enriched data:', error);
-    } finally {
+          } finally {
       setIsLoading(false);
     }
   };

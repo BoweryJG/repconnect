@@ -69,8 +69,7 @@ export const CallSummaryView: React.FC<CallSummaryViewProps> = ({ callSid, trans
       }
     } catch (err) {
       setError('Failed to load summary');
-      console.error(err);
-    } finally {
+          } finally {
       setLoading(false);
     }
   };
@@ -104,8 +103,7 @@ export const CallSummaryView: React.FC<CallSummaryViewProps> = ({ callSid, trans
       }
     } catch (err) {
       setError('Failed to generate summary');
-      console.error(err);
-    } finally {
+          } finally {
       setLoading(false);
     }
   };
@@ -139,8 +137,7 @@ export const CallSummaryView: React.FC<CallSummaryViewProps> = ({ callSid, trans
       }
     } catch (err) {
       setError('Failed to regenerate summary');
-      console.error(err);
-    } finally {
+          } finally {
       setLoading(false);
     }
   };

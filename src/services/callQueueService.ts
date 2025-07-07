@@ -62,8 +62,7 @@ export class CallQueueService {
         })));
 
       if (error) {
-        console.error('Error creating queued calls:', error);
-        throw new Error(`Failed to create call queue: ${error.message}`);
+                throw new Error(`Failed to create call queue: ${error.message}`);
       }
 
       // Store queue metadata for recovery
@@ -71,8 +70,7 @@ export class CallQueueService {
 
       return calls;
     } catch (error) {
-      console.error('Failed to create calls from queue:', error);
-      // Attempt cleanup on failure
+            // Attempt cleanup on failure
       await this.cleanupFailedQueue(queueId);
       throw error;
     }
@@ -112,8 +110,7 @@ export class CallQueueService {
           }
         } catch (error: any) {
           lastError = error;
-          console.error(`Call attempt ${attempt} failed:`, error);
-          
+                    
           if (attempt < this.MAX_RETRY_ATTEMPTS) {
             // Wait before retrying
             await new Promise(resolve => setTimeout(resolve, this.RETRY_DELAY_MS));
@@ -126,8 +123,7 @@ export class CallQueueService {
       await this.markCallFailed(queuedCall.id, `Failed after ${this.MAX_RETRY_ATTEMPTS} attempts: ${errorMessage}`);
       throw lastError;
     } catch (error) {
-      console.error('Error in makeCall:', error);
-      if (!this.activeCall || this.activeCall.id !== queuedCall.id) {
+            if (!this.activeCall || this.activeCall.id !== queuedCall.id) {
         await this.markCallFailed(queuedCall.id, 'Failed to initiate call');
       }
       throw error;
@@ -158,8 +154,7 @@ export class CallQueueService {
       this.activeCall = null;
       this.notifyListeners();
     } catch (error) {
-      console.error('Error completing call:', error);
-      throw error;
+            throw error;
     }
   }
 
@@ -312,8 +307,7 @@ export class CallQueueService {
     try {
       localStorage.setItem(`queue_metadata_${queueId}`, JSON.stringify(metadata));
     } catch (error) {
-      console.error('Failed to save queue metadata:', error);
-    }
+          }
   }
 
   private static async cleanupFailedQueue(queueId: string): Promise<void> {
@@ -325,8 +319,7 @@ export class CallQueueService {
       
       localStorage.removeItem(`queue_metadata_${queueId}`);
     } catch (error) {
-      console.error('Failed to cleanup queue:', error);
-    }
+          }
   }
 
   static async recoverQueue(queueId: string): Promise<boolean> {
@@ -352,8 +345,7 @@ export class CallQueueService {
       
       return true;
     } catch (error) {
-      console.error('Failed to recover queue:', error);
-      return false;
+            return false;
     }
   }
 
@@ -376,8 +368,7 @@ export class CallQueueService {
       // Keep only last 10
       return queues.slice(0, 10);
     } catch (error) {
-      console.error('Failed to get recent queues:', error);
-      return [];
+            return [];
     }
   }
 }

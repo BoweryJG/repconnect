@@ -48,8 +48,7 @@ export const PublicEnrichedDemo: React.FC = () => {
       const enrichedData = await getEnrichedPublicContacts();
       setContacts(enrichedData);
     } catch (error) {
-      console.error('Error loading enriched contacts:', error);
-    } finally {
+          } finally {
       setLoading(false);
     }
   };

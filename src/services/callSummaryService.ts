@@ -93,8 +93,7 @@ export class CallSummaryService {
       
       return summary;
     } catch (error) {
-      console.error('Error generating summary:', error);
-      throw new Error('Failed to generate call summary');
+            throw new Error('Failed to generate call summary');
     }
   }
 
@@ -213,8 +212,7 @@ Important guidelines:
         nextSteps: Array.isArray(parsed.nextSteps) ? parsed.nextSteps : []
       };
     } catch (error) {
-      console.error('Error parsing AI response:', error);
-      throw new Error('Failed to parse AI response');
+            throw new Error('Failed to parse AI response');
     }
   }
 
@@ -237,8 +235,7 @@ Important guidelines:
       .single();
 
     if (callError || !callData) {
-      console.error('Call not found:', callError);
-      // Continue without call_id
+            // Continue without call_id
     }
 
     const analysisData = {
@@ -292,8 +289,7 @@ Important guidelines:
       .eq('call_sid', callSid);
 
     if (error) {
-      console.error('Error updating call analysis status:', error);
-    }
+          }
   }
 
   async getSummary(callSid: string): Promise<CallSummary | null> {

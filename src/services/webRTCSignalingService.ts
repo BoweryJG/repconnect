@@ -27,13 +27,12 @@ class WebRTCSignalingService {
       const { data: { session } } = await supabase.auth.getSession();
       const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:3001';
       
-      console.log('[WebRTCSignaling] Connecting to:', `${backendUrl}/webrtc-signaling`);
-      
+            
       // Connect to WebRTC signaling namespace
       this.socket = io(`${backendUrl}/webrtc-signaling`, {
         path: '/agents-ws',
         auth: {
-          token: session?.access_token || 'demo-token'
+          token: session?.access_token || ''
         },
         transports: ['websocket'],
         reconnection: true,
@@ -44,8 +43,7 @@ class WebRTCSignalingService {
 
       this.setupEventListeners();
     } catch (error) {
-      console.error('Failed to connect to WebRTC signaling service:', error);
-      this.handleReconnect();
+            this.handleReconnect();
     }
   }
 
@@ -53,8 +51,7 @@ class WebRTCSignalingService {
     if (!this.socket) return;
 
     this.socket.on('connect', () => {
-      console.log('[WebRTCSignaling] Connected to signaling service');
-      this.isConnected = true;
+            this.isConnected = true;
       this.reconnectAttempts = 0;
       
       // Notify WebRTC service that signaling is ready
@@ -62,43 +59,35 @@ class WebRTCSignalingService {
     });
 
     this.socket.on('disconnect', () => {
-      console.log('[WebRTCSignaling] Disconnected from signaling service');
-      this.isConnected = false;
+            this.isConnected = false;
     });
 
     this.socket.on('error', (error) => {
-      console.error('[WebRTCSignaling] Socket error:', error);
-    });
+          });
 
     // WebRTC signaling messages
     this.socket.on('webrtc:offer', (data: SignalingMessage) => {
-      console.log('[WebRTCSignaling] Received offer:', data);
-      webRTCVoiceService.handleSignalingMessage(data);
+            webRTCVoiceService.handleSignalingMessage(data);
     });
 
     this.socket.on('webrtc:answer', (data: SignalingMessage) => {
-      console.log('[WebRTCSignaling] Received answer:', data);
-      webRTCVoiceService.handleSignalingMessage(data);
+            webRTCVoiceService.handleSignalingMessage(data);
     });
 
     this.socket.on('webrtc:ice-candidate', (data: SignalingMessage) => {
-      console.log('[WebRTCSignaling] Received ICE candidate:', data);
-      webRTCVoiceService.handleSignalingMessage(data);
+            webRTCVoiceService.handleSignalingMessage(data);
     });
 
     this.socket.on('webrtc:end-session', (data: SignalingMessage) => {
-      console.log('[WebRTCSignaling] Session ended:', data);
-      webRTCVoiceService.handleSignalingMessage(data);
+            webRTCVoiceService.handleSignalingMessage(data);
     });
 
     // Room management for peer discovery
     this.socket.on('webrtc:peer-joined', (data: { sessionId: string, peerId: string }) => {
-      console.log('[WebRTCSignaling] Peer joined:', data);
-    });
+          });
 
     this.socket.on('webrtc:peer-left', (data: { sessionId: string, peerId: string }) => {
-      console.log('[WebRTCSignaling] Peer left:', data);
-    });
+          });
   }
 
   private setupWebRTCIntegration() {
@@ -114,8 +103,7 @@ class WebRTCSignalingService {
 
   private handleReconnect() {
     if (this.reconnectAttempts >= this.maxReconnectAttempts) {
-      console.log('[WebRTCSignaling] Service unavailable');
-      return;
+            return;
     }
 
     this.reconnectAttempts++;
@@ -128,8 +116,7 @@ class WebRTCSignalingService {
 
   public sendSignalingMessage(message: SignalingMessage) {
     if (!this.socket || !this.isConnected) {
-      console.error('[WebRTCSignaling] Not connected to signaling service');
-      return;
+            return;
     }
 
     const eventMap: { [key: string]: string } = {
@@ -141,8 +128,7 @@ class WebRTCSignalingService {
 
     const event = eventMap[message.type];
     if (event) {
-      console.log(`[WebRTCSignaling] Sending ${message.type}:`, message);
-      this.socket.emit(event, message);
+            this.socket.emit(event, message);
     }
   }
 

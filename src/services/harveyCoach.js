@@ -43,8 +43,7 @@ class HarveyCoach {
 
   // Initialize Harvey for a sales rep
   async initializeRep(repId, repName) {
-    console.log(`🎯 Harvey is now monitoring ${repName}`);
-    
+        
     // Load rep's performance history
     const performance = await this.loadRepPerformance(repId);
     this.repPerformance.set(repId, performance);
@@ -85,8 +84,7 @@ class HarveyCoach {
       };
 
       ws.on('open', () => {
-        console.log(`Harvey voice channel open for session ${sessionId}`);
-        
+                
         // Configure Harvey's voice
         ws.send(JSON.stringify({
           type: 'config',
@@ -111,13 +109,11 @@ class HarveyCoach {
       });
 
       ws.on('error', (error) => {
-        console.error('Harvey voice connection error:', error);
-        reject(error);
+                reject(error);
       });
 
       ws.on('close', () => {
-        console.log('Harvey voice connection closed');
-        this.connections.delete(sessionId);
+                this.connections.delete(sessionId);
       });
     });
   }
@@ -271,8 +267,7 @@ class HarveyCoach {
       }, 5000);
       
     } catch (error) {
-      console.error('Voice coaching failed:', error);
-      // Fallback to SMS
+            // Fallback to SMS
       await this.deliverSMSCoaching(sessionId.split('-')[1], coaching);
     }
   }
@@ -491,8 +486,7 @@ class HarveyCoach {
 
   async deliverSMSCoaching(repId, coaching) {
     // Integration with Twilio would go here
-    console.log(`SMS to ${repId}: ${coaching.message}`);
-  }
+      }
 
   async deliverInAppCoaching(repId, coaching) {
     // Store in database for the CRM to display
@@ -545,8 +539,7 @@ class HarveyCoach {
 
   // Start voice coaching session (for HarveyVoiceCoach component)
   async startVoiceCoaching(repId, options = {}) {
-    console.log(`🎤 Harvey voice coaching started for rep ${repId}`);
-    
+        
     const session = {
       repId,
       mode: options.mode || 'real-time',
@@ -577,8 +570,7 @@ class HarveyCoach {
       session.endTime = new Date();
       this.activeCoachingSessions.delete(repId);
       
-      console.log(`🎤 Harvey voice coaching ended for rep ${repId}`);
-      return session;
+            return session;
     }
     return null;
   }
@@ -591,8 +583,7 @@ class HarveyCoach {
   // Analyze conversation in real-time
   async analyzeConversation(data) {
     const { transcript, repId, context } = data;
-    console.log(`🧠 Harvey analyzing: "${transcript}"`);
-
+    
     // Real-time analysis
     const analysis = {
       transcript,

@@ -3,8 +3,7 @@ import deepgramWebRTCBridge from './deepgramWebRTCBridge';
 
 class VoiceBridgeFactory {
   constructor() {
-    console.log('Voice Bridge: Using Deepgram WebRTC Bridge for voice processing');
-  }
+      }
 
   getBridge() {
     // Use Deepgram WebRTC Bridge for real-time voice processing

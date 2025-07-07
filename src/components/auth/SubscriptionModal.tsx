@@ -22,8 +22,7 @@ export const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
 
   const handleSubscribe = async (tierId: string) => {
     if (!user) {
-      console.error('User not authenticated');
-      return;
+            return;
     }
 
     setIsLoading(true);
@@ -40,8 +39,7 @@ export const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
         window.location.href = sessionUrl;
       }
     } catch (error) {
-      console.error('Error creating checkout session:', error);
-    } finally {
+          } finally {
       setIsLoading(false);
       setSelectedTier(null);
     }

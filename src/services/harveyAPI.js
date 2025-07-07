@@ -13,15 +13,13 @@ class HarveyAPI {
 
   // Initialize Harvey for your entire sales team
   async initializeTeam(reps) {
-    console.log(`🎯 Initializing Harvey for ${reps.length} sales reps...`);
-    
+        
     for (const rep of reps) {
       await this.addRep(rep);
     }
     
     this.initialized = true;
-    console.log('✅ Harvey is now coaching your entire team!');
-    return { success: true, repsInitialized: reps.length };
+        return { success: true, repsInitialized: reps.length };
   }
 
   // Add a single rep to Harvey's coaching
@@ -156,8 +154,7 @@ export async function autoInitialize() {
       await harveyAPI.initializeTeam(reps);
     }
   } catch (error) {
-    console.error('Harvey auto-initialization failed:', error);
-  }
+      }
 }
 
 export default harveyAPI;

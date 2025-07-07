@@ -106,8 +106,7 @@ export class DeepgramBridge extends EventEmitter {
 
   async connectToDeepgram(sessionId: string): Promise<void> {
     if (this.deepgramConnections.has(sessionId)) {
-      console.warn(`Deepgram connection already exists for session ${sessionId}`);
-      return;
+            return;
     }
 
     return new Promise((resolve, reject) => {
@@ -139,8 +138,7 @@ export class DeepgramBridge extends EventEmitter {
       ws.binaryType = 'arraybuffer';
 
       ws.onopen = () => {
-        console.log(`Connected to Deepgram for session ${sessionId}`);
-        this.deepgramConnections.set(sessionId, ws);
+                this.deepgramConnections.set(sessionId, ws);
         
         // Send keep-alive message periodically
         const keepAlive = setInterval(() => {
@@ -160,19 +158,16 @@ export class DeepgramBridge extends EventEmitter {
           const message = JSON.parse(event.data.toString());
           this.handleDeepgramMessage(sessionId, message);
         } catch (error) {
-          console.error('Error parsing Deepgram message:', error);
-        }
+                  }
       };
 
       ws.onerror = (error) => {
-        console.error(`Deepgram connection error for session ${sessionId}:`, error);
-        this.emit('error', { sessionId, error });
+                this.emit('error', { sessionId, error });
         reject(error);
       };
 
       ws.onclose = () => {
-        console.log(`Deepgram connection closed for session ${sessionId}`);
-        this.deepgramConnections.delete(sessionId);
+                this.deepgramConnections.delete(sessionId);
         this.audioBuffers.delete(sessionId);
         this.emit('disconnected', sessionId);
       };
@@ -251,8 +246,7 @@ export class DeepgramBridge extends EventEmitter {
   async sendText(sessionId: string, text: string): Promise<void> {
     // Deepgram is primarily for transcription, not synthesis
     // This method is here for API compatibility but won't do synthesis
-    console.warn('Deepgram does not support text synthesis. Consider using a TTS service.');
-    
+        
     // Emit a mock response for compatibility
     this.emit('synthesis', {
       sessionId,

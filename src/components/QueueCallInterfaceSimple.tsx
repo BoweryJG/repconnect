@@ -66,16 +66,14 @@ export const QueueCallInterface: React.FC<QueueCallInterfaceProps> = ({ queueId,
         }
       }
     } catch (error) {
-      console.error('Error loading next call:', error);
-    }
+          }
   };
 
   const makeCall = async (call: QueuedCall) => {
     try {
       await CallQueueService.makeCall(call);
     } catch (error) {
-      console.error('Error making call:', error);
-    }
+          }
   };
 
   const handleEndCall = () => {

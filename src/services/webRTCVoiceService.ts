@@ -57,21 +57,18 @@ export class WebRTCVoiceService extends EventEmitter {
   private async connectSignaling(): Promise<void> {
     // When using socket.io integration, skip WebSocket connection
     if (this.config.signalingUrl === 'socket.io://integrated') {
-      console.log('Using integrated Socket.io signaling');
-      return Promise.resolve();
+            return Promise.resolve();
     }
     
     return new Promise((resolve, reject) => {
       this.signalingConnection = new WebSocket(this.config.signalingUrl);
 
       this.signalingConnection.onopen = () => {
-        console.log('Connected to signaling server');
-        resolve();
+                resolve();
       };
 
       this.signalingConnection.onerror = (error) => {
-        console.error('Signaling connection error:', error);
-        reject(error);
+                reject(error);
       };
 
       this.signalingConnection.onmessage = async (event) => {
@@ -80,8 +77,7 @@ export class WebRTCVoiceService extends EventEmitter {
       };
 
       this.signalingConnection.onclose = () => {
-        console.log('Disconnected from signaling server');
-        this.emit('signaling-disconnected');
+                this.emit('signaling-disconnected');
       };
     });
   }
@@ -203,8 +199,7 @@ export class WebRTCVoiceService extends EventEmitter {
 
     session.peerConnection.onconnectionstatechange = () => {
       const state = session.peerConnection.connectionState;
-      console.log(`Peer connection state: ${state}`);
-      
+            
       switch (state) {
         case 'connected':
           session.status = 'connected';
@@ -224,8 +219,7 @@ export class WebRTCVoiceService extends EventEmitter {
     if (!session.dataChannel) return;
 
     session.dataChannel.onopen = () => {
-      console.log('Data channel opened');
-      this.emit('data-channel-open', session.id);
+            this.emit('data-channel-open', session.id);
     };
 
     session.dataChannel.onmessage = (event) => {
@@ -237,8 +231,7 @@ export class WebRTCVoiceService extends EventEmitter {
     };
 
     session.dataChannel.onerror = (error) => {
-      console.error('Data channel error:', error);
-    };
+          };
   }
 
   async handleSignalingMessage(message: any): Promise<void> {
@@ -246,8 +239,7 @@ export class WebRTCVoiceService extends EventEmitter {
     const session = this.sessions.get(sessionId);
 
     if (!session && type !== 'offer') {
-      console.warn(`No session found for ${sessionId}`);
-      return;
+            return;
     }
 
     switch (type) {
@@ -321,8 +313,7 @@ export class WebRTCVoiceService extends EventEmitter {
       this.emit('incoming-call', sessionId);
     } catch (error) {
       this.sessions.delete(sessionId);
-      console.error('Error handling incoming call:', error);
-    }
+          }
   }
 
   sendMetadata(sessionId: string, data: any): void {
@@ -335,8 +326,7 @@ export class WebRTCVoiceService extends EventEmitter {
   sendSignalingMessage(message: any): void {
     if (this.config.signalingUrl === 'socket.io://integrated') {
       // This will be overridden by webRTCSignalingService
-      console.warn('Signaling message sent before Socket.io integration ready');
-      return;
+            return;
     }
     
     if (this.signalingConnection?.readyState === WebSocket.OPEN) {

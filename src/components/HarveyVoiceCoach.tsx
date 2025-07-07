@@ -157,8 +157,7 @@ export const HarveyVoiceCoach: React.FC<HarveyVoiceCoachProps> = ({
         const voiceBridge = voiceBridgeFactory.getBridge();
         await voiceBridge.sendText(sessionId, intervention.message);
       } catch (error) {
-        console.error('Failed to send Harvey intervention:', error);
-      }
+              }
     }
   };
 
@@ -194,8 +193,7 @@ export const HarveyVoiceCoach: React.FC<HarveyVoiceCoachProps> = ({
             // Transcript handling is done via moshiWebRTCBridge events
           }}
           onError={(error) => {
-            console.error('Voice interface error:', error);
-          }}
+                      }}
           autoConnect={false}
           showTranscript={true}
         />

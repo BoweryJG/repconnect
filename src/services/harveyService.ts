@@ -2,6 +2,7 @@
 // This service handles all communication with the Harvey backend
 
 import { io, Socket } from 'socket.io-client';
+import { supabase } from '../lib/supabase';
 
 interface DailyVerdict {
   rating: number;
@@ -70,7 +71,15 @@ class HarveyService {
 
   constructor() {
     this.baseUrl = process.env.REACT_APP_BACKEND_URL || 'https://osbackend-zl1h.onrender.com';
-    this.userId = localStorage.getItem('harvey_user_id') || 'demo-user';
+    // Get user ID from auth or generate a unique one
+    const getUserId = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      return user?.id || localStorage.getItem('harvey_user_id') || `user-${Date.now()}`;
+    };
+    getUserId().then(id => {
+      this.userId = id;
+      localStorage.setItem('harvey_user_id', id);
+    });
   }
 
   // Initialize socket connection for real-time updates
@@ -89,16 +98,14 @@ class HarveyService {
     });
 
     this.socket.on('connect', () => {
-      console.log('Connected to Harvey real-time updates');
-    });
+          });
 
     this.socket.on('harvey-update', (update: HarveyUpdate) => {
       this.handleUpdate(update);
     });
 
     this.socket.on('disconnect', () => {
-      console.log('Disconnected from Harvey');
-    });
+          });
   }
 
   private handleUpdate(update: HarveyUpdate): void {
@@ -172,8 +179,7 @@ class HarveyService {
         };
       }
     } catch (error) {
-      console.error('Error fetching Harvey metrics:', error);
-      // Return cached data if available
+            // Return cached data if available
       return {
         metrics: this.metricsCache || this.getDefaultMetrics(),
         leaderboard: [],
@@ -198,8 +204,7 @@ class HarveyService {
 
       return await response.json();
     } catch (error) {
-      console.error('Error getting Harvey verdict:', error);
-      return {
+            return {
         rating: 5,
         message: "You're avoiding me. That tells me everything I need to know.",
         timestamp: new Date(),
@@ -225,8 +230,7 @@ class HarveyService {
 
       return await response.json();
     } catch (error: any) {
-      console.error('Error claiming lead:', error);
-      return {
+            return {
         success: false,
         message: error.message || 'Failed to claim lead',
       };
@@ -251,8 +255,7 @@ class HarveyService {
 
       return await response.json();
     } catch (error: any) {
-      console.error('Error joining trial:', error);
-      return {
+            return {
         success: false,
         message: error.message || 'Failed to join trial',
       };
@@ -284,8 +287,7 @@ class HarveyService {
 
       return await response.json();
     } catch (error) {
-      console.error('Error processing voice command:', error);
-      return {
+            return {
         response: "I can't process that right now. Check your connection.",
       };
     }
@@ -306,8 +308,7 @@ class HarveyService {
 
       return await response.json();
     } catch (error) {
-      console.error('Error fetching trials:', error);
-      return [];
+            return [];
     }
   }
 
@@ -328,8 +329,7 @@ class HarveyService {
         body: JSON.stringify(callData),
       });
     } catch (error) {
-      console.error('Error submitting call performance:', error);
-    }
+          }
   }
 
   // Request Harvey intervention
@@ -344,8 +344,7 @@ class HarveyService {
         body: JSON.stringify({ reason }),
       });
     } catch (error) {
-      console.error('Error requesting Harvey intervention:', error);
-    }
+          }
   }
 
   // Get hot leads
@@ -363,8 +362,7 @@ class HarveyService {
 
       return await response.json();
     } catch (error) {
-      console.error('Error fetching hot leads:', error);
-      return [];
+            return [];
     }
   }
 
@@ -386,8 +384,7 @@ class HarveyService {
 
       return await response.json();
     } catch (error) {
-      console.error('Error challenging Harvey:', error);
-      return {
+            return {
         accepted: false,
         message: "You're not ready to challenge me yet. Close more deals.",
       };
@@ -409,8 +406,7 @@ class HarveyService {
 
       return await response.json();
     } catch (error) {
-      console.error('Error fetching coaching history:', error);
-      return [];
+            return [];
     }
   }
 
@@ -439,8 +435,7 @@ class HarveyService {
         body: JSON.stringify({ mode }),
       });
     } catch (error) {
-      console.error('Error updating coaching mode:', error);
-    }
+          }
   }
 
   // Update Harvey modes
@@ -455,8 +450,7 @@ class HarveyService {
         body: JSON.stringify(modes),
       });
     } catch (error) {
-      console.error('Error updating Harvey modes:', error);
-    }
+          }
   }
 
   // Clean up resources

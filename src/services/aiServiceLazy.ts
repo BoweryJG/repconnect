@@ -6,8 +6,7 @@ let tensorflowPromise: Promise<any> | null = null;
 export const loadTensorFlow = async () => {
   if (!tensorflowPromise) {
     tensorflowPromise = import('@tensorflow/tfjs').then(tf => {
-      console.log('TensorFlow.js loaded');
-      return tf;
+            return tf;
     });
   }
   return tensorflowPromise;
@@ -15,12 +14,10 @@ export const loadTensorFlow = async () => {
 
 export const transcribeAudio = async (audioBlob: Blob): Promise<string> => {
   // Placeholder - will implement speech-to-text when needed
-  console.log('Audio transcription not yet implemented');
-  return 'Transcription placeholder';
+    return 'Transcription placeholder';
 };
 
 export const generateResponse = async (prompt: string): Promise<string> => {
   // Placeholder - will implement AI response generation when needed
-  console.log('AI response generation not yet implemented');
-  return 'AI response placeholder';
+    return 'AI response placeholder';
 };

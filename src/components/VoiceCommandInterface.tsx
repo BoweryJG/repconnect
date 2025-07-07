@@ -55,8 +55,7 @@ export const VoiceCommandInterface: React.FC<VoiceCommandInterfaceProps> = ({
       };
 
       recognitionRef.current.onerror = (event: any) => {
-        console.error('Speech recognition error:', event.error);
-        setIsListening(false);
+                setIsListening(false);
       };
 
       recognitionRef.current.onend = () => {
