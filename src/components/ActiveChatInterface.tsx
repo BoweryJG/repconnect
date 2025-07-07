@@ -149,10 +149,10 @@ export const ActiveChatInterface: React.FC<ActiveChatInterfaceProps> = ({
           }}
         >
           <Box
-            sx={{
-              p: 2,
-              bgcolor: 'primary.main',
-              color: 'primary.contrastText',
+            style={{
+              padding: 16,
+              backgroundColor: '#1976d2',
+              color: 'white',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between'
@@ -198,7 +198,7 @@ export const ActiveChatInterface: React.FC<ActiveChatInterfaceProps> = ({
 
           {!isMinimized && (
             <CardContent sx={{ flex: 1, p: 0, display: 'flex' }}>
-              <Box sx={{ flex: 2, display: 'flex', flexDirection: 'column' }}>
+              <Box style={{ flex: 2, display: 'flex', flexDirection: 'column' }}>
                 <Box
                   sx={{
                     flex: 1,
@@ -296,9 +296,9 @@ export const ActiveChatInterface: React.FC<ActiveChatInterfaceProps> = ({
 
               <Divider orientation="vertical" flexItem />
 
-              <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', bgcolor: 'grey.50' }}>
+              <Box style={{ flex: 1, display: 'flex', flexDirection: 'column', backgroundColor: '#fafafa' }}>
                 {showMetrics && (
-                  <Box sx={{ p: 2 }}>
+                  <Box style={{ padding: 16 }}>
                     <Typography variant="subtitle2" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                       <Analytics /> Conversation Metrics
                     </Typography>
@@ -343,7 +343,7 @@ export const ActiveChatInterface: React.FC<ActiveChatInterfaceProps> = ({
 
                 <Divider />
 
-                <Box sx={{ flex: 1, p: 2, overflowY: 'auto' }}>
+                <Box style={{ flex: 1, padding: 16, overflowY: 'auto' }}>
                   <Typography variant="subtitle2" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                     <TipsAndUpdates /> AI Coaching
                   </Typography>
