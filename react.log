@@ -5930,3 +5930,1424 @@ src/components/auth/SubscriptionModal.tsx
 
 webpack compiled with 2 warnings
 No issues found.
+Compiling...
+Compiled with warnings.
+
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+[eslint] 
+src/auth/AuthContext.tsx
+  Line 177:15:  'data' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+src/components/HarveyWarRoom.tsx
+  Line 125:42:  The ref value 'audioRefs.current' will likely have changed by the time this effect cleanup function runs. If this ref points to a node rendered by React, copy 'audioRefs.current' to a variable inside the effect, and use that variable in the cleanup function  react-hooks/exhaustive-deps
+
+src/components/InstantCoachConnect.tsx
+  Line 8:3:    'Tabs' is defined but never used                                                                                         @typescript-eslint/no-unused-vars
+  Line 9:3:    'Tab' is defined but never used                                                                                          @typescript-eslint/no-unused-vars
+  Line 12:3:   'Alert' is defined but never used                                                                                        @typescript-eslint/no-unused-vars
+  Line 18:3:   'Mic' is defined but never used                                                                                          @typescript-eslint/no-unused-vars
+  Line 19:3:   'VideoCall' is defined but never used                                                                                    @typescript-eslint/no-unused-vars
+  Line 25:10:  'supabase' is defined but never used                                                                                     @typescript-eslint/no-unused-vars
+  Line 66:6:   React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src/components/UserAvatar.tsx
+  Line 2:18:  'Box' is defined but never used  @typescript-eslint/no-unused-vars
+
+src/components/auth/LoginModal.tsx
+  Line 63:15:   'data' is assigned a value but never used                                                                                                                                                                                                                                                                                                                          @typescript-eslint/no-unused-vars
+  Line 235:11:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+  Line 240:52:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+  Line 240:89:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+
+src/components/auth/SubscriptionModal.tsx
+  Line 2:30:  'SubscriptionTier' is defined but never used        @typescript-eslint/no-unused-vars
+  Line 53:9:  'annualSavings' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+Search for the keywords to learn more about each warning.
+To ignore, add // eslint-disable-next-line to the line before.
+
+WARNING in ./node_modules/@mediapipe/tasks-vision/vision_bundle.mjs
+Module Warning (from ./node_modules/source-map-loader/dist/cjs.js):
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+WARNING in [eslint] 
+src/auth/AuthContext.tsx
+  Line 177:15:  'data' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+src/components/HarveyWarRoom.tsx
+  Line 125:42:  The ref value 'audioRefs.current' will likely have changed by the time this effect cleanup function runs. If this ref points to a node rendered by React, copy 'audioRefs.current' to a variable inside the effect, and use that variable in the cleanup function  react-hooks/exhaustive-deps
+
+src/components/InstantCoachConnect.tsx
+  Line 8:3:    'Tabs' is defined but never used                                                                                         @typescript-eslint/no-unused-vars
+  Line 9:3:    'Tab' is defined but never used                                                                                          @typescript-eslint/no-unused-vars
+  Line 12:3:   'Alert' is defined but never used                                                                                        @typescript-eslint/no-unused-vars
+  Line 18:3:   'Mic' is defined but never used                                                                                          @typescript-eslint/no-unused-vars
+  Line 19:3:   'VideoCall' is defined but never used                                                                                    @typescript-eslint/no-unused-vars
+  Line 25:10:  'supabase' is defined but never used                                                                                     @typescript-eslint/no-unused-vars
+  Line 66:6:   React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src/components/UserAvatar.tsx
+  Line 2:18:  'Box' is defined but never used  @typescript-eslint/no-unused-vars
+
+src/components/auth/LoginModal.tsx
+  Line 63:15:   'data' is assigned a value but never used                                                                                                                                                                                                                                                                                                                          @typescript-eslint/no-unused-vars
+  Line 235:11:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+  Line 240:52:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+  Line 240:89:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+
+src/components/auth/SubscriptionModal.tsx
+  Line 2:30:  'SubscriptionTier' is defined but never used        @typescript-eslint/no-unused-vars
+  Line 53:9:  'annualSavings' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+webpack compiled with 2 warnings
+No issues found.
+Compiling...
+Compiled with warnings.
+
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+[eslint] 
+src/auth/AuthContext.tsx
+  Line 177:15:  'data' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+src/components/HarveyWarRoom.tsx
+  Line 125:42:  The ref value 'audioRefs.current' will likely have changed by the time this effect cleanup function runs. If this ref points to a node rendered by React, copy 'audioRefs.current' to a variable inside the effect, and use that variable in the cleanup function  react-hooks/exhaustive-deps
+
+src/components/InstantCoachConnect.tsx
+  Line 8:3:    'Tabs' is defined but never used                                                                                         @typescript-eslint/no-unused-vars
+  Line 9:3:    'Tab' is defined but never used                                                                                          @typescript-eslint/no-unused-vars
+  Line 12:3:   'Alert' is defined but never used                                                                                        @typescript-eslint/no-unused-vars
+  Line 18:3:   'Mic' is defined but never used                                                                                          @typescript-eslint/no-unused-vars
+  Line 19:3:   'VideoCall' is defined but never used                                                                                    @typescript-eslint/no-unused-vars
+  Line 25:10:  'supabase' is defined but never used                                                                                     @typescript-eslint/no-unused-vars
+  Line 66:6:   React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src/components/UserAvatar.tsx
+  Line 2:18:  'Box' is defined but never used  @typescript-eslint/no-unused-vars
+
+src/components/auth/LoginModal.tsx
+  Line 63:15:   'data' is assigned a value but never used                                                                                                                                                                                                                                                                                                                          @typescript-eslint/no-unused-vars
+  Line 235:11:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+  Line 240:52:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+  Line 240:89:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+
+src/components/auth/SubscriptionModal.tsx
+  Line 2:30:  'SubscriptionTier' is defined but never used        @typescript-eslint/no-unused-vars
+  Line 53:9:  'annualSavings' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+Search for the keywords to learn more about each warning.
+To ignore, add // eslint-disable-next-line to the line before.
+
+WARNING in ./node_modules/@mediapipe/tasks-vision/vision_bundle.mjs
+Module Warning (from ./node_modules/source-map-loader/dist/cjs.js):
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+WARNING in [eslint] 
+src/auth/AuthContext.tsx
+  Line 177:15:  'data' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+src/components/HarveyWarRoom.tsx
+  Line 125:42:  The ref value 'audioRefs.current' will likely have changed by the time this effect cleanup function runs. If this ref points to a node rendered by React, copy 'audioRefs.current' to a variable inside the effect, and use that variable in the cleanup function  react-hooks/exhaustive-deps
+
+src/components/InstantCoachConnect.tsx
+  Line 8:3:    'Tabs' is defined but never used                                                                                         @typescript-eslint/no-unused-vars
+  Line 9:3:    'Tab' is defined but never used                                                                                          @typescript-eslint/no-unused-vars
+  Line 12:3:   'Alert' is defined but never used                                                                                        @typescript-eslint/no-unused-vars
+  Line 18:3:   'Mic' is defined but never used                                                                                          @typescript-eslint/no-unused-vars
+  Line 19:3:   'VideoCall' is defined but never used                                                                                    @typescript-eslint/no-unused-vars
+  Line 25:10:  'supabase' is defined but never used                                                                                     @typescript-eslint/no-unused-vars
+  Line 66:6:   React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src/components/UserAvatar.tsx
+  Line 2:18:  'Box' is defined but never used  @typescript-eslint/no-unused-vars
+
+src/components/auth/LoginModal.tsx
+  Line 63:15:   'data' is assigned a value but never used                                                                                                                                                                                                                                                                                                                          @typescript-eslint/no-unused-vars
+  Line 235:11:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+  Line 240:52:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+  Line 240:89:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+
+src/components/auth/SubscriptionModal.tsx
+  Line 2:30:  'SubscriptionTier' is defined but never used        @typescript-eslint/no-unused-vars
+  Line 53:9:  'annualSavings' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+webpack compiled with 2 warnings
+Files successfully emitted, waiting for typecheck results...
+Issues checking in progress...
+No issues found.
+Compiling...
+Compiled with warnings.
+
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+[eslint] 
+src/auth/AuthContext.tsx
+  Line 176:15:  'data' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+src/components/HarveyWarRoom.tsx
+  Line 125:42:  The ref value 'audioRefs.current' will likely have changed by the time this effect cleanup function runs. If this ref points to a node rendered by React, copy 'audioRefs.current' to a variable inside the effect, and use that variable in the cleanup function  react-hooks/exhaustive-deps
+
+src/components/InstantCoachConnect.tsx
+  Line 8:3:    'Tabs' is defined but never used                                                                                         @typescript-eslint/no-unused-vars
+  Line 9:3:    'Tab' is defined but never used                                                                                          @typescript-eslint/no-unused-vars
+  Line 12:3:   'Alert' is defined but never used                                                                                        @typescript-eslint/no-unused-vars
+  Line 18:3:   'Mic' is defined but never used                                                                                          @typescript-eslint/no-unused-vars
+  Line 19:3:   'VideoCall' is defined but never used                                                                                    @typescript-eslint/no-unused-vars
+  Line 25:10:  'supabase' is defined but never used                                                                                     @typescript-eslint/no-unused-vars
+  Line 66:6:   React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src/components/UserAvatar.tsx
+  Line 2:18:  'Box' is defined but never used  @typescript-eslint/no-unused-vars
+
+src/components/auth/LoginModal.tsx
+  Line 63:15:   'data' is assigned a value but never used                                                                                                                                                                                                                                                                                                                          @typescript-eslint/no-unused-vars
+  Line 235:11:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+  Line 240:52:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+  Line 240:89:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+
+src/components/auth/SubscriptionModal.tsx
+  Line 2:30:  'SubscriptionTier' is defined but never used        @typescript-eslint/no-unused-vars
+  Line 53:9:  'annualSavings' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+Search for the keywords to learn more about each warning.
+To ignore, add // eslint-disable-next-line to the line before.
+
+WARNING in ./node_modules/@mediapipe/tasks-vision/vision_bundle.mjs
+Module Warning (from ./node_modules/source-map-loader/dist/cjs.js):
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+WARNING in [eslint] 
+src/auth/AuthContext.tsx
+  Line 176:15:  'data' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+src/components/HarveyWarRoom.tsx
+  Line 125:42:  The ref value 'audioRefs.current' will likely have changed by the time this effect cleanup function runs. If this ref points to a node rendered by React, copy 'audioRefs.current' to a variable inside the effect, and use that variable in the cleanup function  react-hooks/exhaustive-deps
+
+src/components/InstantCoachConnect.tsx
+  Line 8:3:    'Tabs' is defined but never used                                                                                         @typescript-eslint/no-unused-vars
+  Line 9:3:    'Tab' is defined but never used                                                                                          @typescript-eslint/no-unused-vars
+  Line 12:3:   'Alert' is defined but never used                                                                                        @typescript-eslint/no-unused-vars
+  Line 18:3:   'Mic' is defined but never used                                                                                          @typescript-eslint/no-unused-vars
+  Line 19:3:   'VideoCall' is defined but never used                                                                                    @typescript-eslint/no-unused-vars
+  Line 25:10:  'supabase' is defined but never used                                                                                     @typescript-eslint/no-unused-vars
+  Line 66:6:   React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src/components/UserAvatar.tsx
+  Line 2:18:  'Box' is defined but never used  @typescript-eslint/no-unused-vars
+
+src/components/auth/LoginModal.tsx
+  Line 63:15:   'data' is assigned a value but never used                                                                                                                                                                                                                                                                                                                          @typescript-eslint/no-unused-vars
+  Line 235:11:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+  Line 240:52:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+  Line 240:89:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+
+src/components/auth/SubscriptionModal.tsx
+  Line 2:30:  'SubscriptionTier' is defined but never used        @typescript-eslint/no-unused-vars
+  Line 53:9:  'annualSavings' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+webpack compiled with 2 warnings
+No issues found.
+Compiling...
+Compiled with warnings.
+
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+[eslint] 
+src/auth/AuthContext.tsx
+  Line 176:15:  'data' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+src/components/HarveyWarRoom.tsx
+  Line 125:42:  The ref value 'audioRefs.current' will likely have changed by the time this effect cleanup function runs. If this ref points to a node rendered by React, copy 'audioRefs.current' to a variable inside the effect, and use that variable in the cleanup function  react-hooks/exhaustive-deps
+
+src/components/InstantCoachConnect.tsx
+  Line 8:3:    'Tabs' is defined but never used                                                                                         @typescript-eslint/no-unused-vars
+  Line 9:3:    'Tab' is defined but never used                                                                                          @typescript-eslint/no-unused-vars
+  Line 12:3:   'Alert' is defined but never used                                                                                        @typescript-eslint/no-unused-vars
+  Line 18:3:   'Mic' is defined but never used                                                                                          @typescript-eslint/no-unused-vars
+  Line 19:3:   'VideoCall' is defined but never used                                                                                    @typescript-eslint/no-unused-vars
+  Line 25:10:  'supabase' is defined but never used                                                                                     @typescript-eslint/no-unused-vars
+  Line 66:6:   React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src/components/UserAvatar.tsx
+  Line 2:18:  'Box' is defined but never used  @typescript-eslint/no-unused-vars
+
+src/components/auth/LoginModal.tsx
+  Line 63:15:   'data' is assigned a value but never used                                                                                                                                                                                                                                                                                                                          @typescript-eslint/no-unused-vars
+  Line 235:11:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+  Line 240:52:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+  Line 240:89:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+
+src/components/auth/SubscriptionModal.tsx
+  Line 2:30:  'SubscriptionTier' is defined but never used        @typescript-eslint/no-unused-vars
+  Line 53:9:  'annualSavings' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+Search for the keywords to learn more about each warning.
+To ignore, add // eslint-disable-next-line to the line before.
+
+WARNING in ./node_modules/@mediapipe/tasks-vision/vision_bundle.mjs
+Module Warning (from ./node_modules/source-map-loader/dist/cjs.js):
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+WARNING in [eslint] 
+src/auth/AuthContext.tsx
+  Line 176:15:  'data' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+src/components/HarveyWarRoom.tsx
+  Line 125:42:  The ref value 'audioRefs.current' will likely have changed by the time this effect cleanup function runs. If this ref points to a node rendered by React, copy 'audioRefs.current' to a variable inside the effect, and use that variable in the cleanup function  react-hooks/exhaustive-deps
+
+src/components/InstantCoachConnect.tsx
+  Line 8:3:    'Tabs' is defined but never used                                                                                         @typescript-eslint/no-unused-vars
+  Line 9:3:    'Tab' is defined but never used                                                                                          @typescript-eslint/no-unused-vars
+  Line 12:3:   'Alert' is defined but never used                                                                                        @typescript-eslint/no-unused-vars
+  Line 18:3:   'Mic' is defined but never used                                                                                          @typescript-eslint/no-unused-vars
+  Line 19:3:   'VideoCall' is defined but never used                                                                                    @typescript-eslint/no-unused-vars
+  Line 25:10:  'supabase' is defined but never used                                                                                     @typescript-eslint/no-unused-vars
+  Line 66:6:   React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src/components/UserAvatar.tsx
+  Line 2:18:  'Box' is defined but never used  @typescript-eslint/no-unused-vars
+
+src/components/auth/LoginModal.tsx
+  Line 63:15:   'data' is assigned a value but never used                                                                                                                                                                                                                                                                                                                          @typescript-eslint/no-unused-vars
+  Line 235:11:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+  Line 240:52:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+  Line 240:89:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+
+src/components/auth/SubscriptionModal.tsx
+  Line 2:30:  'SubscriptionTier' is defined but never used        @typescript-eslint/no-unused-vars
+  Line 53:9:  'annualSavings' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+webpack compiled with 2 warnings
+Compiling...
+Files successfully emitted, waiting for typecheck results...
+Issues checking in progress...
+Compiled with warnings.
+
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+[eslint] 
+src/auth/AuthContext.tsx
+  Line 176:15:  'data' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+src/components/HarveyWarRoom.tsx
+  Line 125:42:  The ref value 'audioRefs.current' will likely have changed by the time this effect cleanup function runs. If this ref points to a node rendered by React, copy 'audioRefs.current' to a variable inside the effect, and use that variable in the cleanup function  react-hooks/exhaustive-deps
+
+src/components/InstantCoachConnect.tsx
+  Line 8:3:    'Tabs' is defined but never used                                                                                         @typescript-eslint/no-unused-vars
+  Line 9:3:    'Tab' is defined but never used                                                                                          @typescript-eslint/no-unused-vars
+  Line 12:3:   'Alert' is defined but never used                                                                                        @typescript-eslint/no-unused-vars
+  Line 18:3:   'Mic' is defined but never used                                                                                          @typescript-eslint/no-unused-vars
+  Line 19:3:   'VideoCall' is defined but never used                                                                                    @typescript-eslint/no-unused-vars
+  Line 25:10:  'supabase' is defined but never used                                                                                     @typescript-eslint/no-unused-vars
+  Line 66:6:   React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src/components/UserAvatar.tsx
+  Line 2:18:  'Box' is defined but never used  @typescript-eslint/no-unused-vars
+
+src/components/auth/LoginModal.tsx
+  Line 63:15:   'data' is assigned a value but never used                                                                                                                                                                                                                                                                                                                          @typescript-eslint/no-unused-vars
+  Line 235:11:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+  Line 240:52:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+  Line 240:89:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+
+src/components/auth/SubscriptionModal.tsx
+  Line 2:30:  'SubscriptionTier' is defined but never used        @typescript-eslint/no-unused-vars
+  Line 53:9:  'annualSavings' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+Search for the keywords to learn more about each warning.
+To ignore, add // eslint-disable-next-line to the line before.
+
+WARNING in ./node_modules/@mediapipe/tasks-vision/vision_bundle.mjs
+Module Warning (from ./node_modules/source-map-loader/dist/cjs.js):
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+WARNING in [eslint] 
+src/auth/AuthContext.tsx
+  Line 176:15:  'data' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+src/components/HarveyWarRoom.tsx
+  Line 125:42:  The ref value 'audioRefs.current' will likely have changed by the time this effect cleanup function runs. If this ref points to a node rendered by React, copy 'audioRefs.current' to a variable inside the effect, and use that variable in the cleanup function  react-hooks/exhaustive-deps
+
+src/components/InstantCoachConnect.tsx
+  Line 8:3:    'Tabs' is defined but never used                                                                                         @typescript-eslint/no-unused-vars
+  Line 9:3:    'Tab' is defined but never used                                                                                          @typescript-eslint/no-unused-vars
+  Line 12:3:   'Alert' is defined but never used                                                                                        @typescript-eslint/no-unused-vars
+  Line 18:3:   'Mic' is defined but never used                                                                                          @typescript-eslint/no-unused-vars
+  Line 19:3:   'VideoCall' is defined but never used                                                                                    @typescript-eslint/no-unused-vars
+  Line 25:10:  'supabase' is defined but never used                                                                                     @typescript-eslint/no-unused-vars
+  Line 66:6:   React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src/components/UserAvatar.tsx
+  Line 2:18:  'Box' is defined but never used  @typescript-eslint/no-unused-vars
+
+src/components/auth/LoginModal.tsx
+  Line 63:15:   'data' is assigned a value but never used                                                                                                                                                                                                                                                                                                                          @typescript-eslint/no-unused-vars
+  Line 235:11:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+  Line 240:52:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+  Line 240:89:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+
+src/components/auth/SubscriptionModal.tsx
+  Line 2:30:  'SubscriptionTier' is defined but never used        @typescript-eslint/no-unused-vars
+  Line 53:9:  'annualSavings' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+webpack compiled with 2 warnings
+Files successfully emitted, waiting for typecheck results...
+Issues checking in progress...
+No issues found.
+Compiling...
+Compiled with warnings.
+
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+[eslint] 
+src/auth/AuthContext.tsx
+  Line 176:15:  'data' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+src/components/HarveyWarRoom.tsx
+  Line 125:42:  The ref value 'audioRefs.current' will likely have changed by the time this effect cleanup function runs. If this ref points to a node rendered by React, copy 'audioRefs.current' to a variable inside the effect, and use that variable in the cleanup function  react-hooks/exhaustive-deps
+
+src/components/InstantCoachConnect.tsx
+  Line 8:3:    'Tabs' is defined but never used                                                                                         @typescript-eslint/no-unused-vars
+  Line 9:3:    'Tab' is defined but never used                                                                                          @typescript-eslint/no-unused-vars
+  Line 12:3:   'Alert' is defined but never used                                                                                        @typescript-eslint/no-unused-vars
+  Line 18:3:   'Mic' is defined but never used                                                                                          @typescript-eslint/no-unused-vars
+  Line 19:3:   'VideoCall' is defined but never used                                                                                    @typescript-eslint/no-unused-vars
+  Line 25:10:  'supabase' is defined but never used                                                                                     @typescript-eslint/no-unused-vars
+  Line 66:6:   React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src/components/UserAvatar.tsx
+  Line 2:18:  'Box' is defined but never used  @typescript-eslint/no-unused-vars
+
+src/components/auth/LoginModal.tsx
+  Line 63:15:   'data' is assigned a value but never used                                                                                                                                                                                                                                                                                                                          @typescript-eslint/no-unused-vars
+  Line 235:11:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+  Line 240:52:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+  Line 240:89:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+
+src/components/auth/SubscriptionModal.tsx
+  Line 2:30:  'SubscriptionTier' is defined but never used        @typescript-eslint/no-unused-vars
+  Line 53:9:  'annualSavings' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+Search for the keywords to learn more about each warning.
+To ignore, add // eslint-disable-next-line to the line before.
+
+WARNING in ./node_modules/@mediapipe/tasks-vision/vision_bundle.mjs
+Module Warning (from ./node_modules/source-map-loader/dist/cjs.js):
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+WARNING in [eslint] 
+src/auth/AuthContext.tsx
+  Line 176:15:  'data' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+src/components/HarveyWarRoom.tsx
+  Line 125:42:  The ref value 'audioRefs.current' will likely have changed by the time this effect cleanup function runs. If this ref points to a node rendered by React, copy 'audioRefs.current' to a variable inside the effect, and use that variable in the cleanup function  react-hooks/exhaustive-deps
+
+src/components/InstantCoachConnect.tsx
+  Line 8:3:    'Tabs' is defined but never used                                                                                         @typescript-eslint/no-unused-vars
+  Line 9:3:    'Tab' is defined but never used                                                                                          @typescript-eslint/no-unused-vars
+  Line 12:3:   'Alert' is defined but never used                                                                                        @typescript-eslint/no-unused-vars
+  Line 18:3:   'Mic' is defined but never used                                                                                          @typescript-eslint/no-unused-vars
+  Line 19:3:   'VideoCall' is defined but never used                                                                                    @typescript-eslint/no-unused-vars
+  Line 25:10:  'supabase' is defined but never used                                                                                     @typescript-eslint/no-unused-vars
+  Line 66:6:   React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src/components/UserAvatar.tsx
+  Line 2:18:  'Box' is defined but never used  @typescript-eslint/no-unused-vars
+
+src/components/auth/LoginModal.tsx
+  Line 63:15:   'data' is assigned a value but never used                                                                                                                                                                                                                                                                                                                          @typescript-eslint/no-unused-vars
+  Line 235:11:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+  Line 240:52:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+  Line 240:89:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+
+src/components/auth/SubscriptionModal.tsx
+  Line 2:30:  'SubscriptionTier' is defined but never used        @typescript-eslint/no-unused-vars
+  Line 53:9:  'annualSavings' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+webpack compiled with 2 warnings
+Files successfully emitted, waiting for typecheck results...
+Issues checking in progress...
+ERROR in src/components/InstantCoachConnect.tsx:123:16
+TS2339: Property 'currentCoachingSession' does not exist on type 'Window & typeof globalThis'.
+    121 |         
+    122 |         // Store the session data for the WebRTC connection
+  > 123 |         window.currentCoachingSession = {
+        |                ^^^^^^^^^^^^^^^^^^^^^^
+    124 |           sessionId: data.session.id,
+    125 |           roomId: data.session.webrtc_room_id,
+    126 |           coachId: coachId,
+
+Compiling...
+Compiled with warnings.
+
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+[eslint] 
+src/auth/AuthContext.tsx
+  Line 176:15:  'data' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+src/components/HarveyWarRoom.tsx
+  Line 125:42:  The ref value 'audioRefs.current' will likely have changed by the time this effect cleanup function runs. If this ref points to a node rendered by React, copy 'audioRefs.current' to a variable inside the effect, and use that variable in the cleanup function  react-hooks/exhaustive-deps
+
+src/components/InstantCoachConnect.tsx
+  Line 8:3:    'Tabs' is defined but never used                                                                                         @typescript-eslint/no-unused-vars
+  Line 9:3:    'Tab' is defined but never used                                                                                          @typescript-eslint/no-unused-vars
+  Line 12:3:   'Alert' is defined but never used                                                                                        @typescript-eslint/no-unused-vars
+  Line 18:3:   'Mic' is defined but never used                                                                                          @typescript-eslint/no-unused-vars
+  Line 19:3:   'VideoCall' is defined but never used                                                                                    @typescript-eslint/no-unused-vars
+  Line 25:10:  'supabase' is defined but never used                                                                                     @typescript-eslint/no-unused-vars
+  Line 61:10:  'activeSession' is assigned a value but never used                                                                       @typescript-eslint/no-unused-vars
+  Line 61:25:  'setActiveSession' is assigned a value but never used                                                                    @typescript-eslint/no-unused-vars
+  Line 62:10:  'sessionTime' is assigned a value but never used                                                                         @typescript-eslint/no-unused-vars
+  Line 62:23:  'setSessionTime' is assigned a value but never used                                                                      @typescript-eslint/no-unused-vars
+  Line 68:6:   React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src/components/UserAvatar.tsx
+  Line 2:18:  'Box' is defined but never used  @typescript-eslint/no-unused-vars
+
+src/components/auth/LoginModal.tsx
+  Line 63:15:   'data' is assigned a value but never used                                                                                                                                                                                                                                                                                                                          @typescript-eslint/no-unused-vars
+  Line 235:11:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+  Line 240:52:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+  Line 240:89:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+
+src/components/auth/SubscriptionModal.tsx
+  Line 2:30:  'SubscriptionTier' is defined but never used        @typescript-eslint/no-unused-vars
+  Line 53:9:  'annualSavings' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+Search for the keywords to learn more about each warning.
+To ignore, add // eslint-disable-next-line to the line before.
+
+WARNING in ./node_modules/@mediapipe/tasks-vision/vision_bundle.mjs
+Module Warning (from ./node_modules/source-map-loader/dist/cjs.js):
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+WARNING in [eslint] 
+src/auth/AuthContext.tsx
+  Line 176:15:  'data' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+src/components/HarveyWarRoom.tsx
+  Line 125:42:  The ref value 'audioRefs.current' will likely have changed by the time this effect cleanup function runs. If this ref points to a node rendered by React, copy 'audioRefs.current' to a variable inside the effect, and use that variable in the cleanup function  react-hooks/exhaustive-deps
+
+src/components/InstantCoachConnect.tsx
+  Line 8:3:    'Tabs' is defined but never used                                                                                         @typescript-eslint/no-unused-vars
+  Line 9:3:    'Tab' is defined but never used                                                                                          @typescript-eslint/no-unused-vars
+  Line 12:3:   'Alert' is defined but never used                                                                                        @typescript-eslint/no-unused-vars
+  Line 18:3:   'Mic' is defined but never used                                                                                          @typescript-eslint/no-unused-vars
+  Line 19:3:   'VideoCall' is defined but never used                                                                                    @typescript-eslint/no-unused-vars
+  Line 25:10:  'supabase' is defined but never used                                                                                     @typescript-eslint/no-unused-vars
+  Line 61:10:  'activeSession' is assigned a value but never used                                                                       @typescript-eslint/no-unused-vars
+  Line 61:25:  'setActiveSession' is assigned a value but never used                                                                    @typescript-eslint/no-unused-vars
+  Line 62:10:  'sessionTime' is assigned a value but never used                                                                         @typescript-eslint/no-unused-vars
+  Line 62:23:  'setSessionTime' is assigned a value but never used                                                                      @typescript-eslint/no-unused-vars
+  Line 68:6:   React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src/components/UserAvatar.tsx
+  Line 2:18:  'Box' is defined but never used  @typescript-eslint/no-unused-vars
+
+src/components/auth/LoginModal.tsx
+  Line 63:15:   'data' is assigned a value but never used                                                                                                                                                                                                                                                                                                                          @typescript-eslint/no-unused-vars
+  Line 235:11:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+  Line 240:52:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+  Line 240:89:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+
+src/components/auth/SubscriptionModal.tsx
+  Line 2:30:  'SubscriptionTier' is defined but never used        @typescript-eslint/no-unused-vars
+  Line 53:9:  'annualSavings' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+webpack compiled with 2 warnings
+Files successfully emitted, waiting for typecheck results...
+Issues checking in progress...
+ERROR in src/components/InstantCoachConnect.tsx:125:16
+TS2339: Property 'currentCoachingSession' does not exist on type 'Window & typeof globalThis'.
+    123 |         
+    124 |         // Store the session data for the WebRTC connection
+  > 125 |         window.currentCoachingSession = {
+        |                ^^^^^^^^^^^^^^^^^^^^^^
+    126 |           sessionId: data.session.id,
+    127 |           roomId: data.session.webrtc_room_id,
+    128 |           coachId: coachId,
+
+Compiling...
+Compiled with warnings.
+
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+[eslint] 
+src/auth/AuthContext.tsx
+  Line 176:15:  'data' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+src/components/HarveyWarRoom.tsx
+  Line 125:42:  The ref value 'audioRefs.current' will likely have changed by the time this effect cleanup function runs. If this ref points to a node rendered by React, copy 'audioRefs.current' to a variable inside the effect, and use that variable in the cleanup function  react-hooks/exhaustive-deps
+
+src/components/InstantCoachConnect.tsx
+  Line 8:3:    'Tabs' is defined but never used                                                                                         @typescript-eslint/no-unused-vars
+  Line 9:3:    'Tab' is defined but never used                                                                                          @typescript-eslint/no-unused-vars
+  Line 12:3:   'Alert' is defined but never used                                                                                        @typescript-eslint/no-unused-vars
+  Line 18:3:   'Mic' is defined but never used                                                                                          @typescript-eslint/no-unused-vars
+  Line 19:3:   'VideoCall' is defined but never used                                                                                    @typescript-eslint/no-unused-vars
+  Line 25:10:  'supabase' is defined but never used                                                                                     @typescript-eslint/no-unused-vars
+  Line 61:25:  'setActiveSession' is assigned a value but never used                                                                    @typescript-eslint/no-unused-vars
+  Line 62:10:  'sessionTime' is assigned a value but never used                                                                         @typescript-eslint/no-unused-vars
+  Line 68:6:   React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src/components/UserAvatar.tsx
+  Line 2:18:  'Box' is defined but never used  @typescript-eslint/no-unused-vars
+
+src/components/auth/LoginModal.tsx
+  Line 63:15:   'data' is assigned a value but never used                                                                                                                                                                                                                                                                                                                          @typescript-eslint/no-unused-vars
+  Line 235:11:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+  Line 240:52:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+  Line 240:89:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+
+src/components/auth/SubscriptionModal.tsx
+  Line 2:30:  'SubscriptionTier' is defined but never used        @typescript-eslint/no-unused-vars
+  Line 53:9:  'annualSavings' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+Search for the keywords to learn more about each warning.
+To ignore, add // eslint-disable-next-line to the line before.
+
+WARNING in ./node_modules/@mediapipe/tasks-vision/vision_bundle.mjs
+Module Warning (from ./node_modules/source-map-loader/dist/cjs.js):
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+WARNING in [eslint] 
+src/auth/AuthContext.tsx
+  Line 176:15:  'data' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+src/components/HarveyWarRoom.tsx
+  Line 125:42:  The ref value 'audioRefs.current' will likely have changed by the time this effect cleanup function runs. If this ref points to a node rendered by React, copy 'audioRefs.current' to a variable inside the effect, and use that variable in the cleanup function  react-hooks/exhaustive-deps
+
+src/components/InstantCoachConnect.tsx
+  Line 8:3:    'Tabs' is defined but never used                                                                                         @typescript-eslint/no-unused-vars
+  Line 9:3:    'Tab' is defined but never used                                                                                          @typescript-eslint/no-unused-vars
+  Line 12:3:   'Alert' is defined but never used                                                                                        @typescript-eslint/no-unused-vars
+  Line 18:3:   'Mic' is defined but never used                                                                                          @typescript-eslint/no-unused-vars
+  Line 19:3:   'VideoCall' is defined but never used                                                                                    @typescript-eslint/no-unused-vars
+  Line 25:10:  'supabase' is defined but never used                                                                                     @typescript-eslint/no-unused-vars
+  Line 61:25:  'setActiveSession' is assigned a value but never used                                                                    @typescript-eslint/no-unused-vars
+  Line 62:10:  'sessionTime' is assigned a value but never used                                                                         @typescript-eslint/no-unused-vars
+  Line 68:6:   React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src/components/UserAvatar.tsx
+  Line 2:18:  'Box' is defined but never used  @typescript-eslint/no-unused-vars
+
+src/components/auth/LoginModal.tsx
+  Line 63:15:   'data' is assigned a value but never used                                                                                                                                                                                                                                                                                                                          @typescript-eslint/no-unused-vars
+  Line 235:11:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+  Line 240:52:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+  Line 240:89:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+
+src/components/auth/SubscriptionModal.tsx
+  Line 2:30:  'SubscriptionTier' is defined but never used        @typescript-eslint/no-unused-vars
+  Line 53:9:  'annualSavings' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+webpack compiled with 2 warnings
+Files successfully emitted, waiting for typecheck results...
+Issues checking in progress...
+ERROR in src/components/InstantCoachConnect.tsx:138:16
+TS2339: Property 'currentCoachingSession' does not exist on type 'Window & typeof globalThis'.
+    136 |         
+    137 |         // Store the session data for the WebRTC connection
+  > 138 |         window.currentCoachingSession = {
+        |                ^^^^^^^^^^^^^^^^^^^^^^
+    139 |           sessionId: data.session.id,
+    140 |           roomId: data.session.webrtc_room_id,
+    141 |           coachId: coachId,
+
+Compiling...
+Compiled with warnings.
+
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+[eslint] 
+src/auth/AuthContext.tsx
+  Line 176:15:  'data' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+src/components/HarveyWarRoom.tsx
+  Line 125:42:  The ref value 'audioRefs.current' will likely have changed by the time this effect cleanup function runs. If this ref points to a node rendered by React, copy 'audioRefs.current' to a variable inside the effect, and use that variable in the cleanup function  react-hooks/exhaustive-deps
+
+src/components/InstantCoachConnect.tsx
+  Line 8:3:    'Tabs' is defined but never used                                                                                         @typescript-eslint/no-unused-vars
+  Line 9:3:    'Tab' is defined but never used                                                                                          @typescript-eslint/no-unused-vars
+  Line 12:3:   'Alert' is defined but never used                                                                                        @typescript-eslint/no-unused-vars
+  Line 18:3:   'Mic' is defined but never used                                                                                          @typescript-eslint/no-unused-vars
+  Line 19:3:   'VideoCall' is defined but never used                                                                                    @typescript-eslint/no-unused-vars
+  Line 25:10:  'supabase' is defined but never used                                                                                     @typescript-eslint/no-unused-vars
+  Line 62:10:  'sessionTime' is assigned a value but never used                                                                         @typescript-eslint/no-unused-vars
+  Line 68:6:   React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src/components/UserAvatar.tsx
+  Line 2:18:  'Box' is defined but never used  @typescript-eslint/no-unused-vars
+
+src/components/auth/LoginModal.tsx
+  Line 63:15:   'data' is assigned a value but never used                                                                                                                                                                                                                                                                                                                          @typescript-eslint/no-unused-vars
+  Line 235:11:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+  Line 240:52:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+  Line 240:89:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+
+src/components/auth/SubscriptionModal.tsx
+  Line 2:30:  'SubscriptionTier' is defined but never used        @typescript-eslint/no-unused-vars
+  Line 53:9:  'annualSavings' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+Search for the keywords to learn more about each warning.
+To ignore, add // eslint-disable-next-line to the line before.
+
+WARNING in ./node_modules/@mediapipe/tasks-vision/vision_bundle.mjs
+Module Warning (from ./node_modules/source-map-loader/dist/cjs.js):
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+WARNING in [eslint] 
+src/auth/AuthContext.tsx
+  Line 176:15:  'data' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+src/components/HarveyWarRoom.tsx
+  Line 125:42:  The ref value 'audioRefs.current' will likely have changed by the time this effect cleanup function runs. If this ref points to a node rendered by React, copy 'audioRefs.current' to a variable inside the effect, and use that variable in the cleanup function  react-hooks/exhaustive-deps
+
+src/components/InstantCoachConnect.tsx
+  Line 8:3:    'Tabs' is defined but never used                                                                                         @typescript-eslint/no-unused-vars
+  Line 9:3:    'Tab' is defined but never used                                                                                          @typescript-eslint/no-unused-vars
+  Line 12:3:   'Alert' is defined but never used                                                                                        @typescript-eslint/no-unused-vars
+  Line 18:3:   'Mic' is defined but never used                                                                                          @typescript-eslint/no-unused-vars
+  Line 19:3:   'VideoCall' is defined but never used                                                                                    @typescript-eslint/no-unused-vars
+  Line 25:10:  'supabase' is defined but never used                                                                                     @typescript-eslint/no-unused-vars
+  Line 62:10:  'sessionTime' is assigned a value but never used                                                                         @typescript-eslint/no-unused-vars
+  Line 68:6:   React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src/components/UserAvatar.tsx
+  Line 2:18:  'Box' is defined but never used  @typescript-eslint/no-unused-vars
+
+src/components/auth/LoginModal.tsx
+  Line 63:15:   'data' is assigned a value but never used                                                                                                                                                                                                                                                                                                                          @typescript-eslint/no-unused-vars
+  Line 235:11:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+  Line 240:52:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+  Line 240:89:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+
+src/components/auth/SubscriptionModal.tsx
+  Line 2:30:  'SubscriptionTier' is defined but never used        @typescript-eslint/no-unused-vars
+  Line 53:9:  'annualSavings' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+webpack compiled with 2 warnings
+Files successfully emitted, waiting for typecheck results...
+Issues checking in progress...
+ERROR in src/components/InstantCoachConnect.tsx:143:16
+TS2339: Property 'currentCoachingSession' does not exist on type 'Window & typeof globalThis'.
+    141 |         
+    142 |         // Store globally for other components
+  > 143 |         window.currentCoachingSession = sessionData;
+        |                ^^^^^^^^^^^^^^^^^^^^^^
+    144 |         
+    145 |       } catch (micError) {
+    146 |         console.error('❌ Microphone access denied:', micError);
+
+Compiling...
+Compiled with warnings.
+
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+[eslint] 
+src/auth/AuthContext.tsx
+  Line 176:15:  'data' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+src/components/HarveyWarRoom.tsx
+  Line 125:42:  The ref value 'audioRefs.current' will likely have changed by the time this effect cleanup function runs. If this ref points to a node rendered by React, copy 'audioRefs.current' to a variable inside the effect, and use that variable in the cleanup function  react-hooks/exhaustive-deps
+
+src/components/InstantCoachConnect.tsx
+  Line 8:3:    'Tabs' is defined but never used                                                                                         @typescript-eslint/no-unused-vars
+  Line 9:3:    'Tab' is defined but never used                                                                                          @typescript-eslint/no-unused-vars
+  Line 12:3:   'Alert' is defined but never used                                                                                        @typescript-eslint/no-unused-vars
+  Line 19:3:   'VideoCall' is defined but never used                                                                                    @typescript-eslint/no-unused-vars
+  Line 25:10:  'supabase' is defined but never used                                                                                     @typescript-eslint/no-unused-vars
+  Line 68:6:   React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src/components/UserAvatar.tsx
+  Line 2:18:  'Box' is defined but never used  @typescript-eslint/no-unused-vars
+
+src/components/auth/LoginModal.tsx
+  Line 63:15:   'data' is assigned a value but never used                                                                                                                                                                                                                                                                                                                          @typescript-eslint/no-unused-vars
+  Line 235:11:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+  Line 240:52:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+  Line 240:89:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+
+src/components/auth/SubscriptionModal.tsx
+  Line 2:30:  'SubscriptionTier' is defined but never used        @typescript-eslint/no-unused-vars
+  Line 53:9:  'annualSavings' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+Search for the keywords to learn more about each warning.
+To ignore, add // eslint-disable-next-line to the line before.
+
+WARNING in ./node_modules/@mediapipe/tasks-vision/vision_bundle.mjs
+Module Warning (from ./node_modules/source-map-loader/dist/cjs.js):
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+WARNING in [eslint] 
+src/auth/AuthContext.tsx
+  Line 176:15:  'data' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+src/components/HarveyWarRoom.tsx
+  Line 125:42:  The ref value 'audioRefs.current' will likely have changed by the time this effect cleanup function runs. If this ref points to a node rendered by React, copy 'audioRefs.current' to a variable inside the effect, and use that variable in the cleanup function  react-hooks/exhaustive-deps
+
+src/components/InstantCoachConnect.tsx
+  Line 8:3:    'Tabs' is defined but never used                                                                                         @typescript-eslint/no-unused-vars
+  Line 9:3:    'Tab' is defined but never used                                                                                          @typescript-eslint/no-unused-vars
+  Line 12:3:   'Alert' is defined but never used                                                                                        @typescript-eslint/no-unused-vars
+  Line 19:3:   'VideoCall' is defined but never used                                                                                    @typescript-eslint/no-unused-vars
+  Line 25:10:  'supabase' is defined but never used                                                                                     @typescript-eslint/no-unused-vars
+  Line 68:6:   React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src/components/UserAvatar.tsx
+  Line 2:18:  'Box' is defined but never used  @typescript-eslint/no-unused-vars
+
+src/components/auth/LoginModal.tsx
+  Line 63:15:   'data' is assigned a value but never used                                                                                                                                                                                                                                                                                                                          @typescript-eslint/no-unused-vars
+  Line 235:11:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+  Line 240:52:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+  Line 240:89:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+
+src/components/auth/SubscriptionModal.tsx
+  Line 2:30:  'SubscriptionTier' is defined but never used        @typescript-eslint/no-unused-vars
+  Line 53:9:  'annualSavings' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+webpack compiled with 2 warnings
+Files successfully emitted, waiting for typecheck results...
+Issues checking in progress...
+ERROR in src/components/InstantCoachConnect.tsx:143:16
+TS2339: Property 'currentCoachingSession' does not exist on type 'Window & typeof globalThis'.
+    141 |         
+    142 |         // Store globally for other components
+  > 143 |         window.currentCoachingSession = sessionData;
+        |                ^^^^^^^^^^^^^^^^^^^^^^
+    144 |         
+    145 |       } catch (micError) {
+    146 |         console.error('❌ Microphone access denied:', micError);
+
+ERROR in src/components/InstantCoachConnect.tsx:181:14
+TS2339: Property 'currentCoachingSession' does not exist on type 'Window & typeof globalThis'.
+    179 |       setActiveSession(null);
+    180 |       setSessionTime(0);
+  > 181 |       window.currentCoachingSession = null;
+        |              ^^^^^^^^^^^^^^^^^^^^^^
+    182 |       
+    183 |     } catch (error) {
+    184 |       console.error('Error ending session:', error);
+
+Compiling...
+Failed to compile.
+
+[eslint] 
+src/components/InstantCoachConnect.tsx
+  Line 437:20:  'Message' is not defined  react/jsx-no-undef
+
+Search for the keywords to learn more about each error.
+WARNING in ./node_modules/@mediapipe/tasks-vision/vision_bundle.mjs
+Module Warning (from ./node_modules/source-map-loader/dist/cjs.js):
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+WARNING in [eslint] 
+src/auth/AuthContext.tsx
+  Line 176:15:  'data' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+src/components/HarveyWarRoom.tsx
+  Line 125:42:  The ref value 'audioRefs.current' will likely have changed by the time this effect cleanup function runs. If this ref points to a node rendered by React, copy 'audioRefs.current' to a variable inside the effect, and use that variable in the cleanup function  react-hooks/exhaustive-deps
+
+src/components/InstantCoachConnect.tsx
+  Line 62:6:  React Hook useEffect has a missing dependency: 'loadAvailableCoaches'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src/components/UserAvatar.tsx
+  Line 2:18:  'Box' is defined but never used  @typescript-eslint/no-unused-vars
+
+src/components/auth/LoginModal.tsx
+  Line 63:15:   'data' is assigned a value but never used                                                                                                                                                                                                                                                                                                                          @typescript-eslint/no-unused-vars
+  Line 235:11:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+  Line 240:52:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+  Line 240:89:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+
+src/components/auth/SubscriptionModal.tsx
+  Line 2:30:  'SubscriptionTier' is defined but never used        @typescript-eslint/no-unused-vars
+  Line 53:9:  'annualSavings' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+ERROR in [eslint] 
+src/components/InstantCoachConnect.tsx
+  Line 437:20:  'Message' is not defined  react/jsx-no-undef
+
+Search for the keywords to learn more about each error.
+
+webpack compiled with 1 error and 2 warnings
+Files successfully emitted, waiting for typecheck results...
+Issues checking in progress...
+ERROR in src/components/InstantCoachConnect.tsx:137:16
+TS2339: Property 'currentCoachingSession' does not exist on type 'Window & typeof globalThis'.
+    135 |         
+    136 |         // Store globally for other components
+  > 137 |         window.currentCoachingSession = sessionData;
+        |                ^^^^^^^^^^^^^^^^^^^^^^
+    138 |         
+    139 |       } catch (micError) {
+    140 |         console.error('❌ Microphone access denied:', micError);
+
+ERROR in src/components/InstantCoachConnect.tsx:175:14
+TS2339: Property 'currentCoachingSession' does not exist on type 'Window & typeof globalThis'.
+    173 |       setActiveSession(null);
+    174 |       setSessionTime(0);
+  > 175 |       window.currentCoachingSession = null;
+        |              ^^^^^^^^^^^^^^^^^^^^^^
+    176 |       
+    177 |     } catch (error) {
+    178 |       console.error('Error ending session:', error);
+
+ERROR in src/components/InstantCoachConnect.tsx:437:20
+TS2552: Cannot find name 'Message'. Did you mean 'onmessage'?
+    435 |                     border: '1px solid rgba(255, 255, 255, 0.05)'
+    436 |                   }}>
+  > 437 |                   <Message sx={{ fontSize: 32, color: 'primary.main', mb: 1 }} />
+        |                    ^^^^^^^
+    438 |                   <Typography 
+    439 |                     variant="subtitle2" 
+    440 |                     sx={{ color: 'white' }}
+
+Compiling...
+Failed to compile.
+
+[eslint] 
+src/components/InstantCoachConnect.tsx
+  Line 437:20:  'Message' is not defined  react/jsx-no-undef
+
+Search for the keywords to learn more about each error.
+WARNING in ./node_modules/@mediapipe/tasks-vision/vision_bundle.mjs
+Module Warning (from ./node_modules/source-map-loader/dist/cjs.js):
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+WARNING in [eslint] 
+src/auth/AuthContext.tsx
+  Line 176:15:  'data' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+src/components/HarveyWarRoom.tsx
+  Line 125:42:  The ref value 'audioRefs.current' will likely have changed by the time this effect cleanup function runs. If this ref points to a node rendered by React, copy 'audioRefs.current' to a variable inside the effect, and use that variable in the cleanup function  react-hooks/exhaustive-deps
+
+src/components/InstantCoachConnect.tsx
+  Line 62:25:  'loadAvailableCoaches' was used before it was defined                                                                                                                                                                                                @typescript-eslint/no-use-before-define
+  Line 77:9:   The 'loadAvailableCoaches' function makes the dependencies of useEffect Hook (at line 62) change on every render. Move it inside the useEffect callback. Alternatively, wrap the definition of 'loadAvailableCoaches' in its own useCallback() Hook  react-hooks/exhaustive-deps
+
+src/components/UserAvatar.tsx
+  Line 2:18:  'Box' is defined but never used  @typescript-eslint/no-unused-vars
+
+src/components/auth/LoginModal.tsx
+  Line 63:15:   'data' is assigned a value but never used                                                                                                                                                                                                                                                                                                                          @typescript-eslint/no-unused-vars
+  Line 235:11:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+  Line 240:52:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+  Line 240:89:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+
+src/components/auth/SubscriptionModal.tsx
+  Line 2:30:  'SubscriptionTier' is defined but never used        @typescript-eslint/no-unused-vars
+  Line 53:9:  'annualSavings' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+ERROR in [eslint] 
+src/components/InstantCoachConnect.tsx
+  Line 437:20:  'Message' is not defined  react/jsx-no-undef
+
+Search for the keywords to learn more about each error.
+
+webpack compiled with 1 error and 2 warnings
+Files successfully emitted, waiting for typecheck results...
+Issues checking in progress...
+ERROR in src/components/InstantCoachConnect.tsx:62:25
+TS2448: Block-scoped variable 'loadAvailableCoaches' used before its declaration.
+    60 |       loadAvailableCoaches();
+    61 |     }
+  > 62 |   }, [selectedCategory, loadAvailableCoaches]);
+       |                         ^^^^^^^^^^^^^^^^^^^^
+    63 |
+    64 |   // Timer for active session
+    65 |   useEffect(() => {
+
+ERROR in src/components/InstantCoachConnect.tsx:62:25
+TS2454: Variable 'loadAvailableCoaches' is used before being assigned.
+    60 |       loadAvailableCoaches();
+    61 |     }
+  > 62 |   }, [selectedCategory, loadAvailableCoaches]);
+       |                         ^^^^^^^^^^^^^^^^^^^^
+    63 |
+    64 |   // Timer for active session
+    65 |   useEffect(() => {
+
+ERROR in src/components/InstantCoachConnect.tsx:137:16
+TS2339: Property 'currentCoachingSession' does not exist on type 'Window & typeof globalThis'.
+    135 |         
+    136 |         // Store globally for other components
+  > 137 |         window.currentCoachingSession = sessionData;
+        |                ^^^^^^^^^^^^^^^^^^^^^^
+    138 |         
+    139 |       } catch (micError) {
+    140 |         console.error('❌ Microphone access denied:', micError);
+
+ERROR in src/components/InstantCoachConnect.tsx:175:14
+TS2339: Property 'currentCoachingSession' does not exist on type 'Window & typeof globalThis'.
+    173 |       setActiveSession(null);
+    174 |       setSessionTime(0);
+  > 175 |       window.currentCoachingSession = null;
+        |              ^^^^^^^^^^^^^^^^^^^^^^
+    176 |       
+    177 |     } catch (error) {
+    178 |       console.error('Error ending session:', error);
+
+ERROR in src/components/InstantCoachConnect.tsx:437:20
+TS2552: Cannot find name 'Message'. Did you mean 'onmessage'?
+    435 |                     border: '1px solid rgba(255, 255, 255, 0.05)'
+    436 |                   }}>
+  > 437 |                   <Message sx={{ fontSize: 32, color: 'primary.main', mb: 1 }} />
+        |                    ^^^^^^^
+    438 |                   <Typography 
+    439 |                     variant="subtitle2" 
+    440 |                     sx={{ color: 'white' }}
+
+Compiling...
+Failed to compile.
+
+[eslint] 
+src/components/InstantCoachConnect.tsx
+  Line 437:20:  'Message' is not defined  react/jsx-no-undef
+
+Search for the keywords to learn more about each error.
+WARNING in ./node_modules/@mediapipe/tasks-vision/vision_bundle.mjs
+Module Warning (from ./node_modules/source-map-loader/dist/cjs.js):
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+WARNING in [eslint] 
+src/auth/AuthContext.tsx
+  Line 176:15:  'data' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+src/components/HarveyWarRoom.tsx
+  Line 125:42:  The ref value 'audioRefs.current' will likely have changed by the time this effect cleanup function runs. If this ref points to a node rendered by React, copy 'audioRefs.current' to a variable inside the effect, and use that variable in the cleanup function  react-hooks/exhaustive-deps
+
+src/components/InstantCoachConnect.tsx
+  Line 1:38:   'useCallback' is defined but never used                                                                                                                                                                                                              @typescript-eslint/no-unused-vars
+  Line 62:25:  'loadAvailableCoaches' was used before it was defined                                                                                                                                                                                                @typescript-eslint/no-use-before-define
+  Line 77:9:   The 'loadAvailableCoaches' function makes the dependencies of useEffect Hook (at line 62) change on every render. Move it inside the useEffect callback. Alternatively, wrap the definition of 'loadAvailableCoaches' in its own useCallback() Hook  react-hooks/exhaustive-deps
+
+src/components/UserAvatar.tsx
+  Line 2:18:  'Box' is defined but never used  @typescript-eslint/no-unused-vars
+
+src/components/auth/LoginModal.tsx
+  Line 63:15:   'data' is assigned a value but never used                                                                                                                                                                                                                                                                                                                          @typescript-eslint/no-unused-vars
+  Line 235:11:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+  Line 240:52:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+  Line 240:89:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+
+src/components/auth/SubscriptionModal.tsx
+  Line 2:30:  'SubscriptionTier' is defined but never used        @typescript-eslint/no-unused-vars
+  Line 53:9:  'annualSavings' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+ERROR in [eslint] 
+src/components/InstantCoachConnect.tsx
+  Line 437:20:  'Message' is not defined  react/jsx-no-undef
+
+Search for the keywords to learn more about each error.
+
+webpack compiled with 1 error and 2 warnings
+Files successfully emitted, waiting for typecheck results...
+Issues checking in progress...
+ERROR in src/components/InstantCoachConnect.tsx:62:25
+TS2448: Block-scoped variable 'loadAvailableCoaches' used before its declaration.
+    60 |       loadAvailableCoaches();
+    61 |     }
+  > 62 |   }, [selectedCategory, loadAvailableCoaches]);
+       |                         ^^^^^^^^^^^^^^^^^^^^
+    63 |
+    64 |   // Timer for active session
+    65 |   useEffect(() => {
+
+ERROR in src/components/InstantCoachConnect.tsx:62:25
+TS2454: Variable 'loadAvailableCoaches' is used before being assigned.
+    60 |       loadAvailableCoaches();
+    61 |     }
+  > 62 |   }, [selectedCategory, loadAvailableCoaches]);
+       |                         ^^^^^^^^^^^^^^^^^^^^
+    63 |
+    64 |   // Timer for active session
+    65 |   useEffect(() => {
+
+ERROR in src/components/InstantCoachConnect.tsx:137:16
+TS2339: Property 'currentCoachingSession' does not exist on type 'Window & typeof globalThis'.
+    135 |         
+    136 |         // Store globally for other components
+  > 137 |         window.currentCoachingSession = sessionData;
+        |                ^^^^^^^^^^^^^^^^^^^^^^
+    138 |         
+    139 |       } catch (micError) {
+    140 |         console.error('❌ Microphone access denied:', micError);
+
+ERROR in src/components/InstantCoachConnect.tsx:175:14
+TS2339: Property 'currentCoachingSession' does not exist on type 'Window & typeof globalThis'.
+    173 |       setActiveSession(null);
+    174 |       setSessionTime(0);
+  > 175 |       window.currentCoachingSession = null;
+        |              ^^^^^^^^^^^^^^^^^^^^^^
+    176 |       
+    177 |     } catch (error) {
+    178 |       console.error('Error ending session:', error);
+
+ERROR in src/components/InstantCoachConnect.tsx:437:20
+TS2552: Cannot find name 'Message'. Did you mean 'onmessage'?
+    435 |                     border: '1px solid rgba(255, 255, 255, 0.05)'
+    436 |                   }}>
+  > 437 |                   <Message sx={{ fontSize: 32, color: 'primary.main', mb: 1 }} />
+        |                    ^^^^^^^
+    438 |                   <Typography 
+    439 |                     variant="subtitle2" 
+    440 |                     sx={{ color: 'white' }}
+
+Compiling...
+Failed to compile.
+
+[eslint] 
+src/components/InstantCoachConnect.tsx
+Syntax error: ')' expected (90:3)
+WARNING in ./node_modules/@mediapipe/tasks-vision/vision_bundle.mjs
+Module Warning (from ./node_modules/source-map-loader/dist/cjs.js):
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+WARNING in [eslint] 
+src/auth/AuthContext.tsx
+  Line 176:15:  'data' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+src/components/HarveyWarRoom.tsx
+  Line 125:42:  The ref value 'audioRefs.current' will likely have changed by the time this effect cleanup function runs. If this ref points to a node rendered by React, copy 'audioRefs.current' to a variable inside the effect, and use that variable in the cleanup function  react-hooks/exhaustive-deps
+
+src/components/UserAvatar.tsx
+  Line 2:18:  'Box' is defined but never used  @typescript-eslint/no-unused-vars
+
+src/components/auth/LoginModal.tsx
+  Line 63:15:   'data' is assigned a value but never used                                                                                                                                                                                                                                                                                                                          @typescript-eslint/no-unused-vars
+  Line 235:11:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+  Line 240:52:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+  Line 240:89:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+
+src/components/auth/SubscriptionModal.tsx
+  Line 2:30:  'SubscriptionTier' is defined but never used        @typescript-eslint/no-unused-vars
+  Line 53:9:  'annualSavings' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+ERROR in ./src/components/InstantCoachConnect.tsx
+Module build failed (from ./node_modules/babel-loader/lib/index.js):
+SyntaxError: /home/jgolden/repconnect1/src/components/InstantCoachConnect.tsx: Unexpected token, expected "," (90:3)
+
+  88 |       setLoading(false);
+  89 |     }
+> 90 |   };
+     |    ^
+  91 |
+  92 |   const connectToCoach = async (coachId: string, coachName: string) => {
+  93 |     setConnecting(coachId);
+    at constructor (/home/jgolden/repconnect1/node_modules/@babel/parser/lib/index.js:363:19)
+    at TypeScriptParserMixin.raise (/home/jgolden/repconnect1/node_modules/@babel/parser/lib/index.js:6609:19)
+    at TypeScriptParserMixin.unexpected (/home/jgolden/repconnect1/node_modules/@babel/parser/lib/index.js:6629:16)
+    at TypeScriptParserMixin.expect (/home/jgolden/repconnect1/node_modules/@babel/parser/lib/index.js:6910:12)
+    at TypeScriptParserMixin.parseCallExpressionArguments (/home/jgolden/repconnect1/node_modules/@babel/parser/lib/index.js:11174:14)
+    at TypeScriptParserMixin.parseCoverCallAndAsyncArrowHead (/home/jgolden/repconnect1/node_modules/@babel/parser/lib/index.js:11117:29)
+    at TypeScriptParserMixin.parseSubscript (/home/jgolden/repconnect1/node_modules/@babel/parser/lib/index.js:11051:19)
+    at TypeScriptParserMixin.parseSubscript (/home/jgolden/repconnect1/node_modules/@babel/parser/lib/index.js:9299:18)
+    at TypeScriptParserMixin.parseSubscripts (/home/jgolden/repconnect1/node_modules/@babel/parser/lib/index.js:11025:19)
+    at TypeScriptParserMixin.parseExprSubscripts (/home/jgolden/repconnect1/node_modules/@babel/parser/lib/index.js:11016:17)
+    at TypeScriptParserMixin.parseUpdate (/home/jgolden/repconnect1/node_modules/@babel/parser/lib/index.js:10997:21)
+    at TypeScriptParserMixin.parseMaybeUnary (/home/jgolden/repconnect1/node_modules/@babel/parser/lib/index.js:10977:23)
+    at TypeScriptParserMixin.parseMaybeUnary (/home/jgolden/repconnect1/node_modules/@babel/parser/lib/index.js:9794:18)
+    at TypeScriptParserMixin.parseMaybeUnaryOrPrivate (/home/jgolden/repconnect1/node_modules/@babel/parser/lib/index.js:10830:61)
+    at TypeScriptParserMixin.parseExprOps (/home/jgolden/repconnect1/node_modules/@babel/parser/lib/index.js:10835:23)
+    at TypeScriptParserMixin.parseMaybeConditional (/home/jgolden/repconnect1/node_modules/@babel/parser/lib/index.js:10812:23)
+    at TypeScriptParserMixin.parseMaybeAssign (/home/jgolden/repconnect1/node_modules/@babel/parser/lib/index.js:10765:21)
+    at TypeScriptParserMixin.parseMaybeAssign (/home/jgolden/repconnect1/node_modules/@babel/parser/lib/index.js:9743:20)
+    at /home/jgolden/repconnect1/node_modules/@babel/parser/lib/index.js:10734:39
+    at TypeScriptParserMixin.allowInAnd (/home/jgolden/repconnect1/node_modules/@babel/parser/lib/index.js:12356:16)
+    at TypeScriptParserMixin.parseMaybeAssignAllowIn (/home/jgolden/repconnect1/node_modules/@babel/parser/lib/index.js:10734:17)
+    at TypeScriptParserMixin.parseVar (/home/jgolden/repconnect1/node_modules/@babel/parser/lib/index.js:13303:91)
+    at TypeScriptParserMixin.parseVarStatement (/home/jgolden/repconnect1/node_modules/@babel/parser/lib/index.js:13149:10)
+    at TypeScriptParserMixin.parseVarStatement (/home/jgolden/repconnect1/node_modules/@babel/parser/lib/index.js:9439:31)
+    at TypeScriptParserMixin.parseStatementContent (/home/jgolden/repconnect1/node_modules/@babel/parser/lib/index.js:12770:23)
+    at TypeScriptParserMixin.parseStatementContent (/home/jgolden/repconnect1/node_modules/@babel/parser/lib/index.js:9469:18)
+    at TypeScriptParserMixin.parseStatementLike (/home/jgolden/repconnect1/node_modules/@babel/parser/lib/index.js:12685:17)
+    at TypeScriptParserMixin.parseStatementListItem (/home/jgolden/repconnect1/node_modules/@babel/parser/lib/index.js:12665:17)
+    at TypeScriptParserMixin.parseBlockOrModuleBlockBody (/home/jgolden/repconnect1/node_modules/@babel/parser/lib/index.js:13235:61)
+    at TypeScriptParserMixin.parseBlockBody (/home/jgolden/repconnect1/node_modules/@babel/parser/lib/index.js:13228:10)
+    at TypeScriptParserMixin.parseBlock (/home/jgolden/repconnect1/node_modules/@babel/parser/lib/index.js:13216:10)
+    at TypeScriptParserMixin.parseFunctionBody (/home/jgolden/repconnect1/node_modules/@babel/parser/lib/index.js:12035:24)
+    at TypeScriptParserMixin.parseFunctionBodyAndFinish (/home/jgolden/repconnect1/node_modules/@babel/parser/lib/index.js:12021:10)
+    at TypeScriptParserMixin.parseFunctionBodyAndFinish (/home/jgolden/repconnect1/node_modules/@babel/parser/lib/index.js:9194:18)
+    at /home/jgolden/repconnect1/node_modules/@babel/parser/lib/index.js:13360:12
+    at TypeScriptParserMixin.withSmartMixTopicForbiddingContext (/home/jgolden/repconnect1/node_modules/@babel/parser/lib/index.js:12338:14)
+    at TypeScriptParserMixin.parseFunction (/home/jgolden/repconnect1/node_modules/@babel/parser/lib/index.js:13359:10)
+    at TypeScriptParserMixin.parseExportDefaultExpression (/home/jgolden/repconnect1/node_modules/@babel/parser/lib/index.js:13822:19)
+    at TypeScriptParserMixin.parseExportDefaultExpression (/home/jgolden/repconnect1/node_modules/@babel/parser/lib/index.js:9433:18)
+    at TypeScriptParserMixin.parseExport (/home/jgolden/repconnect1/node_modules/@babel/parser/lib/index.js:13743:25)
+    at TypeScriptParserMixin.parseExport (/home/jgolden/repconnect1/node_modules/@babel/parser/lib/index.js:9416:20)
+    at TypeScriptParserMixin.parseStatementContent (/home/jgolden/repconnect1/node_modules/@babel/parser/lib/index.js:12797:27)
+    at TypeScriptParserMixin.parseStatementContent (/home/jgolden/repconnect1/node_modules/@babel/parser/lib/index.js:9469:18)
+    at TypeScriptParserMixin.parseStatementLike (/home/jgolden/repconnect1/node_modules/@babel/parser/lib/index.js:12685:17)
+    at TypeScriptParserMixin.parseModuleItem (/home/jgolden/repconnect1/node_modules/@babel/parser/lib/index.js:12662:17)
+    at TypeScriptParserMixin.parseBlockOrModuleBlockBody (/home/jgolden/repconnect1/node_modules/@babel/parser/lib/index.js:13235:36)
+    at TypeScriptParserMixin.parseBlockBody (/home/jgolden/repconnect1/node_modules/@babel/parser/lib/index.js:13228:10)
+    at TypeScriptParserMixin.parseProgram (/home/jgolden/repconnect1/node_modules/@babel/parser/lib/index.js:12541:10)
+    at TypeScriptParserMixin.parseTopLevel (/home/jgolden/repconnect1/node_modules/@babel/parser/lib/index.js:12531:25)
+    at TypeScriptParserMixin.parse (/home/jgolden/repconnect1/node_modules/@babel/parser/lib/index.js:14410:10)
+
+ERROR in [eslint] 
+src/components/InstantCoachConnect.tsx
+  Line 90:3:  Parsing error: ')' expected
+
+webpack compiled with 2 errors and 2 warnings
+Files successfully emitted, waiting for typecheck results...
+Issues checking in progress...
+ERROR in src/components/InstantCoachConnect.tsx:62:25
+TS2448: Block-scoped variable 'loadAvailableCoaches' used before its declaration.
+    60 |       loadAvailableCoaches();
+    61 |     }
+  > 62 |   }, [selectedCategory, loadAvailableCoaches]);
+       |                         ^^^^^^^^^^^^^^^^^^^^
+    63 |
+    64 |   // Timer for active session
+    65 |   useEffect(() => {
+
+ERROR in src/components/InstantCoachConnect.tsx:62:25
+TS2454: Variable 'loadAvailableCoaches' is used before being assigned.
+    60 |       loadAvailableCoaches();
+    61 |     }
+  > 62 |   }, [selectedCategory, loadAvailableCoaches]);
+       |                         ^^^^^^^^^^^^^^^^^^^^
+    63 |
+    64 |   // Timer for active session
+    65 |   useEffect(() => {
+
+ERROR in src/components/InstantCoachConnect.tsx:90:4
+TS1005: ')' expected.
+    88 |       setLoading(false);
+    89 |     }
+  > 90 |   };
+       |    ^
+    91 |
+    92 |   const connectToCoach = async (coachId: string, coachName: string) => {
+    93 |     setConnecting(coachId);
+
+ERROR in src/components/InstantCoachConnect.tsx:137:16
+TS2339: Property 'currentCoachingSession' does not exist on type 'Window & typeof globalThis'.
+    135 |         
+    136 |         // Store globally for other components
+  > 137 |         window.currentCoachingSession = sessionData;
+        |                ^^^^^^^^^^^^^^^^^^^^^^
+    138 |         
+    139 |       } catch (micError) {
+    140 |         console.error('❌ Microphone access denied:', micError);
+
+ERROR in src/components/InstantCoachConnect.tsx:175:14
+TS2339: Property 'currentCoachingSession' does not exist on type 'Window & typeof globalThis'.
+    173 |       setActiveSession(null);
+    174 |       setSessionTime(0);
+  > 175 |       window.currentCoachingSession = null;
+        |              ^^^^^^^^^^^^^^^^^^^^^^
+    176 |       
+    177 |     } catch (error) {
+    178 |       console.error('Error ending session:', error);
+
+ERROR in src/components/InstantCoachConnect.tsx:437:20
+TS2552: Cannot find name 'Message'. Did you mean 'onmessage'?
+    435 |                     border: '1px solid rgba(255, 255, 255, 0.05)'
+    436 |                   }}>
+  > 437 |                   <Message sx={{ fontSize: 32, color: 'primary.main', mb: 1 }} />
+        |                    ^^^^^^^
+    438 |                   <Typography 
+    439 |                     variant="subtitle2" 
+    440 |                     sx={{ color: 'white' }}
+
+Compiling...
+Failed to compile.
+
+[eslint] 
+src/components/InstantCoachConnect.tsx
+  Line 437:20:  'Message' is not defined  react/jsx-no-undef
+
+Search for the keywords to learn more about each error.
+WARNING in ./node_modules/@mediapipe/tasks-vision/vision_bundle.mjs
+Module Warning (from ./node_modules/source-map-loader/dist/cjs.js):
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+WARNING in [eslint] 
+src/auth/AuthContext.tsx
+  Line 176:15:  'data' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+src/components/HarveyWarRoom.tsx
+  Line 125:42:  The ref value 'audioRefs.current' will likely have changed by the time this effect cleanup function runs. If this ref points to a node rendered by React, copy 'audioRefs.current' to a variable inside the effect, and use that variable in the cleanup function  react-hooks/exhaustive-deps
+
+src/components/InstantCoachConnect.tsx
+  Line 62:25:  'loadAvailableCoaches' was used before it was defined  @typescript-eslint/no-use-before-define
+
+src/components/UserAvatar.tsx
+  Line 2:18:  'Box' is defined but never used  @typescript-eslint/no-unused-vars
+
+src/components/auth/LoginModal.tsx
+  Line 63:15:   'data' is assigned a value but never used                                                                                                                                                                                                                                                                                                                          @typescript-eslint/no-unused-vars
+  Line 235:11:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+  Line 240:52:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+  Line 240:89:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+
+src/components/auth/SubscriptionModal.tsx
+  Line 2:30:  'SubscriptionTier' is defined but never used        @typescript-eslint/no-unused-vars
+  Line 53:9:  'annualSavings' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+ERROR in [eslint] 
+src/components/InstantCoachConnect.tsx
+  Line 437:20:  'Message' is not defined  react/jsx-no-undef
+
+Search for the keywords to learn more about each error.
+
+webpack compiled with 1 error and 2 warnings
+Files successfully emitted, waiting for typecheck results...
+Issues checking in progress...
+ERROR in src/components/InstantCoachConnect.tsx:62:25
+TS2448: Block-scoped variable 'loadAvailableCoaches' used before its declaration.
+    60 |       loadAvailableCoaches();
+    61 |     }
+  > 62 |   }, [selectedCategory, loadAvailableCoaches]);
+       |                         ^^^^^^^^^^^^^^^^^^^^
+    63 |
+    64 |   // Timer for active session
+    65 |   useEffect(() => {
+
+ERROR in src/components/InstantCoachConnect.tsx:62:25
+TS2454: Variable 'loadAvailableCoaches' is used before being assigned.
+    60 |       loadAvailableCoaches();
+    61 |     }
+  > 62 |   }, [selectedCategory, loadAvailableCoaches]);
+       |                         ^^^^^^^^^^^^^^^^^^^^
+    63 |
+    64 |   // Timer for active session
+    65 |   useEffect(() => {
+
+ERROR in src/components/InstantCoachConnect.tsx:137:16
+TS2339: Property 'currentCoachingSession' does not exist on type 'Window & typeof globalThis'.
+    135 |         
+    136 |         // Store globally for other components
+  > 137 |         window.currentCoachingSession = sessionData;
+        |                ^^^^^^^^^^^^^^^^^^^^^^
+    138 |         
+    139 |       } catch (micError) {
+    140 |         console.error('❌ Microphone access denied:', micError);
+
+ERROR in src/components/InstantCoachConnect.tsx:175:14
+TS2339: Property 'currentCoachingSession' does not exist on type 'Window & typeof globalThis'.
+    173 |       setActiveSession(null);
+    174 |       setSessionTime(0);
+  > 175 |       window.currentCoachingSession = null;
+        |              ^^^^^^^^^^^^^^^^^^^^^^
+    176 |       
+    177 |     } catch (error) {
+    178 |       console.error('Error ending session:', error);
+
+ERROR in src/components/InstantCoachConnect.tsx:437:20
+TS2552: Cannot find name 'Message'. Did you mean 'onmessage'?
+    435 |                     border: '1px solid rgba(255, 255, 255, 0.05)'
+    436 |                   }}>
+  > 437 |                   <Message sx={{ fontSize: 32, color: 'primary.main', mb: 1 }} />
+        |                    ^^^^^^^
+    438 |                   <Typography 
+    439 |                     variant="subtitle2" 
+    440 |                     sx={{ color: 'white' }}
+
+Compiling...
+Compiled with warnings.
+
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+[eslint] 
+src/auth/AuthContext.tsx
+  Line 176:15:  'data' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+src/components/HarveyWarRoom.tsx
+  Line 125:42:  The ref value 'audioRefs.current' will likely have changed by the time this effect cleanup function runs. If this ref points to a node rendered by React, copy 'audioRefs.current' to a variable inside the effect, and use that variable in the cleanup function  react-hooks/exhaustive-deps
+
+src/components/InstantCoachConnect.tsx
+  Line 63:25:  'loadAvailableCoaches' was used before it was defined  @typescript-eslint/no-use-before-define
+
+src/components/UserAvatar.tsx
+  Line 2:18:  'Box' is defined but never used  @typescript-eslint/no-unused-vars
+
+src/components/auth/LoginModal.tsx
+  Line 63:15:   'data' is assigned a value but never used                                                                                                                                                                                                                                                                                                                          @typescript-eslint/no-unused-vars
+  Line 235:11:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+  Line 240:52:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+  Line 240:89:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+
+src/components/auth/SubscriptionModal.tsx
+  Line 2:30:  'SubscriptionTier' is defined but never used        @typescript-eslint/no-unused-vars
+  Line 53:9:  'annualSavings' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+Search for the keywords to learn more about each warning.
+To ignore, add // eslint-disable-next-line to the line before.
+
+WARNING in ./node_modules/@mediapipe/tasks-vision/vision_bundle.mjs
+Module Warning (from ./node_modules/source-map-loader/dist/cjs.js):
+Failed to parse source map from '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map' file: Error: ENOENT: no such file or directory, open '/home/jgolden/repconnect1/node_modules/@mediapipe/tasks-vision/vision_bundle_mjs.js.map'
+
+WARNING in [eslint] 
+src/auth/AuthContext.tsx
+  Line 176:15:  'data' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+src/components/HarveyWarRoom.tsx
+  Line 125:42:  The ref value 'audioRefs.current' will likely have changed by the time this effect cleanup function runs. If this ref points to a node rendered by React, copy 'audioRefs.current' to a variable inside the effect, and use that variable in the cleanup function  react-hooks/exhaustive-deps
+
+src/components/InstantCoachConnect.tsx
+  Line 63:25:  'loadAvailableCoaches' was used before it was defined  @typescript-eslint/no-use-before-define
+
+src/components/UserAvatar.tsx
+  Line 2:18:  'Box' is defined but never used  @typescript-eslint/no-unused-vars
+
+src/components/auth/LoginModal.tsx
+  Line 63:15:   'data' is assigned a value but never used                                                                                                                                                                                                                                                                                                                          @typescript-eslint/no-unused-vars
+  Line 235:11:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+  Line 240:52:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+  Line 240:89:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+
+src/components/auth/SubscriptionModal.tsx
+  Line 2:30:  'SubscriptionTier' is defined but never used        @typescript-eslint/no-unused-vars
+  Line 53:9:  'annualSavings' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+webpack compiled with 2 warnings
+Files successfully emitted, waiting for typecheck results...
+Issues checking in progress...
+ERROR in src/components/InstantCoachConnect.tsx:63:25
+TS2448: Block-scoped variable 'loadAvailableCoaches' used before its declaration.
+    61 |       loadAvailableCoaches();
+    62 |     }
+  > 63 |   }, [selectedCategory, loadAvailableCoaches]);
+       |                         ^^^^^^^^^^^^^^^^^^^^
+    64 |
+    65 |   // Timer for active session
+    66 |   useEffect(() => {
+
+ERROR in src/components/InstantCoachConnect.tsx:63:25
+TS2454: Variable 'loadAvailableCoaches' is used before being assigned.
+    61 |       loadAvailableCoaches();
+    62 |     }
+  > 63 |   }, [selectedCategory, loadAvailableCoaches]);
+       |                         ^^^^^^^^^^^^^^^^^^^^
+    64 |
+    65 |   // Timer for active session
+    66 |   useEffect(() => {
+
+ERROR in src/components/InstantCoachConnect.tsx:138:16
+TS2339: Property 'currentCoachingSession' does not exist on type 'Window & typeof globalThis'.
+    136 |         
+    137 |         // Store globally for other components
+  > 138 |         window.currentCoachingSession = sessionData;
+        |                ^^^^^^^^^^^^^^^^^^^^^^
+    139 |         
+    140 |       } catch (micError) {
+    141 |         console.error('❌ Microphone access denied:', micError);
+
+ERROR in src/components/InstantCoachConnect.tsx:176:14
+TS2339: Property 'currentCoachingSession' does not exist on type 'Window & typeof globalThis'.
+    174 |       setActiveSession(null);
+    175 |       setSessionTime(0);
+  > 176 |       window.currentCoachingSession = null;
+        |              ^^^^^^^^^^^^^^^^^^^^^^
+    177 |       
+    178 |     } catch (error) {
+    179 |       console.error('Error ending session:', error);
+

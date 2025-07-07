@@ -1,28 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Button,
   Card,
   CardContent,
   CardHeader,
   Chip,
-  Tabs,
-  Tab,
   Typography,
   Grid,
-  Alert,
   CircularProgress,
   Paper
 } from '@mui/material';
 import {
   Phone,
-  Mic,
-  VideoCall,
-  Message,
   Psychology,
   GpsFixed,
-  AutoAwesome
+  AutoAwesome,
+  Mic,
+  Message
 } from '@mui/icons-material';
-import { supabase } from '../lib/supabase';
 
 interface Coach {
   id: string;
@@ -65,7 +60,7 @@ export default function InstantCoachConnect() {
     if (selectedCategory) {
       loadAvailableCoaches();
     }
-  }, [selectedCategory]);
+  }, [selectedCategory, loadAvailableCoaches]);
 
   // Timer for active session
   useEffect(() => {
@@ -80,7 +75,7 @@ export default function InstantCoachConnect() {
     };
   }, [activeSession]);
 
-  const loadAvailableCoaches = async () => {
+  const loadAvailableCoaches = useCallback(async () => {
     setLoading(true);
     try {
       const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/coaching/available-coaches/${selectedCategory}`);
@@ -93,7 +88,7 @@ export default function InstantCoachConnect() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [selectedCategory]);
 
   const connectToCoach = async (coachId: string, coachName: string) => {
     setConnecting(coachId);
