@@ -51,7 +51,7 @@ export const MicrophoneReadyInterface: React.FC<MicrophoneReadyInterfaceProps> =
 }) => {
   const [showAudioTest, setShowAudioTest] = useState(true);
   const [testPassed, setTestPassed] = useState(false);
-  const audioTestTimeoutRef = useRef<NodeJS.Timeout>();
+  const audioTestTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     if (audioLevel > 0.1) {

@@ -110,7 +110,7 @@ export const HarveySyndicate: React.FC = () => {
       try {
         harveyWebRTC.disconnect();
       } catch (error) {
-        :', error);
+        console.error('Error disconnecting Harvey:', error);
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps

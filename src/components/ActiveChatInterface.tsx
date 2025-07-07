@@ -130,7 +130,7 @@ export const ActiveChatInterface: React.FC<ActiveChatInterfaceProps> = ({
   };
 
   return (
-    <Box sx={{ position: 'fixed', bottom: 20, right: 20, zIndex: 1300 }}>
+    <Box style={{ position: 'fixed', bottom: 20, right: 20, zIndex: 1300 }}>
       <Slide direction="up" in={isConnected}>
         <Card 
           sx={{ 

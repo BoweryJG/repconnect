@@ -65,7 +65,7 @@ interface HarveyUpdate {
 class HarveyService {
   private socket: Socket | null = null;
   private baseUrl: string;
-  private userId: string;
+  private userId: string = '';
   private updateCallbacks: ((update: HarveyUpdate) => void)[] = [];
   private metricsCache: HarveyMetrics | null = null;
 

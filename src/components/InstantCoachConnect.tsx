@@ -60,7 +60,7 @@ export default function InstantCoachConnect() {
     if (selectedCategory) {
       loadAvailableCoaches();
     }
-  }, [selectedCategory, loadAvailableCoaches]);
+  }, [selectedCategory]);
 
   // Timer for active session
   useEffect(() => {
@@ -111,12 +111,10 @@ export default function InstantCoachConnect() {
       
       // Request microphone permission and start WebRTC
       try {
-                const stream = await navigator.mediaDevices.getUserMedia({ 
+        const stream = await navigator.mediaDevices.getUserMedia({ 
           audio: true, 
           video: false 
         });
-        
-                .length);
         
         // Start the active session UI
         const sessionData = {
@@ -507,4 +505,4 @@ Please enable microphone permissions and try again.`);
       )}
     </div>
   );
-}
+};

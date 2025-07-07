@@ -54,8 +54,7 @@ export const QuantumDialer: React.FC<QuantumDialerProps> = ({ isOpen, onClose, o
   // Debug logging for responsive detection
   useEffect(() => {
     if (isOpen) {
-       ? 'Mobile UA' : 'Desktop UA'
-      });
+      // Component opened
     }
   }, [isOpen, isMobile, windowDimensions]);
 
