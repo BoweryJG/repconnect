@@ -2,7 +2,7 @@ import axios from 'axios';
 import { supabase } from '../lib/supabase';
 
 // OSBackend API configuration
-const OSBACKEND_URL = process.env.REACT_APP_OSBACKEND_URL || 'https://osbackend.onrender.com';
+const OSBACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'https://osbackend-zl1h.onrender.com';
 const OSBACKEND_API_KEY = process.env.REACT_APP_OSBACKEND_API_KEY;
 
 export interface PhoneNumber {

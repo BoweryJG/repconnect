@@ -69,7 +69,7 @@ class HarveyService {
   private metricsCache: HarveyMetrics | null = null;
 
   constructor() {
-    this.baseUrl = process.env.REACT_APP_HARVEY_API_URL || 'https://osbackend-zl1h.onrender.com';
+    this.baseUrl = process.env.REACT_APP_BACKEND_URL || 'https://osbackend-zl1h.onrender.com';
     this.userId = localStorage.getItem('harvey_user_id') || 'demo-user';
   }
 
