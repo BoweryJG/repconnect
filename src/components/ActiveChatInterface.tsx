@@ -129,16 +129,14 @@ export const ActiveChatInterface: React.FC<ActiveChatInterfaceProps> = ({
     }
   };
 
-  // Container style with explicit typing to avoid TS2590 error
-  const containerStyle: React.CSSProperties = {
-    position: 'fixed',
-    bottom: 20,
-    right: 20,
-    zIndex: 1300
-  };
-
   return (
-    <Box sx={containerStyle}>
+    <Box 
+      style={{
+        position: 'fixed',
+        bottom: 20,
+        right: 20,
+        zIndex: 1300
+      }}>
       <Slide direction="up" in={isConnected}>
         <Card 
           sx={{ 
