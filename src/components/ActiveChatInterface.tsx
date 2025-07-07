@@ -129,8 +129,9 @@ export const ActiveChatInterface: React.FC<ActiveChatInterfaceProps> = ({
     }
   };
 
-  const containerStyle = {
-    position: 'fixed' as const,
+  // Container style with explicit typing to avoid TS2590 error
+  const containerStyle: React.CSSProperties = {
+    position: 'fixed',
     bottom: 20,
     right: 20,
     zIndex: 1300
