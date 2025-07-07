@@ -10,7 +10,6 @@ import {
   LinearProgress,
   Fab,
   Fade,
-  Slide,
   IconButton,
   Tooltip,
   Divider,
@@ -136,8 +135,13 @@ export const ActiveChatInterface: React.FC<ActiveChatInterfaceProps> = ({
         right: 20,
         zIndex: 1300
       }}>
-      <Slide direction="up" in={isConnected}>
-        <div>
+      {isConnected && (
+        <div 
+          style={{
+            transform: 'translateY(0)',
+            transition: 'transform 0.3s ease-in-out'
+          }}
+        >
           <Card 
             sx={{ 
               width: isMinimized ? 350 : 800,
@@ -376,7 +380,7 @@ export const ActiveChatInterface: React.FC<ActiveChatInterfaceProps> = ({
           )}
         </Card>
         </div>
-      </Slide>
+      )}
     </div>
   );
 };
