@@ -589,10 +589,10 @@ export const HarveyControlPanel: React.FC<HarveyControlPanelProps> = ({
           <Typography variant="body2" sx={{ mt: 1 }}>
             Harvey is {modes.enabled ? 'active' : 'offline'} in{' '}
             <Chip 
-              label={modes.coachingMode.toUpperCase()} 
+              label={modes.coachingMode?.toUpperCase() || 'OFF'} 
               size="small" 
               sx={{ 
-                bgcolor: getCoachingModeColor(modes.coachingMode),
+                bgcolor: getCoachingModeColor(modes.coachingMode || 'off'),
                 height: 20,
               }} 
             />{' '}

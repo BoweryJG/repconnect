@@ -62,6 +62,7 @@ interface PremiumNavbarProps {
   onPerformanceOpen?: () => void;
   onCallHistoryOpen?: () => void;
   onCoachConnectOpen?: () => void;
+  onHarveySettingsOpen?: () => void;
 }
 
 export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({ 
@@ -73,7 +74,8 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
   onAISettingsOpen,
   onPerformanceOpen,
   onCallHistoryOpen,
-  onCoachConnectOpen
+  onCoachConnectOpen,
+  onHarveySettingsOpen
 }) => {
   const theme = useTheme();
   const { isMobile } = useResponsive();
@@ -346,7 +348,7 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
               } as React.CSSProperties}>
               {[
                 { icon: <ContactsIcon />, label: 'Contacts', color: currentTheme.shift, onClick: () => window.scrollTo({ top: 0, behavior: 'smooth' }) },
-                { icon: <GavelIcon />, label: 'Harvey', color: '#FFD700', onClick: () => window.location.href = '/harvey' },
+                { icon: <GavelIcon />, label: 'Harvey', color: '#FFD700', onClick: onHarveySettingsOpen },
                 { icon: <PsychologyIcon />, label: 'Coach Connect', color: currentTheme.shift, onClick: onCoachConnectOpen },
                 { icon: <AutoFixHighIcon />, label: 'Enrich Leads', color: currentTheme.deep, onClick: () => window.open('/enrich', '_blank') },
                 { icon: <SyncIcon />, label: 'AI Sync', color: currentTheme.impossible, onClick: onSyncDashboardOpen },

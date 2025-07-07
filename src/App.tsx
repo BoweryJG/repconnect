@@ -38,6 +38,10 @@ import { usageTracker } from './lib/usageTracking';
 import InstantCoachConnect from './components/InstantCoachConnect';
 import { ToastProvider, useToast } from './utils/toast';
 import logger from './utils/logger';
+import { HarveyLoadingScreen } from './components/HarveyLoadingScreen';
+import { HarveyActiveCallInterface } from './components/HarveyActiveCallInterface';
+import { HarveySettingsModal } from './components/HarveySettingsModal';
+import { harveyWebRTC } from './services/harveyWebRTC';
 
 // Lazy load heavy components
 const MissionControlDashboard = React.lazy(() => import('./components/MissionControlDashboard').then(module => ({ default: module.MissionControlDashboard })));
@@ -53,6 +57,7 @@ function AppContent() {
   const [showPerformance, setShowPerformance] = useState(false);
   const [showCallHistory, setShowCallHistory] = useState(false);
   const [showCoachConnect, setShowCoachConnect] = useState(false);
+  const [showHarveySettings, setShowHarveySettings] = useState(false);
   const [newContactName, setNewContactName] = useState('');
   const [newContactPhone, setNewContactPhone] = useState('');
   const [viewMode, setViewMode] = useState<'rolodex' | 'grid'>('rolodex');
@@ -65,6 +70,9 @@ function AppContent() {
   const gridContainerRef = useRef<HTMLDivElement>(null);
   const [isDemoMode, setIsDemoMode] = useState(true);
   const [showUsageWarning, setShowUsageWarning] = useState(false);
+  const [harveyLoading, setHarveyLoading] = useState(false);
+  const [harveyConnectionStatus, setHarveyConnectionStatus] = useState<'connecting' | 'connected' | 'failed' | 'reconnecting'>('connecting');
+  const [harveyError, setHarveyError] = useState<string | undefined>();
   
   const {
     contacts,
@@ -199,6 +207,36 @@ function AppContent() {
 
   const handleMakeCall = async (contact: any) => {
     if (!checkUsageAndProceed('callsInitiated')) return;
+    
+    // Initialize Harvey first
+    setHarveyLoading(true);
+    setHarveyConnectionStatus('connecting');
+    
+    try {
+      // Connect to Harvey
+      await harveyWebRTC.connect({
+        userId: user?.id || 'demo-user',
+        onConnectionChange: (connected) => {
+          setHarveyConnectionStatus(connected ? 'connected' : 'reconnecting');
+          if (connected) {
+            setHarveyLoading(false);
+          }
+        },
+        onAudioReceived: (audioData) => {
+          logger.debug('Harvey audio received');
+        },
+      });
+      
+      // Give Harvey a moment to stabilize
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+    } catch (error: any) {
+      logger.error('Harvey connection failed:', error);
+      setHarveyError('Failed to connect to Harvey. Proceeding without AI coaching.');
+      setHarveyConnectionStatus('failed');
+      // Continue with call even if Harvey fails
+    }
+    
     // Format the phone number to ensure it has country code
     let formattedNumber = contact.phoneNumber.replace(/\D/g, '');
     if (!formattedNumber.startsWith('1') && formattedNumber.length === 10) {
@@ -227,10 +265,16 @@ function AppContent() {
         status: 'initiated',
         created_at: new Date().toISOString(),
       });
+      
+      // Harvey is now active during the call
+      setHarveyLoading(false);
+      
     } catch (error: any) {
       logger.error('Error making call:', error);
       setCallInProgress(false);
       setActiveCall(null);
+      setHarveyLoading(false);
+      harveyWebRTC.disconnect();
       
       // Show user-friendly error message
       const errorMessage = error.response?.data?.error || error.response?.data?.details?.error || error.message || 'Unknown error';
@@ -241,6 +285,35 @@ function AppContent() {
   const handleDialNumber = async (phoneNumber: string) => {
     if (!checkUsageAndProceed('dialerOpened')) return;
     logger.debug('🔍 [APP DEBUG] Starting dial process for:', phoneNumber);
+    
+    // Initialize Harvey first
+    setHarveyLoading(true);
+    setHarveyConnectionStatus('connecting');
+    
+    try {
+      // Connect to Harvey
+      await harveyWebRTC.connect({
+        userId: user?.id || 'demo-user',
+        onConnectionChange: (connected) => {
+          setHarveyConnectionStatus(connected ? 'connected' : 'reconnecting');
+          if (connected) {
+            setHarveyLoading(false);
+          }
+        },
+        onAudioReceived: (audioData) => {
+          logger.debug('Harvey audio received');
+        },
+      });
+      
+      // Give Harvey a moment to stabilize
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+    } catch (error: any) {
+      logger.error('Harvey connection failed:', error);
+      setHarveyError('Failed to connect to Harvey. Proceeding without AI coaching.');
+      setHarveyConnectionStatus('failed');
+      // Continue with call even if Harvey fails
+    }
     
     // Format the phone number to ensure it has country code
     let formattedNumber = phoneNumber.replace(/\D/g, '');
@@ -291,6 +364,9 @@ function AppContent() {
       
       logger.info('✅ [APP DEBUG] Call logged to database');
       
+      // Harvey is now active during the call
+      setHarveyLoading(false);
+      
       // Close dialer on success
       setShowDialer(false);
     } catch (error: any) {
@@ -311,6 +387,8 @@ function AppContent() {
   const handleEndCall = () => {
     setCallInProgress(false);
     setActiveCall(null);
+    setHarveyLoading(false);
+    harveyWebRTC.disconnect();
   };
 
   const handleAddContact = async () => {
@@ -422,6 +500,7 @@ function AppContent() {
             onPerformanceOpen={() => setShowPerformance(true)}
             onCallHistoryOpen={() => setShowCallHistory(true)}
             onCoachConnectOpen={() => setShowCoachConnect(true)}
+            onHarveySettingsOpen={() => setShowHarveySettings(true)}
           />
           
           <div style={{ padding: isMobile ? '8px' : '12px', paddingTop: isDemoMode || showUsageWarning ? (isMobile ? '120px' : '140px') : (isMobile ? '80px' : '96px') }}>
@@ -918,6 +997,20 @@ function AppContent() {
           </div>
         </div>
         
+        {/* Harvey Loading Screen */}
+        <HarveyLoadingScreen
+          isLoading={harveyLoading}
+          connectionStatus={harveyConnectionStatus}
+          error={harveyError}
+        />
+
+        {/* Harvey Active Call Interface */}
+        <HarveyActiveCallInterface
+          isActive={isCallInProgress && harveyConnectionStatus === 'connected'}
+          contactName={contacts.find(c => c.id === activeCall?.contactId)?.name}
+          phoneNumber={activeCall?.phoneNumber}
+        />
+
         {/* Call Interface Overlay */}
         <AnimatePresence>
           {isCallInProgress && activeCall && (
@@ -1033,6 +1126,12 @@ function AppContent() {
           isOpen={showSubscriptionModal}
           onClose={() => setShowSubscriptionModal(false)}
           currentTier={subscriptionTier}
+        />
+
+        {/* Harvey Settings Modal */}
+        <HarveySettingsModal
+          open={showHarveySettings}
+          onClose={() => setShowHarveySettings(false)}
         />
 
         {/* Coach Connect Modal */}
