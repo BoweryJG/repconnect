@@ -11,6 +11,7 @@ import logger from './utils/logger.js';
 import coachingSessionRoutes from './backend-routes/coachingSessionRoutes.js';
 import callSummaryRoutes from './backend-routes/callSummaryRoutes.js';
 import twilioWebhookRoutes from './backend-routes/twilioWebhookRoutes.js';
+import harveyRoutes from './src/api/harveyRoutes.js';
 
 // Load environment variables
 dotenv.config();
@@ -52,6 +53,7 @@ app.get('/health', (req, res) => {
 app.use('/api/coaching', coachingSessionRoutes);
 app.use('/api', callSummaryRoutes);
 app.use('/twilio', twilioWebhookRoutes);
+app.use('/api', harveyRoutes);
 
 // Legacy Harvey endpoints (for compatibility)
 app.get('/api/harvey/status', (req, res) => {
