@@ -137,16 +137,17 @@ export const ActiveChatInterface: React.FC<ActiveChatInterfaceProps> = ({
         zIndex: 1300
       }}>
       <Slide direction="up" in={isConnected}>
-        <Card 
-          sx={{ 
-            width: isMinimized ? 350 : 800,
-            height: isMinimized ? 80 : 600,
-            transition: 'all 0.3s ease-in-out',
-            display: 'flex',
-            flexDirection: 'column',
-            boxShadow: 6
-          }}
-        >
+        <div>
+          <Card 
+            sx={{ 
+              width: isMinimized ? 350 : 800,
+              height: isMinimized ? 80 : 600,
+              transition: 'all 0.3s ease-in-out',
+              display: 'flex',
+              flexDirection: 'column',
+              boxShadow: 6
+            }}
+          >
           <div
             style={{
               padding: 16,
@@ -198,12 +199,12 @@ export const ActiveChatInterface: React.FC<ActiveChatInterfaceProps> = ({
           {!isMinimized && (
             <CardContent sx={{ flex: 1, p: 0, display: 'flex' }}>
               <div style={{ flex: 2, display: 'flex', flexDirection: 'column' }}>
-                <Box
-                  sx={{
+                <div
+                  style={{
                     flex: 1,
                     overflowY: 'auto',
-                    p: 2,
-                    bgcolor: 'grey.50'
+                    padding: 16,
+                    backgroundColor: '#fafafa'
                   }}
                 >
                   <Stack spacing={2}>
@@ -374,6 +375,7 @@ export const ActiveChatInterface: React.FC<ActiveChatInterfaceProps> = ({
             </CardContent>
           )}
         </Card>
+        </div>
       </Slide>
     </div>
   );
