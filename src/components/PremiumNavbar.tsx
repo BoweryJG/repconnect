@@ -108,7 +108,11 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
         { impossible: '255, 107, 53', shift: '255, 204, 224', deep: '245, 57, 105' },
       ];
       
-      setCurrentTheme(themes[Math.min(section, themes.length - 1)]);
+      const themeIndex = Math.max(0, Math.min(section, themes.length - 1));
+      const newTheme = themes[themeIndex];
+      if (newTheme && newTheme.shift && newTheme.impossible && newTheme.deep) {
+        setCurrentTheme(newTheme);
+      }
     };
 
     window.addEventListener('scroll', handleScroll);
@@ -347,13 +351,13 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                 msOverflowStyle: 'none',
               } as React.CSSProperties}>
               {[
-                { icon: <ContactsIcon />, label: 'Contacts', color: currentTheme.shift, onClick: () => window.scrollTo({ top: 0, behavior: 'smooth' }) },
+                { icon: <ContactsIcon />, label: 'Contacts', color: currentTheme.shift || '0, 255, 255', onClick: () => window.scrollTo({ top: 0, behavior: 'smooth' }) },
                 { icon: <GavelIcon />, label: 'Harvey', color: '#FFD700', onClick: onHarveySettingsOpen },
-                { icon: <PsychologyIcon />, label: 'Coach Connect', color: currentTheme.shift, onClick: onCoachConnectOpen },
-                { icon: <AutoFixHighIcon />, label: 'Enrich Leads', color: currentTheme.deep, onClick: () => window.open('/enrich', '_blank') },
-                { icon: <SyncIcon />, label: 'AI Sync', color: currentTheme.impossible, onClick: onSyncDashboardOpen },
-                { icon: <BarChartIcon />, label: 'Analytics', color: currentTheme.deep, onClick: onMissionControlOpen },
-                { icon: <HistoryIcon />, label: 'Call History', color: currentTheme.impossible, onClick: onCallHistoryOpen },
+                { icon: <PsychologyIcon />, label: 'Coach Connect', color: currentTheme.shift || '0, 255, 255', onClick: onCoachConnectOpen },
+                { icon: <AutoFixHighIcon />, label: 'Enrich Leads', color: currentTheme.deep || '255, 0, 170', onClick: () => window.open('/enrich', '_blank') },
+                { icon: <SyncIcon />, label: 'AI Sync', color: currentTheme.impossible || '255, 0, 255', onClick: onSyncDashboardOpen },
+                { icon: <BarChartIcon />, label: 'Analytics', color: currentTheme.deep || '255, 0, 170', onClick: onMissionControlOpen },
+                { icon: <HistoryIcon />, label: 'Call History', color: currentTheme.impossible || '255, 0, 255', onClick: onCallHistoryOpen },
               ].map((item, idx) => (
                 <Button
                   key={idx}
