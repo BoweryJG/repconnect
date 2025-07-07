@@ -131,6 +131,23 @@ export const HarveyLoadingScreen: React.FC<HarveyLoadingScreenProps> = ({
               Your Brutally Honest Sales Coach
             </Typography>
 
+            {/* Mock Mode Indicator */}
+            <Alert
+              severity="info"
+              sx={{
+                mb: 3,
+                background: 'rgba(59, 130, 246, 0.1)',
+                border: '1px solid rgba(59, 130, 246, 0.3)',
+                '& .MuiAlert-icon': {
+                  color: '#3B82F6',
+                },
+              }}
+            >
+              <Typography variant="caption">
+                🎭 Running in Demo Mode - Simulated Harvey Experience
+              </Typography>
+            </Alert>
+
             {/* Status Indicator */}
             <div style={{ marginBottom: '24px' }}>
               <CircularProgress

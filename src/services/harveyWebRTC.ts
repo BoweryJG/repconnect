@@ -16,6 +16,9 @@ interface VoiceAnalysis {
   sentiment: number; // -1 to 1 (negative to positive)
 }
 
+// MOCK MODE ENABLED - Simulates Harvey without backend
+const MOCK_MODE = true;
+
 class HarveyWebRTC {
   private pc: RTCPeerConnection | null = null;
   private localStream: MediaStream | null = null;
@@ -28,6 +31,7 @@ class HarveyWebRTC {
   private isConnected = false;
   private isMuted = false;
   private voiceAnalysisInterval: NodeJS.Timeout | null = null;
+  private mockInterval: NodeJS.Timeout | null = null;
 
   private readonly ICE_SERVERS = [
     { urls: 'stun:stun.l.google.com:19302' },
@@ -49,6 +53,21 @@ class HarveyWebRTC {
           autoGainControl: true,
         } 
       });
+      
+      if (MOCK_MODE) {
+        // Simulate successful connection
+        console.log('🎭 Harvey Mock Mode Active');
+        setTimeout(() => {
+          this.isConnected = true;
+          this.config?.onConnectionChange?.(true);
+          this.startMockHarvey();
+          this.playHarveyGreeting();
+        }, 1500);
+        
+        // Start voice analysis even in mock mode
+        this.startVoiceAnalysis();
+        return;
+      }
       
       // Set up WebRTC connection
       await this.setupPeerConnection();
@@ -282,12 +301,21 @@ class HarveyWebRTC {
     switch (message.type) {
       case 'whisper':
         // Harvey's tactical advice during calls
-        this.playHarveyWhisper(message.audio);
+        if (MOCK_MODE) {
+          this.playHarveyMessage(message.text);
+          // Trigger visual feedback
+          this.config?.onAudioReceived?.('mock-whisper');
+        } else {
+          this.playHarveyWhisper(message.audio);
+        }
         break;
         
       case 'verdict':
         // Post-call analysis
-        this.config?.onAudioReceived?.(message.audio);
+        if (MOCK_MODE) {
+          this.playHarveyMessage(message.text);
+        }
+        this.config?.onAudioReceived?.(message.audio || 'mock-verdict');
         break;
         
       case 'coaching':
@@ -384,10 +412,72 @@ class HarveyWebRTC {
     }
   }
 
+  private startMockHarvey(): void {
+    if (!MOCK_MODE) return;
+    
+    // Send mock coaching messages periodically
+    this.mockInterval = setInterval(() => {
+      const messages = [
+        { type: 'whisper', text: "Good pace. Keep them engaged." },
+        { type: 'whisper', text: "They're interested. Push for commitment." },
+        { type: 'whisper', text: "Watch your talk ratio. Let them speak." },
+        { type: 'whisper', text: "Perfect timing on that question." },
+        { type: 'whisper', text: "Energy is dropping. Pick up the pace." },
+        { type: 'verdict', text: "Not bad, rookie. You're improving." },
+      ];
+      
+      const message = messages[Math.floor(Math.random() * messages.length)];
+      this.handleHarveyMessage(message);
+    }, 15000); // Every 15 seconds
+  }
+
+  private playHarveyGreeting(): void {
+    if (!MOCK_MODE) return;
+    
+    // Use browser's text-to-speech for Harvey's voice
+    const utterance = new SpeechSynthesisUtterance("Harvey AI activated. Don't disappoint me.");
+    utterance.rate = 0.9;
+    utterance.pitch = 0.8;
+    utterance.volume = 0.7;
+    
+    // Try to use a male voice
+    const voices = speechSynthesis.getVoices();
+    const maleVoice = voices.find(voice => voice.name.includes('Male') || voice.name.includes('David'));
+    if (maleVoice) {
+      utterance.voice = maleVoice;
+    }
+    
+    speechSynthesis.speak(utterance);
+    
+    // Send audio data to callback
+    this.config?.onAudioReceived?.('mock-audio-greeting');
+  }
+
+  private playHarveyMessage(text: string): void {
+    if (!MOCK_MODE || this.isMuted) return;
+    
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.rate = 0.9;
+    utterance.pitch = 0.8;
+    utterance.volume = 0.5; // Quieter for whispers
+    
+    const voices = speechSynthesis.getVoices();
+    const maleVoice = voices.find(voice => voice.name.includes('Male') || voice.name.includes('David'));
+    if (maleVoice) {
+      utterance.voice = maleVoice;
+    }
+    
+    speechSynthesis.speak(utterance);
+  }
+
   disconnect(): void {
     // Clean up connections
     if (this.voiceAnalysisInterval) {
       clearInterval(this.voiceAnalysisInterval);
+    }
+    
+    if (this.mockInterval) {
+      clearInterval(this.mockInterval);
     }
     
     if (this.reconnectTimer) {
@@ -408,6 +498,11 @@ class HarveyWebRTC {
     
     if (this.audioContext) {
       this.audioContext.close();
+    }
+    
+    // Stop any ongoing speech
+    if (MOCK_MODE) {
+      speechSynthesis.cancel();
     }
     
     this.isConnected = false;

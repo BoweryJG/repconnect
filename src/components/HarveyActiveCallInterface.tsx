@@ -156,12 +156,15 @@ export const HarveyActiveCallInterface: React.FC<HarveyActiveCallInterfaceProps>
   };
 
   const startInsightGeneration = () => {
+    // Generate first insight quickly in mock mode
+    setTimeout(() => generateInsight(), 3000);
+    
     // Simulate Harvey's real-time insights
     const interval = setInterval(() => {
-      if (Math.random() > 0.7) {
+      if (Math.random() > 0.5) { // More frequent in mock mode
         generateInsight();
       }
-    }, 10000);
+    }, 8000); // Every 8 seconds
 
     return () => clearInterval(interval);
   };
