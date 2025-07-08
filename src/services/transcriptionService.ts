@@ -1,5 +1,6 @@
 import { io, Socket } from 'socket.io-client';
 import { supabase } from '../lib/supabase';
+import { harveyWebRTC } from './harveyWebRTC';
 
 interface TranscriptionUpdate {
   callSid: string;
@@ -99,6 +100,11 @@ class TranscriptionService {
           speaker: data.speaker
         };
         session.onUpdate(update);
+        
+        // Send transcription to Harvey for real-time coaching
+        if (update.text && update.speaker) {
+          harveyWebRTC.sendTranscriptionToHarvey(update.text, update.speaker);
+        }
       } else {
               }
     });

@@ -242,7 +242,6 @@ export class EnrichmentEngine {
           industry: enrichedLead.enriched.industry
         });
     } catch (error) {
-      console.error('Error storing enriched lead:', error);
     }
   }
 

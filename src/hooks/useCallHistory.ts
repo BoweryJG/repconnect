@@ -108,7 +108,6 @@ export const useCallHistory = (options: UseCallHistoryOptions = {}) => {
             }, {} as Record<string, string>);
           }
         } catch (err) {
-          console.warn('Failed to fetch contact names:', err);
         }
       }
 
@@ -148,7 +147,6 @@ export const useCallHistory = (options: UseCallHistoryOptions = {}) => {
             }, {} as Record<string, CallAnalysisRecord>);
           }
         } catch (err) {
-          console.warn('Failed to fetch call analyses:', err);
         }
       }
 
@@ -189,7 +187,6 @@ export const useCallHistory = (options: UseCallHistoryOptions = {}) => {
       setHasMore(filteredCalls.length === pageSize);
       setTotalCount(count || 0);
     } catch (err) {
-      console.error('Error fetching calls:', err);
       setError(err instanceof Error ? err.message : 'Failed to fetch calls');
     } finally {
       setLoading(false);
@@ -222,7 +219,6 @@ export const useCallHistory = (options: UseCallHistoryOptions = {}) => {
           table: 'call_logs' 
         },
         (payload) => {
-          console.log('Call update:', payload);
           // Refresh the list when there's any change
           refresh();
         }
@@ -235,7 +231,6 @@ export const useCallHistory = (options: UseCallHistoryOptions = {}) => {
           table: 'call_analysis' 
         },
         (payload) => {
-          console.log('Call analysis update:', payload);
           // Refresh to get updated analysis
           refresh();
         }
@@ -359,7 +354,6 @@ export const useCallHistory = (options: UseCallHistoryOptions = {}) => {
 
       return true;
     } catch (error) {
-      console.error('Error exporting to PDF:', error);
       throw error;
     }
   }, [calls]);

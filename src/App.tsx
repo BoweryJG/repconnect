@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import {
   Container,
   Button,
@@ -42,6 +43,7 @@ import { HarveyLoadingScreen } from './components/HarveyLoadingScreen';
 import { HarveyActiveCallInterface } from './components/HarveyActiveCallInterface';
 import { HarveySettingsModal } from './components/HarveySettingsModal';
 import { harveyWebRTC } from './services/harveyWebRTC';
+import { harveyService } from './services/harveyService';
 import AgentSelector from './components/AgentSelector';
 
 // Lazy load heavy components
@@ -69,7 +71,7 @@ function AppContent() {
     logger.debug('Grid dimensions updated:', gridDimensions);
   }, [gridDimensions]);
   const gridContainerRef = useRef<HTMLDivElement>(null);
-  const [isDemoMode, setIsDemoMode] = useState(true);
+  const [isDemoMode, setIsDemoMode] = useState(false);
   const [showUsageWarning, setShowUsageWarning] = useState(false);
   const [harveyLoading, setHarveyLoading] = useState(false);
   const [harveyConnectionStatus, setHarveyConnectionStatus] = useState<'connecting' | 'connected' | 'failed' | 'reconnecting'>('connecting');
@@ -231,6 +233,21 @@ function AppContent() {
       // Give Harvey a moment to stabilize
       await new Promise(resolve => setTimeout(resolve, 1000));
       
+      // Pre-call whisper from Harvey
+      if (harveyWebRTC) {
+        // Send contact info to Harvey for pre-call analysis
+        harveyWebRTC.sendVoiceCommand(`prepare: Calling ${contact.name} at ${contact.phoneNumber}`);
+        
+        // Emit pre-call coaching
+        window.dispatchEvent(new CustomEvent('harvey-coaching', {
+          detail: {
+            type: 'coaching',
+            message: `Calling ${contact.name}. Remember to lead with value.`,
+            timestamp: Date.now(),
+          }
+        }));
+      }
+      
     } catch (error: any) {
       logger.error('Harvey connection failed:', error);
       setHarveyError('Failed to connect to Harvey. Proceeding without AI coaching.');
@@ -309,6 +326,21 @@ function AppContent() {
       // Give Harvey a moment to stabilize
       await new Promise(resolve => setTimeout(resolve, 1000));
       
+      // Pre-call whisper from Harvey
+      if (harveyWebRTC) {
+        // Send contact info to Harvey for pre-call analysis
+        harveyWebRTC.sendVoiceCommand(`prepare: Calling ${phoneNumber}`);
+        
+        // Emit pre-call coaching
+        window.dispatchEvent(new CustomEvent('harvey-coaching', {
+          detail: {
+            type: 'coaching',
+            message: `Calling ${phoneNumber}. Remember to lead with value.`,
+            timestamp: Date.now(),
+          }
+        }));
+      }
+      
     } catch (error: any) {
       logger.error('Harvey connection failed:', error);
       setHarveyError('Failed to connect to Harvey. Proceeding without AI coaching.');
@@ -385,10 +417,39 @@ function AppContent() {
     }
   };
 
-  const handleEndCall = () => {
+  const handleEndCall = async (callDuration?: number) => {
+    // Submit call performance to Harvey for analysis
+    if (activeCall && activeCall.callSid) {
+      const duration = callDuration || activeCall.duration || 0;
+      
+      // Get call recording for Harvey's analysis
+      try {
+        const recordings = await twilioService.getCallRecordings(activeCall.callSid);
+        if (recordings && recordings.length > 0) {
+          // Send recording URL to Harvey for deep analysis
+          harveyWebRTC.sendVoiceCommand(`analyze-recording: ${recordings[0].url}`);
+        }
+      } catch (error) {
+        logger.error('Failed to get call recording:', error);
+      }
+      
+      await harveyService.submitCallPerformance({
+        callId: activeCall.callSid,
+        duration: duration,
+        outcome: 'follow-up', // This should be determined based on actual call outcome
+        voiceMetrics: {
+          // These would come from harveyWebRTC voice analysis
+          confidence: 75,
+          pace: 'normal',
+        }
+      });
+    }
+    
     setCallInProgress(false);
     setActiveCall(null);
     setHarveyLoading(false);
+    setHarveyConnectionStatus('connecting');
+    setHarveyError(undefined);
     harveyWebRTC.disconnect();
   };
 
@@ -1193,11 +1254,13 @@ function AppContent() {
 
 function App() {
   return (
-    <AuthProvider>
-      <ToastProvider>
-        <AppContent />
-      </ToastProvider>
-    </AuthProvider>
+    <ErrorBoundary>
+      <AuthProvider>
+        <ToastProvider>
+          <AppContent />
+        </ToastProvider>
+      </AuthProvider>
+    </ErrorBoundary>
   );
 }
 

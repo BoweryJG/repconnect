@@ -1,12 +1,17 @@
 import { createClient } from '@supabase/supabase-js';
 
 // Initialize Supabase
-const supabaseUrl = 'https://cbopynuvhcymbumjnvay.supabase.co';
+const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
+
+if (!supabaseUrl || !supabaseKey) {
+  throw new Error('Missing required environment variables: SUPABASE_URL and SUPABASE_SERVICE_KEY');
+}
+
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 async function createTestUsers() {
-  console.log('👥 Creating test sales reps for Harvey...\n');
+  // Creating test sales reps for Harvey...
   
   // Test sales reps
   const testReps = [
@@ -47,11 +52,11 @@ async function createTestUsers() {
       .select('*')
       .limit(1);
     
-    console.log('Checking users table structure...');
+    // Checking users table structure...
     
     // Insert test users
     for (const rep of testReps) {
-      console.log(`\nCreating user: ${rep.name}`);
+      // Creating user: ${rep.name}
       
       const { data, error } = await supabase
         .from('users')
@@ -69,11 +74,11 @@ async function createTestUsers() {
         .select();
       
       if (error) {
-        console.error(`❌ Error creating ${rep.name}:`, error.message);
+        throw new Error(`Error creating ${rep.name}: ${error.message}`);
         
         // Try alternative approach - check if table expects different columns
         if (error.code === '42703') { // column does not exist
-          console.log('Trying alternative schema...');
+          // Trying alternative schema...
           
           // Try with different column names
           const { data: altData, error: altError } = await supabase
@@ -88,7 +93,7 @@ async function createTestUsers() {
             .select();
           
           if (!altError) {
-            console.log(`✅ Created user (basic): ${rep.email}`);
+            // Created user (basic): ${rep.email}
             
             // Try to create user_profile
             const { error: profileError } = await supabase
@@ -104,28 +109,28 @@ async function createTestUsers() {
               });
             
             if (!profileError) {
-              console.log(`✅ Created user profile: ${rep.name}`);
+              // Created user profile: ${rep.name}
             } else {
-              console.error(`❌ Error creating profile:`, profileError.message);
+              throw new Error(`Error creating profile: ${profileError.message}`);
             }
           } else {
-            console.error(`❌ Alternative approach failed:`, altError.message);
+            throw new Error(`Alternative approach failed: ${altError.message}`);
           }
         }
       } else {
-        console.log(`✅ Successfully created: ${rep.name}`);
+        // Successfully created: ${rep.name}
       }
     }
     
     // Verify users were created
-    console.log('\n📊 Verifying created users:\n');
+    // Verifying created users...
     
     const { data: allUsers, error: fetchError } = await supabase
       .from('users')
       .select('*');
     
     if (!fetchError) {
-      console.log(`Total users in database: ${allUsers.length}`);
+      // Total users in database: ${allUsers.length}
       
       // Also check user_profiles
       const { data: profiles, error: profilesError } = await supabase
@@ -133,22 +138,22 @@ async function createTestUsers() {
         .select('*');
       
       if (!profilesError) {
-        console.log(`Total user profiles: ${profiles.length}`);
+        // Total user profiles: ${profiles.length}
         
         if (profiles.length > 0) {
-          console.log('\nUser profiles found:');
+          // User profiles found:
           profiles.forEach(profile => {
-            console.log(`- ${profile.first_name} ${profile.last_name} (${profile.role})`);
+            // - ${profile.first_name} ${profile.last_name} (${profile.role})
           });
         }
       }
     }
     
-    console.log('\n✅ Test users setup complete!');
-    console.log('You can now run: npm run harvey:init');
+    // Test users setup complete!
+    // You can now run: npm run harvey:init
     
   } catch (error) {
-    console.error('Error creating test users:', error);
+    throw new Error(`Error creating test users: ${error.message || error}`);
   }
 }
 

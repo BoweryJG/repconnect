@@ -43,7 +43,6 @@ export class ThermalManager {
           this.notifyCallbacks();
         });
       } catch (error) {
-        console.warn('Battery API not available');
       }
     }
   }
@@ -95,7 +94,6 @@ export class ThermalManager {
   private enablePowerSaving() {
     // Quality will be automatically reduced by AdaptiveRenderer
     // based on the temperature metrics from PerformanceMonitor
-    console.log('Power saving mode enabled due to thermal conditions');
   }
 
   public getState(): ThermalState {

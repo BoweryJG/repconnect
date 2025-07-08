@@ -86,26 +86,37 @@ class HarveyService {
   private initializeSocket(): void {
     if (this.socket) return;
 
+    // Get auth token
+    const authToken = localStorage.getItem('harvey_token');
+
     // Connect to harvey-ws namespace
     this.socket = io(`${this.baseUrl}/harvey-ws`, {
-      transports: ['websocket'],
+      transports: ['websocket', 'polling'],
       reconnection: true,
-      reconnectionAttempts: 5,
+      reconnectionAttempts: 10,
       reconnectionDelay: 1000,
+      reconnectionDelayMax: 5000,
       auth: {
+        userId: this.userId,
+        token: authToken
+      },
+      query: {
         userId: this.userId
       }
     });
 
     this.socket.on('connect', () => {
-          });
+    });
+
+    this.socket.on('connect_error', (error) => {
+    });
 
     this.socket.on('harvey-update', (update: HarveyUpdate) => {
       this.handleUpdate(update);
     });
 
-    this.socket.on('disconnect', () => {
-          });
+    this.socket.on('disconnect', (reason) => {
+    });
   }
 
   private handleUpdate(update: HarveyUpdate): void {

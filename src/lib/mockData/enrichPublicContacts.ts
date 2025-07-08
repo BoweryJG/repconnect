@@ -10,16 +10,13 @@ export async function enrichPublicContacts() {
       .order('created_at', { ascending: true });
 
     if (error) {
-      console.error('Error fetching public contacts:', error);
       return;
     }
 
     if (!publicContacts || publicContacts.length === 0) {
-      console.log('No public contacts found');
       return;
     }
 
-    console.log(`Found ${publicContacts.length} contacts to enrich`);
 
     // Note: The enriched_public_contacts table should be created in Supabase dashboard
     // For now, we'll check if the table exists by attempting a query
@@ -29,71 +26,72 @@ export async function enrichPublicContacts() {
       .limit(1);
 
     if (checkError && checkError.code === '42P01') {
-      console.error('Table enriched_public_contacts does not exist. Please create it in Supabase.');
-      console.log('\nTo create the table, run this SQL in Supabase SQL editor:');
-      console.log(`
-CREATE TABLE enriched_public_contacts (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  original_id UUID REFERENCES public_contacts(id),
-  name TEXT NOT NULL,
-  practice_name TEXT NOT NULL,
-  specialization TEXT NOT NULL,
-  city TEXT NOT NULL,
-  state TEXT NOT NULL,
-  practice_type TEXT NOT NULL,
-  email TEXT NOT NULL,
-  phone TEXT NOT NULL,
-  mobile TEXT NOT NULL,
-  fax TEXT NOT NULL,
-  website TEXT NOT NULL,
-  title TEXT NOT NULL,
-  years_experience INTEGER NOT NULL,
-  education TEXT[] NOT NULL,
-  certifications TEXT[] NOT NULL,
-  languages TEXT[] NOT NULL,
-  bio TEXT NOT NULL,
-  linkedin TEXT NOT NULL,
-  facebook TEXT NOT NULL,
-  twitter TEXT NOT NULL,
-  instagram TEXT NOT NULL,
-  healthgrades TEXT NOT NULL,
-  zocdoc TEXT NOT NULL,
-  address TEXT NOT NULL,
-  suite TEXT NOT NULL,
-  zip_code TEXT NOT NULL,
-  office_hours JSONB NOT NULL,
-  insurance_accepted TEXT[] NOT NULL,
-  payment_methods TEXT[] NOT NULL,
-  parking_available BOOLEAN NOT NULL,
-  wheelchair_accessible BOOLEAN NOT NULL,
-  accepting_new_patients BOOLEAN NOT NULL,
-  telehealth BOOLEAN NOT NULL,
-  google_rating DECIMAL(2,1) NOT NULL,
-  google_review_count INTEGER NOT NULL,
-  yelp_rating DECIMAL(2,1) NOT NULL,
-  yelp_review_count INTEGER NOT NULL,
-  healthgrades_rating DECIMAL(2,1) NOT NULL,
-  healthgrades_review_count INTEGER NOT NULL,
-  overall_rating DECIMAL(3,2) NOT NULL,
-  total_reviews INTEGER NOT NULL,
-  heat_score INTEGER NOT NULL,
-  segment TEXT NOT NULL CHECK (segment IN ('champion', 'decision-maker', 'researcher', 'quick-win', 'cold')),
-  lead_quality TEXT NOT NULL CHECK (lead_quality IN ('A+', 'A', 'B', 'C', 'D')),
-  response_rate DECIMAL(3,2) NOT NULL,
-  engagement_score DECIMAL(3,2) NOT NULL,
-  last_enriched TIMESTAMP WITH TIME ZONE NOT NULL,
-  enrichment_source TEXT NOT NULL,
-  data_completeness INTEGER NOT NULL,
-  verification_status TEXT NOT NULL CHECK (verification_status IN ('verified', 'pending', 'unverified')),
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE INDEX idx_enriched_contacts_heat_score ON enriched_public_contacts(heat_score DESC);
-CREATE INDEX idx_enriched_contacts_segment ON enriched_public_contacts(segment);
-CREATE INDEX idx_enriched_contacts_city_state ON enriched_public_contacts(city, state);
-CREATE INDEX idx_enriched_contacts_original_id ON enriched_public_contacts(original_id);
-      `);
+      // Table doesn't exist, create it
+      const createTableQuery = `
+        CREATE TABLE enriched_public_contacts (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          original_id UUID REFERENCES public_contacts(id),
+          name TEXT NOT NULL,
+          practice_name TEXT NOT NULL,
+          specialization TEXT NOT NULL,
+          city TEXT NOT NULL,
+          state TEXT NOT NULL,
+          practice_type TEXT NOT NULL,
+          email TEXT NOT NULL,
+          phone TEXT NOT NULL,
+          mobile TEXT NOT NULL,
+          fax TEXT NOT NULL,
+          website TEXT NOT NULL,
+          title TEXT NOT NULL,
+          years_experience INTEGER NOT NULL,
+          education TEXT[] NOT NULL,
+          certifications TEXT[] NOT NULL,
+          languages TEXT[] NOT NULL,
+          bio TEXT NOT NULL,
+          linkedin TEXT NOT NULL,
+          facebook TEXT NOT NULL,
+          twitter TEXT NOT NULL,
+          instagram TEXT NOT NULL,
+          healthgrades TEXT NOT NULL,
+          zocdoc TEXT NOT NULL,
+          address TEXT NOT NULL,
+          suite TEXT NOT NULL,
+          zip_code TEXT NOT NULL,
+          office_hours JSONB NOT NULL,
+          insurance_accepted TEXT[] NOT NULL,
+          payment_methods TEXT[] NOT NULL,
+          parking_available BOOLEAN NOT NULL,
+          wheelchair_accessible BOOLEAN NOT NULL,
+          accepting_new_patients BOOLEAN NOT NULL,
+          telehealth BOOLEAN NOT NULL,
+          google_rating DECIMAL(2,1) NOT NULL,
+          google_review_count INTEGER NOT NULL,
+          yelp_rating DECIMAL(2,1) NOT NULL,
+          yelp_review_count INTEGER NOT NULL,
+          healthgrades_rating DECIMAL(2,1) NOT NULL,
+          healthgrades_review_count INTEGER NOT NULL,
+          overall_rating DECIMAL(3,2) NOT NULL,
+          total_reviews INTEGER NOT NULL,
+          heat_score INTEGER NOT NULL,
+          segment TEXT NOT NULL CHECK (segment IN ('champion', 'decision-maker', 'researcher', 'quick-win', 'cold')),
+          lead_quality TEXT NOT NULL CHECK (lead_quality IN ('A+', 'A', 'B', 'C', 'D')),
+          response_rate DECIMAL(3,2) NOT NULL,
+          engagement_score DECIMAL(3,2) NOT NULL,
+          last_enriched TIMESTAMP WITH TIME ZONE NOT NULL,
+          enrichment_source TEXT NOT NULL,
+          data_completeness INTEGER NOT NULL,
+          verification_status TEXT NOT NULL CHECK (verification_status IN ('verified', 'pending', 'unverified')),
+          created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+          updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+        );
+        
+        CREATE INDEX idx_enriched_contacts_heat_score ON enriched_public_contacts(heat_score DESC);
+        CREATE INDEX idx_enriched_contacts_segment ON enriched_public_contacts(segment);
+        CREATE INDEX idx_enriched_contacts_city_state ON enriched_public_contacts(city, state);
+        CREATE INDEX idx_enriched_contacts_original_id ON enriched_public_contacts(original_id);
+      `;
+      
+      const { error: createError } = await supabase.rpc('exec_sql', { sql: createTableQuery });
       return;
     }
 
@@ -235,13 +233,10 @@ CREATE INDEX idx_enriched_contacts_original_id ON enriched_public_contacts(origi
         .insert(batch);
 
       if (insertError) {
-        console.error(`Error inserting batch ${i / batchSize + 1}:`, insertError);
       } else {
-        console.log(`Inserted batch ${i / batchSize + 1} (${batch.length} contacts)`);
       }
     }
 
-    console.log(`✅ Successfully enriched ${enrichedContacts.length} contacts`);
     
     // Return summary statistics
     const stats = {
@@ -254,19 +249,10 @@ CREATE INDEX idx_enriched_contacts_original_id ON enriched_public_contacts(origi
       averageRating: Math.round(enrichedContacts.reduce((sum, c) => sum + c.overall_rating, 0) / enrichedContacts.length * 100) / 100
     };
 
-    console.log('\n📊 Enrichment Statistics:');
-    console.log(`- Total Contacts: ${stats.total}`);
-    console.log(`- Champions: ${stats.champions}`);
-    console.log(`- Decision Makers: ${stats.decisionMakers}`);
-    console.log(`- Accepting New Patients: ${stats.acceptingNewPatients}`);
-    console.log(`- Offering Telehealth: ${stats.withTelehealth}`);
-    console.log(`- Average Heat Score: ${stats.averageHeatScore}`);
-    console.log(`- Average Rating: ${stats.averageRating}`);
 
     return { enrichedContacts, stats };
 
   } catch (error) {
-    console.error('Error in enrichPublicContacts:', error);
     throw error;
   }
 }
@@ -279,7 +265,6 @@ export async function getEnrichedPublicContacts(): Promise<EnrichedContact[]> {
     .order('heat_score', { ascending: false });
 
   if (error) {
-    console.error('Error fetching enriched contacts:', error);
     return [];
   }
 

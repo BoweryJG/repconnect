@@ -260,7 +260,6 @@ export class SmartCallQueue {
       
       return queue;
     } catch (error) {
-      console.error('Error syncing queue:', error);
       queue.status = 'error';
       throw error;
     }

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { supabase } from '../../lib/supabase';
+import { CornerScrews } from '../effects/PrecisionScrew';
 import './LoginModal.css';
 
 interface LoginModalProps {
@@ -11,46 +12,66 @@ interface LoginModalProps {
 
 export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSuccess }) => {
   const modalRef = useRef<HTMLDivElement>(null);
-  const screwRefs = useRef<HTMLDivElement[]>([]);
+  const contentRef = useRef<HTMLDivElement>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [loadingProvider, setLoadingProvider] = useState<string | null>(null);
 
   useEffect(() => {
     if (isOpen && modalRef.current) {
-      // Simple entrance animation
+      // Enhanced entrance animation with mechanical precision
       const tl = gsap.timeline();
       
+      // Modal entrance with slight rotation and scale
       tl.fromTo(modalRef.current, 
         { 
-          scale: 0.9, 
-          opacity: 0
+          scale: 0.85, 
+          opacity: 0,
+          rotationY: -15,
+          transformPerspective: 1000
         },
         { 
           scale: 1, 
           opacity: 1,
-          duration: 0.4,
-          ease: "power2.out"
+          rotationY: 0,
+          duration: 0.6,
+          ease: "power3.out"
         }
       );
 
-      // Simple screw appearance - no rotation
-      screwRefs.current.forEach((screw, index) => {
-        if (screw) {
-          tl.fromTo(screw,
-            { 
-              scale: 0, 
-              opacity: 0
-            },
-            { 
-              scale: 1, 
-              opacity: 1,
-              duration: 0.2,
-              ease: "power2.out",
-              delay: index * 0.05
-            },
-            "-=0.2"
-          );
-        }
+      // Content fade in with slight upward motion
+      if (contentRef.current) {
+        tl.fromTo(contentRef.current,
+          {
+            opacity: 0,
+            y: 20
+          },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.4,
+            ease: "power2.out"
+          },
+          "-=0.3"
+        );
+      }
+
+      // Animate corner screws (they animate themselves via CSS)
+      const screws = modalRef.current.querySelectorAll('.screw-wrapper');
+      screws.forEach((screw, index) => {
+        tl.fromTo(screw,
+          {
+            scale: 0,
+            rotation: -180
+          },
+          {
+            scale: 1,
+            rotation: 0,
+            duration: 0.4,
+            ease: "back.out(1.7)",
+            delay: index * 0.1
+          },
+          "-=0.3"
+        );
       });
     }
   }, [isOpen]);
@@ -86,14 +107,54 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSucce
         });
       }
     } catch (error) {
-            // Error shake animation
+      // Enhanced error animation with mechanical feedback
       if (modalRef.current) {
-        gsap.timeline()
-          .to(modalRef.current, { x: -10, duration: 0.1 })
-          .to(modalRef.current, { x: 10, duration: 0.1 })
-          .to(modalRef.current, { x: -10, duration: 0.1 })
-          .to(modalRef.current, { x: 10, duration: 0.1 })
-          .to(modalRef.current, { x: 0, duration: 0.1 });
+        const tl = gsap.timeline();
+        
+        // Quick red flash on screws
+        const screws = modalRef.current.querySelectorAll('.screw-wrapper .screw');
+        tl.to(screws, {
+          boxShadow: '0 0 8px rgba(255, 0, 0, 0.8)',
+          duration: 0.2,
+        });
+        
+        // Shake with rotation
+        tl.to(modalRef.current, {
+          x: -8,
+          rotation: -1,
+          duration: 0.08,
+          ease: "power2.out"
+        })
+        .to(modalRef.current, {
+          x: 8,
+          rotation: 1,
+          duration: 0.08,
+          ease: "power2.inOut"
+        })
+        .to(modalRef.current, {
+          x: -5,
+          rotation: -0.5,
+          duration: 0.08,
+          ease: "power2.inOut"
+        })
+        .to(modalRef.current, {
+          x: 5,
+          rotation: 0.5,
+          duration: 0.08,
+          ease: "power2.inOut"
+        })
+        .to(modalRef.current, {
+          x: 0,
+          rotation: 0,
+          duration: 0.1,
+          ease: "power2.out"
+        });
+        
+        // Reset screw glow
+        tl.to(screws, {
+          boxShadow: 'none',
+          duration: 0.3,
+        }, "-=0.1");
       }
     } finally {
       setIsLoading(false);
@@ -114,39 +175,20 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSucce
         className="login-modal"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Removed power rail - keeping design clean */}
-
-        {/* Luxury Screws - 4 corners */}
-        <div 
-          ref={el => {
-            if (el) screwRefs.current[0] = el;
-          }} 
-          className="screw screw-tl"
-        />
-        <div 
-          ref={el => {
-            if (el) screwRefs.current[1] = el;
-          }} 
-          className="screw screw-tr"
-        />
-        <div 
-          ref={el => {
-            if (el) screwRefs.current[2] = el;
-          }} 
-          className="screw screw-bl"
-        />
-        <div 
-          ref={el => {
-            if (el) screwRefs.current[3] = el;
-          }} 
-          className="screw screw-br"
+        {/* Premium Corner Screws with proper animations */}
+        <CornerScrews 
+          size="small" 
+          grooveType="phillips"
+          premium={true}
         />
 
         {/* Close Button */}
         <button className="close-btn" onClick={onClose} />
 
-        {/* Logo Section */}
-        <div className="logo-section">
+        {/* Content Wrapper for animation */}
+        <div ref={contentRef} className="modal-content">
+          {/* Logo Section */}
+          <div className="logo-section">
           <div className="logo-icon">
             <svg
               className="logo-jewel"
@@ -234,9 +276,10 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSucce
           <a href="#" className="email-link">Sign in with email instead</a>
         </div>
 
-        {/* Terms */}
-        <div className="terms">
-          By continuing, you agree to RepConnect's <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+          {/* Terms */}
+          <div className="terms">
+            By continuing, you agree to RepConnect's <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+          </div>
         </div>
 
         {/* Footer */}

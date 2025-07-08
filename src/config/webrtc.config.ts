@@ -175,7 +175,6 @@ export async function testTurnServer(turnServer: RTCIceServer): Promise<boolean>
       }, 10000);
     });
   } catch (error) {
-    console.error('Error testing TURN server:', error);
     return false;
   }
 }

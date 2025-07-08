@@ -29,7 +29,6 @@ export async function createCheckoutSession(
     const { sessionUrl } = await response.json();
     return sessionUrl;
   } catch (error) {
-    console.error('Error creating checkout session:', error);
     return null;
   }
 }
@@ -56,7 +55,6 @@ export async function createCustomerPortalSession(
     const { url } = await response.json();
     return url;
   } catch (error) {
-    console.error('Error creating portal session:', error);
     return null;
   }
 }
@@ -81,24 +79,20 @@ export async function handleStripeWebhook(
       break;
     
     default:
-      console.log(`Unhandled event type ${event.type}`);
   }
 }
 
 async function handleCheckoutComplete(session: any) {
   // Update user's subscription in database
-  console.log('Checkout completed:', session);
   // Implementation would update Supabase
 }
 
 async function handleSubscriptionUpdate(subscription: any) {
   // Update subscription status in database
-  console.log('Subscription updated:', subscription);
   // Implementation would update Supabase
 }
 
 async function handleSubscriptionCancellation(subscription: any) {
   // Handle subscription cancellation
-  console.log('Subscription cancelled:', subscription);
   // Implementation would update Supabase
 }

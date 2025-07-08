@@ -10,6 +10,9 @@ import { PublicEnrichedDemo } from './components/PublicEnrichedDemo';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { HarveySyndicate } from './components/HarveySyndicate';
 import { HarveyWarRoom } from './components/HarveyWarRoom';
+import { HarveyCallQueueInterface } from './components/HarveyCallQueueInterface';
+import { HarveyBattleMode } from './components/HarveyBattleMode';
+import { HarveyMetricsDashboard } from './components/HarveyMetricsDashboard';
 import { AuthCallback } from './pages/AuthCallback';
 
 export const AppRouter: React.FC = () => {
@@ -30,6 +33,9 @@ export const AppRouter: React.FC = () => {
             {/* Harvey Syndicate routes */}
             <Route path="/harvey" element={<HarveySyndicate />} />
             <Route path="/harvey/warroom" element={<HarveyWarRoom />} />
+            <Route path="/harvey/queue" element={<HarveyCallQueueInterface />} />
+            <Route path="/harvey/battle" element={<HarveyBattleMode />} />
+            <Route path="/harvey/metrics" element={<HarveyMetricsDashboard />} />
             
             {/* Auth callback route */}
             <Route path="/auth/callback" element={<AuthCallback />} />

@@ -19,6 +19,7 @@ import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 // Removed glassmorphism imports - using inline styles for TypeScript compatibility
 import { useStore } from '../store/useStore';
 import { transcriptionService } from '../services/transcriptionService';
+import { harveyWebRTC } from '../services/harveyWebRTC';
 // import { supabase } from '../lib/supabase';
 
 interface CallInterfaceProps {
@@ -27,7 +28,7 @@ interface CallInterfaceProps {
     phoneNumber: string;
     avatar?: string;
   };
-  onEndCall: () => void;
+  onEndCall: (duration?: number) => void;
   callSid?: string;
 }
 
@@ -41,6 +42,8 @@ export const CallInterface: React.FC<CallInterfaceProps> = ({ contact, onEndCall
   const [transcriptionError, setTranscriptionError] = useState<string | null>(null);
   const [isConnecting, setIsConnecting] = useState(true);
   const [fullTranscript, setFullTranscript] = useState<string[]>([]);
+  const [harveyConnected, setHarveyConnected] = useState(false);
+  const [harveyCoachingText, setHarveyCoachingText] = useState<string>('');
   const waveformRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<number | null>(null);
   const mediaStreamRef = useRef<MediaStream | null>(null);
@@ -73,6 +76,26 @@ export const CallInterface: React.FC<CallInterfaceProps> = ({ contact, onEndCall
       }
     };
   }, []);
+
+  // Listen for Harvey coaching messages
+  useEffect(() => {
+    if (!aiEnabled) return;
+
+    // Set up Harvey message listener
+    const handleHarveyMessage = (event: CustomEvent) => {
+      if (event.detail && event.detail.type === 'coaching') {
+        setHarveyCoachingText(event.detail.message);
+        // Clear coaching text after 5 seconds
+        setTimeout(() => setHarveyCoachingText(''), 5000);
+      }
+    };
+
+    window.addEventListener('harvey-coaching' as any, handleHarveyMessage);
+
+    return () => {
+      window.removeEventListener('harvey-coaching' as any, handleHarveyMessage);
+    };
+  }, [aiEnabled]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -143,6 +166,11 @@ export const CallInterface: React.FC<CallInterfaceProps> = ({ contact, onEndCall
           // Add to full transcript if it's a final transcription
           if (update.isFinal) {
             setFullTranscript(prev => [...prev, update.text]);
+            
+            // Send transcription to Harvey for analysis
+            if (harveyConnected && harveyWebRTC) {
+              harveyWebRTC.sendVoiceCommand(`analyze: ${update.text}`);
+            }
           }
           
           // Update sentiment
@@ -172,7 +200,7 @@ export const CallInterface: React.FC<CallInterfaceProps> = ({ contact, onEndCall
         transcriptionService.stopTranscription(currentCallSid);
       };
     }
-  }, [transcriptionEnabled, aiEnabled, callSid, activeCall]);
+  }, [transcriptionEnabled, aiEnabled, callSid, activeCall, harveyConnected]);
 
   const toggleMicrophone = () => {
     if (mediaStreamRef.current) {
@@ -181,6 +209,11 @@ export const CallInterface: React.FC<CallInterfaceProps> = ({ contact, onEndCall
         track.enabled = !track.enabled;
       });
       setIsMuted(!isMuted);
+      
+      // Notify Harvey of mute status
+      if (harveyWebRTC) {
+        harveyWebRTC.setMuted(!isMuted);
+      }
     } else {
       setTranscriptionError('Microphone not available. Please refresh and allow microphone access.');
     }
@@ -322,6 +355,43 @@ export const CallInterface: React.FC<CallInterfaceProps> = ({ contact, onEndCall
           </Alert>
         )}
 
+        {/* Harvey Coaching Overlay */}
+        {aiEnabled && harveyCoachingText && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            style={{
+              position: 'absolute',
+              top: '20px',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              padding: '12px 24px',
+              borderRadius: '24px',
+              background: 'linear-gradient(135deg, rgba(255, 215, 0, 0.15) 0%, rgba(255, 165, 0, 0.15) 100%)',
+              backdropFilter: 'blur(20px) saturate(200%)',
+              WebkitBackdropFilter: 'blur(20px) saturate(200%)',
+              border: '1px solid rgba(255, 215, 0, 0.3)',
+              boxShadow: '0 4px 20px rgba(255, 215, 0, 0.2)',
+              zIndex: 10,
+            }}
+          >
+            <Typography 
+              variant="body2" 
+              sx={{ 
+                color: '#FFD700',
+                fontWeight: 600,
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px'
+              }}
+            >
+              <RecordVoiceOverIcon sx={{ fontSize: 18 }} />
+              {harveyCoachingText}
+            </Typography>
+          </motion.div>
+        )}
+
         {/* AI Transcript */}
         {transcriptionEnabled && (transcript || fullTranscript.length > 0) && (
           <Slide direction="up" in={!!(transcript || fullTranscript.length > 0)}>
@@ -403,7 +473,7 @@ export const CallInterface: React.FC<CallInterfaceProps> = ({ contact, onEndCall
 
           <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
             <IconButton
-              onClick={onEndCall}
+              onClick={() => onEndCall(duration)}
               sx={{
                 width: 80,
                 height: 80,

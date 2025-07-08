@@ -31,31 +31,26 @@ class Logger {
 
   log(...args: any[]): void {
     if (this.shouldLog()) {
-      console.log(...this.formatMessage('log', ...args));
     }
   }
 
   error(...args: any[]): void {
     if (this.shouldLog()) {
-      console.error(...this.formatMessage('error', ...args));
     }
   }
 
   warn(...args: any[]): void {
     if (this.shouldLog()) {
-      console.warn(...this.formatMessage('warn', ...args));
     }
   }
 
   info(...args: any[]): void {
     if (this.shouldLog()) {
-      console.info(...this.formatMessage('info', ...args));
     }
   }
 
   debug(...args: any[]): void {
     if (this.shouldLog()) {
-      console.debug(...this.formatMessage('debug', ...args));
     }
   }
 
@@ -65,7 +60,6 @@ class Logger {
    */
   dev(...args: any[]): void {
     if (this.shouldLog()) {
-      console.log(...args);
     }
   }
 

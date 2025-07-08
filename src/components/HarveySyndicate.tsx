@@ -110,7 +110,6 @@ export const HarveySyndicate: React.FC = () => {
       try {
         harveyWebRTC.disconnect();
       } catch (error) {
-        console.error('Error disconnecting Harvey:', error);
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -453,7 +452,7 @@ export const HarveySyndicate: React.FC = () => {
                   </Grid>
                 </Grid>
                 
-                <div style={{ marginTop: '24px' }}>
+                <div style={{ marginTop: '24px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
                   <Button
                     fullWidth
                     variant="contained"
@@ -465,6 +464,42 @@ export const HarveySyndicate: React.FC = () => {
                     }}
                   >
                     Enter War Room
+                  </Button>
+                  <Button
+                    fullWidth
+                    variant="contained"
+                    onClick={() => window.location.href = '/harvey/queue'}
+                    sx={{
+                      background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
+                      py: 1.5,
+                      fontWeight: 700,
+                    }}
+                  >
+                    Call Queue
+                  </Button>
+                  <Button
+                    fullWidth
+                    variant="contained"
+                    onClick={() => window.location.href = '/harvey/battle'}
+                    sx={{
+                      background: 'linear-gradient(135deg, #EC4899 0%, #F59E0B 100%)',
+                      py: 1.5,
+                      fontWeight: 700,
+                    }}
+                  >
+                    Battle Mode
+                  </Button>
+                  <Button
+                    fullWidth
+                    variant="contained"
+                    onClick={() => window.location.href = '/harvey/metrics'}
+                    sx={{
+                      background: 'linear-gradient(135deg, #3B82F6 0%, #6366F1 100%)',
+                      py: 1.5,
+                      fontWeight: 700,
+                    }}
+                  >
+                    Performance Metrics
                   </Button>
                 </div>
               </Paper>

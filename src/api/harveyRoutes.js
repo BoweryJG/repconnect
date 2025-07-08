@@ -15,7 +15,6 @@ router.post('/harvey/initialize', async (req, res) => {
     const result = await harveyCoach.initializeRep(repId, repName);
     res.json(result);
   } catch (error) {
-    console.error('Error initializing Harvey:', error);
     res.status(500).json({ error: 'Failed to initialize Harvey' });
   }
 });
@@ -34,7 +33,6 @@ router.post('/harvey/intervention', async (req, res) => {
     
     res.json({ success: true, coaching });
   } catch (error) {
-    console.error('Error triggering intervention:', error);
     res.status(500).json({ error: 'Failed to trigger intervention' });
   }
 });
@@ -53,7 +51,6 @@ router.get('/harvey/performance/:repId', async (req, res) => {
       harveyScore: performance.harveyScore || 50
     });
   } catch (error) {
-    console.error('Error getting performance:', error);
     res.status(500).json({ error: 'Failed to get performance data' });
   }
 });
@@ -66,7 +63,6 @@ router.post('/harvey/challenge', async (req, res) => {
     const challenge = await harveyCoach.createDailyChallenge(repId);
     res.json(challenge);
   } catch (error) {
-    console.error('Error creating challenge:', error);
     res.status(500).json({ error: 'Failed to create challenge' });
   }
 });
@@ -77,7 +73,6 @@ router.get('/harvey/leaderboard', async (req, res) => {
     const leaderboard = await harveyCoach.updateLeaderboard();
     res.json(leaderboard);
   } catch (error) {
-    console.error('Error getting leaderboard:', error);
     res.status(500).json({ error: 'Failed to get leaderboard' });
   }
 });
@@ -97,7 +92,6 @@ router.post('/harvey/analyze-call', async (req, res) => {
     
     res.json({ success: true });
   } catch (error) {
-    console.error('Error analyzing call:', error);
     res.status(500).json({ error: 'Failed to analyze call' });
   }
 });
@@ -110,7 +104,6 @@ router.post('/harvey/demo-mode', async (req, res) => {
     const demoSession = await harveyCoach.activateLiveDemoMode(repId, callId);
     res.json(demoSession);
   } catch (error) {
-    console.error('Error activating demo mode:', error);
     res.status(500).json({ error: 'Failed to activate demo mode' });
   }
 });
@@ -123,7 +116,6 @@ router.post('/harvey/check-research', async (req, res) => {
     const isQuality = await harveyCoach.checkResearchQuality(repId, researchData);
     res.json({ qualityApproved: isQuality });
   } catch (error) {
-    console.error('Error checking research:', error);
     res.status(500).json({ error: 'Failed to check research quality' });
   }
 });

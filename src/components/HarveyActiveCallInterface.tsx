@@ -121,7 +121,6 @@ export const HarveyActiveCallInterface: React.FC<HarveyActiveCallInterfaceProps>
       // Simulate real-time insights
       startInsightGeneration();
     } catch (error) {
-      console.error('Failed to initialize Harvey:', error);
       setConnectionStatus('reconnecting');
     }
   };

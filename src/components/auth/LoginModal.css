@@ -123,64 +123,38 @@
     50% { transform: scale(1.02); opacity: 0.2; }
 }
 
-/* 4-Point Luxury Screws - Tiny Slotted Design */
-.screw {
-    position: absolute;
-    width: 4px;
-    height: 4px;
-    background: radial-gradient(circle at 30% 30%, #d0d0d0 0%, #a8a8a8 20%, #808080 50%, #606060 100%);
-    border-radius: 50%;
-    box-shadow: 
-        inset 0 0.25px 0.5px rgba(255,255,255,0.6),
-        inset 0 -0.25px 0.5px rgba(0,0,0,0.4),
-        0 0.5px 1px rgba(0,0,0,0.6);
-    z-index: 10;
-    transition: transform 0.4s ease;
-    transform-origin: center center;
+/* Screw positioning adjustments for login modal */
+.login-modal .screw-wrapper {
+    --screw-size: 8px;
+    --screw-inset: 12px;
 }
 
-/* Slotted screw design - single horizontal slot */
-.screw::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 80%;
-    height: 0.5px;
-    background: linear-gradient(90deg, 
-        transparent 5%, 
-        rgba(0,0,0,0.6) 15%, 
-        rgba(0,0,0,0.6) 85%, 
-        transparent 95%
-    );
-    transform: translate(-50%, -50%);
+/* Override screw positions for better corner placement */
+.login-modal .screw-wrapper.top-left {
+    top: 12px;
+    left: 12px;
 }
 
-/* Remove the vertical line for slotted design */
-.screw::after {
-    display: none;
+.login-modal .screw-wrapper.top-right {
+    top: 12px;
+    right: 12px;
 }
 
-.screw-tl { 
-    top: 4px; 
-    left: 4px; 
-}
-.screw-tr { 
-    top: 4px; 
-    right: 4px; 
-}
-.screw-bl { 
-    bottom: 4px; 
-    left: 4px; 
-}
-.screw-br { 
-    bottom: 4px; 
-    right: 4px; 
+.login-modal .screw-wrapper.bottom-left {
+    bottom: 12px;
+    left: 12px;
 }
 
-/* Remove screw animations - keep them static and minimal */
+.login-modal .screw-wrapper.bottom-right {
+    bottom: 12px;
+    right: 12px;
+}
 
-/* Removed power rail animation - keeping modal clean and minimal */
+/* Modal Content Wrapper */
+.modal-content {
+    position: relative;
+    z-index: 1;
+}
 
 /* Close Button */
 .close-btn {
@@ -603,7 +577,8 @@
         padding: 60px 30px 40px;
     }
 
-    .screw {
-        display: none;
+    .login-modal .screw-wrapper {
+        --screw-size: 6px;
+        --screw-inset: 8px;
     }
 }

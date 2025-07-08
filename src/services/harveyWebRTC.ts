@@ -16,8 +16,8 @@ interface VoiceAnalysis {
   sentiment: number; // -1 to 1 (negative to positive)
 }
 
-// MOCK MODE ENABLED - Simulates Harvey without backend
-const MOCK_MODE = true;
+// MOCK MODE DISABLED - Real backend connection
+const MOCK_MODE = false;
 
 class HarveyWebRTC {
   private pc: RTCPeerConnection | null = null;
@@ -32,10 +32,25 @@ class HarveyWebRTC {
   private isMuted = false;
   private voiceAnalysisInterval: NodeJS.Timeout | null = null;
   private mockInterval: NodeJS.Timeout | null = null;
+  private pingInterval: NodeJS.Timeout | null = null;
+  private reconnectAttempts = 0;
+  private maxReconnectAttempts = 10;
 
   private readonly ICE_SERVERS = [
     { urls: 'stun:stun.l.google.com:19302' },
-    // Add TURN servers for production
+    { urls: 'stun:stun1.l.google.com:19302' },
+    { urls: 'stun:stun2.l.google.com:19302' },
+    // Public TURN servers for better connectivity
+    {
+      urls: 'turn:openrelay.metered.ca:80',
+      username: 'openrelayproject',
+      credential: 'openrelayproject'
+    },
+    {
+      urls: 'turn:openrelay.metered.ca:443',
+      username: 'openrelayproject',
+      credential: 'openrelayproject'
+    }
   ];
 
   async connect(config: HarveyWebRTCConfig): Promise<void> {
@@ -56,7 +71,6 @@ class HarveyWebRTC {
       
       if (MOCK_MODE) {
         // Simulate successful connection
-        console.log('🎭 Harvey Mock Mode Active');
         setTimeout(() => {
           this.isConnected = true;
           this.config?.onConnectionChange?.(true);
@@ -79,7 +93,8 @@ class HarveyWebRTC {
       this.startVoiceAnalysis();
       
     } catch (error) {
-            this.handleConnectionError(error);
+      this.handleConnectionError(error);
+      throw error; // Propagate error to caller
     }
   }
 
@@ -132,64 +147,155 @@ class HarveyWebRTC {
       this.websocket.close();
     }
     
+    // Use the correct WebSocket URL
     const wsUrl = process.env.REACT_APP_HARVEY_WS_URL || 'wss://osbackend-zl1h.onrender.com/harvey-ws';
     
-    try {
-      this.websocket = new WebSocket(wsUrl);
-    } catch (error) {
-            return;
-    }
-    
-    this.websocket.onopen = async () => {
+    return new Promise((resolve, reject) => {
+      try {
+        this.websocket = new WebSocket(wsUrl);
+        
+        // Set timeout for connection
+        const connectionTimeout = setTimeout(() => {
+          if (this.websocket?.readyState !== WebSocket.OPEN) {
+            this.websocket?.close();
+            reject(new Error('WebSocket connection timeout'));
+          }
+        }, 10000); // 10 second timeout
+        
+        this.websocket.onopen = async () => {
+          clearTimeout(connectionTimeout);
+          
+          try {
+            // Get auth token if available
+            const authToken = localStorage.getItem('harvey_token');
             
-      // Send initial handshake
-      this.websocket!.send(JSON.stringify({
-        type: 'join',
-        userId: this.config?.userId,
-        role: 'rep',
-      }));
-      
-      // Create and send offer
-      const offer = await this.pc!.createOffer();
-      await this.pc!.setLocalDescription(offer);
-      
-      this.websocket!.send(JSON.stringify({
-        type: 'offer',
-        offer: offer,
-      }));
-    };
-    
-    this.websocket.onmessage = async (event) => {
-      const data = JSON.parse(event.data);
-      
-      switch (data.type) {
-        case 'answer':
-          await this.pc!.setRemoteDescription(new RTCSessionDescription(data.answer));
-          break;
+            // Send initial handshake with authentication
+            this.websocket!.send(JSON.stringify({
+              type: 'join',
+              userId: this.config?.userId || 'anonymous',
+              role: 'rep',
+              token: authToken || undefined,
+            }));
+            
+            // Wait for server acknowledgment before sending offer
+            // The server should respond with a 'joined' or 'ready' message
+            
+            // Start ping interval to keep connection alive
+            this.startPingInterval();
+            
+            // Reset reconnect attempts on successful connection
+            this.reconnectAttempts = 0;
+            
+            resolve();
+          } catch (error) {
+            reject(error);
+          }
+        };
+        
+        this.websocket.onmessage = async (event) => {
+          try {
+            const data = JSON.parse(event.data);
+            
+            switch (data.type) {
+              case 'answer':
+                if (this.pc) {
+                  await this.pc.setRemoteDescription(new RTCSessionDescription(data.answer));
+                }
+                break;
+                
+              case 'ice-candidate':
+                if (this.pc && data.candidate) {
+                  await this.pc.addIceCandidate(new RTCIceCandidate(data.candidate));
+                }
+                break;
+                
+              case 'harvey-message':
+                this.handleHarveyMessage(data.message);
+                break;
+                
+              case 'battle-mode':
+                this.handleBattleMode(data);
+                break;
+                
+              case 'error':
+                break;
+                
+              case 'pong':
+                // Server acknowledged our ping
+                break;
+                
+              case 'connection-state':
+                // Update connection state from server
+                if (data.connected) {
+                  this.isConnected = true;
+                  this.config?.onConnectionChange?.(true);
+                }
+                break;
+                
+              case 'joined':
+              case 'ready':
+                // Server acknowledged our join, now send offer
+                console.log('📝 Server ready, sending offer...');
+                this.sendOffer();
+                break;
+                
+              case 'welcome':
+                // Alternative server acknowledgment
+                console.log('👋 Server welcomed us');
+                if (data.canOffer !== false) {
+                  this.sendOffer();
+                }
+                break;
+                
+              default:
+                console.log('📨 Unhandled message type:', data.type, data);
+                break;
+            }
+          } catch (error) {
+            console.error('❌ Error processing WebSocket message:', error);
+          }
+        };
+        
+        this.websocket.onerror = (error) => {
+          clearTimeout(connectionTimeout);
+          reject(error);
+        };
+        
+        this.websocket.onclose = (event) => {
+          clearTimeout(connectionTimeout);
+          console.log(`🔌 Harvey WebSocket closed: code=${event.code}, reason=${event.reason}`);
           
-        case 'ice-candidate':
-          await this.pc!.addIceCandidate(new RTCIceCandidate(data.candidate));
-          break;
-          
-        case 'harvey-message':
-          this.handleHarveyMessage(data.message);
-          break;
-          
-        case 'battle-mode':
-          this.handleBattleMode(data);
-          break;
-      }
-    };
-    
-    this.websocket.onerror = (error) => {
+          // WebSocket close codes
+          const closeReasons: { [key: number]: string } = {
+            1000: 'Normal closure',
+            1001: 'Going away',
+            1002: 'Protocol error',
+            1003: 'Unsupported data',
+            1005: 'No status received',
+            1006: 'Abnormal closure',
+            1007: 'Invalid frame payload data',
+            1008: 'Policy violation',
+            1009: 'Message too big',
+            1010: 'Mandatory extension',
+            1011: 'Internal server error',
+            1015: 'TLS handshake failure'
           };
-    
-    this.websocket.onclose = (event) => {
-            // Only attempt reconnect if it wasn't a manual close
-      if (event.code !== 1000) {
-        this.attemptReconnect();
+          
+          const reason = closeReasons[event.code] || 'Unknown reason';
+          console.log(`📊 Close reason: ${reason}`);
+          
+          this.isConnected = false;
+          this.config?.onConnectionChange?.(false);
+          
+          // Only attempt reconnect if it wasn't a manual close
+          if (event.code !== 1000) {
+            this.attemptReconnect();
+          }
+        };
+      } catch (error) {
+        reject(error);
       }
-    };
+    });
   }
 
   private playRemoteAudio(): void {
@@ -354,16 +460,44 @@ class HarveyWebRTC {
       return;
     }
     
-        this.reconnectTimer = setTimeout(() => {
+    // Check max reconnect attempts
+    if (this.reconnectAttempts >= this.maxReconnectAttempts) {
+      this.config?.onConnectionChange?.(false);
+      return;
+    }
+    
+    this.reconnectAttempts++;
+    const backoffDelay = Math.min(5000 * Math.pow(1.5, this.reconnectAttempts - 1), 30000); // Exponential backoff up to 30s
+    
+    
+    this.reconnectTimer = setTimeout(async () => {
       this.reconnectTimer = null;
       if (this.config && (!this.websocket || this.websocket.readyState === WebSocket.CLOSED)) {
-        this.connectWebSocket();
+        try {
+          // Re-setup peer connection if needed
+          if (!this.pc || this.pc.connectionState === 'failed' || this.pc.connectionState === 'closed') {
+            await this.setupPeerConnection();
+          }
+          
+          // Attempt WebSocket reconnection
+          await this.connectWebSocket();
+        } catch (error) {
+          // Try again
+          this.attemptReconnect();
+        }
       }
-    }, 5000);
+    }, backoffDelay);
   }
 
   private handleConnectionError(error: any): void {
-        this.config?.onConnectionChange?.(false);
+    this.isConnected = false;
+    this.config?.onConnectionChange?.(false);
+    
+    // Show user-friendly error message
+    if (error.name === 'NotAllowedError') {
+    } else if (error.name === 'NotFoundError') {
+    } else if (error.message?.includes('WebSocket')) {
+    }
   }
 
   async startListening(): Promise<void> {
@@ -394,6 +528,36 @@ class HarveyWebRTC {
     }
   }
 
+  // Get connection status
+  getConnectionStatus(): { isConnected: boolean; websocketState: number | null } {
+    return {
+      isConnected: this.isConnected,
+      websocketState: this.websocket?.readyState || null
+    };
+  }
+
+  // Test connection (for debugging)
+  async testConnection(): Promise<void> {
+    console.log('🧪 Testing Harvey connection...');
+    try {
+      await this.connect({
+        userId: 'test-user',
+        onConnectionChange: (connected) => {
+          console.log(`🔌 Connection state changed: ${connected}`);
+        },
+        onAudioReceived: (audioData) => {
+          console.log('🔊 Audio received:', audioData);
+        },
+        onVoiceAnalysis: (analysis) => {
+          console.log('🎤 Voice analysis:', analysis);
+        }
+      });
+      console.log('✅ Connection test completed');
+    } catch (error) {
+      console.error('❌ Connection test failed:', error);
+    }
+  }
+
   sendVoiceCommand(command: string): void {
     if (this.websocket?.readyState === WebSocket.OPEN) {
       this.websocket.send(JSON.stringify({
@@ -409,6 +573,80 @@ class HarveyWebRTC {
         type: 'enter-battle',
         opponentId: opponentId,
       }));
+    }
+  }
+
+  // Bridge Twilio call audio to Harvey
+  async bridgeTwilioCall(twilioStream: MediaStream): Promise<void> {
+    if (!this.pc || !this.isConnected) {
+      throw new Error('Harvey not connected');
+    }
+
+    try {
+      // Add Twilio audio tracks to peer connection
+      twilioStream.getTracks().forEach(track => {
+        if (track.kind === 'audio') {
+          this.pc!.addTrack(track, twilioStream);
+        }
+      });
+
+      // Notify Harvey that we're bridging a call
+      if (this.websocket?.readyState === WebSocket.OPEN) {
+        this.websocket.send(JSON.stringify({
+          type: 'bridge-call',
+          callType: 'twilio',
+        }));
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // Send transcription data to Harvey for analysis
+  sendTranscriptionToHarvey(transcription: string, speaker: 'agent' | 'customer'): void {
+    if (this.websocket?.readyState === WebSocket.OPEN) {
+      this.websocket.send(JSON.stringify({
+        type: 'transcription',
+        text: transcription,
+        speaker: speaker,
+        timestamp: Date.now(),
+      }));
+    }
+
+    // In mock mode, generate coaching based on transcription
+    if (MOCK_MODE && this.isConnected) {
+      this.generateMockCoaching(transcription, speaker);
+    }
+  }
+
+  private generateMockCoaching(transcription: string, speaker: 'agent' | 'customer'): void {
+    if (speaker === 'customer') {
+      // Analyze customer sentiment
+      const lowerText = transcription.toLowerCase();
+      
+      if (lowerText.includes('price') || lowerText.includes('cost') || lowerText.includes('expensive')) {
+        this.emitCoachingMessage("Price objection detected. Bridge to value.");
+      } else if (lowerText.includes('think about') || lowerText.includes('not sure')) {
+        this.emitCoachingMessage("They're hesitating. Create urgency now.");
+      } else if (lowerText.includes('interested') || lowerText.includes('like') || lowerText.includes('good')) {
+        this.emitCoachingMessage("Positive signal! Push for next steps.");
+      }
+    }
+  }
+
+  private emitCoachingMessage(message: string): void {
+    // Dispatch Harvey coaching message as a custom event
+    window.dispatchEvent(new CustomEvent('harvey-coaching', {
+      detail: {
+        type: 'coaching',
+        message: message,
+        timestamp: Date.now(),
+      }
+    }));
+
+    // Also play audio if enabled
+    if (MOCK_MODE && !this.isMuted) {
+      this.playHarveyMessage(message);
     }
   }
 
@@ -470,6 +708,48 @@ class HarveyWebRTC {
     speechSynthesis.speak(utterance);
   }
 
+  private async sendOffer(): Promise<void> {
+    if (!this.pc || !this.websocket || this.websocket.readyState !== WebSocket.OPEN) {
+      console.error('❌ Cannot send offer: WebRTC or WebSocket not ready');
+      return;
+    }
+    
+    try {
+      const offer = await this.pc.createOffer();
+      await this.pc.setLocalDescription(offer);
+      
+      this.websocket.send(JSON.stringify({
+        type: 'offer',
+        offer: offer,
+      }));
+      
+      console.log('📤 Offer sent to Harvey');
+    } catch (error) {
+      console.error('❌ Failed to send offer:', error);
+    }
+  }
+
+  private startPingInterval(): void {
+    // Clear existing ping interval
+    if (this.pingInterval) {
+      clearInterval(this.pingInterval);
+    }
+    
+    // Send ping every 30 seconds to keep connection alive
+    this.pingInterval = setInterval(() => {
+      if (this.websocket?.readyState === WebSocket.OPEN) {
+        this.websocket.send(JSON.stringify({ type: 'ping' }));
+      }
+    }, 30000);
+  }
+
+  private stopPingInterval(): void {
+    if (this.pingInterval) {
+      clearInterval(this.pingInterval);
+      this.pingInterval = null;
+    }
+  }
+
   disconnect(): void {
     // Clean up connections
     if (this.voiceAnalysisInterval) {
@@ -484,6 +764,9 @@ class HarveyWebRTC {
       clearTimeout(this.reconnectTimer);
     }
     
+    // Stop ping interval
+    this.stopPingInterval();
+    
     if (this.localStream) {
       this.localStream.getTracks().forEach(track => track.stop());
     }
@@ -493,10 +776,10 @@ class HarveyWebRTC {
     }
     
     if (this.websocket) {
-      this.websocket.close();
+      this.websocket.close(1000, 'Manual disconnect'); // Normal closure
     }
     
-    if (this.audioContext) {
+    if (this.audioContext && this.audioContext.state !== 'closed') {
       this.audioContext.close();
     }
     
@@ -505,7 +788,9 @@ class HarveyWebRTC {
       speechSynthesis.cancel();
     }
     
+    // Reset connection state
     this.isConnected = false;
+    this.reconnectAttempts = 0;
     this.config?.onConnectionChange?.(false);
   }
 }
