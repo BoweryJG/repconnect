@@ -12,6 +12,7 @@ import coachingSessionRoutes from './backend-routes/coachingSessionRoutes.js';
 import callSummaryRoutes from './backend-routes/callSummaryRoutes.js';
 import twilioWebhookRoutes from './backend-routes/twilioWebhookRoutes.js';
 import harveyRoutes from './src/api/harveyRoutes.js';
+import harveyMultiAgentRoutes from './src/api/harveyMultiAgentRoutes.js';
 
 // Load environment variables
 dotenv.config();
@@ -26,15 +27,16 @@ const PORT = process.env.PORT || 3001;
 const server = createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:3000", "http://localhost:5173"],
+    origin: ["http://localhost:3000", "http://localhost:5173", "https://osbackend-zl1h.onrender.com"],
     methods: ["GET", "POST"],
     credentials: true
-  }
+  },
+  transports: ['websocket', 'polling']
 });
 
 // Middleware
 app.use(cors({
-  origin: ["http://localhost:3000", "http://localhost:5173"],
+  origin: ["http://localhost:3000", "http://localhost:5173", "https://osbackend-zl1h.onrender.com"],
   credentials: true
 }));
 app.use(express.json());
@@ -54,6 +56,7 @@ app.use('/api/coaching', coachingSessionRoutes);
 app.use('/api', callSummaryRoutes);
 app.use('/twilio', twilioWebhookRoutes);
 app.use('/api', harveyRoutes);
+app.use('/api', harveyMultiAgentRoutes);
 
 // Legacy Harvey endpoints (for compatibility)
 app.get('/api/harvey/status', (req, res) => {
@@ -122,6 +125,32 @@ io.on('connection', (socket) => {
   });
 });
 
+// Harvey WebSocket namespace
+const harveyNamespace = io.of('/harvey-ws');
+
+harveyNamespace.on('connection', (socket) => {
+  logger.info('Harvey client connected:', socket.id);
+  
+  // Get userId from auth
+  const userId = socket.handshake.auth.userId || socket.handshake.query.userId;
+  
+  if (userId) {
+    // Join user-specific room for targeted updates
+    socket.join(`harvey-${userId}`);
+    logger.info(`User ${userId} joined Harvey room`);
+  }
+  
+  // Send initial connection success
+  socket.emit('harvey-update', {
+    type: 'connection',
+    data: { status: 'connected', message: 'Harvey is watching.' }
+  });
+  
+  socket.on('disconnect', () => {
+    logger.info('Harvey client disconnected:', socket.id);
+  });
+});
+
 // Serve static files in production
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, 'build')));
@@ -170,3 +199,4 @@ process.on('SIGINT', () => {
 });
 
 export default app;
+export { io };
