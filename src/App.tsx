@@ -45,6 +45,7 @@ import { HarveySettingsModal } from './components/HarveySettingsModal';
 import { harveyWebRTC } from './services/harveyWebRTC';
 import { harveyService } from './services/harveyService';
 import AgentSelector from './components/AgentSelector';
+import SessionWarning from './components/SessionWarning';
 
 // Lazy load heavy components
 const MissionControlDashboard = React.lazy(() => import('./components/MissionControlDashboard').then(module => ({ default: module.MissionControlDashboard })));
@@ -1247,6 +1248,8 @@ function AppContent() {
 
         {/* Agent Selector FAB */}
         <AgentSelector />
+
+        {/* Session Warning Dialog is handled by AuthContext */}
 
       </div>
   );

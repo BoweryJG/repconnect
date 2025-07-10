@@ -28,3 +28,31 @@ yarn-error.log*
 
 # Local Netlify folder
 .netlify
+
+# Test files
+test*.js
+test*.ts
+test*.html
+test*.sh
+*test.sql
+test-*
+*-test.*
+
+# Log files
+*.log
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
