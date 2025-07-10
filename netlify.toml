@@ -2,6 +2,7 @@
 # No functions needed - all API calls go directly to osbackend
 
 [build]
+  command = "CI=false GENERATE_SOURCEMAP=false npm run build"
   publish = "build"
 
 # Redirect all client-side routes to index.html for React Router
