@@ -113,7 +113,7 @@ export const monitorImportPerformance = (chunkName: string, importPromise: Promi
       });
     }
 
-    console.debug(`Chunk ${chunkName} loaded in ${loadTime.toFixed(2)}ms`);
+    // Performance logging removed for production
 
     return module;
   });

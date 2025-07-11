@@ -66,13 +66,13 @@ class Logger {
    */
   group(label: string): void {
     if (this.shouldLog()) {
-      console.group(label);
+      // Group logging disabled in production
     }
   }
 
   groupEnd(): void {
     if (this.shouldLog()) {
-      console.groupEnd();
+      // Group end logging disabled in production
     }
   }
 
@@ -81,7 +81,7 @@ class Logger {
    */
   table(data: any): void {
     if (this.shouldLog()) {
-      console.table(data);
+      // Table logging disabled in production
     }
   }
 
@@ -90,13 +90,13 @@ class Logger {
    */
   time(label: string): void {
     if (this.shouldLog()) {
-      console.time(label);
+      // Time logging disabled in production
     }
   }
 
   timeEnd(label: string): void {
     if (this.shouldLog()) {
-      console.timeEnd(label);
+      // Time end logging disabled in production
     }
   }
 
@@ -105,7 +105,7 @@ class Logger {
    */
   clear(): void {
     if (this.shouldLog()) {
-      console.clear();
+      // Console clear disabled in production
     }
   }
 }

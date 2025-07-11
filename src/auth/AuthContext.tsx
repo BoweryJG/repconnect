@@ -133,6 +133,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     [fetchProfile]
   );
 
+  // Sign out
+  const signOut = useCallback(async () => {
+    try {
+      await authService.logout();
+      setUser(null);
+      setSession(null);
+      setProfile(null);
+      setShowSessionWarning(false);
+    } catch (error) {
+      logger.error('Sign out error:', error);
+      throw error;
+    }
+  }, []);
+
   // Initialize auth state
   useEffect(() => {
     const initializeAuth = async () => {
@@ -214,7 +228,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       cleanupSessionWarning();
       cleanupSessionRefresh();
     };
-  }, [createOrUpdateProfile, fetchProfile]);
+  }, [createOrUpdateProfile, fetchProfile, signOut]);
 
   // Timer for session warning countdown
   useEffect(() => {
@@ -231,12 +245,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [showSessionWarning]);
+  }, [showSessionWarning, signOut]);
 
   // Sign in with OAuth provider
   const signInWithProvider = useCallback(async (provider: AuthProviderType) => {
     try {
-      const { data, error } = await supabase.auth.signInWithOAuth({
+      const { error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
           redirectTo: `${window.location.origin}/auth/callback`,
@@ -252,20 +266,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
     } catch (error) {
       logger.error('Sign in error:', error);
-      throw error;
-    }
-  }, []);
-
-  // Sign out
-  const signOut = useCallback(async () => {
-    try {
-      await authService.logout();
-      setUser(null);
-      setSession(null);
-      setProfile(null);
-      setShowSessionWarning(false);
-    } catch (error) {
-      logger.error('Sign out error:', error);
       throw error;
     }
   }, []);

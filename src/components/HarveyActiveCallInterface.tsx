@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Typography,
@@ -83,7 +83,7 @@ export const HarveyActiveCallInterface: React.FC<HarveyActiveCallInterfaceProps>
     };
   }, [isActive]);
 
-  const initializeHarvey = async () => {
+  const initializeHarvey = useCallback(async () => {
     try {
       // Get Harvey mode from localStorage
       const savedModes = localStorage.getItem('harveyModes');
@@ -125,7 +125,7 @@ export const HarveyActiveCallInterface: React.FC<HarveyActiveCallInterfaceProps>
     } catch (error) {
       setConnectionStatus('reconnecting');
     }
-  };
+  }, [harveyVolume]);
 
   const getInitialMessage = () => {
     switch (harveyMode) {
@@ -140,13 +140,13 @@ export const HarveyActiveCallInterface: React.FC<HarveyActiveCallInterfaceProps>
     }
   };
 
-  const playHarveyAudio = (audioData: string) => {
+  const playHarveyAudio = useCallback((audioData: string) => {
     if (!audioContextRef.current) return;
 
     const audio = new Audio(audioData);
     audio.volume = 0.3; // Harvey whispers
     audio.play();
-  };
+  }, []);
 
   const updateMetricsFromAnalysis = (analysis: any) => {
     setMetrics((prev) => ({
@@ -156,7 +156,7 @@ export const HarveyActiveCallInterface: React.FC<HarveyActiveCallInterfaceProps>
     }));
   };
 
-  const startInsightGeneration = () => {
+  const startInsightGeneration = useCallback(() => {
     // Generate first insight quickly in mock mode
     setTimeout(() => generateInsight(), 3000);
 
@@ -169,9 +169,9 @@ export const HarveyActiveCallInterface: React.FC<HarveyActiveCallInterfaceProps>
     }, 8000); // Every 8 seconds
 
     return () => clearInterval(interval);
-  };
+  }, []);
 
-  const generateInsight = () => {
+  const generateInsight = useCallback(() => {
     const insightTypes: Array<'tip' | 'warning' | 'praise' | 'critical'> = [
       'tip',
       'warning',
@@ -212,11 +212,11 @@ export const HarveyActiveCallInterface: React.FC<HarveyActiveCallInterfaceProps>
       timestamp: new Date(),
       urgency: type === 'critical' ? 'high' : type === 'warning' ? 'medium' : 'low',
     });
-  };
+  }, []);
 
-  const addInsight = (insight: CoachingInsight) => {
+  const addInsight = useCallback((insight: CoachingInsight) => {
     setInsights((prev) => [insight, ...prev].slice(0, 5));
-  };
+  }, []);
 
   const toggleMute = () => {
     setIsMuted(!isMuted);

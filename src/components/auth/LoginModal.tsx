@@ -161,15 +161,21 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSucce
 
           {/* Email Option */}
           <div className="email-option">
-            <a href="#" className="email-link">
+            <button className="email-link" type="button">
               Sign in with email instead
-            </a>
+            </button>
           </div>
 
           {/* Terms */}
           <div className="terms">
-            By continuing, you agree to RepConnect's <a href="#">Terms of Service</a> and{' '}
-            <a href="#">Privacy Policy</a>
+            By continuing, you agree to RepConnect's{' '}
+            <a href="/terms" target="_blank" rel="noopener noreferrer">
+              Terms of Service
+            </a>{' '}
+            and{' '}
+            <a href="/privacy" target="_blank" rel="noopener noreferrer">
+              Privacy Policy
+            </a>
           </div>
         </div>
 

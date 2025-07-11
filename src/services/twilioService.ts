@@ -1,5 +1,4 @@
 import axios from 'axios';
-import logger from '../utils/logger';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'https://osbackend-zl1h.onrender.com';
 
@@ -7,8 +6,6 @@ export const twilioService = {
   async makeCall(to: string, from?: string, message?: string, options?: any) {
     try {
       const url = `${BACKEND_URL}/api/twilio/make-call`;
-
-      const fromNumber = from || process.env.REACT_APP_TWILIO_PHONE_NUMBER;
 
       const response = await axios.post(url, {
         to,

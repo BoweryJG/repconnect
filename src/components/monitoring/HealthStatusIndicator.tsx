@@ -144,7 +144,10 @@ export const HealthStatusIndicator: React.FC = () => {
           {healthStatus.services.length > 0 && (
             <div style={{ marginTop: '8px' }}>
               {healthStatus.services.map((service) => (
-                <div key={service.name} style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                <div
+                  key={service.name}
+                  style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}
+                >
                   {getStatusIcon(service.status)}
                   <Typography variant="caption">
                     {service.name}: {service.status}

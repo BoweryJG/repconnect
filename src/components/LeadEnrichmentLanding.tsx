@@ -20,13 +20,9 @@ import FlashOnIcon from '@mui/icons-material/FlashOn';
 import { FileUploadProcessor } from './FileUploadProcessor';
 import { useNavigate } from 'react-router-dom';
 
-interface LeadEnrichmentLandingProps {
-  isPublicMode?: boolean;
-}
+interface LeadEnrichmentLandingProps {}
 
-export const LeadEnrichmentLanding: React.FC<LeadEnrichmentLandingProps> = ({
-  isPublicMode = true,
-}) => {
+export const LeadEnrichmentLanding: React.FC<LeadEnrichmentLandingProps> = () => {
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [enrichmentCount] = useState(Math.floor(Math.random() * 500) + 2500);

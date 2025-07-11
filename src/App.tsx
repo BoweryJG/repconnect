@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef, Suspense } from 'react';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import {
   Container,
@@ -14,43 +14,123 @@ import ViewModuleIcon from '@mui/icons-material/ViewModule';
 import CloseIcon from '@mui/icons-material/Close';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import { AnimatePresence, motion } from 'framer-motion';
-import { DigitalRolodex } from './components/DigitalRolodex';
-import { CallInterface } from './components/CallInterface';
-import { SubtlePipelineBackground } from './components/effects/SubtlePipelineBackground';
-import { VirtualizedContactGrid } from './components/VirtualizedContactGrid';
-import { QuantumDialer } from './components/QuantumDialer';
-import { PremiumNavbar } from './components/PremiumNavbar';
 import { twilioService } from './services/twilioService';
 import { supabase } from './lib/supabase';
 import { useStore } from './store/useStore';
 import { adaptiveRenderer } from './lib/performance/AdaptiveRenderer';
-import { SyncDashboard } from './components/SyncDashboard';
-import { AISettings } from './components/AISettings';
-import { PerformanceHistory } from './components/PerformanceHistory';
 import { useResponsive } from './hooks/useResponsive';
-import { CallHistoryDashboard } from './components/CallHistoryDashboard';
-import { CompactEnrichmentWidget } from './components/CompactEnrichmentWidget';
-import { CornerScrews } from './components/effects/PrecisionScrew';
 import { AuthProvider, useAuth } from './auth/AuthContext';
-import { LoginModal } from './components/auth/LoginModal';
-import { SubscriptionModal } from './components/auth/SubscriptionModal';
 import { DEMO_CONTACTS } from './lib/demoData';
 import { usageTracker } from './lib/usageTracking';
-import InstantCoachConnect from './components/InstantCoachConnect';
 import { ToastProvider, useToast } from './utils/toast';
 import logger from './utils/logger';
-import { HarveyLoadingScreen } from './components/HarveyLoadingScreen';
-import { HarveyActiveCallInterface } from './components/HarveyActiveCallInterface';
-import { HarveySettingsModal } from './components/HarveySettingsModal';
 import { harveyWebRTC } from './services/harveyWebRTC';
 import { harveyService } from './services/harveyService';
-import AgentSelector from './components/AgentSelector';
-import SessionWarning from './components/SessionWarning';
-import ChatbotIntegration from './components/ChatbotLauncher/ChatbotIntegration';
-import { SmartPreloader } from './utils/dynamicImports';
-// import { bundlePerformance } from './utils/bundlePerformance';
 
-// Lazy load heavy components with optimized loading
+// Core components that need to load immediately
+import { SubtlePipelineBackground } from './components/effects/SubtlePipelineBackground';
+import { PremiumNavbar } from './components/PremiumNavbar';
+import { CornerScrews } from './components/effects/PrecisionScrew';
+import { LoadingFallback } from './components/LoadingFallback';
+import { lazyWithPreload, preloadWhenIdle } from './utils/lazyWithPreload';
+
+// Lazy load heavy components with optimized loading and preload capability
+const DigitalRolodex = lazyWithPreload(() =>
+  import(/* webpackChunkName: "rolodex" */ './components/DigitalRolodex').then((module) => ({
+    default: module.DigitalRolodex,
+  }))
+);
+
+const VirtualizedContactGrid = React.lazy(() =>
+  import(/* webpackChunkName: "contact-grid" */ './components/VirtualizedContactGrid').then(
+    (module) => ({ default: module.VirtualizedContactGrid })
+  )
+);
+
+const CallInterface = React.lazy(() =>
+  import(/* webpackChunkName: "call-interface" */ './components/CallInterface').then((module) => ({
+    default: module.CallInterface,
+  }))
+);
+
+const QuantumDialer = React.lazy(() =>
+  import(/* webpackChunkName: "quantum-dialer" */ './components/QuantumDialer').then((module) => ({
+    default: module.QuantumDialer,
+  }))
+);
+
+const SyncDashboard = React.lazy(() =>
+  import(/* webpackChunkName: "sync-dashboard" */ './components/SyncDashboard').then((module) => ({
+    default: module.SyncDashboard,
+  }))
+);
+
+const AISettings = React.lazy(() =>
+  import(/* webpackChunkName: "ai-settings" */ './components/AISettings').then((module) => ({
+    default: module.AISettings,
+  }))
+);
+
+const PerformanceHistory = React.lazy(() =>
+  import(/* webpackChunkName: "performance-history" */ './components/PerformanceHistory').then(
+    (module) => ({ default: module.PerformanceHistory })
+  )
+);
+
+const CallHistoryDashboard = React.lazy(() =>
+  import(/* webpackChunkName: "call-history" */ './components/CallHistoryDashboard').then(
+    (module) => ({ default: module.CallHistoryDashboard })
+  )
+);
+
+const CompactEnrichmentWidget = React.lazy(() =>
+  import(/* webpackChunkName: "enrichment-widget" */ './components/CompactEnrichmentWidget').then(
+    (module) => ({ default: module.CompactEnrichmentWidget })
+  )
+);
+
+const LoginModal = React.lazy(() =>
+  import(/* webpackChunkName: "auth" */ './components/auth/LoginModal').then((module) => ({
+    default: module.LoginModal,
+  }))
+);
+
+const SubscriptionModal = React.lazy(() =>
+  import(/* webpackChunkName: "auth" */ './components/auth/SubscriptionModal').then((module) => ({
+    default: module.SubscriptionModal,
+  }))
+);
+
+const InstantCoachConnect = React.lazy(
+  () => import(/* webpackChunkName: "coach-connect" */ './components/InstantCoachConnect')
+);
+
+const HarveyLoadingScreen = React.lazy(() =>
+  import(/* webpackChunkName: "harvey" */ './components/HarveyLoadingScreen').then((module) => ({
+    default: module.HarveyLoadingScreen,
+  }))
+);
+
+const HarveyActiveCallInterface = React.lazy(() =>
+  import(/* webpackChunkName: "harvey" */ './components/HarveyActiveCallInterface').then(
+    (module) => ({ default: module.HarveyActiveCallInterface })
+  )
+);
+
+const HarveySettingsModal = React.lazy(() =>
+  import(/* webpackChunkName: "harvey" */ './components/HarveySettingsModal').then((module) => ({
+    default: module.HarveySettingsModal,
+  }))
+);
+
+const AgentSelector = React.lazy(
+  () => import(/* webpackChunkName: "agent-selector" */ './components/AgentSelector')
+);
+
+const ChatbotIntegration = React.lazy(
+  () => import(/* webpackChunkName: "chatbot" */ './components/ChatbotLauncher/ChatbotIntegration')
+);
+
 const MissionControlDashboard = React.lazy(() =>
   import(/* webpackChunkName: "mission-control" */ './components/MissionControlDashboard').then(
     (module) => ({ default: module.MissionControlDashboard })
@@ -182,9 +262,7 @@ function AppContent() {
 
     // Track bundle performance in development
     if (process.env.NODE_ENV === 'development') {
-      console.log(
-        '📊 Bundle Performance Monitor initialized. Use window.bundlePerformance.generateReport() to see metrics.'
-      );
+      // Bundle performance monitoring is initialized but no console output
     }
 
     // Preload likely next routes based on current location
@@ -715,23 +793,25 @@ function AppContent() {
                   </Typography>
 
                   {/* Instant Lead Enricher */}
-                  <CompactEnrichmentWidget
-                    embedded={true}
-                    onEnrichmentComplete={(leads) => {
-                      // Add enriched leads to contacts
-                      leads.forEach((lead) => {
-                        if (lead.enriched) {
-                          addContact({
-                            name: lead.enriched.fullName || 'Unknown',
-                            phoneNumber: lead.enriched.phone || lead.enriched.mobile || '',
-                            email: lead.enriched.email || '',
-                            notes: `${lead.enriched.company || ''} - ${lead.enriched.title || ''}`,
-                            tags: [lead.enriched.segment, lead.enriched.industry].filter(Boolean),
-                          });
-                        }
-                      });
-                    }}
-                  />
+                  <Suspense fallback={<LoadingFallback compact />}>
+                    <CompactEnrichmentWidget
+                      embedded={true}
+                      onEnrichmentComplete={(leads) => {
+                        // Add enriched leads to contacts
+                        leads.forEach((lead) => {
+                          if (lead.enriched) {
+                            addContact({
+                              name: lead.enriched.fullName || 'Unknown',
+                              phoneNumber: lead.enriched.phone || lead.enriched.mobile || '',
+                              email: lead.enriched.email || '',
+                              notes: `${lead.enriched.company || ''} - ${lead.enriched.title || ''}`,
+                              tags: [lead.enriched.segment, lead.enriched.industry].filter(Boolean),
+                            });
+                          }
+                        });
+                      }}
+                    />
+                  </Suspense>
                 </div>
 
                 <div
@@ -975,14 +1055,16 @@ function AppContent() {
 
               {viewMode === 'rolodex' ? (
                 <div style={{ height: '100%', padding: 24 }}>
-                  <DigitalRolodex
-                    contacts={contacts}
-                    onCall={handleMakeCall}
-                    onToggleFavorite={(contact) => {
-                      // TODO: Implement favorite toggle
-                      logger.log('Toggle favorite:', contact);
-                    }}
-                  />
+                  <Suspense fallback={<LoadingFallback message="Loading contacts..." />}>
+                    <DigitalRolodex
+                      contacts={contacts}
+                      onCall={handleMakeCall}
+                      onToggleFavorite={(contact) => {
+                        // TODO: Implement favorite toggle
+                        logger.log('Toggle favorite:', contact);
+                      }}
+                    />
+                  </Suspense>
                 </div>
               ) : (
                 <div
@@ -993,13 +1075,15 @@ function AppContent() {
                     padding: 24,
                   }}
                 >
-                  <VirtualizedContactGrid
-                    contacts={contacts}
-                    onContactClick={handleMakeCall}
-                    selectedContactId={activeCall?.contactId}
-                    width={gridDimensions.width}
-                    height={gridDimensions.height}
-                  />
+                  <Suspense fallback={<LoadingFallback message="Loading grid view..." />}>
+                    <VirtualizedContactGrid
+                      contacts={contacts}
+                      onContactClick={handleMakeCall}
+                      selectedContactId={activeCall?.contactId}
+                      width={gridDimensions.width}
+                      height={gridDimensions.height}
+                    />
+                  </Suspense>
                 </div>
               )}
             </div>
@@ -1133,43 +1217,51 @@ function AppContent() {
       </div>
 
       {/* Harvey Loading Screen */}
-      <HarveyLoadingScreen
-        isLoading={harveyLoading}
-        connectionStatus={harveyConnectionStatus}
-        error={harveyError}
-      />
+      <Suspense fallback={null}>
+        <HarveyLoadingScreen
+          isLoading={harveyLoading}
+          connectionStatus={harveyConnectionStatus}
+          error={harveyError}
+        />
+      </Suspense>
 
       {/* Harvey Active Call Interface */}
-      <HarveyActiveCallInterface
-        isActive={isCallInProgress && harveyConnectionStatus === 'connected'}
-        contactName={contacts.find((c) => c.id === activeCall?.contactId)?.name}
-        phoneNumber={activeCall?.phoneNumber}
-      />
+      <Suspense fallback={null}>
+        <HarveyActiveCallInterface
+          isActive={isCallInProgress && harveyConnectionStatus === 'connected'}
+          contactName={contacts.find((c) => c.id === activeCall?.contactId)?.name}
+          phoneNumber={activeCall?.phoneNumber}
+        />
+      </Suspense>
 
       {/* Call Interface Overlay */}
       <AnimatePresence>
         {isCallInProgress && activeCall && (
-          <CallInterface
-            contact={{
-              name: contacts.find((c) => c.id === activeCall.contactId)?.name || 'Unknown',
-              phoneNumber: activeCall.phoneNumber,
-              avatar: contacts.find((c) => c.id === activeCall.contactId)?.avatar,
-            }}
-            callSid={activeCall.callSid}
-            onEndCall={handleEndCall}
-          />
+          <Suspense fallback={<LoadingFallback message="Loading call interface..." />}>
+            <CallInterface
+              contact={{
+                name: contacts.find((c) => c.id === activeCall.contactId)?.name || 'Unknown',
+                phoneNumber: activeCall.phoneNumber,
+                avatar: contacts.find((c) => c.id === activeCall.contactId)?.avatar,
+              }}
+              callSid={activeCall.callSid}
+              onEndCall={handleEndCall}
+            />
+          </Suspense>
         )}
       </AnimatePresence>
 
       {/* Quantum Dialer */}
-      <QuantumDialer
-        isOpen={showDialer}
-        onClose={() => setShowDialer(false)}
-        onDial={handleDialNumber}
-      />
+      <Suspense fallback={null}>
+        <QuantumDialer
+          isOpen={showDialer}
+          onClose={() => setShowDialer(false)}
+          onDial={handleDialNumber}
+        />
+      </Suspense>
 
       {/* Mission Control Dashboard */}
-      <React.Suspense
+      <Suspense
         fallback={
           <div
             style={{
@@ -1187,16 +1279,22 @@ function AppContent() {
           isOpen={showMissionControl}
           onClose={() => setShowMissionControl(false)}
         />
-      </React.Suspense>
+      </Suspense>
 
       {/* AI Settings Modal */}
-      <AISettings open={showAISettings} onClose={() => setShowAISettings(false)} />
+      <Suspense fallback={null}>
+        <AISettings open={showAISettings} onClose={() => setShowAISettings(false)} />
+      </Suspense>
 
       {/* Performance History Modal */}
-      <PerformanceHistory open={showPerformance} onClose={() => setShowPerformance(false)} />
+      <Suspense fallback={null}>
+        <PerformanceHistory open={showPerformance} onClose={() => setShowPerformance(false)} />
+      </Suspense>
 
       {/* Call History Dashboard */}
-      <CallHistoryDashboard open={showCallHistory} onClose={() => setShowCallHistory(false)} />
+      <Suspense fallback={null}>
+        <CallHistoryDashboard open={showCallHistory} onClose={() => setShowCallHistory(false)} />
+      </Suspense>
 
       {/* Sync Dashboard Modal */}
       <AnimatePresence>
@@ -1241,7 +1339,9 @@ function AppContent() {
               >
                 <CloseIcon />
               </IconButton>
-              <SyncDashboard onClose={() => setShowSyncDashboard(false)} />
+              <Suspense fallback={<LoadingFallback message="Loading sync dashboard..." />}>
+                <SyncDashboard onClose={() => setShowSyncDashboard(false)} />
+              </Suspense>
             </motion.div>
           </motion.div>
         )}
@@ -1249,28 +1349,37 @@ function AppContent() {
 
       {/* Login Modal */}
       <ErrorBoundary>
-        <LoginModal
-          isOpen={showLoginModal}
-          onClose={() => setShowLoginModal(false)}
-          onSuccess={() => {
-            setShowLoginModal(false);
-            // Optionally show subscription modal for new users
-            if (profile?.subscription?.tier === 'free') {
-              setTimeout(() => setShowSubscriptionModal(true), 500);
-            }
-          }}
-        />
+        <Suspense fallback={null}>
+          <LoginModal
+            isOpen={showLoginModal}
+            onClose={() => setShowLoginModal(false)}
+            onSuccess={() => {
+              setShowLoginModal(false);
+              // Optionally show subscription modal for new users
+              if (profile?.subscription?.tier === 'free') {
+                setTimeout(() => setShowSubscriptionModal(true), 500);
+              }
+            }}
+          />
+        </Suspense>
       </ErrorBoundary>
 
       {/* Subscription Modal */}
-      <SubscriptionModal
-        isOpen={showSubscriptionModal}
-        onClose={() => setShowSubscriptionModal(false)}
-        currentTier={subscriptionTier}
-      />
+      <Suspense fallback={null}>
+        <SubscriptionModal
+          isOpen={showSubscriptionModal}
+          onClose={() => setShowSubscriptionModal(false)}
+          currentTier={subscriptionTier}
+        />
+      </Suspense>
 
       {/* Harvey Settings Modal */}
-      <HarveySettingsModal open={showHarveySettings} onClose={() => setShowHarveySettings(false)} />
+      <Suspense fallback={null}>
+        <HarveySettingsModal
+          open={showHarveySettings}
+          onClose={() => setShowHarveySettings(false)}
+        />
+      </Suspense>
 
       {/* Coach Connect Modal */}
       <AnimatePresence>
@@ -1315,17 +1424,23 @@ function AppContent() {
               >
                 <CloseIcon />
               </IconButton>
-              <InstantCoachConnect />
+              <Suspense fallback={<LoadingFallback message="Loading coach connect..." />}>
+                <InstantCoachConnect />
+              </Suspense>
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
 
       {/* Agent Selector FAB */}
-      <AgentSelector />
+      <Suspense fallback={null}>
+        <AgentSelector />
+      </Suspense>
 
       {/* Luxury Chatbot Launcher */}
-      <ChatbotIntegration position="bottom-right" glowColor="#3B82F6" />
+      <Suspense fallback={null}>
+        <ChatbotIntegration position="bottom-right" glowColor="#3B82F6" />
+      </Suspense>
 
       {/* Session Warning Dialog is handled by AuthContext */}
     </div>
