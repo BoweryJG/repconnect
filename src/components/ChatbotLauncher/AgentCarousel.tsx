@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
 import { AgentConfig } from './agents/agentConfigs';
 import { Agent } from './types';
+import { LucideIcon } from 'lucide-react';
 
 interface AgentCarouselProps {
   agents: Agent[];
@@ -61,7 +62,7 @@ const AgentCarousel: React.FC<AgentCarouselProps> = ({
     scrollTo(index);
   };
 
-  const renderAgentIcon = (avatar: string | React.ReactElement) => {
+  const renderAgentIcon = (avatar: { icon: LucideIcon; backgroundColor: string; iconColor: string } | string) => {
     if (typeof avatar === 'string') {
       return (
         <div className="agent-avatar-emoji">
@@ -69,7 +70,20 @@ const AgentCarousel: React.FC<AgentCarouselProps> = ({
         </div>
       );
     }
-    return avatar;
+    
+    // Handle icon object
+    const Icon = avatar.icon;
+    return (
+      <div 
+        className="agent-avatar-icon"
+        style={{ 
+          backgroundColor: avatar.backgroundColor,
+          color: avatar.iconColor 
+        }}
+      >
+        <Icon size={32} />
+      </div>
+    );
   };
 
   return (
@@ -226,6 +240,15 @@ const AgentCarousel: React.FC<AgentCarouselProps> = ({
         .agent-avatar-emoji {
           font-size: 2.5rem;
           filter: grayscale(0) contrast(1.1);
+        }
+
+        .agent-avatar-icon {
+          width: 100%;
+          height: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 50%;
         }
 
         .agent-info {

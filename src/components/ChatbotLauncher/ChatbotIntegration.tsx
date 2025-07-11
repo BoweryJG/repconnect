@@ -38,7 +38,38 @@ export const ChatbotIntegration: React.FC<ChatbotIntegrationProps> = ({
     // Keep selected agent for potential re-opening
   }, []);
 
-  const agents = getAllAgents();
+  // Convert AgentConfig to Agent format
+  const categoryMap: Record<string, 'aesthetic' | 'dental' | 'general'> = {
+    botox: 'aesthetic',
+    fillers: 'aesthetic',
+    skincare: 'aesthetic',
+    laser: 'aesthetic',
+    bodycontouring: 'aesthetic',
+    implants: 'dental',
+    orthodontics: 'dental',
+    cosmetic: 'dental',
+    harvey: 'general'
+  };
+
+  const agents: Agent[] = getAllAgents().map(config => ({
+    ...config,
+    category: categoryMap[config.id] || 'general',
+    available: true,
+    description: config.tagline,
+    specialty: config.knowledgeDomains[0],
+    color: config.colorScheme.primary,
+    voiceConfig: {
+      ...config.voiceConfig,
+      useSpeakerBoost: config.voiceConfig.speakerBoost
+    },
+    visualEffects: {
+      ...config.visualEffects,
+      animation: config.visualEffects.animation,
+      glow: config.visualEffects.glowEffect,
+      pulse: config.visualEffects.pulseEffect,
+      particleEffect: config.visualEffects.particleEffect || ''
+    }
+  }));
 
   return (
     <>
@@ -62,16 +93,17 @@ export const ChatbotIntegration: React.FC<ChatbotIntegrationProps> = ({
           <ChatModal
             isOpen={activeModal === 'chat'}
             onClose={handleCloseModal}
-            agent={selectedAgent}
+            agentName={selectedAgent.name}
+            agentAvatar={typeof selectedAgent.avatar === 'string' ? selectedAgent.avatar : '🤖'}
+            agentRole={selectedAgent.tagline}
           />
 
           <VoiceModal
             isOpen={activeModal === 'voice'}
             onClose={handleCloseModal}
             agentName={selectedAgent.name}
-            agentAvatar={selectedAgent.avatar}
+            agentAvatar={typeof selectedAgent.avatar === 'string' ? selectedAgent.avatar : '🤖'}
             agentRole={selectedAgent.tagline}
-            agentConfig={selectedAgent}
           />
         </>
       )}

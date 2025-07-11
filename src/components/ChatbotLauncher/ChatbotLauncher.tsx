@@ -161,21 +161,52 @@ const StyledAvatar = styled(Avatar)<{ bgcolor: string }>(({ theme, bgcolor }) =>
   fontSize: 24,
 }));
 
-// Default agents
+// Default agents - removed as agents are now passed from parent
+/*
 const defaultAgents: Agent[] = [
   {
     id: 'ai-assistant',
     name: 'AI Assistant',
-    avatar: <SmartToy />,
+    avatar: '🤖',
     description: 'General purpose AI helper for all your needs',
     specialty: 'General Support',
     color: '#3B82F6',
     available: true,
+    category: 'general' as const,
+    tagline: 'Your intelligent assistant',
+    colorScheme: {
+      primary: '#3B82F6',
+      secondary: '#60A5FA',
+      accent: '#DBEAFE',
+      gradient: 'linear-gradient(135deg, #3B82F6 0%, #60A5FA 100%)',
+      shadowColor: 'rgba(59, 130, 246, 0.3)'
+    },
+    personality: {
+      tone: 'Friendly and helpful',
+      traits: ['Knowledgeable', 'Patient', 'Supportive'],
+      approachStyle: 'Conversational and informative',
+      communicationPreferences: ['Clear explanations', 'Step-by-step guidance']
+    },
+    voiceConfig: {
+      voiceId: 'default',
+      stability: 0.5,
+      similarityBoost: 0.5,
+      style: 0.5,
+      useSpeakerBoost: true
+    },
+    knowledgeDomains: ['General knowledge', 'Problem solving'],
+    conversationStarters: ['How can I help you today?'],
+    visualEffects: {
+      animation: 'pulse',
+      glow: true,
+      pulse: true,
+      particleEffect: 'sparkle'
+    }
   },
   {
     id: 'sales-coach',
     name: 'Sales Coach',
-    avatar: <Psychology />,
+    avatar: '🧠',
     description: 'Expert guidance for closing deals and sales strategies',
     specialty: 'Sales Training',
     color: '#10B981',
@@ -184,7 +215,7 @@ const defaultAgents: Agent[] = [
   {
     id: 'tech-support',
     name: 'Tech Support',
-    avatar: <Support />,
+    avatar: '🛟',
     description: 'Technical assistance and troubleshooting',
     specialty: 'Technical Help',
     color: '#F59E0B',
@@ -193,16 +224,17 @@ const defaultAgents: Agent[] = [
   {
     id: 'harvey',
     name: 'Harvey AI',
-    avatar: <AutoAwesome />,
+    avatar: '✨',
     description: 'Premium AI agent with advanced capabilities',
     specialty: 'Premium Support',
     color: '#9333EA',
     available: false,
   },
 ];
+*/
 
 const ChatbotLauncher: React.FC<ChatbotLauncherProps> = ({
-  agents = defaultAgents,
+  agents = [],
   onAgentSelect,
   position = 'bottom-right',
   primaryColor = '#3B82F6',
@@ -279,19 +311,19 @@ const ChatbotLauncher: React.FC<ChatbotLauncherProps> = ({
       <Fade in={isOpen} unmountOnExit>
         <CarouselContainer elevation={8}>
           <Header>
-            <Box display="flex" justifyContent="space-between" alignItems="center">
-              <Box>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div>
                 <Typography variant="h6" fontWeight={600}>
                   Choose Your Assistant
                 </Typography>
                 <Typography variant="caption" color="text.secondary">
                   Select an AI agent to help you
                 </Typography>
-              </Box>
+              </div>
               <IconButton onClick={handleToggle} size="small">
                 <Close />
               </IconButton>
-            </Box>
+            </div>
           </Header>
 
           <AgentCarousel>
@@ -302,22 +334,25 @@ const ChatbotLauncher: React.FC<ChatbotLauncherProps> = ({
                 placement="left"
               >
                 <AgentCard
-                  agentcolor={agent.color}
+                  agentcolor={agent.color || '#3B82F6'}
                   onClick={() => handleAgentClick(agent)}
                   sx={{
                     opacity: agent.available ? 1 : 0.6,
                     cursor: agent.available ? 'pointer' : 'not-allowed',
                   }}
                 >
-                  <StyledAvatar bgcolor={agent.color}>
+                  <StyledAvatar bgcolor={agent.color || '#3B82F6'}>
                     {typeof agent.avatar === 'string' ? (
-                      <img src={agent.avatar} alt={agent.name} style={{ width: '70%' }} />
+                      <span style={{ fontSize: '2rem' }}>{agent.avatar}</span>
                     ) : (
-                      agent.avatar
+                      (() => {
+                        const Icon = agent.avatar.icon;
+                        return <Icon size={32} style={{ color: agent.avatar.iconColor }} />;
+                      })()
                     )}
                   </StyledAvatar>
-                  <Box flex={1}>
-                    <Box display="flex" alignItems="center" gap={1}>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                       <Typography variant="subtitle1" fontWeight={600}>
                         {agent.name}
                       </Typography>
@@ -332,7 +367,7 @@ const ChatbotLauncher: React.FC<ChatbotLauncherProps> = ({
                           }}
                         />
                       )}
-                    </Box>
+                    </div>
                     <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
                       {agent.description}
                     </Typography>
@@ -347,7 +382,7 @@ const ChatbotLauncher: React.FC<ChatbotLauncherProps> = ({
                     >
                       {agent.specialty}
                     </Typography>
-                  </Box>
+                  </div>
                 </AgentCard>
               </Tooltip>
             ))}
