@@ -21,13 +21,13 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSucce
   useEffect(() => {
     if (isOpen && modalRef.current && !isAnimating) {
       setIsAnimating(true);
-      
+
       // Kill any existing animations first
       gsap.killTweensOf([modalRef.current, contentRef.current]);
-      
+
       // Simpler entrance animation to prevent glitching
       const tl = gsap.timeline({
-        onComplete: () => setIsAnimating(false)
+        onComplete: () => setIsAnimating(false),
       });
 
       // Modal entrance without 3D transforms
@@ -116,7 +116,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSucce
           repeat: 3,
           onComplete: () => {
             gsap.set(modalRef.current, { x: 0 });
-          }
+          },
         });
       }
     } finally {
@@ -299,8 +299,5 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSucce
   );
 
   // Render using React Portal to prevent DOM conflicts
-  return ReactDOM.createPortal(
-    modalContent,
-    document.body
-  );
+  return ReactDOM.createPortal(modalContent, document.body);
 };
