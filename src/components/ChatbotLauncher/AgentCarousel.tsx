@@ -123,7 +123,7 @@ const AgentCarousel: React.FC<AgentCarouselProps> = ({
         ))}
       </div>
 
-      <style jsx>{`
+      <style>{`
         .agent-carousel-container {
           width: 100%;
           position: relative;
