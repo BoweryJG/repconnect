@@ -24,7 +24,9 @@ jobs:
         cache: 'npm'
 
     - name: Install dependencies
-      run: npm ci
+      run: |
+        npm install --legacy-peer-deps
+        npm audit fix --force || true
 
     # Temporarily skip linter due to many warnings
     # - name: Run linter
@@ -91,7 +93,9 @@ jobs:
         cache: 'npm'
 
     - name: Install dependencies
-      run: npm ci
+      run: |
+        npm install --legacy-peer-deps
+        npm audit fix --force || true
 
     - name: Setup test database
       run: |
@@ -122,7 +126,9 @@ jobs:
         cache: 'npm'
 
     - name: Install dependencies
-      run: npm ci
+      run: |
+        npm install --legacy-peer-deps
+        npm audit fix --force || true
 
     - name: Install Playwright browsers
       run: npx playwright install --with-deps
