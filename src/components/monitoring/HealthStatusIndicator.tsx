@@ -103,10 +103,10 @@ export const HealthStatusIndicator: React.FC = () => {
 
   if (loading && !healthStatus) {
     return (
-      <Box display="flex" alignItems="center" gap={1}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
         <CircularProgress size={16} />
         <Typography variant="caption">Checking health...</Typography>
-      </Box>
+      </div>
     );
   }
 
@@ -133,7 +133,7 @@ export const HealthStatusIndicator: React.FC = () => {
   return (
     <Tooltip
       title={
-        <Box>
+        <div>
           <Typography variant="subtitle2" gutterBottom>
             System Health Status
           </Typography>
@@ -142,17 +142,17 @@ export const HealthStatusIndicator: React.FC = () => {
           </Typography>
 
           {healthStatus.services.length > 0 && (
-            <Box mt={1}>
+            <div style={{ marginTop: '8px' }}>
               {healthStatus.services.map((service) => (
-                <Box key={service.name} display="flex" alignItems="center" gap={1} mb={0.5}>
+                <div key={service.name} style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
                   {getStatusIcon(service.status)}
                   <Typography variant="caption">
                     {service.name}: {service.status}
                     {service.responseTime && ` (${service.responseTime}ms)`}
                   </Typography>
-                </Box>
+                </div>
               ))}
-            </Box>
+            </div>
           )}
 
           {healthStatus.overall === 'degraded' && (
@@ -166,7 +166,7 @@ export const HealthStatusIndicator: React.FC = () => {
               Critical services are down
             </Typography>
           )}
-        </Box>
+        </div>
       }
       arrow
       placement="bottom"
