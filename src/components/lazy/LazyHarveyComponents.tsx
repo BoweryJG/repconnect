@@ -3,9 +3,9 @@ import { CircularProgress, Box, Typography } from '@mui/material';
 import { motion } from 'framer-motion';
 
 // Loading component for lazy-loaded components
-const LoadingFallback: React.FC<{ component?: string }> = ({ component = 'component' }) => (
-  <Box
-    sx={{
+const LoadingFallback = ({ component = 'component' }: { component?: string }) => (
+  <div
+    style={{
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
@@ -39,7 +39,7 @@ const LoadingFallback: React.FC<{ component?: string }> = ({ component = 'compon
         Loading {component}...
       </Typography>
     </motion.div>
-  </Box>
+  </div>
 );
 
 // Lazy load Harvey components
