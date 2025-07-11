@@ -104,33 +104,30 @@ export const AgentSelectionModal: React.FC<AgentSelectionModalProps> = ({
         },
       }}
     >
-      <Box sx={{ position: 'relative' }}>
+      <DialogContent sx={{ p: 4, textAlign: 'center', position: 'relative' }}>
         <IconButton
           onClick={onClose}
           sx={{
             position: 'absolute',
-            right: 8,
-            top: 8,
+            right: -16,
+            top: -16,
             color: 'rgba(255, 255, 255, 0.7)',
             zIndex: 1,
           }}
         >
           <Close />
         </IconButton>
-
-        <DialogContent sx={{ p: 4, textAlign: 'center' }}>
-          <Box
-            sx={{
+          <div
+            style={{
               width: 80,
               height: 80,
-              margin: '0 auto',
-              mb: 2,
+              margin: '0 auto 16px',
               borderRadius: '50%',
-              background: agent.colorScheme.gradient,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               position: 'relative',
+              background: agent.colorScheme.gradient,
               boxShadow: `0 0 40px ${alpha(agent.colorScheme.primary, 0.5)}`,
             }}
           >
@@ -145,8 +142,8 @@ export const AgentSelectionModal: React.FC<AgentSelectionModalProps> = ({
                 }}
               />
             ) : agent.avatar && typeof agent.avatar === 'object' ? (
-              <Box
-                sx={{
+              <div
+                style={{
                   width: 72,
                   height: 72,
                   borderRadius: '50%',
@@ -161,13 +158,13 @@ export const AgentSelectionModal: React.FC<AgentSelectionModalProps> = ({
                   size: 32,
                   color: agent.avatar.iconColor,
                 })}
-              </Box>
+              </div>
             ) : (
-              <Box sx={{ color: 'white', fontSize: 32 }}>
+              <div style={{ color: 'white', fontSize: 32 }}>
                 {'🤖'}
-              </Box>
+              </div>
             )}
-          </Box>
+          </div>
 
           <Typography variant="h5" sx={{ color: 'white', mb: 1, fontWeight: 600 }}>
             {agent.name}
@@ -177,7 +174,7 @@ export const AgentSelectionModal: React.FC<AgentSelectionModalProps> = ({
             {agent.tagline}
           </Typography>
 
-          <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center' }}>
+          <div style={{ display: 'flex', gap: 16, justifyContent: 'center' }}>
             <Tooltip title="Ask anything. Your AI will reply instantly." arrow>
               <MessageButton
                 onClick={() => handleSelectMode('message')}
@@ -197,7 +194,7 @@ export const AgentSelectionModal: React.FC<AgentSelectionModalProps> = ({
                 Converse
               </ConverseButton>
             </Tooltip>
-          </Box>
+          </div>
 
           <Typography
             variant="caption"
@@ -210,8 +207,7 @@ export const AgentSelectionModal: React.FC<AgentSelectionModalProps> = ({
           >
             Choose your preferred communication method
           </Typography>
-        </DialogContent>
-      </Box>
+      </DialogContent>
     </StyledDialog>
   );
 };
