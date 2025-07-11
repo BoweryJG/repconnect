@@ -1,11 +1,11 @@
 name: Update Status Badges
 
 on:
-  workflow_run:
-    workflows: ["CI", "CD - Deploy to Production", "CodeQL Security Analysis"]
-    types:
-      - completed
-  workflow_dispatch:
+  workflow_dispatch:  # Only manual trigger
+  # workflow_run:
+  #   workflows: ["CI", "CD - Deploy to Production", "CodeQL Security Analysis"]
+  #   types:
+  #     - completed
 
 jobs:
   update-badges:
