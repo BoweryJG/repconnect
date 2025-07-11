@@ -1,12 +1,13 @@
 name: CodeQL Security Analysis
 
 on:
-  push:
-    branches: [ main, develop ]
-  pull_request:
-    branches: [ main ]
-  schedule:
-    - cron: '0 2 * * 1'  # Weekly on Monday at 2 AM UTC
+  workflow_dispatch:  # Only manual trigger for now
+  # push:
+  #   branches: [ main, develop ]
+  # pull_request:
+  #   branches: [ main ]
+  # schedule:
+  #   - cron: '0 2 * * 1'  # Weekly on Monday at 2 AM UTC
 
 jobs:
   analyze:

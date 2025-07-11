@@ -1,9 +1,9 @@
 name: CD - Deploy to Production
 
 on:
-  push:
-    branches: [ main ]
-  workflow_dispatch:
+  workflow_dispatch:  # Only manual trigger for now
+  # push:
+  #   branches: [ main ]
 
 env:
   NODE_VERSION: '18.x'
