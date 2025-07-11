@@ -1,0 +1,44 @@
+name: Debug Workflow
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  debug-info:
+    name: Debug Information
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Show Context
+      run: |
+        echo "=== GitHub Context ==="
+        echo "Repository: ${{ github.repository }}"
+        echo "Repository Owner: ${{ github.repository_owner }}"
+        echo "Actor: ${{ github.actor }}"
+        echo "Event: ${{ github.event_name }}"
+        echo "Workflow: ${{ github.workflow }}"
+        echo "Run ID: ${{ github.run_id }}"
+        echo "Run Number: ${{ github.run_number }}"
+        
+    - name: Show Runner Info
+      run: |
+        echo "=== Runner Context ==="
+        echo "OS: ${{ runner.os }}"
+        echo "Architecture: ${{ runner.arch }}"
+        echo "Temp Directory: ${{ runner.temp }}"
+        
+    - name: Test Checkout
+      uses: actions/checkout@v4
+      
+    - name: Verify Checkout
+      run: |
+        echo "=== Repository Files ==="
+        ls -la
+        echo "=== GitHub Directory ==="
+        ls -la .github/
+        echo "✅ Debug workflow completed successfully"
