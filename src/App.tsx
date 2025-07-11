@@ -46,6 +46,7 @@ import { harveyWebRTC } from './services/harveyWebRTC';
 import { harveyService } from './services/harveyService';
 import AgentSelector from './components/AgentSelector';
 import SessionWarning from './components/SessionWarning';
+import ChatbotIntegration from './components/ChatbotLauncher/ChatbotIntegration';
 
 // Lazy load heavy components
 const MissionControlDashboard = React.lazy(() => import('./components/MissionControlDashboard').then(module => ({ default: module.MissionControlDashboard })));
@@ -1248,6 +1249,12 @@ function AppContent() {
 
         {/* Agent Selector FAB */}
         <AgentSelector />
+
+        {/* Luxury Chatbot Launcher */}
+        <ChatbotIntegration 
+          position="bottom-right"
+          glowColor="#3B82F6"
+        />
 
         {/* Session Warning Dialog is handled by AuthContext */}
 

@@ -1,0 +1,290 @@
+/* AgentCard Component Styles */
+
+.agent-card-wrapper {
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s ease-out;
+  border-radius: 16px;
+}
+
+.agent-card-wrapper.selected {
+  box-shadow: 0 0 0 4px var(--ring-color);
+}
+
+/* Background gradient effect */
+.agent-card-gradient {
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  filter: blur(20px);
+  transform: scale(0.8);
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+}
+
+/* Main card container */
+.agent-card-container {
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  padding: 24px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: all 0.3s ease;
+}
+
+/* Glassmorphism noise texture */
+.agent-card-noise {
+  position: absolute;
+  inset: 0;
+  opacity: 0.3;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+
+/* Cartier Screw positioning */
+.agent-card-screw {
+  position: absolute;
+  transition: transform 0.3s ease;
+}
+
+.agent-card-screw.top-left {
+  top: 12px;
+  left: 12px;
+}
+
+.agent-card-screw.top-right {
+  top: 12px;
+  right: 12px;
+}
+
+.agent-card-screw.bottom-left {
+  bottom: 12px;
+  left: 12px;
+}
+
+.agent-card-screw.bottom-right {
+  bottom: 12px;
+  right: 12px;
+}
+
+/* Content container */
+.agent-card-content {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 16px;
+}
+
+/* Avatar container */
+.agent-card-avatar {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+/* Glow effect */
+.agent-card-glow {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  transform: scale(1.5);
+  animation: glowPulse 2s ease-in-out infinite;
+}
+
+/* Pulse effect */
+.agent-card-pulse {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  opacity: 0.3;
+  animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+/* Agent name */
+.agent-card-name {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: white;
+  margin: 0;
+  transition: all 0.3s ease;
+}
+
+/* Tagline */
+.agent-card-tagline {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.8);
+  max-width: 200px;
+  margin: 0;
+  transition: all 0.3s ease;
+}
+
+/* Hover indicator */
+.agent-card-indicator {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 4px;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+/* Special effects container */
+.agent-card-effects {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: 16px;
+}
+
+/* Shimmer effect */
+.agent-card-shimmer {
+  position: absolute;
+  inset: 0;
+  opacity: 0.3;
+  background-size: 200% 200%;
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+/* Particle container */
+.agent-card-particles {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+/* Individual particle */
+.agent-card-particle {
+  position: absolute;
+  font-size: 20px;
+}
+
+/* Animations */
+@keyframes glowPulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
+}
+
+@keyframes ping {
+  75%, 100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+@keyframes float-up {
+  0% {
+    transform: translateY(0) scale(0);
+    opacity: 0;
+  }
+  10% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  90% {
+    transform: translateY(-100px) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-120px) scale(0);
+    opacity: 0;
+  }
+}
+
+/* Mobile optimization */
+@media (max-width: 768px) {
+  .agent-card-container {
+    padding: 20px;
+  }
+
+  .agent-card-avatar {
+    width: 60px;
+    height: 60px;
+  }
+
+  .agent-card-name {
+    font-size: 1.125rem;
+  }
+
+  .agent-card-tagline {
+    font-size: 0.75rem;
+  }
+
+  .agent-card-screw {
+    transform: scale(0.8);
+  }
+
+  .agent-card-gradient {
+    filter: blur(15px);
+  }
+}
+
+@media (max-width: 480px) {
+  .agent-card-container {
+    padding: 16px;
+  }
+
+  .agent-card-avatar {
+    width: 50px;
+    height: 50px;
+  }
+
+  .agent-card-name {
+    font-size: 1rem;
+  }
+
+  .agent-card-tagline {
+    font-size: 0.7rem;
+    max-width: 150px;
+  }
+}
+
+/* Hover states for desktop */
+@media (hover: hover) {
+  .agent-card-wrapper:hover {
+    transform: translateY(-4px);
+  }
+
+  .agent-card-wrapper:active {
+    transform: translateY(-2px);
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .agent-card-wrapper,
+  .agent-card-container,
+  .agent-card-avatar,
+  .agent-card-screw,
+  .agent-card-gradient,
+  .agent-card-indicator {
+    transition: none;
+  }
+
+  .agent-card-glow,
+  .agent-card-pulse,
+  .agent-card-shimmer,
+  .animate-float-up {
+    animation: none;
+  }
+}
