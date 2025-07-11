@@ -11,24 +11,24 @@ interface HarveyLoadingScreenProps {
 
 const loadingMessages = [
   "Initializing Harvey's neural pathways...",
-  "Loading brutal honesty module...",
-  "Calibrating voice analysis systems...",
-  "Preparing tactical sales wisdom...",
-  "Activating real-time coaching engine...",
-  "Harvey is almost ready to judge you...",
+  'Loading brutal honesty module...',
+  'Calibrating voice analysis systems...',
+  'Preparing tactical sales wisdom...',
+  'Activating real-time coaching engine...',
+  'Harvey is almost ready to judge you...',
 ];
 
 export const HarveyLoadingScreen: React.FC<HarveyLoadingScreenProps> = ({
   isLoading,
   connectionStatus = 'connecting',
-  error
+  error,
 }) => {
   const [currentMessage, setCurrentMessage] = useState(0);
 
   useEffect(() => {
     if (isLoading && connectionStatus === 'connecting') {
       const interval = setInterval(() => {
-        setCurrentMessage(prev => (prev + 1) % loadingMessages.length);
+        setCurrentMessage((prev) => (prev + 1) % loadingMessages.length);
       }, 2000);
       return () => clearInterval(interval);
     }
@@ -36,19 +36,27 @@ export const HarveyLoadingScreen: React.FC<HarveyLoadingScreenProps> = ({
 
   const getStatusColor = () => {
     switch (connectionStatus) {
-      case 'connected': return '#10B981';
-      case 'failed': return '#EF4444';
-      case 'reconnecting': return '#F59E0B';
-      default: return '#FFD700';
+      case 'connected':
+        return '#10B981';
+      case 'failed':
+        return '#EF4444';
+      case 'reconnecting':
+        return '#F59E0B';
+      default:
+        return '#FFD700';
     }
   };
 
   const getStatusMessage = () => {
     switch (connectionStatus) {
-      case 'connected': return "Harvey is ready. Don't disappoint him.";
-      case 'failed': return error || "Connection failed. Harvey is not pleased.";
-      case 'reconnecting': return "Reconnecting to Harvey...";
-      default: return loadingMessages[currentMessage];
+      case 'connected':
+        return "Harvey is ready. Don't disappoint him.";
+      case 'failed':
+        return error || 'Connection failed. Harvey is not pleased.';
+      case 'reconnecting':
+        return 'Reconnecting to Harvey...';
+      default:
+        return loadingMessages[currentMessage];
     }
   };
 
@@ -68,7 +76,8 @@ export const HarveyLoadingScreen: React.FC<HarveyLoadingScreenProps> = ({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            background: 'linear-gradient(135deg, rgba(10, 10, 10, 0.98) 0%, rgba(26, 26, 26, 0.98) 100%)',
+            background:
+              'linear-gradient(135deg, rgba(10, 10, 10, 0.98) 0%, rgba(26, 26, 26, 0.98) 100%)',
             backdropFilter: 'blur(10px)',
             zIndex: 9999,
           }}

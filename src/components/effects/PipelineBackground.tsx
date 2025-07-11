@@ -28,9 +28,9 @@ interface PipelineBackgroundProps {
   interactive?: boolean;
 }
 
-export const PipelineBackground: React.FC<PipelineBackgroundProps> = ({ 
+export const PipelineBackground: React.FC<PipelineBackgroundProps> = ({
   variant = 'default',
-  interactive = true 
+  interactive = true,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationFrameRef = useRef<number>(0);
@@ -94,7 +94,7 @@ export const PipelineBackground: React.FC<PipelineBackgroundProps> = ({
         const y1 = Math.random() * height;
         const angle = Math.random() * Math.PI * 2;
         const length = 100 + Math.random() * 200;
-        
+
         newPipes.push({
           id: `d-${i}`,
           x1,
@@ -113,10 +113,10 @@ export const PipelineBackground: React.FC<PipelineBackgroundProps> = ({
     };
 
     generatePipes();
-    
+
     const handleResize = () => generatePipes();
     window.addEventListener('resize', handleResize);
-    
+
     return () => window.removeEventListener('resize', handleResize);
   }, [variant]);
 
@@ -158,9 +158,9 @@ export const PipelineBackground: React.FC<PipelineBackgroundProps> = ({
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       // Update and draw pipes
-      pipes.forEach(pipe => {
+      pipes.forEach((pipe) => {
         // Update particle positions
-        pipe.particles.forEach(particle => {
+        pipe.particles.forEach((particle) => {
           particle.progress += pipe.flowSpeed * 0.01;
           if (particle.progress > 1) particle.progress = 0;
         });
@@ -170,17 +170,16 @@ export const PipelineBackground: React.FC<PipelineBackgroundProps> = ({
           const pipeMidX = (pipe.x1 + pipe.x2) / 2;
           const pipeMidY = (pipe.y1 + pipe.y2) / 2;
           const distance = Math.sqrt(
-            Math.pow(mousePos.x - pipeMidX, 2) + 
-            Math.pow(mousePos.y - pipeMidY, 2)
+            Math.pow(mousePos.x - pipeMidX, 2) + Math.pow(mousePos.y - pipeMidY, 2)
           );
           pipe.glowIntensity = Math.max(0.3, Math.min(1, 150 / distance));
         }
 
         // Draw pipe
         drawPipe(ctx, pipe);
-        
+
         // Draw particles
-        pipe.particles.forEach(particle => {
+        pipe.particles.forEach((particle) => {
           drawParticle(ctx, pipe, particle);
         });
       });
@@ -200,24 +199,24 @@ export const PipelineBackground: React.FC<PipelineBackgroundProps> = ({
   // Draw a pipe
   const drawPipe = (ctx: CanvasRenderingContext2D, pipe: Pipe) => {
     ctx.save();
-    
+
     // Main pipe line
     ctx.beginPath();
     ctx.moveTo(pipe.x1, pipe.y1);
     ctx.lineTo(pipe.x2, pipe.y2);
-    
+
     // Pipe style
     ctx.strokeStyle = pipe.color;
     ctx.lineWidth = pipe.type === 'main' ? 3 : 2;
     ctx.globalAlpha = 0.3;
     ctx.stroke();
-    
+
     // Glow effect
     ctx.shadowBlur = 20 * pipe.glowIntensity;
     ctx.shadowColor = pipe.color;
     ctx.globalAlpha = 0.6 * pipe.glowIntensity;
     ctx.stroke();
-    
+
     ctx.restore();
   };
 
@@ -225,9 +224,9 @@ export const PipelineBackground: React.FC<PipelineBackgroundProps> = ({
   const drawParticle = (ctx: CanvasRenderingContext2D, pipe: Pipe, particle: Particle) => {
     const x = pipe.x1 + (pipe.x2 - pipe.x1) * particle.progress;
     const y = pipe.y1 + (pipe.y2 - pipe.y1) * particle.progress;
-    
+
     ctx.save();
-    
+
     // Particle glow
     ctx.beginPath();
     ctx.arc(x, y, particle.size * 2, 0, Math.PI * 2);
@@ -236,42 +235,46 @@ export const PipelineBackground: React.FC<PipelineBackgroundProps> = ({
     ctx.shadowBlur = 15;
     ctx.shadowColor = particle.color;
     ctx.fill();
-    
+
     // Particle core
     ctx.beginPath();
     ctx.arc(x, y, particle.size, 0, Math.PI * 2);
     ctx.fillStyle = '#ffffff';
     ctx.globalAlpha = particle.opacity;
     ctx.fill();
-    
+
     ctx.restore();
   };
 
   return (
-    <div style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      width: '100%',
-      height: '100%',
-      zIndex: 0,
-      overflow: 'hidden',
-      pointerEvents: 'none',
-    }}>
+    <div
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        zIndex: 0,
+        overflow: 'hidden',
+        pointerEvents: 'none',
+      }}
+    >
       {/* Gradient overlay */}
-      <div style={{
-        position: 'absolute',
-        inset: 0,
-        background: `
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          background: `
           radial-gradient(circle at 20% 50%, rgba(14, 165, 233, 0.1) 0%, transparent 50%),
           radial-gradient(circle at 80% 50%, rgba(168, 85, 247, 0.1) 0%, transparent 50%),
           radial-gradient(circle at 50% 20%, rgba(249, 115, 22, 0.05) 0%, transparent 50%),
           linear-gradient(180deg, rgba(10, 10, 11, 0.9) 0%, rgba(10, 10, 11, 0.95) 100%)
         `,
-      }} />
-      
+        }}
+      />
+
       {/* Canvas for pipes */}
-      <canvas 
+      <canvas
         ref={canvasRef}
         style={{
           position: 'absolute',
@@ -282,10 +285,10 @@ export const PipelineBackground: React.FC<PipelineBackgroundProps> = ({
           opacity: 0.8,
         }}
       />
-      
+
       {/* Animated glow nodes at intersections */}
       {variant !== 'minimal' && (
-        <svg 
+        <svg
           style={{
             position: 'absolute',
             top: 0,
@@ -297,40 +300,42 @@ export const PipelineBackground: React.FC<PipelineBackgroundProps> = ({
         >
           <defs>
             <filter id="glow">
-              <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+              <feGaussianBlur stdDeviation="4" result="coloredBlur" />
               <feMerge>
-                <feMergeNode in="coloredBlur"/>
-                <feMergeNode in="SourceGraphic"/>
+                <feMergeNode in="coloredBlur" />
+                <feMergeNode in="SourceGraphic" />
               </feMerge>
             </filter>
           </defs>
-          
+
           {/* Junction nodes */}
-          {pipes.filter(p => p.type === 'main').map((pipe, i) => {
-            if (i % 3 === 0) {
-              return (
-                <motion.circle
-                  key={pipe.id}
-                  cx={pipe.x1}
-                  cy={pipe.y1}
-                  r="8"
-                  fill={pipeColors.glow}
-                  filter="url(#glow)"
-                  initial={{ scale: 0.8, opacity: 0.5 }}
-                  animate={{ 
-                    scale: [0.8, 1.2, 0.8],
-                    opacity: [0.5, 0.8, 0.5],
-                  }}
-                  transition={{
-                    duration: 3,
-                    repeat: Infinity,
-                    delay: i * 0.2,
-                  }}
-                />
-              );
-            }
-            return null;
-          })}
+          {pipes
+            .filter((p) => p.type === 'main')
+            .map((pipe, i) => {
+              if (i % 3 === 0) {
+                return (
+                  <motion.circle
+                    key={pipe.id}
+                    cx={pipe.x1}
+                    cy={pipe.y1}
+                    r="8"
+                    fill={pipeColors.glow}
+                    filter="url(#glow)"
+                    initial={{ scale: 0.8, opacity: 0.5 }}
+                    animate={{
+                      scale: [0.8, 1.2, 0.8],
+                      opacity: [0.5, 0.8, 0.5],
+                    }}
+                    transition={{
+                      duration: 3,
+                      repeat: Infinity,
+                      delay: i * 0.2,
+                    }}
+                  />
+                );
+              }
+              return null;
+            })}
         </svg>
       )}
     </div>

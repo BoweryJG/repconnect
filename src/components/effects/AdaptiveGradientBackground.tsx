@@ -5,16 +5,20 @@ interface AdaptiveGradientBackgroundProps {
   quality?: 'ultra' | 'high' | 'medium' | 'low';
 }
 
-export const AdaptiveGradientBackground: React.FC<AdaptiveGradientBackgroundProps> = ({ quality }) => {
+export const AdaptiveGradientBackground: React.FC<AdaptiveGradientBackgroundProps> = ({
+  quality,
+}) => {
   // If quality is not provided, determine it from current settings
-  const currentQuality = quality || (() => {
-    const settings = adaptiveRenderer.getQuality();
-    if (settings.particleCount >= 5000) return 'ultra';
-    if (settings.particleCount >= 3000) return 'high';
-    if (settings.particleCount >= 1500) return 'medium';
-    return 'low';
-  })();
-  
+  const currentQuality =
+    quality ||
+    (() => {
+      const settings = adaptiveRenderer.getQuality();
+      if (settings.particleCount >= 5000) return 'ultra';
+      if (settings.particleCount >= 3000) return 'high';
+      if (settings.particleCount >= 1500) return 'medium';
+      return 'low';
+    })();
+
   const getBackground = () => {
     switch (currentQuality) {
       case 'ultra':

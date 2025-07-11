@@ -30,10 +30,10 @@ export const ParticleField: React.FC<{ color?: string }> = ({ color = '#6366F1' 
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const ctx = canvas.getContext('2d', { 
+    const ctx = canvas.getContext('2d', {
       alpha: true,
       desynchronized: true,
-      willReadFrequently: false 
+      willReadFrequently: false,
     });
     if (!ctx) return;
 
@@ -59,7 +59,7 @@ export const ParticleField: React.FC<{ color?: string }> = ({ color = '#6366F1' 
         vy: (Math.random() - 0.5) * 0.5,
         size: Math.random() * 3 + 1,
         opacity: Math.random() * 0.5 + 0.2,
-        color: color
+        color: color,
       }));
     };
 
@@ -72,21 +72,21 @@ export const ParticleField: React.FC<{ color?: string }> = ({ color = '#6366F1' 
         priority: 'medium',
         work: () => {
           ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
-          
+
           // Batch similar particles for fewer state changes
           ctx.globalCompositeOperation = 'screen';
-          
+
           particlesRef.current.forEach((particle) => {
             // Update position
             particle.x += particle.vx;
             particle.y += particle.vy;
-            
+
             // Wrap around screen
             if (particle.x < 0) particle.x = window.innerWidth;
             if (particle.x > window.innerWidth) particle.x = 0;
             if (particle.y < 0) particle.y = window.innerHeight;
             if (particle.y > window.innerHeight) particle.y = 0;
-            
+
             // Draw particle
             ctx.globalAlpha = particle.opacity;
             ctx.fillStyle = particle.color;
@@ -94,17 +94,17 @@ export const ParticleField: React.FC<{ color?: string }> = ({ color = '#6366F1' 
             ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
             ctx.fill();
           });
-          
+
           // Draw connections between nearby particles
           ctx.strokeStyle = color + '20';
           ctx.lineWidth = 0.5;
-          
+
           for (let i = 0; i < particlesRef.current.length; i++) {
             for (let j = i + 1; j < particlesRef.current.length; j++) {
               const dx = particlesRef.current[i].x - particlesRef.current[j].x;
               const dy = particlesRef.current[i].y - particlesRef.current[j].y;
               const distance = Math.sqrt(dx * dx + dy * dy);
-              
+
               if (distance < 100) {
                 ctx.globalAlpha = (1 - distance / 100) * 0.2;
                 ctx.beginPath();
@@ -114,7 +114,7 @@ export const ParticleField: React.FC<{ color?: string }> = ({ color = '#6366F1' 
               }
             }
           }
-        }
+        },
       });
 
       animationRef.current = requestAnimationFrame(render);
@@ -140,7 +140,7 @@ export const ParticleField: React.FC<{ color?: string }> = ({ color = '#6366F1' 
         height: '100%',
         pointerEvents: 'none',
         zIndex: 0,
-        opacity: 0.6
+        opacity: 0.6,
       }}
     >
       <canvas

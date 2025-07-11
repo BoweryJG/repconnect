@@ -11,7 +11,9 @@ interface WebRTCVoiceInterfaceWithReadyProps {
   showTranscript?: boolean;
 }
 
-export const WebRTCVoiceInterfaceWithReady: React.FC<WebRTCVoiceInterfaceWithReadyProps> = (props) => {
+export const WebRTCVoiceInterfaceWithReady: React.FC<WebRTCVoiceInterfaceWithReadyProps> = (
+  props
+) => {
   const [microphoneInitialized, setMicrophoneInitialized] = useState(false);
   const [showReadyDialog, setShowReadyDialog] = useState(false);
   const [selectedAgent, setSelectedAgent] = useState('harvey');
@@ -22,11 +24,11 @@ export const WebRTCVoiceInterfaceWithReady: React.FC<WebRTCVoiceInterfaceWithRea
     const checkMicrophonePermission = async () => {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        stream.getTracks().forEach(track => track.stop());
+        stream.getTracks().forEach((track) => track.stop());
         setMicrophoneInitialized(true);
         setShowReadyDialog(true);
       } catch (error) {
-                setMicrophoneInitialized(false);
+        setMicrophoneInitialized(false);
       }
     };
 
@@ -36,14 +38,13 @@ export const WebRTCVoiceInterfaceWithReady: React.FC<WebRTCVoiceInterfaceWithRea
   const handleConnectToAgent = useCallback(() => {
     setIsConnecting(true);
     setShowReadyDialog(false);
-    
+
     setTimeout(() => {
       setIsConnecting(false);
     }, 1000);
   }, []);
 
-  const handleAudioSettings = useCallback(() => {
-      }, []);
+  const handleAudioSettings = useCallback(() => {}, []);
 
   const handleAudioLevel = useCallback((level: number) => {
     setAudioLevel(level);
@@ -51,10 +52,7 @@ export const WebRTCVoiceInterfaceWithReady: React.FC<WebRTCVoiceInterfaceWithRea
 
   return (
     <>
-      <WebRTCVoiceInterface
-        {...props}
-        autoConnect={!showReadyDialog && microphoneInitialized}
-      />
+      <WebRTCVoiceInterface {...props} autoConnect={!showReadyDialog && microphoneInitialized} />
 
       <Dialog
         open={showReadyDialog}
@@ -63,8 +61,8 @@ export const WebRTCVoiceInterfaceWithReady: React.FC<WebRTCVoiceInterfaceWithRea
         PaperProps={{
           sx: {
             borderRadius: 2,
-            position: 'relative'
-          }
+            position: 'relative',
+          },
         }}
       >
         <IconButton
@@ -73,12 +71,12 @@ export const WebRTCVoiceInterfaceWithReady: React.FC<WebRTCVoiceInterfaceWithRea
             position: 'absolute',
             right: 8,
             top: 8,
-            zIndex: 1
+            zIndex: 1,
           }}
         >
           <Close />
         </IconButton>
-        
+
         <DialogContent sx={{ p: 0 }}>
           <MicrophoneReadyInterface
             onConnectToAgent={handleConnectToAgent}

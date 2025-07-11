@@ -6,13 +6,13 @@ interface CartierScrewProps {
   className?: string;
 }
 
-export const CartierScrew: React.FC<CartierScrewProps> = ({ 
-  rotation = 45, 
+export const CartierScrew: React.FC<CartierScrewProps> = ({
+  rotation = 45,
   size = 16,
-  className = '' 
+  className = '',
 }) => {
   return (
-    <div 
+    <div
       className={`cartier-screw ${className}`}
       style={{
         width: `${size}px`,
@@ -34,11 +34,11 @@ export const CartierScrew: React.FC<CartierScrewProps> = ({
           inset 0 0 ${size * 0.0625}px rgba(255, 255, 255, 0.6),
           0 ${size * 0.0625}px ${size * 0.125}px rgba(0, 0, 0, 0.3)
         `,
-        overflow: 'hidden'
+        overflow: 'hidden',
       }}
     >
       {/* Radial brushed texture overlay */}
-      <div 
+      <div
         style={{
           position: 'absolute',
           top: 0,
@@ -55,10 +55,10 @@ export const CartierScrew: React.FC<CartierScrewProps> = ({
             )
           `,
           opacity: 0.8,
-          mixBlendMode: 'overlay'
+          mixBlendMode: 'overlay',
         }}
       />
-      
+
       {/* Screw slot */}
       <div
         style={{
@@ -81,10 +81,10 @@ export const CartierScrew: React.FC<CartierScrewProps> = ({
             inset 0 ${size * 0.0625}px ${size * 0.0625}px rgba(0, 0, 0, 0.5),
             inset 0 -${size * 0.03125}px ${size * 0.03125}px rgba(255, 255, 255, 0.2)
           `,
-          borderRadius: `${size * 0.03125}px`
+          borderRadius: `${size * 0.03125}px`,
         }}
       />
-      
+
       {/* Center highlight */}
       <div
         style={{
@@ -95,10 +95,10 @@ export const CartierScrew: React.FC<CartierScrewProps> = ({
           height: `${size * 0.25}px`,
           transform: 'translate(-50%, -50%)',
           background: 'radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%)',
-          borderRadius: '50%'
+          borderRadius: '50%',
         }}
       />
-      
+
       {/* Bevel effect */}
       <div
         style={{
@@ -112,7 +112,7 @@ export const CartierScrew: React.FC<CartierScrewProps> = ({
           borderTopColor: 'rgba(255, 255, 255, 0.3)',
           borderLeftColor: 'rgba(255, 255, 255, 0.2)',
           borderRightColor: 'rgba(0, 0, 0, 0.1)',
-          borderBottomColor: 'rgba(0, 0, 0, 0.2)'
+          borderBottomColor: 'rgba(0, 0, 0, 0.2)',
         }}
       />
     </div>

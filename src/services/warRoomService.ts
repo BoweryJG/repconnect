@@ -170,8 +170,7 @@ class WarRoomService {
       this.notifyStatsUpdate(stats);
     });
 
-    this.socket.on('disconnect', () => {
-    });
+    this.socket.on('disconnect', () => {});
   }
 
   private createCallFromData(data: any): WarRoomCall {
@@ -224,7 +223,10 @@ class WarRoomService {
     }
   }
 
-  async requestBattle(rep1Id: string, rep2Id: string): Promise<{ success: boolean; battleId?: string }> {
+  async requestBattle(
+    rep1Id: string,
+    rep2Id: string
+  ): Promise<{ success: boolean; battleId?: string }> {
     return new Promise((resolve) => {
       if (!this.socket?.connected) {
         resolve({ success: false });
@@ -258,64 +260,64 @@ class WarRoomService {
   }
 
   getActiveBattles(): BattleMode[] {
-    return Array.from(this.battleModes.values()).filter(b => b.active);
+    return Array.from(this.battleModes.values()).filter((b) => b.active);
   }
 
   // Event subscription methods
   onCallStart(callback: (call: WarRoomCall) => void): () => void {
     this.listeners.onCallStart.push(callback);
     return () => {
-      this.listeners.onCallStart = this.listeners.onCallStart.filter(cb => cb !== callback);
+      this.listeners.onCallStart = this.listeners.onCallStart.filter((cb) => cb !== callback);
     };
   }
 
   onCallUpdate(callback: (call: WarRoomCall) => void): () => void {
     this.listeners.onCallUpdate.push(callback);
     return () => {
-      this.listeners.onCallUpdate = this.listeners.onCallUpdate.filter(cb => cb !== callback);
+      this.listeners.onCallUpdate = this.listeners.onCallUpdate.filter((cb) => cb !== callback);
     };
   }
 
   onCallEnd(callback: (callId: string) => void): () => void {
     this.listeners.onCallEnd.push(callback);
     return () => {
-      this.listeners.onCallEnd = this.listeners.onCallEnd.filter(cb => cb !== callback);
+      this.listeners.onCallEnd = this.listeners.onCallEnd.filter((cb) => cb !== callback);
     };
   }
 
   onBattleUpdate(callback: (battle: BattleMode) => void): () => void {
     this.listeners.onBattleUpdate.push(callback);
     return () => {
-      this.listeners.onBattleUpdate = this.listeners.onBattleUpdate.filter(cb => cb !== callback);
+      this.listeners.onBattleUpdate = this.listeners.onBattleUpdate.filter((cb) => cb !== callback);
     };
   }
 
   onStatsUpdate(callback: (stats: TeamStats) => void): () => void {
     this.listeners.onStatsUpdate.push(callback);
     return () => {
-      this.listeners.onStatsUpdate = this.listeners.onStatsUpdate.filter(cb => cb !== callback);
+      this.listeners.onStatsUpdate = this.listeners.onStatsUpdate.filter((cb) => cb !== callback);
     };
   }
 
   // Notification methods
   private notifyCallStart(call: WarRoomCall): void {
-    this.listeners.onCallStart.forEach(cb => cb(call));
+    this.listeners.onCallStart.forEach((cb) => cb(call));
   }
 
   private notifyCallUpdate(call: WarRoomCall): void {
-    this.listeners.onCallUpdate.forEach(cb => cb(call));
+    this.listeners.onCallUpdate.forEach((cb) => cb(call));
   }
 
   private notifyCallEnd(callId: string): void {
-    this.listeners.onCallEnd.forEach(cb => cb(callId));
+    this.listeners.onCallEnd.forEach((cb) => cb(callId));
   }
 
   private notifyBattleUpdate(battle: BattleMode): void {
-    this.listeners.onBattleUpdate.forEach(cb => cb(battle));
+    this.listeners.onBattleUpdate.forEach((cb) => cb(battle));
   }
 
   private notifyStatsUpdate(stats: TeamStats): void {
-    this.listeners.onStatsUpdate.forEach(cb => cb(stats));
+    this.listeners.onStatsUpdate.forEach((cb) => cb(stats));
   }
 
   disconnect(): void {

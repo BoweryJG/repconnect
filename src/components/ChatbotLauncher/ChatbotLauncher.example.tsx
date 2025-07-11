@@ -70,7 +70,6 @@ const customAgents = [
 
 const ChatbotLauncherExample: React.FC = () => {
   const handleAgentSelect = (agent: any) => {
-    console.log('Selected agent:', agent);
     // Here you would typically:
     // 1. Open a chat interface with the selected agent
     // 2. Initialize a conversation
@@ -84,7 +83,8 @@ const ChatbotLauncherExample: React.FC = () => {
         ChatbotLauncher Component Example
       </Typography>
       <Typography variant="body1" color="text.secondary" paragraph>
-        The chatbot launcher appears in the bottom-right corner. Click the floating orb to see the agent carousel.
+        The chatbot launcher appears in the bottom-right corner. Click the floating orb to see the
+        agent carousel.
       </Typography>
 
       {/* Basic usage with defaults */}

@@ -57,7 +57,7 @@ export const ChatModal: React.FC<ChatModalProps> = ({
       timestamp: new Date(),
     };
 
-    setMessages(prev => [...prev, userMessage]);
+    setMessages((prev) => [...prev, userMessage]);
     setInputValue('');
     setIsSending(true);
     setIsTyping(true);
@@ -65,8 +65,8 @@ export const ChatModal: React.FC<ChatModalProps> = ({
     try {
       // TODO: Integrate with OpenRouter GPT-4 API
       // For now, simulate a response
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+
       const agentMessage: Message = {
         id: (Date.now() + 1).toString(),
         content: `Thank you for your message. I'm ${agentName}, your ${agentRole}. How can I assist you today?`,
@@ -74,9 +74,9 @@ export const ChatModal: React.FC<ChatModalProps> = ({
         timestamp: new Date(),
       };
 
-      setMessages(prev => [...prev, agentMessage]);
+      setMessages((prev) => [...prev, agentMessage]);
     } catch (error) {
-      console.error('Error sending message:', error);
+      // Error sending message - handle silently in production
     } finally {
       setIsTyping(false);
       setIsSending(false);
@@ -95,21 +95,19 @@ export const ChatModal: React.FC<ChatModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
-      <div 
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-        onClick={onClose}
-      />
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
 
       {/* Modal */}
-      <div className="relative w-full max-w-md h-[600px] max-h-[90vh] flex flex-col
+      <div
+        className="relative w-full max-w-md h-[600px] max-h-[90vh] flex flex-col
                       bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20
-                      shadow-[0_8px_32px_rgba(0,0,0,0.3)]">
-        
+                      shadow-[0_8px_32px_rgba(0,0,0,0.3)]"
+      >
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-white/10">
           <div className="flex items-center space-x-3">
-            <img 
-              src={agentAvatar} 
+            <img
+              src={agentAvatar}
               alt={agentName}
               className="w-10 h-10 rounded-full object-cover ring-2 ring-white/20"
             />
@@ -148,9 +146,9 @@ export const ChatModal: React.FC<ChatModalProps> = ({
               >
                 <p className="text-sm whitespace-pre-wrap">{message.content}</p>
                 <p className="text-xs text-white/40 mt-1">
-                  {message.timestamp.toLocaleTimeString([], { 
-                    hour: '2-digit', 
-                    minute: '2-digit' 
+                  {message.timestamp.toLocaleTimeString([], {
+                    hour: '2-digit',
+                    minute: '2-digit',
                   })}
                 </p>
               </div>
@@ -160,15 +158,23 @@ export const ChatModal: React.FC<ChatModalProps> = ({
           {/* Typing Indicator */}
           {isTyping && (
             <div className="flex justify-start">
-              <div className="flex items-center space-x-2 px-4 py-3 rounded-2xl
-                            bg-white/10 backdrop-blur-sm border border-white/10">
+              <div
+                className="flex items-center space-x-2 px-4 py-3 rounded-2xl
+                            bg-white/10 backdrop-blur-sm border border-white/10"
+              >
                 <div className="flex space-x-1">
-                  <div className="w-2 h-2 bg-white/60 rounded-full animate-bounce"
-                       style={{ animationDelay: '0ms' }} />
-                  <div className="w-2 h-2 bg-white/60 rounded-full animate-bounce"
-                       style={{ animationDelay: '150ms' }} />
-                  <div className="w-2 h-2 bg-white/60 rounded-full animate-bounce"
-                       style={{ animationDelay: '300ms' }} />
+                  <div
+                    className="w-2 h-2 bg-white/60 rounded-full animate-bounce"
+                    style={{ animationDelay: '0ms' }}
+                  />
+                  <div
+                    className="w-2 h-2 bg-white/60 rounded-full animate-bounce"
+                    style={{ animationDelay: '150ms' }}
+                  />
+                  <div
+                    className="w-2 h-2 bg-white/60 rounded-full animate-bounce"
+                    style={{ animationDelay: '300ms' }}
+                  />
                 </div>
               </div>
             </div>

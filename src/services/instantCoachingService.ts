@@ -31,11 +31,13 @@ export class InstantCoachingService {
   static async getAvailableCoaches(procedureCategory: string) {
     const { data, error } = await supabase
       .from('coach_procedure_specializations')
-      .select(`
+      .select(
+        `
         *,
         coach:sales_coach_agents(*),
         availability:coach_availability(*)
-      `)
+      `
+      )
       .eq('procedure_category', procedureCategory)
       .eq('available_for_instant', true)
       .eq('availability.is_available', true);
@@ -53,19 +55,22 @@ export class InstantCoachingService {
     procedureCategory: string,
     sessionType: string = 'practice_pitch'
   ): Promise<InstantCoachingSession> {
-    const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/coaching/start-session`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
-      },
-      body: JSON.stringify({
-        repId,
-        coachId,
-        procedureCategory,
-        sessionType
-      })
-    });
+    const response = await fetch(
+      `${process.env.REACT_APP_BACKEND_URL}/api/coaching/start-session`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`,
+        },
+        body: JSON.stringify({
+          repId,
+          coachId,
+          procedureCategory,
+          sessionType,
+        }),
+      }
+    );
 
     if (!response.ok) {
       const error = await response.json();
@@ -84,7 +89,7 @@ export class InstantCoachingService {
       .from('instant_coaching_sessions')
       .update({
         connection_status: 'connected',
-        started_at: new Date().toISOString()
+        started_at: new Date().toISOString(),
       })
       .eq('id', sessionId)
       .select()
@@ -119,7 +124,7 @@ export class InstantCoachingService {
         connection_status: 'completed',
         ended_at: new Date().toISOString(),
         duration_seconds: duration,
-        notes: notes
+        notes: notes,
       })
       .eq('id', sessionId);
 
@@ -131,7 +136,7 @@ export class InstantCoachingService {
       .update({
         is_available: true,
         current_session_id: null,
-        last_session_end: new Date().toISOString()
+        last_session_end: new Date().toISOString(),
       })
       .eq('coach_id', session.coach_id);
 
@@ -172,23 +177,23 @@ export class InstantCoachingService {
       practice_pitch: [
         'Master product positioning',
         'Handle common objections',
-        'Build confidence in presentation'
+        'Build confidence in presentation',
       ],
       objection_handling: [
         'Address price concerns effectively',
         'Counter competitor comparisons',
-        'Turn objections into opportunities'
+        'Turn objections into opportunities',
       ],
       product_qa: [
         'Deep dive into technical details',
         'Understand clinical evidence',
-        'Learn differentiators'
+        'Learn differentiators',
       ],
       mock_consultation: [
         'Practice full patient journey',
         'Build rapport quickly',
-        'Close with confidence'
-      ]
+        'Close with confidence',
+      ],
     };
 
     return goals[sessionType] || ['Improve sales skills'];
@@ -210,8 +215,11 @@ export class InstantCoachingService {
     // For now, returning a placeholder
     return {
       message: "I'll help you practice that. Let's start with...",
-      suggestions: ["Tell me about your experience with this procedure", "What objections do you commonly face?"],
-      resources: []
+      suggestions: [
+        'Tell me about your experience with this procedure',
+        'What objections do you commonly face?',
+      ],
+      resources: [],
     };
   }
 }

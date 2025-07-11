@@ -10,11 +10,7 @@ interface AgentCardProps {
   isSelected?: boolean;
 }
 
-export const AgentCard: React.FC<AgentCardProps> = ({ 
-  agent, 
-  onClick, 
-  isSelected = false 
-}) => {
+export const AgentCard: React.FC<AgentCardProps> = ({ agent, onClick, isSelected = false }) => {
   const [isHovered, setIsHovered] = React.useState(false);
 
   const handleClick = () => {
@@ -26,14 +22,16 @@ export const AgentCard: React.FC<AgentCardProps> = ({
   return (
     <div
       className={`agent-card-wrapper ${isHovered ? 'hovered' : ''} ${isSelected ? 'selected' : ''}`}
-      style={{
-        '--agent-primary': agent.colorScheme.primary,
-        '--agent-secondary': agent.colorScheme.secondary,
-        '--agent-accent': agent.colorScheme.accent,
-        '--agent-shadow': agent.colorScheme.shadowColor,
-        '--ring-color': isSelected ? agent.colorScheme.primary : 'transparent',
-        transform: isHovered ? 'scale(1.05)' : 'scale(1)',
-      } as React.CSSProperties}
+      style={
+        {
+          '--agent-primary': agent.colorScheme.primary,
+          '--agent-secondary': agent.colorScheme.secondary,
+          '--agent-accent': agent.colorScheme.accent,
+          '--agent-shadow': agent.colorScheme.shadowColor,
+          '--ring-color': isSelected ? agent.colorScheme.primary : 'transparent',
+          transform: isHovered ? 'scale(1.05)' : 'scale(1)',
+        } as React.CSSProperties
+      }
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={handleClick}
@@ -59,8 +57,8 @@ export const AgentCard: React.FC<AgentCardProps> = ({
             )
           `,
           border: '1px solid rgba(255, 255, 255, 0.18)',
-          boxShadow: isHovered 
-            ? `0 20px 40px ${agent.colorScheme.shadowColor}, 0 0 60px ${agent.colorScheme.shadowColor}` 
+          boxShadow: isHovered
+            ? `0 20px 40px ${agent.colorScheme.shadowColor}, 0 0 60px ${agent.colorScheme.shadowColor}`
             : `0 10px 30px ${agent.colorScheme.shadowColor}`,
         }}
       >
@@ -73,16 +71,28 @@ export const AgentCard: React.FC<AgentCardProps> = ({
         />
 
         {/* Cartier Screws - positioned at corners */}
-        <div className="agent-card-screw top-left" style={{ transform: isHovered ? 'rotate(45deg)' : 'rotate(0deg)' }}>
+        <div
+          className="agent-card-screw top-left"
+          style={{ transform: isHovered ? 'rotate(45deg)' : 'rotate(0deg)' }}
+        >
           <CartierScrew rotation={-45} size={12} />
         </div>
-        <div className="agent-card-screw top-right" style={{ transform: isHovered ? 'rotate(45deg)' : 'rotate(0deg)' }}>
+        <div
+          className="agent-card-screw top-right"
+          style={{ transform: isHovered ? 'rotate(45deg)' : 'rotate(0deg)' }}
+        >
           <CartierScrew rotation={45} size={12} />
         </div>
-        <div className="agent-card-screw bottom-left" style={{ transform: isHovered ? 'rotate(45deg)' : 'rotate(0deg)' }}>
+        <div
+          className="agent-card-screw bottom-left"
+          style={{ transform: isHovered ? 'rotate(45deg)' : 'rotate(0deg)' }}
+        >
           <CartierScrew rotation={135} size={12} />
         </div>
-        <div className="agent-card-screw bottom-right" style={{ transform: isHovered ? 'rotate(45deg)' : 'rotate(0deg)' }}>
+        <div
+          className="agent-card-screw bottom-right"
+          style={{ transform: isHovered ? 'rotate(45deg)' : 'rotate(0deg)' }}
+        >
           <CartierScrew rotation={-135} size={12} />
         </div>
 
@@ -121,7 +131,8 @@ export const AgentCard: React.FC<AgentCardProps> = ({
 
             {/* Pulse effect */}
             {agent.visualEffects.pulseEffect && isHovered && (
-              <div className="agent-card-pulse"
+              <div
+                className="agent-card-pulse"
                 style={{ background: agent.avatar.backgroundColor }}
               />
             )}
@@ -131,8 +142,8 @@ export const AgentCard: React.FC<AgentCardProps> = ({
           <h3
             className="agent-card-name"
             style={{
-              textShadow: isHovered 
-                ? `0 0 20px ${agent.colorScheme.primary}50` 
+              textShadow: isHovered
+                ? `0 0 20px ${agent.colorScheme.primary}50`
                 : '0 2px 4px rgba(0, 0, 0, 0.2)',
             }}
           >

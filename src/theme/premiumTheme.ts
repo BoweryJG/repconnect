@@ -6,21 +6,21 @@ export const pipelineColors = {
   pipeBlue: '#0EA5E9',
   pipeBlueDark: '#0284C7',
   pipeBlueLight: '#60A5FA',
-  
+
   // Data flow colors
   pipePurple: '#A855F7',
   pipePurpleDark: '#9333EA',
   pipePurpleLight: '#C084FC',
-  
+
   // Hot lead pipes
   pipeOrange: '#F97316',
   pipeOrangeDark: '#EA580C',
   pipeRed: '#DC2626',
-  
+
   // Success/active pipes
   pipeGreen: '#10B981',
   pipeGreenDark: '#059669',
-  
+
   // Flow particles
   particleGlow: '#60A5FA',
   particlePink: '#F472B6',

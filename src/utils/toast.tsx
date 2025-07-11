@@ -52,7 +52,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           onClose={() => removeToast(toast.id)}
           anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
           TransitionComponent={SlideTransition}
-          style={{ bottom: `${(index * 70) + 24}px` }} // Stack toasts vertically
+          style={{ bottom: `${index * 70 + 24}px` }} // Stack toasts vertically
         >
           <Alert
             onClose={() => removeToast(toast.id)}

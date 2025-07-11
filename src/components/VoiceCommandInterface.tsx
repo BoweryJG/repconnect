@@ -13,9 +13,9 @@ interface VoiceCommandInterfaceProps {
   suggestions?: string[];
 }
 
-export const VoiceCommandInterface: React.FC<VoiceCommandInterfaceProps> = ({ 
-  onCommand, 
-  suggestions = [] 
+export const VoiceCommandInterface: React.FC<VoiceCommandInterfaceProps> = ({
+  onCommand,
+  suggestions = [],
 }) => {
   const [isListening, setIsListening] = useState(false);
   const [query, setQuery] = useState('');
@@ -36,7 +36,8 @@ export const VoiceCommandInterface: React.FC<VoiceCommandInterfaceProps> = ({
   useEffect(() => {
     // Initialize Web Speech API
     if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-      const SpeechRecognition = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
+      const SpeechRecognition =
+        (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
       recognitionRef.current = new SpeechRecognition();
       recognitionRef.current.continuous = true;
       recognitionRef.current.interimResults = true;
@@ -46,7 +47,7 @@ export const VoiceCommandInterface: React.FC<VoiceCommandInterfaceProps> = ({
         const current = event.resultIndex;
         const transcript = event.results[current][0].transcript;
         setTranscript(transcript);
-        
+
         if (event.results[current].isFinal) {
           setQuery(transcript);
           const suggestions = NaturalLanguageProcessor.generateSuggestions(transcript);
@@ -55,7 +56,7 @@ export const VoiceCommandInterface: React.FC<VoiceCommandInterfaceProps> = ({
       };
 
       recognitionRef.current.onerror = (event: any) => {
-                setIsListening(false);
+        setIsListening(false);
       };
 
       recognitionRef.current.onend = () => {
@@ -82,20 +83,20 @@ export const VoiceCommandInterface: React.FC<VoiceCommandInterfaceProps> = ({
 
     const width = canvas.width;
     const height = canvas.height;
-    
+
     ctx.clearRect(0, 0, width, height);
-    
+
     // Draw animated waveform
     const time = Date.now() * 0.001;
     ctx.strokeStyle = '#00ff88';
     ctx.lineWidth = 2;
     ctx.shadowBlur = 20;
     ctx.shadowColor = '#00ff88';
-    
+
     ctx.beginPath();
     for (let x = 0; x < width; x++) {
-      const y = height / 2 + Math.sin((x * 0.02) + time) * 20 * 
-                (isListening ? 1 + Math.random() * 0.5 : 0.2);
+      const y =
+        height / 2 + Math.sin(x * 0.02 + time) * 20 * (isListening ? 1 + Math.random() * 0.5 : 0.2);
       if (x === 0) {
         ctx.moveTo(x, y);
       } else {
@@ -144,39 +145,49 @@ export const VoiceCommandInterface: React.FC<VoiceCommandInterfaceProps> = ({
   };
 
   return (
-    <div style={{
-      background: 'linear-gradient(135deg, rgba(17, 25, 40, 0.95) 0%, rgba(30, 41, 59, 0.9) 100%)',
-      backdropFilter: 'blur(20px) saturate(150%)',
-      WebkitBackdropFilter: 'blur(20px) saturate(150%)',
-      border: '1px solid rgba(255, 255, 255, 0.1)',
-      borderRadius: '24px',
-      padding: '32px',
-      position: 'relative',
-      overflow: 'hidden',
-      boxShadow: '0 20px 40px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
-    }}>
+    <div
+      style={{
+        background:
+          'linear-gradient(135deg, rgba(17, 25, 40, 0.95) 0%, rgba(30, 41, 59, 0.9) 100%)',
+        backdropFilter: 'blur(20px) saturate(150%)',
+        WebkitBackdropFilter: 'blur(20px) saturate(150%)',
+        border: '1px solid rgba(255, 255, 255, 0.1)',
+        borderRadius: '24px',
+        padding: '32px',
+        position: 'relative',
+        overflow: 'hidden',
+        boxShadow: '0 20px 40px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
+      }}
+    >
       {/* Holographic overlay */}
       {enableEffects && (
-        <div style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: 'linear-gradient(45deg, transparent 30%, rgba(0, 255, 136, 0.05) 50%, transparent 70%)',
-          animation: 'holographicSweep 3s linear infinite',
-          pointerEvents: 'none',
-        }} />
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background:
+              'linear-gradient(45deg, transparent 30%, rgba(0, 255, 136, 0.05) 50%, transparent 70%)',
+            animation: 'holographicSweep 3s linear infinite',
+            pointerEvents: 'none',
+          }}
+        />
       )}
 
       {/* Header */}
       <div style={{ marginBottom: '24px', textAlign: 'center' }}>
-        <Typography variant="h5" fontWeight="700" style={{
-          background: 'linear-gradient(135deg, #00ff88 0%, #00d4ff 100%)',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-          marginBottom: '8px',
-        }}>
+        <Typography
+          variant="h5"
+          fontWeight="700"
+          style={{
+            background: 'linear-gradient(135deg, #00ff88 0%, #00d4ff 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            marginBottom: '8px',
+          }}
+        >
           AI Voice Sync
         </Typography>
         <Typography variant="body2" color="text.secondary">
@@ -185,14 +196,16 @@ export const VoiceCommandInterface: React.FC<VoiceCommandInterfaceProps> = ({
       </div>
 
       {/* Voice visualization */}
-      <div style={{
-        height: '80px',
-        marginBottom: '24px',
-        position: 'relative',
-        borderRadius: '16px',
-        overflow: 'hidden',
-        background: 'rgba(0, 0, 0, 0.3)',
-      }}>
+      <div
+        style={{
+          height: '80px',
+          marginBottom: '24px',
+          position: 'relative',
+          borderRadius: '16px',
+          overflow: 'hidden',
+          background: 'rgba(0, 0, 0, 0.3)',
+        }}
+      >
         {enableEffects ? (
           <canvas
             ref={canvasRef}
@@ -206,16 +219,18 @@ export const VoiceCommandInterface: React.FC<VoiceCommandInterfaceProps> = ({
             }}
           />
         ) : (
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            height: '100%',
-          }}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              height: '100%',
+            }}
+          >
             {isListening && <CircularProgress size={40} style={{ color: '#00ff88' }} />}
           </div>
         )}
-        
+
         {transcript && (
           <motion.div
             initial={{ opacity: 0, y: 10 }}
@@ -276,11 +291,11 @@ export const VoiceCommandInterface: React.FC<VoiceCommandInterfaceProps> = ({
             },
           }}
         />
-        
+
         <IconButton
           onClick={toggleListening}
           style={{
-            background: isListening 
+            background: isListening
               ? 'linear-gradient(135deg, #ff0040 0%, #ff0080 100%)'
               : 'linear-gradient(135deg, #00ff88 0%, #00d4ff 100%)',
             width: '56px',
@@ -292,7 +307,7 @@ export const VoiceCommandInterface: React.FC<VoiceCommandInterfaceProps> = ({
         >
           {isListening ? <MicOffIcon /> : <MicIcon />}
         </IconButton>
-        
+
         <IconButton
           onClick={handleSubmit}
           disabled={!query.trim()}
@@ -302,9 +317,7 @@ export const VoiceCommandInterface: React.FC<VoiceCommandInterfaceProps> = ({
               : 'rgba(255, 255, 255, 0.1)',
             width: '56px',
             height: '56px',
-            boxShadow: query.trim()
-              ? '0 0 30px rgba(99, 102, 241, 0.4)'
-              : 'none',
+            boxShadow: query.trim() ? '0 0 30px rgba(99, 102, 241, 0.4)' : 'none',
           }}
         >
           <SendIcon />
@@ -320,7 +333,9 @@ export const VoiceCommandInterface: React.FC<VoiceCommandInterfaceProps> = ({
             exit={{ opacity: 0, height: 0 }}
             style={{ overflow: 'hidden' }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
+            <div
+              style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}
+            >
               <AutoAwesomeIcon sx={{ fontSize: 16, color: '#ffd93d' }} />
               <Typography variant="caption" color="text.secondary">
                 AI Suggestions
@@ -365,12 +380,12 @@ export const VoiceCommandInterface: React.FC<VoiceCommandInterfaceProps> = ({
             {[
               '"Sync my top 50 accounts in Greenwich interested in fraxel"',
               '"Queue high-value clients from this week"',
-              '"Prepare calls for accounts tagged premium"'
+              '"Prepare calls for accounts tagged premium"',
             ].map((example) => (
-              <Typography 
-                key={example} 
-                variant="body2" 
-                style={{ 
+              <Typography
+                key={example}
+                variant="body2"
+                style={{
                   color: 'rgba(255, 255, 255, 0.6)',
                   fontStyle: 'italic',
                   cursor: 'pointer',

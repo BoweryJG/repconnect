@@ -1,45 +1,42 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Plus, 
-  X, 
-  Brain, 
-  User,
-  Check,
-  Volume2
-} from 'lucide-react';
+import { Plus, X, Brain, User, Check, Volume2 } from 'lucide-react';
 import { useStore } from '../store/useStore';
 
 export default function AgentSelector() {
   const [isOpen, setIsOpen] = useState(false);
   const { agents, currentAgentId, setCurrentAgent } = useStore();
-  const currentAgent = agents.find(a => a.id === currentAgentId);
+  const currentAgent = agents.find((a) => a.id === currentAgentId);
 
   // Audio announcement system
   const announceAgentSwitch = (agentName: string) => {
     // Create the announcement with a sexy, classy woman's voice
     const utterance = new SpeechSynthesisUtterance(`${agentName} mode activated`);
-    
+
     // Configure the voice for a sexy, classy woman sound
-    utterance.voice = speechSynthesis.getVoices().find(voice => 
-      voice.name.includes('Female') || 
-      voice.name.includes('Woman') ||
-      voice.name.includes('Samantha') ||
-      voice.name.includes('Victoria') ||
-      voice.name.includes('Allison')
-    ) || speechSynthesis.getVoices()[0];
-    
+    utterance.voice =
+      speechSynthesis
+        .getVoices()
+        .find(
+          (voice) =>
+            voice.name.includes('Female') ||
+            voice.name.includes('Woman') ||
+            voice.name.includes('Samantha') ||
+            voice.name.includes('Victoria') ||
+            voice.name.includes('Allison')
+        ) || speechSynthesis.getVoices()[0];
+
     // Voice settings for a sultry, intimate tone
-    utterance.pitch = 0.8;  // Lower pitch for sultry voice
-    utterance.rate = 0.85;   // Slower for intimate feel
-    utterance.volume = 0.9;  // Slightly softer
-    
+    utterance.pitch = 0.8; // Lower pitch for sultry voice
+    utterance.rate = 0.85; // Slower for intimate feel
+    utterance.volume = 0.9; // Slightly softer
+
     speechSynthesis.speak(utterance);
   };
 
   const handleAgentSelect = (agentId: string) => {
     if (agentId !== currentAgentId) {
       setCurrentAgent(agentId);
-      const agent = agents.find(a => a.id === agentId);
+      const agent = agents.find((a) => a.id === agentId);
       if (agent) {
         announceAgentSwitch(agent.name);
       }
@@ -63,8 +60,8 @@ export default function AgentSelector() {
       <button
         onClick={() => setIsOpen(!isOpen)}
         className={`fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full shadow-lg transition-all duration-300 ${
-          isOpen 
-            ? 'bg-red-500 hover:bg-red-600' 
+          isOpen
+            ? 'bg-red-500 hover:bg-red-600'
             : 'bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700'
         } text-white flex items-center justify-center group`}
         aria-label={isOpen ? 'Close agent selector' : 'Open agent selector'}
@@ -73,9 +70,7 @@ export default function AgentSelector() {
           <Plus className="w-6 h-6" />
         </div>
         {currentAgent && !isOpen && (
-          <div className="absolute -top-1 -right-1 text-2xl">
-            {currentAgent.avatar}
-          </div>
+          <div className="absolute -top-1 -right-1 text-2xl">{currentAgent.avatar}</div>
         )}
       </button>
 
@@ -109,13 +104,13 @@ export default function AgentSelector() {
                     <div className="flex-1 text-left">
                       <div className="flex items-center justify-between">
                         <h4 className="font-semibold">{agent.name}</h4>
-                        {agent.id === currentAgentId && (
-                          <Check className="w-5 h-5" />
-                        )}
+                        {agent.id === currentAgentId && <Check className="w-5 h-5" />}
                       </div>
-                      <p className={`text-sm mt-1 ${
-                        agent.id === currentAgentId ? 'text-white/90' : 'text-gray-600'
-                      }`}>
+                      <p
+                        className={`text-sm mt-1 ${
+                          agent.id === currentAgentId ? 'text-white/90' : 'text-gray-600'
+                        }`}
+                      >
                         {agent.description}
                       </p>
                       {agent.specialties && agent.specialties.length > 0 && (

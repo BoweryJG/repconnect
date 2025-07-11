@@ -14,7 +14,7 @@ export class RenderQueue {
     ['high', []],
     ['medium', []],
     ['low', []],
-    ['idle', []]
+    ['idle', []],
   ]);
 
   private isProcessing = false;
@@ -24,7 +24,7 @@ export class RenderQueue {
   public addTask(task: RenderTask) {
     const queue = this.queues.get(task.priority)!;
     queue.push(task);
-    
+
     if (!this.isProcessing) {
       this.startProcessing();
     }
@@ -43,7 +43,7 @@ export class RenderQueue {
     for (const [priority, queue] of this.queues) {
       while (queue.length > 0) {
         const elapsed = performance.now() - startTime;
-        
+
         // Check if we have time left in this frame
         if (elapsed >= this.frameDeadline && priority !== 'critical') {
           // Yield to browser to maintain 60fps
@@ -52,7 +52,7 @@ export class RenderQueue {
         }
 
         const task = queue.shift()!;
-        
+
         if (task.chunked) {
           // Process chunked tasks over multiple frames
           this.processChunkedTask(task);
@@ -60,14 +60,14 @@ export class RenderQueue {
           // Execute task immediately
           task.work();
         }
-        
+
         processed = true;
-        
+
         // For critical tasks, ignore frame budget
         if (priority === 'critical') {
           continue;
         }
-        
+
         // Break if we've used too much time
         if (performance.now() - startTime >= this.frameDeadline) {
           break;
@@ -99,7 +99,7 @@ export class RenderQueue {
     if (priority) {
       this.queues.get(priority)!.length = 0;
     } else {
-      this.queues.forEach(queue => queue.length = 0);
+      this.queues.forEach((queue) => (queue.length = 0));
     }
   }
 

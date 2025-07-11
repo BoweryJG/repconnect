@@ -74,7 +74,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    animation: fadeIn 0.3s ease;
+    animation: fadeIn 0.2s ease;
 }
 
 @keyframes fadeIn {
@@ -106,7 +106,7 @@
     transform-style: preserve-3d;
 }
 
-/* Breathing Animation */
+/* Subtle glow effect without animation */
 .login-modal::before {
     content: '';
     position: absolute;
@@ -115,12 +115,6 @@
     background: linear-gradient(135deg, var(--gem-primary), var(--gem-shift));
     opacity: 0.1;
     z-index: -1;
-    animation: breathing 4s ease-in-out infinite;
-}
-
-@keyframes breathing {
-    0%, 100% { transform: scale(1); opacity: 0.1; }
-    50% { transform: scale(1.02); opacity: 0.2; }
 }
 
 /* Screw positioning adjustments for login modal */
@@ -214,25 +208,17 @@
 /* Animated Jewel Core */
 @keyframes jewelPulse {
     0%, 100% { 
-        transform: scale(1) rotate(0deg);
-        filter: brightness(1) hue-rotate(0deg);
-    }
-    25% { 
-        transform: scale(1.1) rotate(90deg);
-        filter: brightness(1.2) hue-rotate(30deg);
+        transform: scale(1);
+        filter: brightness(1);
     }
     50% { 
-        transform: scale(1.05) rotate(180deg);
-        filter: brightness(1.4) hue-rotate(60deg);
-    }
-    75% { 
-        transform: scale(1.08) rotate(270deg);
-        filter: brightness(1.1) hue-rotate(90deg);
+        transform: scale(1.05);
+        filter: brightness(1.2);
     }
 }
 
 .logo-jewel {
-    animation: jewelPulse 6s infinite;
+    animation: jewelPulse 3s ease-in-out infinite;
     transform-origin: center;
 }
 

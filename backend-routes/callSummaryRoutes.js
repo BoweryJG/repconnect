@@ -1,19 +1,13 @@
 import express from 'express';
-import { createClient } from '@supabase/supabase-js';
 import fetch from 'node-fetch';
 import logger from '../utils/logger.js';
 import dotenv from 'dotenv';
+import { databaseService, tables } from '../src/services/databaseService.js';
 
 // Load environment variables
 dotenv.config();
 
 const router = express.Router();
-
-// Initialize Supabase client
-const supabase = createClient(
-  process.env.SUPABASE_URL || 'https://placeholder.supabase.co',
-  process.env.SUPABASE_SERVICE_KEY || 'placeholder-key'
-);
 
 // OpenAI configuration
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY || '';
@@ -163,11 +157,10 @@ router.post('/api/calls/:callSid/summary', async (req, res) => {
   
   try {
     // Check if summary already exists
-    const { data: existing } = await supabase
-      .from('call_analysis')
-      .select('id')
-      .eq('call_sid', callSid)
-      .single();
+    const { data: existing } = await tables.call_summaries.findOne(
+      { call_sid: callSid },
+      { select: 'id' }
+    );
     
     if (existing) {
       return res.status(400).json({ error: 'Summary already exists. Use regenerate endpoint.' });
@@ -179,22 +172,20 @@ router.post('/api/calls/:callSid/summary', async (req, res) => {
     const summary = parseAIResponse(aiResponse.choices[0].message.content);
     
     // Save to database
-    const { data, error } = await supabase
-      .from('call_analysis')
-      .insert({
-        call_sid: callSid,
-        summary,
-        format,
-        ai_model: 'gpt-4-turbo-preview',
-        ai_provider: 'openai',
-        processing_time_ms: 0,
-        token_count: {
-          input: aiResponse.usage?.prompt_tokens || 0,
-          output: aiResponse.usage?.completion_tokens || 0
-        }
-      })
-      .select()
-      .single();
+    const { data, error } = await tables.call_summaries.insert({
+      call_sid: callSid,
+      summary,
+      format,
+      ai_model: 'gpt-4-turbo-preview',
+      ai_provider: 'openai',
+      processing_time_ms: 0,
+      token_count: {
+        input: aiResponse.usage?.prompt_tokens || 0,
+        output: aiResponse.usage?.completion_tokens || 0
+      }
+    });
+    
+    const singleData = data?.[0] || null;
     
     if (error) throw error;
     
@@ -221,9 +212,8 @@ router.post('/api/calls/:callSid/summary/regenerate', async (req, res) => {
     const summary = parseAIResponse(aiResponse.choices[0].message.content);
     
     // Update existing record or create new one
-    const { data, error } = await supabase
-      .from('call_analysis')
-      .upsert({
+    const { data, error } = await tables.call_summaries.upsert(
+      {
         call_sid: callSid,
         summary,
         format,
@@ -235,11 +225,11 @@ router.post('/api/calls/:callSid/summary/regenerate', async (req, res) => {
           output: aiResponse.usage?.completion_tokens || 0
         },
         regenerated_at: new Date().toISOString()
-      }, {
-        onConflict: 'call_sid'
-      })
-      .select()
-      .single();
+      },
+      { onConflict: 'call_sid' }
+    );
+    
+    const singleData = data?.[0] || null;
     
     if (error) throw error;
     
@@ -260,16 +250,14 @@ router.put('/api/calls/:callSid/summary', async (req, res) => {
   }
   
   try {
-    const { data, error } = await supabase
-      .from('call_analysis')
-      .update({ 
+    const { data, error } = await tables.call_summaries.update(
+      { call_sid: callSid },
+      { 
         summary,
         user_edited: true,
         updated_at: new Date().toISOString()
-      })
-      .eq('call_sid', callSid)
-      .select()
-      .single();
+      }
+    );
     
     if (error) {
       if (error.code === 'PGRST116') {
@@ -278,7 +266,8 @@ router.put('/api/calls/:callSid/summary', async (req, res) => {
       throw error;
     }
     
-    return res.json(data.summary);
+    const singleData = data?.[0] || null;
+    return res.json(singleData?.summary);
   } catch (error) {
     logger.error('Error updating summary:', error);
     return res.status(500).json({ error: 'Failed to update summary' });

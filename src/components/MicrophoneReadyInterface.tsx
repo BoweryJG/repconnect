@@ -9,7 +9,7 @@ import {
   Stack,
   Fade,
   IconButton,
-  Tooltip
+  Tooltip,
 } from '@mui/material';
 import {
   Mic,
@@ -18,7 +18,7 @@ import {
   SmartToy,
   CheckCircle,
   Settings,
-  RecordVoiceOver
+  RecordVoiceOver,
 } from '@mui/icons-material';
 
 interface MicrophoneReadyInterfaceProps {
@@ -43,10 +43,10 @@ export const MicrophoneReadyInterface: React.FC<MicrophoneReadyInterfaceProps> =
   isConnecting = false,
   availableAgents = [
     { id: 'harvey', name: 'Harvey Coach', description: 'Sales coaching AI' },
-    { id: 'moshi', name: 'Moshi AI', description: 'General conversation AI' }
+    { id: 'moshi', name: 'Moshi AI', description: 'General conversation AI' },
   ],
   selectedAgent = 'harvey',
-  onAgentSelect
+  onAgentSelect,
 }) => {
   const [showAudioTest, setShowAudioTest] = useState(true);
   const [testPassed, setTestPassed] = useState(false);
@@ -56,7 +56,7 @@ export const MicrophoneReadyInterface: React.FC<MicrophoneReadyInterfaceProps> =
     if (audioLevel > 0.1) {
       setTestPassed(true);
       setShowAudioTest(false);
-      
+
       if (audioTestTimeoutRef.current) {
         clearTimeout(audioTestTimeoutRef.current);
       }
@@ -92,7 +92,7 @@ export const MicrophoneReadyInterface: React.FC<MicrophoneReadyInterfaceProps> =
     <Card sx={{ maxWidth: 500, margin: 'auto' }}>
       <CardContent sx={{ p: 3 }}>
         <Stack spacing={3} alignItems="center">
-          <div style={{ textAlign: "center" }}>
+          <div style={{ textAlign: 'center' }}>
             <CheckCircle sx={{ fontSize: 48, color: 'success.main', mb: 1 }} />
             <Typography variant="h5" gutterBottom>
               Microphone Ready
@@ -116,8 +116,8 @@ export const MicrophoneReadyInterface: React.FC<MicrophoneReadyInterfaceProps> =
                     borderRadius: 4,
                     backgroundColor: 'grey.300',
                     '& .MuiLinearProgress-bar': {
-                      backgroundColor: audioLevel > 0.1 ? 'success.main' : 'primary.main'
-                    }
+                      backgroundColor: audioLevel > 0.1 ? 'success.main' : 'primary.main',
+                    },
                   }}
                 />
                 <Stack direction="row" justifyContent="center" spacing={1} sx={{ mt: 1 }}>
@@ -154,8 +154,8 @@ export const MicrophoneReadyInterface: React.FC<MicrophoneReadyInterfaceProps> =
                     borderColor: selectedAgent === agent.id ? 'primary.main' : 'divider',
                     '&:hover': {
                       borderColor: 'primary.main',
-                      backgroundColor: 'action.hover'
-                    }
+                      backgroundColor: 'action.hover',
+                    },
                   }}
                   onClick={() => onAgentSelect?.(agent.id)}
                 >
@@ -163,9 +163,7 @@ export const MicrophoneReadyInterface: React.FC<MicrophoneReadyInterfaceProps> =
                     <Stack direction="row" spacing={2} alignItems="center">
                       {getAgentIcon(agent.id)}
                       <div style={{ flexGrow: 1 }}>
-                        <Typography variant="subtitle2">
-                          {agent.name}
-                        </Typography>
+                        <Typography variant="subtitle2">{agent.name}</Typography>
                         <Typography variant="caption" color="text.secondary">
                           {agent.description}
                         </Typography>
@@ -195,7 +193,9 @@ export const MicrophoneReadyInterface: React.FC<MicrophoneReadyInterfaceProps> =
               startIcon={isConnecting ? undefined : getAgentIcon(selectedAgent)}
               sx={{ py: 1.5 }}
             >
-              {isConnecting ? 'Connecting...' : `Connect to ${availableAgents.find(a => a.id === selectedAgent)?.name}`}
+              {isConnecting
+                ? 'Connecting...'
+                : `Connect to ${availableAgents.find((a) => a.id === selectedAgent)?.name}`}
             </Button>
           </Stack>
 

@@ -12,7 +12,7 @@ export const QueueCallInterface: React.FC<QueueCallInterfaceProps> = ({ queueId,
   const [isPaused, setIsPaused] = useState(false);
   const [showOutcomeDialog, setShowOutcomeDialog] = useState(false);
   const [callOutcome, setCallOutcome] = useState<Partial<CallOutcome>>({
-    status: 'completed'
+    status: 'completed',
   });
   const [queueProgress, setQueueProgress] = useState({
     total: 0,
@@ -27,10 +27,10 @@ export const QueueCallInterface: React.FC<QueueCallInterfaceProps> = ({ queueId,
       const progress = await CallQueueService.getQueueProgress(queueId);
       setQueueProgress(progress);
     };
-    
+
     loadProgress();
     const interval = setInterval(loadProgress, 5000);
-    
+
     return () => clearInterval(interval);
   }, [queueId]);
 
@@ -65,15 +65,13 @@ export const QueueCallInterface: React.FC<QueueCallInterfaceProps> = ({ queueId,
           onComplete();
         }
       }
-    } catch (error) {
-          }
+    } catch (error) {}
   };
 
   const makeCall = async (call: QueuedCall) => {
     try {
       await CallQueueService.makeCall(call);
-    } catch (error) {
-          }
+    } catch (error) {}
   };
 
   const handleEndCall = () => {
@@ -86,7 +84,7 @@ export const QueueCallInterface: React.FC<QueueCallInterfaceProps> = ({ queueId,
       setShowOutcomeDialog(false);
       setCallOutcome({ status: 'completed' });
       setCurrentCall(null);
-      
+
       if (isAutoDialing) {
         setTimeout(() => loadNextCall(), 2000);
       }
@@ -97,27 +95,30 @@ export const QueueCallInterface: React.FC<QueueCallInterfaceProps> = ({ queueId,
     if (currentCall) {
       await CallQueueService.completeCall(currentCall.id, {
         status: 'no-answer',
-        notes: 'Skipped by agent'
+        notes: 'Skipped by agent',
       });
       setCurrentCall(null);
       loadNextCall();
     }
   };
 
-  const progressPercentage = queueProgress.total > 0 
-    ? ((queueProgress.completed + queueProgress.failed) / queueProgress.total) * 100 
-    : 0;
+  const progressPercentage =
+    queueProgress.total > 0
+      ? ((queueProgress.completed + queueProgress.failed) / queueProgress.total) * 100
+      : 0;
 
   return (
     <div style={{ padding: '24px' }}>
       {/* Queue Progress */}
-      <div style={{ 
-        marginBottom: '24px', 
-        padding: '16px', 
-        background: 'rgba(0, 0, 0, 0.5)', 
-        border: '1px solid rgba(99, 102, 241, 0.3)',
-        borderRadius: '8px'
-      }}>
+      <div
+        style={{
+          marginBottom: '24px',
+          padding: '16px',
+          background: 'rgba(0, 0, 0, 0.5)',
+          border: '1px solid rgba(99, 102, 241, 0.3)',
+          borderRadius: '8px',
+        }}
+      >
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
           <h3 style={{ color: '#fff', margin: 0 }}>Queue Progress</h3>
           <div style={{ display: 'flex', gap: '16px' }}>
@@ -126,60 +127,75 @@ export const QueueCallInterface: React.FC<QueueCallInterfaceProps> = ({ queueId,
             <span style={{ color: '#ef4444' }}>{queueProgress.failed} Failed</span>
           </div>
         </div>
-        <div style={{ 
-          width: '100%', 
-          height: '8px', 
-          background: 'rgba(255, 255, 255, 0.1)', 
-          borderRadius: '4px',
-          overflow: 'hidden'
-        }}>
-          <div style={{ 
-            width: `${progressPercentage}%`, 
-            height: '100%', 
-            background: 'linear-gradient(to right, #00d4ff, #00ff88)',
-            transition: 'width 0.3s ease'
-          }} />
+        <div
+          style={{
+            width: '100%',
+            height: '8px',
+            background: 'rgba(255, 255, 255, 0.1)',
+            borderRadius: '4px',
+            overflow: 'hidden',
+          }}
+        >
+          <div
+            style={{
+              width: `${progressPercentage}%`,
+              height: '100%',
+              background: 'linear-gradient(to right, #00d4ff, #00ff88)',
+              transition: 'width 0.3s ease',
+            }}
+          />
         </div>
       </div>
 
       {/* Current Call Card */}
       {currentCall && (
-        <div style={{ 
-          padding: '24px', 
-          background: 'rgba(0, 0, 0, 0.5)', 
-          border: '1px solid rgba(0, 255, 255, 0.3)',
-          borderRadius: '8px',
-          boxShadow: '0 0 30px rgba(0, 255, 255, 0.3)',
-          marginBottom: '24px'
-        }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+        <div
+          style={{
+            padding: '24px',
+            background: 'rgba(0, 0, 0, 0.5)',
+            border: '1px solid rgba(0, 255, 255, 0.3)',
+            borderRadius: '8px',
+            boxShadow: '0 0 30px rgba(0, 255, 255, 0.3)',
+            marginBottom: '24px',
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: '24px',
+            }}
+          >
             <div>
               <h2 style={{ color: '#fff', margin: '0 0 8px 0' }}>{currentCall.contactName}</h2>
-              <p style={{ color: '#00FFFF', fontFamily: 'monospace', margin: 0 }}>{currentCall.phoneNumber}</p>
+              <p style={{ color: '#00FFFF', fontFamily: 'monospace', margin: 0 }}>
+                {currentCall.phoneNumber}
+              </p>
             </div>
             <div style={{ display: 'flex', gap: '8px' }}>
-              <button 
+              <button
                 onClick={() => setIsPaused(!isPaused)}
-                style={{ 
+                style={{
                   padding: '8px 16px',
                   background: 'rgba(0, 0, 0, 0.3)',
                   border: '1px solid rgba(255, 255, 255, 0.3)',
                   borderRadius: '4px',
                   color: isPaused ? '#ff0040' : '#00ff88',
-                  cursor: 'pointer'
+                  cursor: 'pointer',
                 }}
               >
                 {isPaused ? 'Resume' : 'Pause'}
               </button>
-              <button 
+              <button
                 onClick={handleSkip}
-                style={{ 
+                style={{
                   padding: '8px 16px',
                   background: 'rgba(0, 0, 0, 0.3)',
                   border: '1px solid rgba(255, 255, 255, 0.3)',
                   borderRadius: '4px',
                   color: '#ffaa00',
-                  cursor: 'pointer'
+                  cursor: 'pointer',
                 }}
               >
                 Skip
@@ -200,7 +216,7 @@ export const QueueCallInterface: React.FC<QueueCallInterfaceProps> = ({ queueId,
                   color: '#000',
                   fontSize: '18px',
                   fontWeight: 'bold',
-                  cursor: 'pointer'
+                  cursor: 'pointer',
                 }}
               >
                 Start Call
@@ -216,7 +232,7 @@ export const QueueCallInterface: React.FC<QueueCallInterfaceProps> = ({ queueId,
                   color: '#fff',
                   fontSize: '18px',
                   fontWeight: 'bold',
-                  cursor: 'pointer'
+                  cursor: 'pointer',
                 }}
               >
                 End Call
@@ -236,17 +252,19 @@ export const QueueCallInterface: React.FC<QueueCallInterfaceProps> = ({ queueId,
           onClick={() => setIsAutoDialing(!isAutoDialing)}
           style={{
             padding: '12px 24px',
-            background: isAutoDialing ? 'transparent' : 'linear-gradient(135deg, #6366F1 0%, #EC4899 100%)',
+            background: isAutoDialing
+              ? 'transparent'
+              : 'linear-gradient(135deg, #6366F1 0%, #EC4899 100%)',
             border: isAutoDialing ? '2px solid #6366F1' : 'none',
             borderRadius: '8px',
             color: '#fff',
             fontSize: '16px',
-            cursor: 'pointer'
+            cursor: 'pointer',
           }}
         >
           {isAutoDialing ? 'Stop Auto-Dial' : 'Start Auto-Dial'}
         </button>
-        
+
         {!currentCall && (
           <button
             onClick={loadNextCall}
@@ -257,7 +275,7 @@ export const QueueCallInterface: React.FC<QueueCallInterfaceProps> = ({ queueId,
               borderRadius: '8px',
               color: '#00FFFF',
               fontSize: '16px',
-              cursor: 'pointer'
+              cursor: 'pointer',
             }}
           >
             Load Next Contact
@@ -267,30 +285,36 @@ export const QueueCallInterface: React.FC<QueueCallInterfaceProps> = ({ queueId,
 
       {/* Call Outcome Dialog */}
       {showOutcomeDialog && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: 'rgba(0, 0, 0, 0.8)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 1300
-        }}>
-          <div style={{
-            background: '#1a1a1a',
-            border: '1px solid rgba(255, 255, 255, 0.2)',
-            borderRadius: '8px',
-            padding: '24px',
-            maxWidth: '500px',
-            width: '90%'
-          }}>
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'rgba(0, 0, 0, 0.8)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1300,
+          }}
+        >
+          <div
+            style={{
+              background: '#1a1a1a',
+              border: '1px solid rgba(255, 255, 255, 0.2)',
+              borderRadius: '8px',
+              padding: '24px',
+              maxWidth: '500px',
+              width: '90%',
+            }}
+          >
             <h3 style={{ color: '#fff', marginBottom: '24px' }}>Call Outcome</h3>
-            
+
             <div style={{ marginBottom: '16px' }}>
-              <label style={{ color: '#fff', display: 'block', marginBottom: '8px' }}>Status:</label>
+              <label style={{ color: '#fff', display: 'block', marginBottom: '8px' }}>
+                Status:
+              </label>
               <select
                 value={callOutcome.status}
                 onChange={(e) => setCallOutcome({ ...callOutcome, status: e.target.value as any })}
@@ -300,7 +324,7 @@ export const QueueCallInterface: React.FC<QueueCallInterfaceProps> = ({ queueId,
                   background: '#333',
                   border: '1px solid #555',
                   borderRadius: '4px',
-                  color: '#fff'
+                  color: '#fff',
                 }}
               >
                 <option value="completed">Completed Successfully</option>
@@ -323,23 +347,27 @@ export const QueueCallInterface: React.FC<QueueCallInterfaceProps> = ({ queueId,
                   background: '#333',
                   border: '1px solid #555',
                   borderRadius: '4px',
-                  color: '#fff'
+                  color: '#fff',
                 }}
               />
             </div>
 
             <div style={{ marginBottom: '16px' }}>
-              <label style={{ color: '#fff', display: 'block', marginBottom: '8px' }}>Next Action:</label>
+              <label style={{ color: '#fff', display: 'block', marginBottom: '8px' }}>
+                Next Action:
+              </label>
               <select
                 value={callOutcome.nextAction || ''}
-                onChange={(e) => setCallOutcome({ ...callOutcome, nextAction: e.target.value as any })}
+                onChange={(e) =>
+                  setCallOutcome({ ...callOutcome, nextAction: e.target.value as any })
+                }
                 style={{
                   width: '100%',
                   padding: '8px',
                   background: '#333',
                   border: '1px solid #555',
                   borderRadius: '4px',
-                  color: '#fff'
+                  color: '#fff',
                 }}
               >
                 <option value="">None</option>
@@ -352,21 +380,25 @@ export const QueueCallInterface: React.FC<QueueCallInterfaceProps> = ({ queueId,
 
             {callOutcome.nextAction === 'callback' && (
               <div style={{ marginBottom: '16px' }}>
-                <label style={{ color: '#fff', display: 'block', marginBottom: '8px' }}>Callback Date:</label>
+                <label style={{ color: '#fff', display: 'block', marginBottom: '8px' }}>
+                  Callback Date:
+                </label>
                 <input
                   type="datetime-local"
                   value={callOutcome.callbackDate?.toISOString().slice(0, 16) || ''}
-                  onChange={(e) => setCallOutcome({ 
-                    ...callOutcome, 
-                    callbackDate: new Date(e.target.value) 
-                  })}
+                  onChange={(e) =>
+                    setCallOutcome({
+                      ...callOutcome,
+                      callbackDate: new Date(e.target.value),
+                    })
+                  }
                   style={{
                     width: '100%',
                     padding: '8px',
                     background: '#333',
                     border: '1px solid #555',
                     borderRadius: '4px',
-                    color: '#fff'
+                    color: '#fff',
                   }}
                 />
               </div>
@@ -381,7 +413,7 @@ export const QueueCallInterface: React.FC<QueueCallInterfaceProps> = ({ queueId,
                   border: '1px solid #666',
                   borderRadius: '4px',
                   color: '#fff',
-                  cursor: 'pointer'
+                  cursor: 'pointer',
                 }}
               >
                 Cancel
@@ -394,7 +426,7 @@ export const QueueCallInterface: React.FC<QueueCallInterfaceProps> = ({ queueId,
                   border: 'none',
                   borderRadius: '4px',
                   color: '#fff',
-                  cursor: 'pointer'
+                  cursor: 'pointer',
                 }}
               >
                 Save Outcome

@@ -1,0 +1,119 @@
+name: Release Management
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g., v1.2.3)'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  create-release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18.x'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Run tests
+      run: npm test -- --watchAll=false
+      env:
+        CI: true
+        
+    - name: Build application
+      run: npm run build
+      env:
+        CI: false
+        GENERATE_SOURCEMAP: false
+        
+    - name: Generate changelog
+      id: changelog
+      run: |
+        # Get the previous tag
+        PREVIOUS_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
+        CURRENT_TAG="${{ github.event.inputs.version || github.ref_name }}"
+        
+        echo "## What's Changed" > CHANGELOG.md
+        echo "" >> CHANGELOG.md
+        
+        if [ -n "$PREVIOUS_TAG" ]; then
+          git log --pretty=format:"* %s (%an)" "$PREVIOUS_TAG".."$CURRENT_TAG" >> CHANGELOG.md
+        else
+          git log --pretty=format:"* %s (%an)" >> CHANGELOG.md
+        fi
+        
+        echo "" >> CHANGELOG.md
+        echo "**Full Changelog**: https://github.com/${{ github.repository }}/compare/${PREVIOUS_TAG}...${CURRENT_TAG}" >> CHANGELOG.md
+        
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: ${{ github.event.inputs.version || github.ref_name }}
+        name: Release ${{ github.event.inputs.version || github.ref_name }}
+        body_path: CHANGELOG.md
+        draft: false
+        prerelease: ${{ contains(github.event.inputs.version || github.ref_name, '-beta') || contains(github.event.inputs.version || github.ref_name, '-alpha') }}
+        generate_release_notes: true
+        files: |
+          build/**/*
+          
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: release-build-${{ github.event.inputs.version || github.ref_name }}
+        path: build/
+        retention-days: 30
+
+  deploy-release:
+    name: Deploy Release
+    needs: create-release
+    runs-on: ubuntu-latest
+    environment: production
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Trigger production deployment
+      uses: benc-uk/workflow-dispatch@v1
+      with:
+        workflow: cd.yml
+        token: ${{ secrets.GITHUB_TOKEN }}
+        
+  notify-release:
+    name: Notify Release
+    needs: [create-release, deploy-release]
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+    - name: Send release notification
+      uses: 8398a7/action-slack@v3
+      with:
+        status: ${{ job.status }}
+        text: |
+          New release deployed: ${{ github.event.inputs.version || github.ref_name }}
+          View release: https://github.com/${{ github.repository }}/releases/tag/${{ github.event.inputs.version || github.ref_name }}
+        webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+      if: ${{ secrets.SLACK_WEBHOOK != '' }}

@@ -1,0 +1,59 @@
+name: Update Status Badges
+
+on:
+  workflow_run:
+    workflows: ["CI", "CD - Deploy to Production", "CodeQL Security Analysis"]
+    types:
+      - completed
+  workflow_dispatch:
+
+jobs:
+  update-badges:
+    name: Update README Badges
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Update README with badges
+      run: |
+        # Check if README.md exists
+        if [ ! -f "README.md" ]; then
+          echo "# RepConnect CRM" > README.md
+          echo "" >> README.md
+        fi
+        
+        # Check if badges section exists
+        if ! grep -q "## Build Status" README.md; then
+          # Add badges section at the top of README
+          cat > temp_readme.md << 'EOF'
+# RepConnect CRM
+
+## Build Status
+
+![CI](https://github.com/${{ github.repository }}/workflows/CI/badge.svg)
+![CD](https://github.com/${{ github.repository }}/workflows/CD%20-%20Deploy%20to%20Production/badge.svg)
+![Security](https://github.com/${{ github.repository }}/workflows/CodeQL%20Security%20Analysis/badge.svg)
+![Dependencies](https://img.shields.io/david/${{ github.repository }}.svg)
+![License](https://img.shields.io/github/license/${{ github.repository }}.svg)
+![Version](https://img.shields.io/github/package-json/v/${{ github.repository }}.svg)
+
+EOF
+          
+          # Append rest of README
+          tail -n +2 README.md >> temp_readme.md
+          mv temp_readme.md README.md
+        fi
+        
+    - name: Commit badge updates
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add README.md
+        git diff --staged --quiet || git commit -m "chore: update status badges [skip ci]"
+        git push || echo "No changes to push"

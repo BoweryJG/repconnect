@@ -16,13 +16,13 @@ export const createRateLimiter = (options = {}) => {
       res.status(429).json({
         error: 'Too Many Requests',
         message: options.message || defaults.message,
-        retryAfter: Math.ceil(options.windowMs / 1000) || 60
+        retryAfter: Math.ceil(options.windowMs / 1000) || 60,
       });
     },
     skip: (req) => {
       // Skip rate limiting for health checks
       return req.path === '/health' || req.path === '/api/health';
-    }
+    },
   };
 
   return rateLimit({ ...defaults, ...options });
@@ -34,7 +34,7 @@ export const createRateLimiter = (options = {}) => {
 export const defaultRateLimiter = createRateLimiter({
   windowMs: 1 * 60 * 1000,
   max: 100,
-  message: 'Too many requests, please try again in a minute.'
+  message: 'Too many requests, please try again in a minute.',
 });
 
 /**
@@ -44,7 +44,7 @@ export const authRateLimiter = createRateLimiter({
   windowMs: 1 * 60 * 1000,
   max: 5,
   message: 'Too many authentication attempts, please try again later.',
-  skipSuccessfulRequests: true // Don't count successful requests
+  skipSuccessfulRequests: true, // Don't count successful requests
 });
 
 /**
@@ -53,7 +53,7 @@ export const authRateLimiter = createRateLimiter({
 export const apiRateLimiter = createRateLimiter({
   windowMs: 1 * 60 * 1000,
   max: 300,
-  message: 'API rate limit exceeded.'
+  message: 'API rate limit exceeded.',
 });
 
 /**
@@ -62,7 +62,7 @@ export const apiRateLimiter = createRateLimiter({
 export const websocketRateLimiter = createRateLimiter({
   windowMs: 1 * 60 * 1000,
   max: 50,
-  message: 'Too many WebSocket connection attempts.'
+  message: 'Too many WebSocket connection attempts.',
 });
 
 /**
@@ -71,7 +71,7 @@ export const websocketRateLimiter = createRateLimiter({
 export const uploadRateLimiter = createRateLimiter({
   windowMs: 1 * 60 * 1000,
   max: 10,
-  message: 'Too many file uploads, please try again later.'
+  message: 'Too many file uploads, please try again later.',
 });
 
 /**
@@ -79,10 +79,10 @@ export const uploadRateLimiter = createRateLimiter({
  */
 export const createTierBasedRateLimiter = () => {
   const tierLimits = {
-    free: 60,      // 60 requests per minute
-    basic: 200,    // 200 requests per minute
-    pro: 500,      // 500 requests per minute
-    enterprise: 1000 // 1000 requests per minute
+    free: 60, // 60 requests per minute
+    basic: 200, // 200 requests per minute
+    pro: 500, // 500 requests per minute
+    enterprise: 1000, // 1000 requests per minute
   };
 
   return (req, res, next) => {
@@ -97,7 +97,7 @@ export const createTierBasedRateLimiter = () => {
       keyGenerator: (req) => {
         // Use user ID if authenticated, otherwise use IP
         return req.user?.id || req.ip;
-      }
+      },
     });
 
     limiter(req, res, next);
@@ -111,5 +111,5 @@ export default {
   apiRateLimiter,
   websocketRateLimiter,
   uploadRateLimiter,
-  createTierBasedRateLimiter
+  createTierBasedRateLimiter,
 };

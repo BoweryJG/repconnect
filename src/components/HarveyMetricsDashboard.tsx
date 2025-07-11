@@ -11,4 +11,4 @@ export const HarveyMetricsDashboard: React.FC = () => {
       </p>
     </div>
   );
-}
+};

@@ -24,7 +24,15 @@ export interface ElevenLabsAudioChunk {
 }
 
 export interface ElevenLabsError {
-  type: 'initialization' | 'websocket' | 'stream-setup' | 'audio-processing' | 'playback' | 'webrtc-connection' | 'webrtc-processing' | 'voice-test';
+  type:
+    | 'initialization'
+    | 'websocket'
+    | 'stream-setup'
+    | 'audio-processing'
+    | 'playback'
+    | 'webrtc-connection'
+    | 'webrtc-processing'
+    | 'voice-test';
   error: Error;
 }
 
@@ -34,8 +42,8 @@ export interface ElevenLabsWebRTCEvent {
 }
 
 export interface ElevenLabsTTSEvents {
-  'initialized': () => void;
-  'error': (error: ElevenLabsError) => void;
+  initialized: () => void;
+  error: (error: ElevenLabsError) => void;
   'stream-started': () => void;
   'stream-complete': () => void;
   'stream-closed': () => void;
@@ -52,7 +60,10 @@ export interface ElevenLabsTTSEvents {
 export declare interface ElevenLabsTTSService extends EventEmitter {
   on<K extends keyof ElevenLabsTTSEvents>(event: K, listener: ElevenLabsTTSEvents[K]): this;
   off<K extends keyof ElevenLabsTTSEvents>(event: K, listener: ElevenLabsTTSEvents[K]): this;
-  emit<K extends keyof ElevenLabsTTSEvents>(event: K, ...args: Parameters<ElevenLabsTTSEvents[K]>): boolean;
+  emit<K extends keyof ElevenLabsTTSEvents>(
+    event: K,
+    ...args: Parameters<ElevenLabsTTSEvents[K]>
+  ): boolean;
   once<K extends keyof ElevenLabsTTSEvents>(event: K, listener: ElevenLabsTTSEvents[K]): this;
 }
 

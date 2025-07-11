@@ -20,22 +20,26 @@ export const FlowParticle: React.FC<FlowParticleProps> = ({
 }) => {
   return (
     <motion.div
-      style={{
-        position: 'absolute',
-        width: size,
-        height: size,
-        borderRadius: '50%',
-        background: color,
-        boxShadow: glow ? `
+      style={
+        {
+          position: 'absolute',
+          width: size,
+          height: size,
+          borderRadius: '50%',
+          background: color,
+          boxShadow: glow
+            ? `
           0 0 ${size * 2}px ${color},
           0 0 ${size * 4}px ${color}40,
           inset 0 0 ${size / 2}px rgba(255, 255, 255, 0.5)
-        ` : 'none',
-        pointerEvents: 'none',
-        zIndex: 100,
-        offsetPath: path ? `path('${path}')` : undefined,
-      } as any}
-      initial={{ 
+        `
+            : 'none',
+          pointerEvents: 'none',
+          zIndex: 100,
+          offsetPath: path ? `path('${path}')` : undefined,
+        } as any
+      }
+      initial={{
         opacity: 0,
         scale: 0,
         offsetDistance: '0%',
@@ -82,9 +86,9 @@ export const ParticleStream: React.FC<ParticleStreamProps> = ({
   const deltaX = endX - startX;
   const deltaY = endY - startY;
   const controlPointOffset = Math.abs(deltaX) > Math.abs(deltaY) ? deltaY / 2 : deltaX / 2;
-  
+
   const path = `M ${startX} ${startY} Q ${startX + deltaX / 2} ${startY + controlPointOffset}, ${endX} ${endY}`;
-  
+
   return (
     <svg
       style={{
@@ -98,14 +102,8 @@ export const ParticleStream: React.FC<ParticleStreamProps> = ({
       }}
     >
       {/* Path visualization (optional) */}
-      <path
-        d={path}
-        fill="none"
-        stroke={`${color}20`}
-        strokeWidth="2"
-        strokeDasharray="5,5"
-      />
-      
+      <path d={path} fill="none" stroke={`${color}20`} strokeWidth="2" strokeDasharray="5,5" />
+
       {/* Particles */}
       {Array.from({ length: particleCount }, (_, i) => (
         <motion.circle
@@ -129,19 +127,21 @@ export const ParticleStream: React.FC<ParticleStreamProps> = ({
             repeat: Infinity,
             ease: 'linear',
           }}
-          style={{
-            offsetPath: `path('${path}')`,
-          } as any}
+          style={
+            {
+              offsetPath: `path('${path}')`,
+            } as any
+          }
         />
       ))}
-      
+
       {/* Glow filter */}
       <defs>
         <filter id="particleGlow">
-          <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+          <feGaussianBlur stdDeviation="3" result="coloredBlur" />
           <feMerge>
-            <feMergeNode in="coloredBlur"/>
-            <feMergeNode in="SourceGraphic"/>
+            <feMergeNode in="coloredBlur" />
+            <feMergeNode in="SourceGraphic" />
           </feMerge>
         </filter>
       </defs>
@@ -179,7 +179,7 @@ export const ParticleBurst: React.FC<ParticleBurstProps> = ({
       {Array.from({ length: count }, (_, i) => {
         const angle = (i / count) * Math.PI * 2;
         const distance = 50 + Math.random() * 50;
-        
+
         return (
           <motion.div
             key={i}

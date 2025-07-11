@@ -1,0 +1,19 @@
+{
+  "*.{js,jsx,ts,tsx}": [
+    "eslint --fix --max-warnings 0",
+    "prettier --write",
+    "node ./scripts/check-secrets.js"
+  ],
+  "*.{json,css,scss,md,html}": [
+    "prettier --write"
+  ],
+  "*.json": [
+    "node ./scripts/check-secrets.js"
+  ],
+  "*.test.{js,jsx,ts,tsx}": [
+    "npm run test:changed --"
+  ],
+  "*.spec.{js,jsx,ts,tsx}": [
+    "npm run test:changed --"
+  ]
+}

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Typography, 
-  Paper, 
+import {
+  Typography,
+  Paper,
   Table,
   TableBody,
   TableCell,
@@ -14,7 +14,7 @@ import {
   Chip,
   LinearProgress,
   Alert,
-  Container
+  Container,
 } from '@mui/material';
 import { motion } from 'framer-motion';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -44,7 +44,7 @@ const STANDARD_FIELDS = [
   { value: 'title', label: 'Job Title' },
   { value: 'website', label: 'Website' },
   { value: 'linkedin', label: 'LinkedIn' },
-  { value: 'ignore', label: 'Ignore this column' }
+  { value: 'ignore', label: 'Ignore this column' },
 ];
 
 export const FileUploadProcessor: React.FC<FileUploadProcessorProps> = ({ file, onBack }) => {
@@ -82,7 +82,7 @@ export const FileUploadProcessor: React.FC<FileUploadProcessorProps> = ({ file, 
           skipEmptyLines: true,
           error: (error) => {
             setError(`CSV parsing error: ${error.message}`);
-          }
+          },
         });
       } else {
         // Parse Excel
@@ -93,7 +93,7 @@ export const FileUploadProcessor: React.FC<FileUploadProcessorProps> = ({ file, 
             const workbook = XLSX.read(data, { type: 'array' });
             const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
             const jsonData = XLSX.utils.sheet_to_json(firstSheet);
-            
+
             if (jsonData.length > 0) {
               const headers = Object.keys(jsonData[0] as Record<string, any>);
               setColumns(headers);
@@ -115,7 +115,7 @@ export const FileUploadProcessor: React.FC<FileUploadProcessorProps> = ({ file, 
   };
 
   const autoMapColumns = (headers: string[]) => {
-    const mappings: ColumnMapping[] = headers.map(header => {
+    const mappings: ColumnMapping[] = headers.map((header) => {
       const lowerHeader = header.toLowerCase();
       let mappedTo = 'ignore';
 
@@ -130,7 +130,11 @@ export const FileUploadProcessor: React.FC<FileUploadProcessorProps> = ({ file, 
         mappedTo = 'phone';
       } else if (lowerHeader.includes('company') || lowerHeader.includes('organization')) {
         mappedTo = 'company';
-      } else if (lowerHeader.includes('title') || lowerHeader.includes('position') || lowerHeader.includes('role')) {
+      } else if (
+        lowerHeader.includes('title') ||
+        lowerHeader.includes('position') ||
+        lowerHeader.includes('role')
+      ) {
         mappedTo = 'title';
       } else if (lowerHeader.includes('website') || lowerHeader.includes('url')) {
         mappedTo = 'website';
@@ -145,11 +149,9 @@ export const FileUploadProcessor: React.FC<FileUploadProcessorProps> = ({ file, 
   };
 
   const handleMappingChange = (originalColumn: string, newMapping: string) => {
-    setColumnMappings(prev => 
-      prev.map(mapping => 
-        mapping.originalColumn === originalColumn 
-          ? { ...mapping, mappedTo: newMapping }
-          : mapping
+    setColumnMappings((prev) =>
+      prev.map((mapping) =>
+        mapping.originalColumn === originalColumn ? { ...mapping, mappedTo: newMapping } : mapping
       )
     );
   };
@@ -158,9 +160,10 @@ export const FileUploadProcessor: React.FC<FileUploadProcessorProps> = ({ file, 
     setIsProcessing(true);
     try {
       // Track upload in Supabase
-      const sessionId = localStorage.getItem('enrichment_session') || 
+      const sessionId =
+        localStorage.getItem('enrichment_session') ||
         `anon_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-      
+
       if (!localStorage.getItem('enrichment_session')) {
         localStorage.setItem('enrichment_session', sessionId);
       }
@@ -173,7 +176,7 @@ export const FileUploadProcessor: React.FC<FileUploadProcessorProps> = ({ file, 
           file_size: file.size,
           row_count: parsedData.length,
           columns: columnMappings,
-          user_agent: navigator.userAgent
+          user_agent: navigator.userAgent,
         })
         .select()
         .single();
@@ -181,22 +184,20 @@ export const FileUploadProcessor: React.FC<FileUploadProcessorProps> = ({ file, 
       if (uploadError) throw uploadError;
 
       // Track analytics event
-      await supabase
-        .from('enrichment_analytics')
-        .insert({
-          upload_id: upload.id,
-          session_id: sessionId,
-          event_type: 'upload',
-          event_data: { 
-            file_name: file.name,
-            row_count: parsedData.length 
-          }
-        });
+      await supabase.from('enrichment_analytics').insert({
+        upload_id: upload.id,
+        session_id: sessionId,
+        event_type: 'upload',
+        event_data: {
+          file_name: file.name,
+          row_count: parsedData.length,
+        },
+      });
 
       // Process with enrichment engine
-      const mappedData = parsedData.map(row => {
+      const mappedData = parsedData.map((row) => {
         const mappedRow: any = {};
-        columnMappings.forEach(mapping => {
+        columnMappings.forEach((mapping) => {
           if (mapping.mappedTo !== 'ignore') {
             mappedRow[mapping.mappedTo] = row[mapping.originalColumn];
           }
@@ -218,16 +219,14 @@ export const FileUploadProcessor: React.FC<FileUploadProcessorProps> = ({ file, 
   };
 
   const getMappingStats = () => {
-    const mapped = columnMappings.filter(m => m.mappedTo !== 'ignore').length;
+    const mapped = columnMappings.filter((m) => m.mappedTo !== 'ignore').length;
     const total = columnMappings.length;
     return { mapped, total };
   };
 
   const canProceed = () => {
     // At minimum, need email or phone mapped
-    return columnMappings.some(m => 
-      m.mappedTo === 'email' || m.mappedTo === 'phone'
-    );
+    return columnMappings.some((m) => m.mappedTo === 'email' || m.mappedTo === 'phone');
   };
 
   if (error) {
@@ -252,7 +251,14 @@ export const FileUploadProcessor: React.FC<FileUploadProcessorProps> = ({ file, 
           transition={{ duration: 0.5 }}
         >
           {/* Header */}
-          <div style={{ marginBottom: 32, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div
+            style={{
+              marginBottom: 32,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}
+          >
             <div>
               <Typography variant="h4" style={{ fontWeight: 700, marginBottom: 8 }}>
                 Map Your Columns
@@ -276,10 +282,12 @@ export const FileUploadProcessor: React.FC<FileUploadProcessorProps> = ({ file, 
                 </Typography>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                <Chip 
+                <Chip
                   icon={<CheckCircleIcon />}
                   label={`${getMappingStats().mapped} of ${getMappingStats().total} columns mapped`}
-                  color={getMappingStats().mapped === getMappingStats().total ? 'success' : 'default'}
+                  color={
+                    getMappingStats().mapped === getMappingStats().total ? 'success' : 'default'
+                  }
                 />
               </div>
             </div>
@@ -291,9 +299,18 @@ export const FileUploadProcessor: React.FC<FileUploadProcessorProps> = ({ file, 
               <Typography variant="h6" style={{ marginBottom: 24 }}>
                 Column Mapping
               </Typography>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 16 }}>
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+                  gap: 16,
+                }}
+              >
                 {columnMappings.map((mapping) => (
-                  <div key={mapping.originalColumn} style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                  <div
+                    key={mapping.originalColumn}
+                    style={{ display: 'flex', alignItems: 'center', gap: 16 }}
+                  >
                     <Typography variant="body2" style={{ flex: 1, fontFamily: 'monospace' }}>
                       {mapping.originalColumn}
                     </Typography>
@@ -301,14 +318,17 @@ export const FileUploadProcessor: React.FC<FileUploadProcessorProps> = ({ file, 
                     <FormControl size="small" style={{ minWidth: 150 }}>
                       <Select
                         value={mapping.mappedTo}
-                        onChange={(e) => handleMappingChange(mapping.originalColumn, e.target.value)}
+                        onChange={(e) =>
+                          handleMappingChange(mapping.originalColumn, e.target.value)
+                        }
                         style={{
-                          background: mapping.mappedTo !== 'ignore' 
-                            ? 'rgba(99, 102, 241, 0.1)' 
-                            : 'transparent'
+                          background:
+                            mapping.mappedTo !== 'ignore'
+                              ? 'rgba(99, 102, 241, 0.1)'
+                              : 'transparent',
                         }}
                       >
-                        {STANDARD_FIELDS.map(field => (
+                        {STANDARD_FIELDS.map((field) => (
                           <MenuItem key={field.value} value={field.value}>
                             {field.label}
                           </MenuItem>
@@ -331,7 +351,7 @@ export const FileUploadProcessor: React.FC<FileUploadProcessorProps> = ({ file, 
                 <Table size="small">
                   <TableHead>
                     <TableRow>
-                      {columns.map(col => (
+                      {columns.map((col) => (
                         <TableCell key={col}>
                           <Typography variant="caption" style={{ fontWeight: 600 }}>
                             {col}
@@ -343,14 +363,17 @@ export const FileUploadProcessor: React.FC<FileUploadProcessorProps> = ({ file, 
                   <TableBody>
                     {previewData.map((row, idx) => (
                       <TableRow key={idx}>
-                        {columns.map(col => (
+                        {columns.map((col) => (
                           <TableCell key={col}>
-                            <Typography variant="body2" style={{ 
-                              maxWidth: 200, 
-                              overflow: 'hidden', 
-                              textOverflow: 'ellipsis',
-                              whiteSpace: 'nowrap'
-                            }}>
+                            <Typography
+                              variant="body2"
+                              style={{
+                                maxWidth: 200,
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                whiteSpace: 'nowrap',
+                              }}
+                            >
                               {row[col] || '-'}
                             </Typography>
                           </TableCell>
@@ -365,15 +388,15 @@ export const FileUploadProcessor: React.FC<FileUploadProcessorProps> = ({ file, 
 
           {/* Action Buttons */}
           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 16 }}>
-            <Button 
-              variant="contained" 
+            <Button
+              variant="contained"
               size="large"
               onClick={handleProcessData}
               disabled={!canProceed() || isProcessing}
               style={{
                 background: 'linear-gradient(135deg, #6366F1 0%, #EC4899 100%)',
                 paddingLeft: 32,
-                paddingRight: 32
+                paddingRight: 32,
               }}
             >
               {isProcessing ? (

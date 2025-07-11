@@ -1,6 +1,18 @@
 // @ts-nocheck
 import React, { useState, useEffect } from 'react';
-import { Paper, Typography, Button, CircularProgress, Chip, Stack, Alert, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
+import {
+  Paper,
+  Typography,
+  Button,
+  CircularProgress,
+  Chip,
+  Stack,
+  Alert,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+} from '@mui/material';
 import { Refresh as RefreshIcon, Download as DownloadIcon } from '@mui/icons-material';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:3001';
@@ -55,7 +67,7 @@ export const CallSummaryView: React.FC<CallSummaryViewProps> = ({ callSid, trans
   const fetchSummary = async () => {
     setLoading(true);
     setError(null);
-    
+
     try {
       const response = await fetch(`${BACKEND_URL}/api/calls/${callSid}/summary`);
       if (response.ok) {
@@ -69,7 +81,7 @@ export const CallSummaryView: React.FC<CallSummaryViewProps> = ({ callSid, trans
       }
     } catch (err) {
       setError('Failed to load summary');
-          } finally {
+    } finally {
       setLoading(false);
     }
   };
@@ -91,8 +103,8 @@ export const CallSummaryView: React.FC<CallSummaryViewProps> = ({ callSid, trans
         },
         body: JSON.stringify({
           transcription,
-          format
-        })
+          format,
+        }),
       });
 
       if (response.ok) {
@@ -103,7 +115,7 @@ export const CallSummaryView: React.FC<CallSummaryViewProps> = ({ callSid, trans
       }
     } catch (err) {
       setError('Failed to generate summary');
-          } finally {
+    } finally {
       setLoading(false);
     }
   };
@@ -125,8 +137,8 @@ export const CallSummaryView: React.FC<CallSummaryViewProps> = ({ callSid, trans
         },
         body: JSON.stringify({
           transcription,
-          format
-        })
+          format,
+        }),
       });
 
       if (response.ok) {
@@ -137,7 +149,7 @@ export const CallSummaryView: React.FC<CallSummaryViewProps> = ({ callSid, trans
       }
     } catch (err) {
       setError('Failed to regenerate summary');
-          } finally {
+    } finally {
       setLoading(false);
     }
   };
@@ -155,19 +167,22 @@ Key Points:
 ${summary.keyPoints.map((point, i) => `${i + 1}. ${point}`).join('\n')}
 
 Action Items:
-${summary.actionItems.map((item, i) => 
-  `${i + 1}. ${item.task}
+${summary.actionItems
+  .map(
+    (item, i) =>
+      `${i + 1}. ${item.task}
    - Assignee: ${item.assignee || 'Unassigned'}
    - Priority: ${item.priority}
    - Due: ${item.dueDate || 'No due date'}`
-).join('\n\n')}
+  )
+  .join('\n\n')}
 
 Sentiment Analysis:
 - Overall: ${summary.sentimentAnalysis.overall} (Score: ${summary.sentimentAnalysis.score})
 - Key Moments:
-${summary.sentimentAnalysis.keyMoments.map(moment => 
-  `  * ${moment.sentiment}: "${moment.text}"`
-).join('\n')}
+${summary.sentimentAnalysis.keyMoments
+  .map((moment) => `  * ${moment.sentiment}: "${moment.text}"`)
+  .join('\n')}
 
 Next Steps:
 ${summary.nextSteps.map((step, i) => `${i + 1}. ${step}`).join('\n')}
@@ -187,23 +202,31 @@ Version: ${summary.metadata?.version || 1}
 
   const getSentimentColor = (sentiment: string) => {
     switch (sentiment) {
-      case 'positive': return 'success';
-      case 'negative': return 'error';
-      default: return 'default';
+      case 'positive':
+        return 'success';
+      case 'negative':
+        return 'error';
+      default:
+        return 'default';
     }
   };
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'high': return 'error';
-      case 'medium': return 'warning';
-      default: return 'info';
+      case 'high':
+        return 'error';
+      case 'medium':
+        return 'warning';
+      default:
+        return 'info';
     }
   };
 
   if (loading) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 200 }}>
+      <div
+        style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 200 }}
+      >
         <CircularProgress />
       </div>
     );
@@ -228,21 +251,13 @@ Version: ${summary.metadata?.version || 1}
         </Typography>
         <FormControl size="small" sx={{ minWidth: 150, mr: 2 }}>
           <InputLabel>Format</InputLabel>
-          <Select
-            value={format}
-            label="Format"
-            onChange={(e) => setFormat(e.target.value as any)}
-          >
+          <Select value={format} label="Format" onChange={(e) => setFormat(e.target.value as any)}>
             <MenuItem value="brief">Brief</MenuItem>
             <MenuItem value="detailed">Detailed</MenuItem>
             <MenuItem value="executive">Executive</MenuItem>
           </Select>
         </FormControl>
-        <Button
-          variant="contained"
-          onClick={generateSummary}
-          disabled={!transcription}
-        >
+        <Button variant="contained" onClick={generateSummary} disabled={!transcription}>
           Generate Summary
         </Button>
       </Paper>
@@ -251,7 +266,14 @@ Version: ${summary.metadata?.version || 1}
 
   return (
     <Paper sx={{ p: 3 }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: 24,
+        }}
+      >
         <Typography variant="h5">Call Summary</Typography>
         <Stack direction="row" spacing={1}>
           <FormControl size="small" sx={{ minWidth: 150 }}>
@@ -266,17 +288,10 @@ Version: ${summary.metadata?.version || 1}
               <MenuItem value="executive">Executive</MenuItem>
             </Select>
           </FormControl>
-          <Button
-            startIcon={<RefreshIcon />}
-            onClick={regenerateSummary}
-            disabled={!transcription}
-          >
+          <Button startIcon={<RefreshIcon />} onClick={regenerateSummary} disabled={!transcription}>
             Regenerate
           </Button>
-          <Button
-            startIcon={<DownloadIcon />}
-            onClick={downloadSummary}
-          >
+          <Button startIcon={<DownloadIcon />} onClick={downloadSummary}>
             Download
           </Button>
         </Stack>
@@ -284,20 +299,24 @@ Version: ${summary.metadata?.version || 1}
 
       {summary.metadata && (
         <Typography variant="caption" color="text.secondary" sx={{ mb: 2, display: 'block' }}>
-          Format: {summary.metadata.format} | Version: {summary.metadata.version} | 
-          Updated: {new Date(summary.metadata.updatedAt).toLocaleString()}
+          Format: {summary.metadata.format} | Version: {summary.metadata.version} | Updated:{' '}
+          {new Date(summary.metadata.updatedAt).toLocaleString()}
         </Typography>
       )}
 
       <div style={{ marginBottom: 24 }}>
-        <Typography variant="h6" gutterBottom>Executive Summary</Typography>
+        <Typography variant="h6" gutterBottom>
+          Executive Summary
+        </Typography>
         <Typography variant="body1">{summary.executiveSummary}</Typography>
       </div>
 
       <div style={{ marginBottom: 24 }}>
-        <Typography variant="h6" gutterBottom>Sentiment Analysis</Typography>
+        <Typography variant="h6" gutterBottom>
+          Sentiment Analysis
+        </Typography>
         <Stack direction="row" spacing={2} alignItems="center" mb={2}>
-          <Chip 
+          <Chip
             label={`Overall: ${summary.sentimentAnalysis.overall}`}
             color={getSentimentColor(summary.sentimentAnalysis.overall)}
           />
@@ -320,7 +339,9 @@ Version: ${summary.metadata?.version || 1}
       </div>
 
       <div style={{ marginBottom: 24 }}>
-        <Typography variant="h6" gutterBottom>Key Points</Typography>
+        <Typography variant="h6" gutterBottom>
+          Key Points
+        </Typography>
         <Stack spacing={1}>
           {summary.keyPoints.map((point, index) => (
             <Typography key={index} variant="body2">
@@ -332,15 +353,13 @@ Version: ${summary.metadata?.version || 1}
 
       {summary.actionItems.length > 0 && (
         <div style={{ marginBottom: 24 }}>
-          <Typography variant="h6" gutterBottom>Action Items</Typography>
+          <Typography variant="h6" gutterBottom>
+            Action Items
+          </Typography>
           <Stack spacing={2}>
             {summary.actionItems.map((item, index) => (
               <div key={index} style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}>
-                <Chip
-                  label={item.priority}
-                  size="small"
-                  color={getPriorityColor(item.priority)}
-                />
+                <Chip label={item.priority} size="small" color={getPriorityColor(item.priority)} />
                 <div style={{ flex: 1 }}>
                   <Typography variant="body2">{item.task}</Typography>
                   <Typography variant="caption" color="text.secondary">
@@ -356,7 +375,9 @@ Version: ${summary.metadata?.version || 1}
 
       {summary.nextSteps.length > 0 && (
         <div>
-          <Typography variant="h6" gutterBottom>Recommended Next Steps</Typography>
+          <Typography variant="h6" gutterBottom>
+            Recommended Next Steps
+          </Typography>
           <Stack spacing={1}>
             {summary.nextSteps.map((step, index) => (
               <Typography key={index} variant="body2">

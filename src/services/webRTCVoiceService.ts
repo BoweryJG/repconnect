@@ -28,7 +28,7 @@ export class WebRTCVoiceService extends EventEmitter {
     this.config = {
       iceServers: getIceServers(),
       audioConstraints: defaultConfig.audioConstraints,
-      signalingUrl: 'socket.io://integrated' // Will be handled by webRTCSignalingService
+      signalingUrl: 'socket.io://integrated', // Will be handled by webRTCSignalingService
     };
   }
 
@@ -46,7 +46,7 @@ export class WebRTCVoiceService extends EventEmitter {
 
       // Connect to signaling server
       await this.connectSignaling();
-      
+
       this.emit('initialized');
     } catch (error) {
       this.emit('error', error);
@@ -57,18 +57,18 @@ export class WebRTCVoiceService extends EventEmitter {
   private async connectSignaling(): Promise<void> {
     // When using socket.io integration, skip WebSocket connection
     if (this.config.signalingUrl === 'socket.io://integrated') {
-            return Promise.resolve();
+      return Promise.resolve();
     }
-    
+
     return new Promise((resolve, reject) => {
       this.signalingConnection = new WebSocket(this.config.signalingUrl);
 
       this.signalingConnection.onopen = () => {
-                resolve();
+        resolve();
       };
 
       this.signalingConnection.onerror = (error) => {
-                reject(error);
+        reject(error);
       };
 
       this.signalingConnection.onmessage = async (event) => {
@@ -77,7 +77,7 @@ export class WebRTCVoiceService extends EventEmitter {
       };
 
       this.signalingConnection.onclose = () => {
-                this.emit('signaling-disconnected');
+        this.emit('signaling-disconnected');
       };
     });
   }
@@ -95,7 +95,7 @@ export class WebRTCVoiceService extends EventEmitter {
       dataChannel: null,
       audioContext: null,
       audioProcessor: null,
-      status: 'connecting'
+      status: 'connecting',
     };
 
     this.sessions.set(sessionId, session);
@@ -103,9 +103,9 @@ export class WebRTCVoiceService extends EventEmitter {
     try {
       // Get user media
       session.localStream = await navigator.mediaDevices.getUserMedia(this.config.audioConstraints);
-      
+
       // Add local stream to peer connection
-      session.localStream.getTracks().forEach(track => {
+      session.localStream.getTracks().forEach((track) => {
         session.peerConnection.addTrack(track, session.localStream!);
       });
 
@@ -117,7 +117,7 @@ export class WebRTCVoiceService extends EventEmitter {
 
       // Create data channel for metadata
       session.dataChannel = session.peerConnection.createDataChannel('voice-metadata', {
-        ordered: true
+        ordered: true,
       });
       this.setupDataChannelHandlers(session);
 
@@ -129,7 +129,7 @@ export class WebRTCVoiceService extends EventEmitter {
       this.sendSignalingMessage({
         type: 'offer',
         sessionId,
-        offer: offer
+        offer: offer,
       });
 
       this.emit('session-started', sessionId);
@@ -145,11 +145,11 @@ export class WebRTCVoiceService extends EventEmitter {
 
     // Create audio context for processing
     session.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)({
-      sampleRate: 48000
+      sampleRate: 48000,
     });
 
     const source = session.audioContext.createMediaStreamSource(session.localStream);
-    
+
     // Create script processor for raw audio access (for Moshi)
     // Note: ScriptProcessorNode is deprecated but still widely supported
     // Consider migrating to AudioWorklet in the future
@@ -157,7 +157,7 @@ export class WebRTCVoiceService extends EventEmitter {
 
     session.audioProcessor.onaudioprocess = (event) => {
       const inputData = event.inputBuffer.getChannelData(0);
-      
+
       // Convert Float32Array to Int16Array for Moshi
       const int16Data = new Int16Array(inputData.length);
       for (let i = 0; i < inputData.length; i++) {
@@ -169,7 +169,7 @@ export class WebRTCVoiceService extends EventEmitter {
         sessionId: session.id,
         audio: int16Data,
         sampleRate: session.audioContext!.sampleRate,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       });
     };
 
@@ -184,7 +184,7 @@ export class WebRTCVoiceService extends EventEmitter {
         this.sendSignalingMessage({
           type: 'ice-candidate',
           sessionId: session.id,
-          candidate: event.candidate
+          candidate: event.candidate,
         });
       }
     };
@@ -193,13 +193,13 @@ export class WebRTCVoiceService extends EventEmitter {
       session.remoteStream = event.streams[0];
       this.emit('remote-stream', {
         sessionId: session.id,
-        stream: session.remoteStream
+        stream: session.remoteStream,
       });
     };
 
     session.peerConnection.onconnectionstatechange = () => {
       const state = session.peerConnection.connectionState;
-            
+
       switch (state) {
         case 'connected':
           session.status = 'connected';
@@ -219,19 +219,18 @@ export class WebRTCVoiceService extends EventEmitter {
     if (!session.dataChannel) return;
 
     session.dataChannel.onopen = () => {
-            this.emit('data-channel-open', session.id);
+      this.emit('data-channel-open', session.id);
     };
 
     session.dataChannel.onmessage = (event) => {
       const data = JSON.parse(event.data);
       this.emit('metadata', {
         sessionId: session.id,
-        data
+        data,
       });
     };
 
-    session.dataChannel.onerror = (error) => {
-          };
+    session.dataChannel.onerror = (error) => {};
   }
 
   async handleSignalingMessage(message: any): Promise<void> {
@@ -239,7 +238,7 @@ export class WebRTCVoiceService extends EventEmitter {
     const session = this.sessions.get(sessionId);
 
     if (!session && type !== 'offer') {
-            return;
+      return;
     }
 
     switch (type) {
@@ -278,7 +277,7 @@ export class WebRTCVoiceService extends EventEmitter {
       dataChannel: null,
       audioContext: null,
       audioProcessor: null,
-      status: 'connecting'
+      status: 'connecting',
     };
 
     this.sessions.set(sessionId, session);
@@ -286,9 +285,9 @@ export class WebRTCVoiceService extends EventEmitter {
     try {
       // Get user media
       session.localStream = await navigator.mediaDevices.getUserMedia(this.config.audioConstraints);
-      
+
       // Add local stream
-      session.localStream.getTracks().forEach(track => {
+      session.localStream.getTracks().forEach((track) => {
         session.peerConnection.addTrack(track, session.localStream!);
       });
 
@@ -307,13 +306,13 @@ export class WebRTCVoiceService extends EventEmitter {
       this.sendSignalingMessage({
         type: 'answer',
         sessionId,
-        answer
+        answer,
       });
 
       this.emit('incoming-call', sessionId);
     } catch (error) {
       this.sessions.delete(sessionId);
-          }
+    }
   }
 
   sendMetadata(sessionId: string, data: any): void {
@@ -326,9 +325,9 @@ export class WebRTCVoiceService extends EventEmitter {
   sendSignalingMessage(message: any): void {
     if (this.config.signalingUrl === 'socket.io://integrated') {
       // This will be overridden by webRTCSignalingService
-            return;
+      return;
     }
-    
+
     if (this.signalingConnection?.readyState === WebSocket.OPEN) {
       this.signalingConnection.send(JSON.stringify(message));
     }
@@ -339,7 +338,7 @@ export class WebRTCVoiceService extends EventEmitter {
     if (!session) return;
 
     // Stop local stream
-    session.localStream?.getTracks().forEach(track => track.stop());
+    session.localStream?.getTracks().forEach((track) => track.stop());
 
     // Close audio processing
     if (session.audioProcessor) {
@@ -361,7 +360,7 @@ export class WebRTCVoiceService extends EventEmitter {
     // Notify signaling server
     this.sendSignalingMessage({
       type: 'end-session',
-      sessionId
+      sessionId,
     });
 
     this.emit('session-ended', sessionId);
@@ -369,7 +368,7 @@ export class WebRTCVoiceService extends EventEmitter {
 
   async endAllSessions(): Promise<void> {
     const sessionIds = Array.from(this.sessions.keys());
-    await Promise.all(sessionIds.map(id => this.endVoiceSession(id)));
+    await Promise.all(sessionIds.map((id) => this.endVoiceSession(id)));
   }
 
   disconnect(): void {
@@ -392,7 +391,7 @@ export class WebRTCVoiceService extends EventEmitter {
   async setMuted(sessionId: string, muted: boolean): Promise<void> {
     const session = this.sessions.get(sessionId);
     if (session?.localStream) {
-      session.localStream.getAudioTracks().forEach(track => {
+      session.localStream.getAudioTracks().forEach((track) => {
         track.enabled = !muted;
       });
       this.emit('mute-changed', { sessionId, muted });
@@ -402,7 +401,9 @@ export class WebRTCVoiceService extends EventEmitter {
   async setVolume(sessionId: string, volume: number): Promise<void> {
     const session = this.sessions.get(sessionId);
     if (session?.remoteStream) {
-      const audioElement = document.querySelector(`audio[data-session="${sessionId}"]`) as HTMLAudioElement;
+      const audioElement = document.querySelector(
+        `audio[data-session="${sessionId}"]`
+      ) as HTMLAudioElement;
       if (audioElement) {
         audioElement.volume = Math.max(0, Math.min(1, volume));
       }

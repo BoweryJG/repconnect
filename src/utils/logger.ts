@@ -12,11 +12,9 @@ class Logger {
     // Check multiple environment variables to determine if we're in development
     const nodeEnv = process.env.NODE_ENV;
     const reactAppEnv = process.env.REACT_APP_ENV;
-    
-    this.isDevelopment = 
-      nodeEnv === 'development' || 
-      reactAppEnv === 'development' ||
-      (!nodeEnv && !reactAppEnv); // Default to development if no env is set
+
+    this.isDevelopment =
+      nodeEnv === 'development' || reactAppEnv === 'development' || (!nodeEnv && !reactAppEnv); // Default to development if no env is set
   }
 
   private shouldLog(): boolean {
@@ -118,7 +116,8 @@ const logger = new Logger();
 export default logger;
 
 // Also export individual methods for convenience
-export const { log, error, warn, info, debug, dev, group, groupEnd, table, time, timeEnd, clear } = logger;
+export const { log, error, warn, info, debug, dev, group, groupEnd, table, time, timeEnd, clear } =
+  logger;
 
 // Example usage:
 // import logger from '@/utils/logger';

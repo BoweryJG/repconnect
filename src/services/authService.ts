@@ -33,9 +33,13 @@ axios.interceptors.response.use(
   async (error) => {
     if (error.response?.status === 401 && !error.config._retry) {
       error.config._retry = true;
-      
+
       try {
-        const response = await axios.post(`${API_BASE_URL}/api/auth/refresh`, {}, { withCredentials: true });
+        const response = await axios.post(
+          `${API_BASE_URL}/api/auth/refresh`,
+          {},
+          { withCredentials: true }
+        );
         if (response.data.success) {
           return axios(error.config);
         }
@@ -56,9 +60,9 @@ export const authService = {
     try {
       const response = await axios.post(`${API_BASE_URL}/auth/login`, {
         access_token: session.access_token,
-        refresh_token: session.refresh_token
+        refresh_token: session.refresh_token,
       });
-      
+
       return response.data;
     } catch (error) {
       logger.error('Login with cookies error:', error);
@@ -114,10 +118,10 @@ export const authService = {
   isSessionActive(): boolean {
     const lastActivity = document.cookie.match(/last_activity=([^;]+)/);
     if (!lastActivity) return false;
-    
+
     const timeSinceLastActivity = Date.now() - parseInt(lastActivity[1]);
     const SESSION_TIMEOUT = 30 * 60 * 1000; // 30 minutes
-    
+
     return timeSinceLastActivity < SESSION_TIMEOUT;
   },
 
@@ -125,42 +129,42 @@ export const authService = {
   setupSessionTimeoutWarning(onWarning: () => void, onTimeout: () => void) {
     const WARNING_TIME = 5 * 60 * 1000; // 5 minutes before timeout
     const SESSION_TIMEOUT = 30 * 60 * 1000; // 30 minutes
-    
+
     let warningTimer: NodeJS.Timeout;
     let timeoutTimer: NodeJS.Timeout;
-    
+
     const resetTimers = () => {
       if (warningTimer) clearTimeout(warningTimer);
       if (timeoutTimer) clearTimeout(timeoutTimer);
-      
+
       warningTimer = setTimeout(onWarning, SESSION_TIMEOUT - WARNING_TIME);
       timeoutTimer = setTimeout(onTimeout, SESSION_TIMEOUT);
     };
-    
+
     // Reset timers on user activity
     const activityEvents = ['mousedown', 'keydown', 'scroll', 'touchstart'];
-    activityEvents.forEach(event => {
+    activityEvents.forEach((event) => {
       document.addEventListener(event, resetTimers);
     });
-    
+
     // Initial setup
     resetTimers();
-    
+
     // Return cleanup function
     return () => {
       clearTimeout(warningTimer);
       clearTimeout(timeoutTimer);
-      activityEvents.forEach(event => {
+      activityEvents.forEach((event) => {
         document.removeEventListener(event, resetTimers);
       });
     };
-  }
+  },
 };
 
 // Export a function to refresh session periodically
 export const startSessionRefresh = () => {
   const REFRESH_INTERVAL = 15 * 60 * 1000; // 15 minutes
-  
+
   const refreshInterval = setInterval(async () => {
     try {
       if (authService.isSessionActive()) {
@@ -170,6 +174,6 @@ export const startSessionRefresh = () => {
       logger.error('Auto refresh failed:', error);
     }
   }, REFRESH_INTERVAL);
-  
+
   return () => clearInterval(refreshInterval);
 };

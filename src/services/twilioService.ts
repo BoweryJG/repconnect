@@ -7,27 +7,26 @@ export const twilioService = {
   async makeCall(to: string, from?: string, message?: string, options?: any) {
     try {
       const url = `${BACKEND_URL}/api/twilio/make-call`;
-      
+
       const fromNumber = from || process.env.REACT_APP_TWILIO_PHONE_NUMBER;
-      
-              
+
       const response = await axios.post(url, {
         to,
-        message: message || "Hello! This is a call from RepConnect.",
+        message: message || 'Hello! This is a call from RepConnect.',
         record: true,
-        metadata: options?.metadata || {}
+        metadata: options?.metadata || {},
       });
-      
-            return response.data;
+
+      return response.data;
     } catch (error: any) {
-            throw error;
+      throw error;
     }
   },
 
   async sendSMS(to: string, body: string, from?: string) {
     try {
       const url = `${BACKEND_URL}/api/twilio/send-sms`;
-        
+
       const response = await axios.post(url, {
         to,
         body,
@@ -35,18 +34,18 @@ export const twilioService = {
       });
       return response.data;
     } catch (error) {
-            throw error;
+      throw error;
     }
   },
 
   async getCallRecordings(callSid: string) {
     try {
       const url = `${BACKEND_URL}/api/twilio/recordings/${callSid}`;
-        
+
       const response = await axios.get(url);
       return response.data;
     } catch (error) {
-            throw error;
+      throw error;
     }
   },
 };

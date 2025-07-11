@@ -11,36 +11,38 @@ export const webRTCConfig = {
     { urls: 'stun:stun2.l.google.com:19302' },
     { urls: 'stun:stun3.l.google.com:19302' },
     { urls: 'stun:stun4.l.google.com:19302' },
-    
+
     // Other public STUN servers for redundancy
     { urls: 'stun:stun.stunprotocol.org:3478' },
     { urls: 'stun:stun.voip.eutelia.it:3478' },
     { urls: 'stun:stun.voipbuster.com:3478' },
-    
+
     // TURN servers (require credentials)
     // Configure these through environment variables
-    ...(process.env.REACT_APP_METERED_TURN_USERNAME && process.env.REACT_APP_METERED_TURN_CREDENTIAL ? [
-      {
-        urls: 'turn:a.relay.metered.ca:80',
-        username: process.env.REACT_APP_METERED_TURN_USERNAME,
-        credential: process.env.REACT_APP_METERED_TURN_CREDENTIAL
-      },
-      {
-        urls: 'turn:a.relay.metered.ca:80?transport=tcp',
-        username: process.env.REACT_APP_METERED_TURN_USERNAME,
-        credential: process.env.REACT_APP_METERED_TURN_CREDENTIAL
-      },
-      {
-        urls: 'turn:a.relay.metered.ca:443',
-        username: process.env.REACT_APP_METERED_TURN_USERNAME,
-        credential: process.env.REACT_APP_METERED_TURN_CREDENTIAL
-      },
-      {
-        urls: 'turn:a.relay.metered.ca:443?transport=tcp',
-        username: process.env.REACT_APP_METERED_TURN_USERNAME,
-        credential: process.env.REACT_APP_METERED_TURN_CREDENTIAL
-      }
-    ] : [])
+    ...(process.env.REACT_APP_METERED_TURN_USERNAME && process.env.REACT_APP_METERED_TURN_CREDENTIAL
+      ? [
+          {
+            urls: 'turn:a.relay.metered.ca:80',
+            username: process.env.REACT_APP_METERED_TURN_USERNAME,
+            credential: process.env.REACT_APP_METERED_TURN_CREDENTIAL,
+          },
+          {
+            urls: 'turn:a.relay.metered.ca:80?transport=tcp',
+            username: process.env.REACT_APP_METERED_TURN_USERNAME,
+            credential: process.env.REACT_APP_METERED_TURN_CREDENTIAL,
+          },
+          {
+            urls: 'turn:a.relay.metered.ca:443',
+            username: process.env.REACT_APP_METERED_TURN_USERNAME,
+            credential: process.env.REACT_APP_METERED_TURN_CREDENTIAL,
+          },
+          {
+            urls: 'turn:a.relay.metered.ca:443?transport=tcp',
+            username: process.env.REACT_APP_METERED_TURN_USERNAME,
+            credential: process.env.REACT_APP_METERED_TURN_CREDENTIAL,
+          },
+        ]
+      : []),
   ],
 
   // ICE gathering configuration
@@ -62,9 +64,9 @@ export const webRTCConfig = {
       googAutoGainControl: true,
       googNoiseSuppression: true,
       googHighpassFilter: true,
-      googTypingNoiseDetection: true
+      googTypingNoiseDetection: true,
     },
-    video: false
+    video: false,
   },
 
   // Connection timeouts
@@ -81,39 +83,48 @@ export const webRTCConfig = {
   dataChannelConfig: {
     ordered: true,
     maxRetransmits: 3,
-    maxPacketLifeTime: 3000 // 3 seconds
-  }
+    maxPacketLifeTime: 3000, // 3 seconds
+  },
 };
 
 // Production TURN server configuration
 // These should be loaded from environment variables in production
 export const productionTurnServers = {
   // Twilio TURN servers (requires Twilio account)
-  twilio: process.env.REACT_APP_TWILIO_TURN_ENABLED === 'true' ? [
-    {
-      urls: process.env.REACT_APP_TWILIO_TURN_URL || '',
-      username: process.env.REACT_APP_TWILIO_TURN_USERNAME || '',
-      credential: process.env.REACT_APP_TWILIO_TURN_CREDENTIAL || ''
-    }
-  ] : [],
+  twilio:
+    process.env.REACT_APP_TWILIO_TURN_ENABLED === 'true'
+      ? [
+          {
+            urls: process.env.REACT_APP_TWILIO_TURN_URL || '',
+            username: process.env.REACT_APP_TWILIO_TURN_USERNAME || '',
+            credential: process.env.REACT_APP_TWILIO_TURN_CREDENTIAL || '',
+          },
+        ]
+      : [],
 
   // Xirsys TURN servers (requires Xirsys account)
-  xirsys: process.env.REACT_APP_XIRSYS_ENABLED === 'true' ? [
-    {
-      urls: process.env.REACT_APP_XIRSYS_TURN_URL || '',
-      username: process.env.REACT_APP_XIRSYS_USERNAME || '',
-      credential: process.env.REACT_APP_XIRSYS_CREDENTIAL || ''
-    }
-  ] : [],
+  xirsys:
+    process.env.REACT_APP_XIRSYS_ENABLED === 'true'
+      ? [
+          {
+            urls: process.env.REACT_APP_XIRSYS_TURN_URL || '',
+            username: process.env.REACT_APP_XIRSYS_USERNAME || '',
+            credential: process.env.REACT_APP_XIRSYS_CREDENTIAL || '',
+          },
+        ]
+      : [],
 
   // CoTURN servers (self-hosted)
-  coturn: process.env.REACT_APP_COTURN_ENABLED === 'true' ? [
-    {
-      urls: process.env.REACT_APP_COTURN_URL || '',
-      username: process.env.REACT_APP_COTURN_USERNAME || '',
-      credential: process.env.REACT_APP_COTURN_CREDENTIAL || ''
-    }
-  ] : []
+  coturn:
+    process.env.REACT_APP_COTURN_ENABLED === 'true'
+      ? [
+          {
+            urls: process.env.REACT_APP_COTURN_URL || '',
+            username: process.env.REACT_APP_COTURN_USERNAME || '',
+            credential: process.env.REACT_APP_COTURN_CREDENTIAL || '',
+          },
+        ]
+      : [],
 };
 
 // Get the appropriate ICE servers based on environment
@@ -130,15 +141,15 @@ export function getIceServers(): RTCIceServer[] {
   }
 
   // Filter out any servers with empty URLs
-  return servers.filter(server => {
+  return servers.filter((server) => {
     if (!server.urls) return false;
-    
+
     if (typeof server.urls === 'string') {
       return server.urls.length > 0;
     } else if (Array.isArray(server.urls)) {
       return (server.urls as string[]).length > 0;
     }
-    
+
     return false;
   });
 }
@@ -148,13 +159,13 @@ export async function testTurnServer(turnServer: RTCIceServer): Promise<boolean>
   try {
     const pc = new RTCPeerConnection({ iceServers: [turnServer] });
     const dc = pc.createDataChannel('test');
-    
+
     const offer = await pc.createOffer();
     await pc.setLocalDescription(offer);
-    
+
     return new Promise((resolve) => {
       let hasRelay = false;
-      
+
       pc.onicecandidate = (event) => {
         if (event.candidate) {
           // Check if we got a relay candidate (TURN)
@@ -167,7 +178,7 @@ export async function testTurnServer(turnServer: RTCIceServer): Promise<boolean>
           resolve(hasRelay);
         }
       };
-      
+
       // Timeout after 10 seconds
       setTimeout(() => {
         pc.close();

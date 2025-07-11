@@ -38,18 +38,18 @@ export const ContactCard3D: React.FC<ContactCard3DProps> = ({ contact, onClick, 
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!enable3D || !cardRef.current) return;
-    
+
     const card = cardRef.current;
     const rect = card.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-    
+
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
-    
+
     const rotateX = ((y - centerY) / centerY) * -10;
     const rotateY = ((x - centerX) / centerX) * 10;
-    
+
     card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(20px)`;
   };
 
@@ -135,12 +135,7 @@ export const ContactCard3D: React.FC<ContactCard3DProps> = ({ contact, onClick, 
         }}
       >
         {/* Cartier-Level Precision Screws with Center Positions */}
-        <CornerScrews 
-          size="medium"
-          grooveType="phillips"
-          premium={true}
-          includeCenter={true}
-        />
+        <CornerScrews size="medium" grooveType="phillips" premium={true} includeCenter={true} />
 
         {/* Front Face */}
         <div style={frontFace}>
@@ -220,10 +215,12 @@ export const ContactCard3D: React.FC<ContactCard3DProps> = ({ contact, onClick, 
               marginTop: 'auto',
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.boxShadow = '0 0 30px rgba(16, 185, 129, 0.4), 0 0 60px rgba(16, 185, 129, 0.3)';
+              e.currentTarget.style.boxShadow =
+                '0 0 30px rgba(16, 185, 129, 0.4), 0 0 60px rgba(16, 185, 129, 0.3)';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.boxShadow = '0 0 20px rgba(16, 185, 129, 0.3), 0 0 40px rgba(16, 185, 129, 0.2)';
+              e.currentTarget.style.boxShadow =
+                '0 0 20px rgba(16, 185, 129, 0.3), 0 0 40px rgba(16, 185, 129, 0.2)';
             }}
           >
             <PhoneIcon /> Call Now
@@ -235,7 +232,7 @@ export const ContactCard3D: React.FC<ContactCard3DProps> = ({ contact, onClick, 
           <Typography variant="h6" fontWeight="600" mb={2}>
             Notes & Details
           </Typography>
-          
+
           {contact.notes ? (
             <div
               style={{

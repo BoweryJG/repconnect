@@ -24,26 +24,27 @@ class WebRTCSignalingService {
 
   private async connect() {
     try {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:3001';
-      
-            
+
       // Connect to WebRTC signaling namespace
       this.socket = io(`${backendUrl}/webrtc-signaling`, {
         path: '/agents-ws',
         auth: {
-          token: session?.access_token || ''
+          token: session?.access_token || '',
         },
         transports: ['websocket'],
         reconnection: true,
         reconnectionDelay: 1000,
         reconnectionDelayMax: 5000,
-        reconnectionAttempts: this.maxReconnectAttempts
+        reconnectionAttempts: this.maxReconnectAttempts,
       });
 
       this.setupEventListeners();
     } catch (error) {
-            this.handleReconnect();
+      this.handleReconnect();
     }
   }
 
@@ -51,43 +52,40 @@ class WebRTCSignalingService {
     if (!this.socket) return;
 
     this.socket.on('connect', () => {
-            this.isConnected = true;
+      this.isConnected = true;
       this.reconnectAttempts = 0;
-      
+
       // Notify WebRTC service that signaling is ready
       this.setupWebRTCIntegration();
     });
 
     this.socket.on('disconnect', () => {
-            this.isConnected = false;
+      this.isConnected = false;
     });
 
-    this.socket.on('error', (error) => {
-          });
+    this.socket.on('error', (error) => {});
 
     // WebRTC signaling messages
     this.socket.on('webrtc:offer', (data: SignalingMessage) => {
-            webRTCVoiceService.handleSignalingMessage(data);
+      webRTCVoiceService.handleSignalingMessage(data);
     });
 
     this.socket.on('webrtc:answer', (data: SignalingMessage) => {
-            webRTCVoiceService.handleSignalingMessage(data);
+      webRTCVoiceService.handleSignalingMessage(data);
     });
 
     this.socket.on('webrtc:ice-candidate', (data: SignalingMessage) => {
-            webRTCVoiceService.handleSignalingMessage(data);
+      webRTCVoiceService.handleSignalingMessage(data);
     });
 
     this.socket.on('webrtc:end-session', (data: SignalingMessage) => {
-            webRTCVoiceService.handleSignalingMessage(data);
+      webRTCVoiceService.handleSignalingMessage(data);
     });
 
     // Room management for peer discovery
-    this.socket.on('webrtc:peer-joined', (data: { sessionId: string, peerId: string }) => {
-          });
+    this.socket.on('webrtc:peer-joined', (data: { sessionId: string; peerId: string }) => {});
 
-    this.socket.on('webrtc:peer-left', (data: { sessionId: string, peerId: string }) => {
-          });
+    this.socket.on('webrtc:peer-left', (data: { sessionId: string; peerId: string }) => {});
   }
 
   private setupWebRTCIntegration() {
@@ -103,12 +101,12 @@ class WebRTCSignalingService {
 
   private handleReconnect() {
     if (this.reconnectAttempts >= this.maxReconnectAttempts) {
-            return;
+      return;
     }
 
     this.reconnectAttempts++;
     const delay = Math.min(1000 * Math.pow(2, this.reconnectAttempts), 30000);
-    
+
     setTimeout(() => {
       this.connect();
     }, delay);
@@ -116,19 +114,19 @@ class WebRTCSignalingService {
 
   public sendSignalingMessage(message: SignalingMessage) {
     if (!this.socket || !this.isConnected) {
-            return;
+      return;
     }
 
     const eventMap: { [key: string]: string } = {
-      'offer': 'webrtc:offer',
-      'answer': 'webrtc:answer',
+      offer: 'webrtc:offer',
+      answer: 'webrtc:answer',
       'ice-candidate': 'webrtc:ice-candidate',
-      'end-session': 'webrtc:end-session'
+      'end-session': 'webrtc:end-session',
     };
 
     const event = eventMap[message.type];
     if (event) {
-            this.socket.emit(event, message);
+      this.socket.emit(event, message);
     }
   }
 
@@ -151,13 +149,17 @@ class WebRTCSignalingService {
         return;
       }
 
-      this.socket.emit('webrtc:create-room', metadata, (response: { success: boolean; roomId?: string; error?: string }) => {
-        if (response.success && response.roomId) {
-          resolve(response.roomId);
-        } else {
-          reject(new Error(response.error || 'Failed to create room'));
+      this.socket.emit(
+        'webrtc:create-room',
+        metadata,
+        (response: { success: boolean; roomId?: string; error?: string }) => {
+          if (response.success && response.roomId) {
+            resolve(response.roomId);
+          } else {
+            reject(new Error(response.error || 'Failed to create room'));
+          }
         }
-      });
+      );
     });
   }
 

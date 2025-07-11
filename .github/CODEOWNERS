@@ -1,0 +1,53 @@
+# CODEOWNERS file for automatic review assignment
+# Each line is a file pattern followed by one or more owners
+
+# Default owners for everything in the repo
+* @repconnect-team
+
+# Frontend code owners
+/src/ @frontend-team
+/public/ @frontend-team
+*.tsx @frontend-team
+*.ts @frontend-team
+*.css @frontend-team
+
+# Harvey AI specific code
+/src/components/Harvey* @harvey-team @ai-team
+/src/services/harvey* @harvey-team @ai-team
+/src/api/harvey* @harvey-team @backend-team
+
+# Backend code owners
+/server.js @backend-team
+/src/api/ @backend-team
+/scripts/ @backend-team @devops-team
+
+# Database and migrations
+/supabase/ @backend-team @database-team
+/migrations/ @database-team
+
+# WebRTC and real-time features
+/src/services/*WebRTC* @webrtc-team @backend-team
+/src/services/voiceMetrics* @webrtc-team
+
+# Configuration and deployment
+/.github/ @devops-team
+/netlify.toml @devops-team @frontend-team
+/package.json @tech-leads
+/package-lock.json @tech-leads
+/*.config.js @tech-leads
+
+# Documentation
+*.md @documentation-team
+/docs/ @documentation-team
+
+# Security-sensitive files
+.env* @security-team @tech-leads
+*secret* @security-team
+*token* @security-team
+*key* @security-team
+
+# Testing
+*.test.* @qa-team
+*.spec.* @qa-team
+/cypress/ @qa-team
+/__tests__/ @qa-team

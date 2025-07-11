@@ -73,10 +73,12 @@ class HarveyService {
     this.baseUrl = process.env.REACT_APP_BACKEND_URL || 'https://osbackend-zl1h.onrender.com';
     // Get user ID from auth or generate a unique one
     const getUserId = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       return user?.id || localStorage.getItem('harvey_user_id') || `user-${Date.now()}`;
     };
-    getUserId().then(id => {
+    getUserId().then((id) => {
       this.userId = id;
       localStorage.setItem('harvey_user_id', id);
     });
@@ -98,25 +100,22 @@ class HarveyService {
       reconnectionDelayMax: 5000,
       auth: {
         userId: this.userId,
-        token: authToken
+        token: authToken,
       },
       query: {
-        userId: this.userId
-      }
+        userId: this.userId,
+      },
     });
 
-    this.socket.on('connect', () => {
-    });
+    this.socket.on('connect', () => {});
 
-    this.socket.on('connect_error', (error) => {
-    });
+    this.socket.on('connect_error', (error) => {});
 
     this.socket.on('harvey-update', (update: HarveyUpdate) => {
       this.handleUpdate(update);
     });
 
-    this.socket.on('disconnect', (reason) => {
-    });
+    this.socket.on('disconnect', (reason) => {});
   }
 
   private handleUpdate(update: HarveyUpdate): void {
@@ -126,7 +125,7 @@ class HarveyService {
     }
 
     // Notify all subscribers
-    this.updateCallbacks.forEach(callback => callback(update));
+    this.updateCallbacks.forEach((callback) => callback(update));
   }
 
   // Subscribe to real-time updates
@@ -148,7 +147,7 @@ class HarveyService {
     try {
       const response = await fetch(`${this.baseUrl}/api/harvey/metrics?userId=${this.userId}`, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('harvey_token')}`,
+          Authorization: `Bearer ${localStorage.getItem('harvey_token')}`,
         },
       });
 
@@ -157,23 +156,23 @@ class HarveyService {
       }
 
       const data = await response.json();
-      
+
       // Handle both old format (direct metrics) and new format (wrapped in object)
       if (data.metrics && data.leaderboard) {
         // New format: { metrics: {...}, leaderboard: [...] }
         this.metricsCache = data.metrics;
-        
+
         // Map reputationPoints to points for leaderboard entries if needed
         const leaderboard = data.leaderboard.map((entry: any) => ({
           ...entry,
           points: entry.points || entry.reputationPoints || 0,
           id: entry.id || entry.userId,
-          rank: entry.rank || 0
+          rank: entry.rank || 0,
         }));
-        
+
         return {
           metrics: data.metrics,
-          leaderboard
+          leaderboard,
         };
       } else {
         // Old format: direct metrics object - convert to expected format
@@ -181,16 +180,16 @@ class HarveyService {
           ...data,
           harveyStatus: data.status || 'rookie',
           dailyVerdict: null,
-          activeTrials: data.activeTrials || []
+          activeTrials: data.activeTrials || [],
         };
         this.metricsCache = metrics;
         return {
           metrics,
-          leaderboard: []
+          leaderboard: [],
         };
       }
     } catch (error) {
-            // Return cached data if available
+      // Return cached data if available
       return {
         metrics: this.metricsCache || this.getDefaultMetrics(),
         leaderboard: [],
@@ -205,7 +204,7 @@ class HarveyService {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('harvey_token')}`,
+          Authorization: `Bearer ${localStorage.getItem('harvey_token')}`,
         },
       });
 
@@ -215,7 +214,7 @@ class HarveyService {
 
       return await response.json();
     } catch (error) {
-            return {
+      return {
         rating: 5,
         message: "You're avoiding me. That tells me everything I need to know.",
         timestamp: new Date(),
@@ -230,7 +229,7 @@ class HarveyService {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('harvey_token')}`,
+          Authorization: `Bearer ${localStorage.getItem('harvey_token')}`,
         },
       });
 
@@ -241,7 +240,7 @@ class HarveyService {
 
       return await response.json();
     } catch (error: any) {
-            return {
+      return {
         success: false,
         message: error.message || 'Failed to claim lead',
       };
@@ -255,7 +254,7 @@ class HarveyService {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('harvey_token')}`,
+          Authorization: `Bearer ${localStorage.getItem('harvey_token')}`,
         },
       });
 
@@ -266,7 +265,7 @@ class HarveyService {
 
       return await response.json();
     } catch (error: any) {
-            return {
+      return {
         success: false,
         message: error.message || 'Failed to join trial',
       };
@@ -274,21 +273,21 @@ class HarveyService {
   }
 
   // Submit voice command
-  async submitVoiceCommand(command: string): Promise<{ 
-    response: string; 
-    audio?: string; 
-    action?: string; 
+  async submitVoiceCommand(command: string): Promise<{
+    response: string;
+    audio?: string;
+    action?: string;
   }> {
     try {
       const response = await fetch(`${this.baseUrl}/api/harvey/voice-command`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('harvey_token')}`,
+          Authorization: `Bearer ${localStorage.getItem('harvey_token')}`,
         },
-        body: JSON.stringify({ 
-          command, 
-          userId: this.userId 
+        body: JSON.stringify({
+          command,
+          userId: this.userId,
         }),
       });
 
@@ -298,7 +297,7 @@ class HarveyService {
 
       return await response.json();
     } catch (error) {
-            return {
+      return {
         response: "I can't process that right now. Check your connection.",
       };
     }
@@ -309,7 +308,7 @@ class HarveyService {
     try {
       const response = await fetch(`${this.baseUrl}/api/harvey/trials/active`, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('harvey_token')}`,
+          Authorization: `Bearer ${localStorage.getItem('harvey_token')}`,
         },
       });
 
@@ -319,7 +318,7 @@ class HarveyService {
 
       return await response.json();
     } catch (error) {
-            return [];
+      return [];
     }
   }
 
@@ -335,12 +334,11 @@ class HarveyService {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('harvey_token')}`,
+          Authorization: `Bearer ${localStorage.getItem('harvey_token')}`,
         },
         body: JSON.stringify(callData),
       });
-    } catch (error) {
-          }
+    } catch (error) {}
   }
 
   // Request Harvey intervention
@@ -350,12 +348,11 @@ class HarveyService {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('harvey_token')}`,
+          Authorization: `Bearer ${localStorage.getItem('harvey_token')}`,
         },
         body: JSON.stringify({ reason }),
       });
-    } catch (error) {
-          }
+    } catch (error) {}
   }
 
   // Get hot leads
@@ -363,7 +360,7 @@ class HarveyService {
     try {
       const response = await fetch(`${this.baseUrl}/api/harvey/leads/hot`, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('harvey_token')}`,
+          Authorization: `Bearer ${localStorage.getItem('harvey_token')}`,
         },
       });
 
@@ -373,7 +370,7 @@ class HarveyService {
 
       return await response.json();
     } catch (error) {
-            return [];
+      return [];
     }
   }
 
@@ -384,7 +381,7 @@ class HarveyService {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('harvey_token')}`,
+          Authorization: `Bearer ${localStorage.getItem('harvey_token')}`,
         },
         body: JSON.stringify({ type: challengeType }),
       });
@@ -395,7 +392,7 @@ class HarveyService {
 
       return await response.json();
     } catch (error) {
-            return {
+      return {
         accepted: false,
         message: "You're not ready to challenge me yet. Close more deals.",
       };
@@ -407,7 +404,7 @@ class HarveyService {
     try {
       const response = await fetch(`${this.baseUrl}/api/harvey/coaching/history?limit=${limit}`, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('harvey_token')}`,
+          Authorization: `Bearer ${localStorage.getItem('harvey_token')}`,
         },
       });
 
@@ -417,10 +414,9 @@ class HarveyService {
 
       return await response.json();
     } catch (error) {
-            return [];
+      return [];
     }
   }
-
 
   private getDefaultMetrics(): HarveyMetrics {
     return {
@@ -435,18 +431,19 @@ class HarveyService {
   }
 
   // Update coaching mode
-  async updateCoachingMode(mode: 'off' | 'gentle' | 'normal' | 'aggressive' | 'brutal'): Promise<void> {
+  async updateCoachingMode(
+    mode: 'off' | 'gentle' | 'normal' | 'aggressive' | 'brutal'
+  ): Promise<void> {
     try {
       await fetch(`${this.baseUrl}/api/harvey/coaching/mode`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('harvey_token')}`,
+          Authorization: `Bearer ${localStorage.getItem('harvey_token')}`,
         },
         body: JSON.stringify({ mode }),
       });
-    } catch (error) {
-          }
+    } catch (error) {}
   }
 
   // Update Harvey modes
@@ -456,12 +453,11 @@ class HarveyService {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('harvey_token')}`,
+          Authorization: `Bearer ${localStorage.getItem('harvey_token')}`,
         },
         body: JSON.stringify(modes),
       });
-    } catch (error) {
-          }
+    } catch (error) {}
   }
 
   // Clean up resources

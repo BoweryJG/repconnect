@@ -10,22 +10,22 @@ export const monitoringConfig = {
   // Health check intervals
   healthCheckInterval: 60000, // 1 minute
   metricsReportInterval: 300000, // 5 minutes
-  
+
   // Thresholds
   cpuThreshold: 80, // 80% CPU usage
   memoryThreshold: 85, // 85% memory usage
   responseTimeThreshold: 2000, // 2 seconds
   errorRateThreshold: 5, // 5% error rate
-  
+
   // Alerts
   alertWebhook: process.env.MONITORING_WEBHOOK_URL,
   alertEmail: process.env.MONITORING_ALERT_EMAIL,
-  
+
   // Features
   enablePerformanceMonitoring: true,
   enableHealthChecks: true,
   enableMetricsReporting: true,
-  enableAlerts: true
+  enableAlerts: true,
 };
 
 /**
@@ -37,21 +37,22 @@ export class SystemMetrics {
     const freeMem = os.freemem();
     const usedMem = totalMem - freeMem;
     const memUsagePercent = (usedMem / totalMem) * 100;
-    
+
     const cpus = os.cpus();
-    const cpuUsage = cpus.reduce((acc, cpu) => {
-      const total = Object.values(cpu.times).reduce((a, b) => a + b, 0);
-      const idle = cpu.times.idle;
-      return acc + ((total - idle) / total) * 100;
-    }, 0) / cpus.length;
-    
+    const cpuUsage =
+      cpus.reduce((acc, cpu) => {
+        const total = Object.values(cpu.times).reduce((a, b) => a + b, 0);
+        const idle = cpu.times.idle;
+        return acc + ((total - idle) / total) * 100;
+      }, 0) / cpus.length;
+
     return {
       system: {
         platform: os.platform(),
         arch: os.arch(),
         nodeVersion: process.version,
         uptime: process.uptime(),
-        pid: process.pid
+        pid: process.pid,
       },
       memory: {
         total: totalMem,
@@ -61,14 +62,14 @@ export class SystemMetrics {
         heapUsed: process.memoryUsage().heapUsed,
         heapTotal: process.memoryUsage().heapTotal,
         external: process.memoryUsage().external,
-        rss: process.memoryUsage().rss
+        rss: process.memoryUsage().rss,
       },
       cpu: {
         count: cpus.length,
         model: cpus[0]?.model,
         usage: cpuUsage,
-        loadAverage: os.loadavg()
-      }
+        loadAverage: os.loadavg(),
+      },
     };
   }
 }
@@ -89,7 +90,7 @@ export class HealthCheckManager {
     this.checks.set(name, {
       fn: checkFn,
       timeout: options.timeout || 5000,
-      critical: options.critical || false
+      critical: options.critical || false,
     });
   }
 
@@ -99,24 +100,24 @@ export class HealthCheckManager {
   async runChecks() {
     const results = {};
     const promises = [];
-    
+
     for (const [name, check] of this.checks.entries()) {
       const promise = this.runCheck(name, check);
       promises.push(promise);
     }
-    
+
     await Promise.all(promises);
-    
+
     // Compile results
     for (const [name, result] of this.results.entries()) {
       results[name] = result;
     }
-    
+
     return {
       status: this.getOverallStatus(),
       timestamp: new Date().toISOString(),
       checks: results,
-      metrics: SystemMetrics.getMetrics()
+      metrics: SystemMetrics.getMetrics(),
     };
   }
 
@@ -125,27 +126,27 @@ export class HealthCheckManager {
    */
   async runCheck(name, check) {
     const start = Date.now();
-    
+
     try {
       const timeoutPromise = new Promise((_, reject) => {
         setTimeout(() => reject(new Error('Health check timeout')), check.timeout);
       });
-      
+
       const result = await Promise.race([check.fn(), timeoutPromise]);
-      
+
       this.results.set(name, {
         status: 'healthy',
         responseTime: Date.now() - start,
-        ...result
+        ...result,
       });
     } catch (error) {
       logger.error(`Health check failed: ${name}`, error);
-      
+
       this.results.set(name, {
         status: 'unhealthy',
         responseTime: Date.now() - start,
         error: error.message,
-        critical: check.critical
+        critical: check.critical,
       });
     }
   }
@@ -156,7 +157,7 @@ export class HealthCheckManager {
   getOverallStatus() {
     let hasUnhealthy = false;
     let hasCriticalFailure = false;
-    
+
     for (const [_, result] of this.results.entries()) {
       if (result.status === 'unhealthy') {
         hasUnhealthy = true;
@@ -165,7 +166,7 @@ export class HealthCheckManager {
         }
       }
     }
-    
+
     if (hasCriticalFailure) return 'critical';
     if (hasUnhealthy) return 'degraded';
     return 'healthy';
@@ -187,31 +188,31 @@ export class MonitoringService {
    */
   start() {
     if (this.isRunning) return;
-    
+
     logger.info('Starting monitoring service...');
     this.isRunning = true;
-    
+
     // Register default health checks
     this.registerDefaultHealthChecks();
-    
+
     // Start health checks
     if (monitoringConfig.enableHealthChecks) {
       const healthInterval = setInterval(async () => {
         await this.performHealthCheck();
       }, monitoringConfig.healthCheckInterval);
-      
+
       this.intervals.push(healthInterval);
     }
-    
+
     // Start metrics reporting
     if (monitoringConfig.enableMetricsReporting) {
       const metricsInterval = setInterval(async () => {
         await this.reportMetrics();
       }, monitoringConfig.metricsReportInterval);
-      
+
       this.intervals.push(metricsInterval);
     }
-    
+
     // Perform initial checks
     this.performHealthCheck();
     this.reportMetrics();
@@ -223,9 +224,9 @@ export class MonitoringService {
   stop() {
     logger.info('Stopping monitoring service...');
     this.isRunning = false;
-    
+
     // Clear all intervals
-    this.intervals.forEach(interval => clearInterval(interval));
+    this.intervals.forEach((interval) => clearInterval(interval));
     this.intervals = [];
   }
 
@@ -235,37 +236,37 @@ export class MonitoringService {
   async performHealthCheck() {
     try {
       const results = await this.healthCheckManager.runChecks();
-      
+
       // Check thresholds
       const metrics = results.metrics;
       const alerts = [];
-      
+
       if (metrics.cpu.usage > monitoringConfig.cpuThreshold) {
         alerts.push({
           type: 'cpu',
           message: `High CPU usage: ${metrics.cpu.usage.toFixed(2)}%`,
-          severity: 'warning'
+          severity: 'warning',
         });
       }
-      
+
       if (metrics.memory.usagePercent > monitoringConfig.memoryThreshold) {
         alerts.push({
           type: 'memory',
           message: `High memory usage: ${metrics.memory.usagePercent.toFixed(2)}%`,
-          severity: 'warning'
+          severity: 'warning',
         });
       }
-      
+
       // Send alerts if needed
       if (alerts.length > 0 && monitoringConfig.enableAlerts) {
         await this.sendAlerts(alerts);
       }
-      
+
       // Log health status
       if (results.status !== 'healthy') {
         logger.warn('Health check issues detected:', results);
       }
-      
+
       return results;
     } catch (error) {
       logger.error('Failed to perform health check:', error);
@@ -279,41 +280,41 @@ export class MonitoringService {
     try {
       const metrics = SystemMetrics.getMetrics();
       const performanceSummary = performanceMonitor.getSummary();
-      
+
       // Send to Sentry
       captureMetric('system.cpu.usage', metrics.cpu.usage, 'percent');
       captureMetric('system.memory.usage', metrics.memory.usagePercent, 'percent');
       captureMetric('system.memory.heap', metrics.memory.heapUsed, 'byte');
       captureMetric('system.uptime', metrics.system.uptime, 'second');
-      
+
       // Log performance summary
       logger.info('Performance summary:', performanceSummary);
-      
+
       // Check for performance issues
       const alerts = [];
-      
+
       for (const [route, stats] of Object.entries(performanceSummary)) {
         if (stats.avgResponseTime > monitoringConfig.responseTimeThreshold) {
           alerts.push({
             type: 'performance',
             message: `Slow route detected: ${route} (avg: ${stats.avgResponseTime.toFixed(2)}ms)`,
-            severity: 'warning'
+            severity: 'warning',
           });
         }
-        
+
         if (stats.errorRate > monitoringConfig.errorRateThreshold) {
           alerts.push({
             type: 'error_rate',
             message: `High error rate: ${route} (${stats.errorRate.toFixed(2)}%)`,
-            severity: 'error'
+            severity: 'error',
           });
         }
       }
-      
+
       if (alerts.length > 0 && monitoringConfig.enableAlerts) {
         await this.sendAlerts(alerts);
       }
-      
+
       // Reset performance metrics after reporting
       performanceMonitor.reset();
     } catch (error) {
@@ -327,17 +328,17 @@ export class MonitoringService {
   async sendAlerts(alerts) {
     try {
       // Log alerts
-      alerts.forEach(alert => {
+      alerts.forEach((alert) => {
         if (alert.severity === 'error') {
           logger.error(`ALERT: ${alert.message}`);
         } else {
           logger.warn(`ALERT: ${alert.message}`);
         }
       });
-      
+
       // Send to Sentry
       captureMessage(`Monitoring alerts: ${alerts.length} issues detected`, 'warning');
-      
+
       // Send webhook if configured
       if (monitoringConfig.alertWebhook) {
         // Implementation for webhook alerts
@@ -352,66 +353,79 @@ export class MonitoringService {
    * Register default health checks
    */
   registerDefaultHealthChecks() {
-    // Database health check
-    this.healthCheckManager.register('database', async () => {
-      const { createClient } = await import('@supabase/supabase-js');
-      const supabase = createClient(
-        process.env.SUPABASE_URL || '',
-        process.env.SUPABASE_SERVICE_ROLE_KEY || ''
-      );
-      
-      const start = Date.now();
-      const { error } = await supabase.from('users').select('count').limit(1);
-      
-      if (error) throw error;
-      
-      return {
-        responseTime: Date.now() - start,
-        message: 'Database connection successful'
-      };
-    }, { critical: true, timeout: 5000 });
+    // Database health check with connection pool statistics
+    this.healthCheckManager.register(
+      'database',
+      async () => {
+        const { databaseService } = await import('../services/databaseService.js');
+        const healthStatus = await databaseService.healthCheck();
+
+        if (healthStatus.status !== 'healthy') {
+          throw new Error(healthStatus.error || 'Database unhealthy');
+        }
+
+        return {
+          responseTime: healthStatus.responseTime,
+          message: 'Database connection successful',
+          poolStats: healthStatus.poolStats,
+        };
+      },
+      { critical: true, timeout: 5000 }
+    );
 
     // Memory health check
-    this.healthCheckManager.register('memory', async () => {
-      const memUsage = process.memoryUsage();
-      const heapUsedPercent = (memUsage.heapUsed / memUsage.heapTotal) * 100;
-      
-      if (heapUsedPercent > 90) {
-        throw new Error(`High memory usage: ${heapUsedPercent.toFixed(2)}%`);
-      }
-      
-      return {
-        heapUsedPercent: heapUsedPercent.toFixed(2),
-        heapUsed: memUsage.heapUsed,
-        heapTotal: memUsage.heapTotal,
-        message: 'Memory usage within limits'
-      };
-    }, { critical: false });
+    this.healthCheckManager.register(
+      'memory',
+      async () => {
+        const memUsage = process.memoryUsage();
+        const heapUsedPercent = (memUsage.heapUsed / memUsage.heapTotal) * 100;
+
+        if (heapUsedPercent > 90) {
+          throw new Error(`High memory usage: ${heapUsedPercent.toFixed(2)}%`);
+        }
+
+        return {
+          heapUsedPercent: heapUsedPercent.toFixed(2),
+          heapUsed: memUsage.heapUsed,
+          heapTotal: memUsage.heapTotal,
+          message: 'Memory usage within limits',
+        };
+      },
+      { critical: false }
+    );
 
     // CPU health check
-    this.healthCheckManager.register('cpu', async () => {
-      const metrics = SystemMetrics.getMetrics();
-      
-      if (metrics.cpu.usage > 90) {
-        throw new Error(`High CPU usage: ${metrics.cpu.usage.toFixed(2)}%`);
-      }
-      
-      return {
-        cpuUsage: metrics.cpu.usage.toFixed(2),
-        loadAverage: metrics.cpu.loadAverage,
-        message: 'CPU usage within limits'
-      };
-    }, { critical: false });
+    this.healthCheckManager.register(
+      'cpu',
+      async () => {
+        const metrics = SystemMetrics.getMetrics();
+
+        if (metrics.cpu.usage > 90) {
+          throw new Error(`High CPU usage: ${metrics.cpu.usage.toFixed(2)}%`);
+        }
+
+        return {
+          cpuUsage: metrics.cpu.usage.toFixed(2),
+          loadAverage: metrics.cpu.loadAverage,
+          message: 'CPU usage within limits',
+        };
+      },
+      { critical: false }
+    );
 
     // Process health check
-    this.healthCheckManager.register('process', async () => {
-      return {
-        uptime: process.uptime(),
-        pid: process.pid,
-        nodeVersion: process.version,
-        message: 'Process running normally'
-      };
-    }, { critical: false });
+    this.healthCheckManager.register(
+      'process',
+      async () => {
+        return {
+          uptime: process.uptime(),
+          pid: process.pid,
+          nodeVersion: process.version,
+          message: 'Process running normally',
+        };
+      },
+      { critical: false }
+    );
   }
 }
 
@@ -423,5 +437,5 @@ export default {
   SystemMetrics,
   HealthCheckManager,
   MonitoringService,
-  monitoringService
+  monitoringService,
 };

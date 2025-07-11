@@ -10,36 +10,36 @@ const mockMetrics = {
   closingRate: 0.42,
   harveyStatus: 'closer',
   dailyVerdict: null,
-  activeTrials: []
+  activeTrials: [],
 };
 
 const mockLeaderboard = [
   { id: 'user-1', name: 'Top Closer', points: 2500, status: 'legend', rank: 1 },
   { id: 'user-2', name: 'Rising Star', points: 1800, status: 'partner', rank: 2 },
   { id: 'user-3', name: 'Deal Maker', points: 1250, status: 'closer', rank: 3 },
-  { id: 'user-4', name: 'Rookie', points: 500, status: 'rookie', rank: 4 }
+  { id: 'user-4', name: 'Rookie', points: 500, status: 'rookie', rank: 4 },
 ];
 
 // Harvey metrics endpoint
 router.get('/harvey/metrics', async (req, res) => {
   try {
     const { userId } = req.query;
-    
+
     // In production, fetch from database
     const metrics = { ...mockMetrics };
-    
+
     // Find user's position in leaderboard
-    const userRank = mockLeaderboard.findIndex(entry => entry.id === userId) + 1;
+    const userRank = mockLeaderboard.findIndex((entry) => entry.id === userId) + 1;
     if (userRank > 0) {
       metrics.leaderboardRank = userRank;
     }
-    
+
     res.json({
       metrics,
-      leaderboard: mockLeaderboard
+      leaderboard: mockLeaderboard,
     });
   } catch (error) {
-    console.error('Error fetching Harvey metrics:', error);
+    // Error fetching Harvey metrics
     res.status(500).json({ error: 'Failed to fetch metrics' });
   }
 });
@@ -48,36 +48,36 @@ router.get('/harvey/metrics', async (req, res) => {
 router.get('/harvey/verdict', async (req, res) => {
   try {
     const { userId } = req.query;
-    
+
     const verdicts = [
       {
         rating: 7,
         message: "Not bad, but I've seen better. Step it up tomorrow.",
-        tone: "challenging"
+        tone: 'challenging',
       },
       {
         rating: 8,
         message: "Solid performance. You're starting to think like a closer.",
-        tone: "approving"
+        tone: 'approving',
       },
       {
         rating: 5,
-        message: "That was painful to watch. We need to talk about your approach.",
-        tone: "harsh"
+        message: 'That was painful to watch. We need to talk about your approach.',
+        tone: 'harsh',
       },
       {
         rating: 9,
         message: "Now THAT'S how you close deals. Keep this energy.",
-        tone: "impressed"
-      }
+        tone: 'impressed',
+      },
     ];
-    
+
     const verdict = verdicts[Math.floor(Math.random() * verdicts.length)];
     verdict.timestamp = new Date();
-    
+
     res.json(verdict);
   } catch (error) {
-    console.error('Error getting Harvey verdict:', error);
+    // Error getting Harvey verdict
     res.status(500).json({ error: 'Failed to get verdict' });
   }
 });
@@ -86,17 +86,17 @@ router.get('/harvey/verdict', async (req, res) => {
 router.post('/harvey/voice-command', async (req, res) => {
   try {
     const { command, userId } = req.body;
-    
+
     // Simple command processing
     const responses = {
       status: "You're at 1250 reputation points. Not terrible, but you can do better.",
       help: "I don't do handholding. Figure it out or fail trying.",
       motivation: "You want motivation? Close more deals. That's your motivation.",
-      default: "I don't have time for unclear requests. Be specific."
+      default: "I don't have time for unclear requests. Be specific.",
     };
-    
+
     let response = responses.default;
-    
+
     // Check for keywords
     if (command.toLowerCase().includes('status')) {
       response = responses.status;
@@ -105,13 +105,13 @@ router.post('/harvey/voice-command', async (req, res) => {
     } else if (command.toLowerCase().includes('motivat')) {
       response = responses.motivation;
     }
-    
+
     res.json({
       response,
-      action: null
+      action: null,
     });
   } catch (error) {
-    console.error('Error processing voice command:', error);
+    // Error processing voice command
     res.status(500).json({ error: 'Failed to process command' });
   }
 });
@@ -127,7 +127,7 @@ router.get('/harvey/leads/hot', async (req, res) => {
         size: '500-1000',
         readyScore: 85,
         multiplier: 2.5,
-        expiresAt: new Date(Date.now() + 3600000) // 1 hour
+        expiresAt: new Date(Date.now() + 3600000), // 1 hour
       },
       {
         id: 'lead-2',
@@ -136,13 +136,13 @@ router.get('/harvey/leads/hot', async (req, res) => {
         size: '1000+',
         readyScore: 92,
         multiplier: 3.0,
-        expiresAt: new Date(Date.now() + 1800000) // 30 mins
-      }
+        expiresAt: new Date(Date.now() + 1800000), // 30 mins
+      },
     ];
-    
+
     res.json(hotLeads);
   } catch (error) {
-    console.error('Error fetching hot leads:', error);
+    // Error fetching hot leads
     res.status(500).json({ error: 'Failed to fetch hot leads' });
   }
 });
@@ -152,13 +152,13 @@ router.post('/harvey/leads/:leadId/claim', async (req, res) => {
   try {
     const { leadId } = req.params;
     const userId = req.headers.authorization?.split(' ')[1]; // Simple auth
-    
+
     res.json({
       success: true,
-      message: "Lead claimed. Now close it or I'll give it to someone who can."
+      message: "Lead claimed. Now close it or I'll give it to someone who can.",
     });
   } catch (error) {
-    console.error('Error claiming lead:', error);
+    // Error claiming lead
     res.status(500).json({ error: 'Failed to claim lead' });
   }
 });
@@ -177,14 +177,14 @@ router.get('/harvey/trials/active', async (req, res) => {
         endTime: new Date(Date.now() + 7200000), // 2 hours
         rewards: {
           reputation: 500,
-          unlock: 'Speed Dialer Badge'
-        }
-      }
+          unlock: 'Speed Dialer Badge',
+        },
+      },
     ];
-    
+
     res.json(trials);
   } catch (error) {
-    console.error('Error fetching trials:', error);
+    // Error fetching trials
     res.status(500).json({ error: 'Failed to fetch trials' });
   }
 });
@@ -193,13 +193,13 @@ router.get('/harvey/trials/active', async (req, res) => {
 router.post('/harvey/trials/:trialId/join', async (req, res) => {
   try {
     const { trialId } = req.params;
-    
+
     res.json({
       success: true,
-      message: "You're in. Don't embarrass yourself."
+      message: "You're in. Don't embarrass yourself.",
     });
   } catch (error) {
-    console.error('Error joining trial:', error);
+    // Error joining trial
     res.status(500).json({ error: 'Failed to join trial' });
   }
 });
@@ -208,13 +208,13 @@ router.post('/harvey/trials/:trialId/join', async (req, res) => {
 router.put('/harvey/coaching/mode', async (req, res) => {
   try {
     const { mode } = req.body;
-    
+
     res.json({
       success: true,
-      message: `Coaching mode set to ${mode}. ${mode === 'brutal' ? 'You asked for it.' : 'Your choice.'}`
+      message: `Coaching mode set to ${mode}. ${mode === 'brutal' ? 'You asked for it.' : 'Your choice.'}`,
     });
   } catch (error) {
-    console.error('Error updating coaching mode:', error);
+    // Error updating coaching mode
     res.status(500).json({ error: 'Failed to update coaching mode' });
   }
 });
@@ -223,13 +223,13 @@ router.put('/harvey/coaching/mode', async (req, res) => {
 router.put('/harvey/modes', async (req, res) => {
   try {
     const modes = req.body;
-    
+
     res.json({
       success: true,
-      message: "Modes updated. Let's see if you can handle it."
+      message: "Modes updated. Let's see if you can handle it.",
     });
   } catch (error) {
-    console.error('Error updating modes:', error);
+    // Error updating modes
     res.status(500).json({ error: 'Failed to update modes' });
   }
 });
@@ -238,27 +238,27 @@ router.put('/harvey/modes', async (req, res) => {
 router.get('/harvey/coaching/history', async (req, res) => {
   try {
     const { limit = 10 } = req.query;
-    
+
     const history = [
       {
         id: 'coach-1',
         timestamp: new Date(Date.now() - 3600000),
         type: 'call_feedback',
         message: 'You talked too much. Next time, let them speak.',
-        severity: 'medium'
+        severity: 'medium',
       },
       {
         id: 'coach-2',
         timestamp: new Date(Date.now() - 7200000),
         type: 'missed_opportunity',
         message: 'You had them at "budget approved" and still fumbled. Unbelievable.',
-        severity: 'high'
-      }
+        severity: 'high',
+      },
     ];
-    
+
     res.json(history.slice(0, limit));
   } catch (error) {
-    console.error('Error fetching coaching history:', error);
+    // Error fetching coaching history
     res.status(500).json({ error: 'Failed to fetch coaching history' });
   }
 });
@@ -267,17 +267,17 @@ router.get('/harvey/coaching/history', async (req, res) => {
 router.post('/harvey/calls/analyze', async (req, res) => {
   try {
     const { callId, duration, outcome, voiceMetrics } = req.body;
-    
+
     // In production, analyze the call and update metrics
     res.json({
       success: true,
       analysis: {
         score: 75,
-        feedback: 'Decent close, but you hesitated on pricing. Own your value.'
-      }
+        feedback: 'Decent close, but you hesitated on pricing. Own your value.',
+      },
     });
   } catch (error) {
-    console.error('Error analyzing call:', error);
+    // Error analyzing call
     res.status(500).json({ error: 'Failed to analyze call' });
   }
 });
@@ -286,13 +286,13 @@ router.post('/harvey/calls/analyze', async (req, res) => {
 router.post('/harvey/intervention', async (req, res) => {
   try {
     const { reason } = req.body;
-    
+
     res.json({
       success: true,
-      message: "I'm watching. Don't make me step in again."
+      message: "I'm watching. Don't make me step in again.",
     });
   } catch (error) {
-    console.error('Error requesting intervention:', error);
+    // Error requesting intervention
     res.status(500).json({ error: 'Failed to request intervention' });
   }
 });
@@ -301,13 +301,13 @@ router.post('/harvey/intervention', async (req, res) => {
 router.post('/harvey/challenge', async (req, res) => {
   try {
     const { type } = req.body;
-    
+
     res.json({
       accepted: true,
-      message: "You think you're ready? Prove it. Game on."
+      message: "You think you're ready? Prove it. Game on.",
     });
   } catch (error) {
-    console.error('Error challenging Harvey:', error);
+    // Error challenging Harvey
     res.status(500).json({ error: 'Failed to challenge Harvey' });
   }
 });

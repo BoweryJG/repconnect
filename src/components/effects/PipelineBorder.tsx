@@ -64,10 +64,10 @@ export const PipelineBorder: React.FC<PipelineBorderProps> = ({
 
           {/* Glow filter */}
           <filter id="pipe-glow">
-            <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+            <feGaussianBlur stdDeviation="2" result="coloredBlur" />
             <feMerge>
-              <feMergeNode in="coloredBlur"/>
-              <feMergeNode in="SourceGraphic"/>
+              <feMergeNode in="coloredBlur" />
+              <feMergeNode in="SourceGraphic" />
             </feMerge>
           </filter>
         </defs>
@@ -119,37 +119,38 @@ export const PipelineBorder: React.FC<PipelineBorderProps> = ({
       </svg>
 
       {/* Flowing particles */}
-      {active && particles.map((particle) => (
-        <motion.div
-          key={particle.id}
-          style={{
-            position: 'absolute',
-            width: 4,
-            height: 4,
-            borderRadius: '50%',
-            background: pipelineColors.particleGlow,
-            boxShadow: `0 0 8px ${pipelineColors.particleGlow}`,
-            pointerEvents: 'none',
-            zIndex: 2,
-            offsetPath: `path('M ${borderRadius} 2 L ${`calc(100% - ${borderRadius}px)`} 2 Q ${`calc(100% - 2px)`} 2 ${`calc(100% - 2px)`} ${borderRadius} L ${`calc(100% - 2px)`} ${`calc(100% - ${borderRadius}px)`} Q ${`calc(100% - 2px)`} ${`calc(100% - 2px)`} ${`calc(100% - ${borderRadius}px)`} ${`calc(100% - 2px)`} L ${borderRadius} ${`calc(100% - 2px)`} Q 2 ${`calc(100% - 2px)`} 2 ${`calc(100% - ${borderRadius}px)`} L 2 ${borderRadius} Q 2 2 ${borderRadius} 2')`,
-            offsetRotate: '0deg',
-          } as any}
-          animate={{
-            offsetDistance: ['0%', '100%'],
-          }}
-          transition={{
-            duration: pulseSpeed * 2,
-            repeat: Infinity,
-            ease: 'linear',
-            delay: (particle.id / particleCount) * pulseSpeed * 2,
-          }}
-        />
-      ))}
+      {active &&
+        particles.map((particle) => (
+          <motion.div
+            key={particle.id}
+            style={
+              {
+                position: 'absolute',
+                width: 4,
+                height: 4,
+                borderRadius: '50%',
+                background: pipelineColors.particleGlow,
+                boxShadow: `0 0 8px ${pipelineColors.particleGlow}`,
+                pointerEvents: 'none',
+                zIndex: 2,
+                offsetPath: `path('M ${borderRadius} 2 L ${`calc(100% - ${borderRadius}px)`} 2 Q ${`calc(100% - 2px)`} 2 ${`calc(100% - 2px)`} ${borderRadius} L ${`calc(100% - 2px)`} ${`calc(100% - ${borderRadius}px)`} Q ${`calc(100% - 2px)`} ${`calc(100% - 2px)`} ${`calc(100% - ${borderRadius}px)`} ${`calc(100% - 2px)`} L ${borderRadius} ${`calc(100% - 2px)`} Q 2 ${`calc(100% - 2px)`} 2 ${`calc(100% - ${borderRadius}px)`} L 2 ${borderRadius} Q 2 2 ${borderRadius} 2')`,
+                offsetRotate: '0deg',
+              } as any
+            }
+            animate={{
+              offsetDistance: ['0%', '100%'],
+            }}
+            transition={{
+              duration: pulseSpeed * 2,
+              repeat: Infinity,
+              ease: 'linear',
+              delay: (particle.id / particleCount) * pulseSpeed * 2,
+            }}
+          />
+        ))}
 
       {/* Content */}
-      <div style={{ position: 'relative', zIndex: 0 }}>
-        {children}
-      </div>
+      <div style={{ position: 'relative', zIndex: 0 }}>{children}</div>
     </div>
   );
 };
@@ -176,10 +177,12 @@ export const SimplePipelineBorder: React.FC<{
         position: 'relative',
         border: `${borderWidth}px solid ${color}`,
         borderRadius,
-        boxShadow: glow ? `
+        boxShadow: glow
+          ? `
           0 0 10px ${color}40,
           inset 0 0 10px ${color}20
-        ` : undefined,
+        `
+          : undefined,
         ...style,
       }}
     >

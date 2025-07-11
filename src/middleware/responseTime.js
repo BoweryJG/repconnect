@@ -10,7 +10,7 @@ export const responseTimeMiddleware = responseTime((req, res, time) => {
   const method = req.method;
   const route = req.route?.path || req.path;
   const userAgent = req.get('user-agent') || 'unknown';
-  
+
   // Log response time
   const logData = {
     method,
@@ -19,7 +19,7 @@ export const responseTimeMiddleware = responseTime((req, res, time) => {
     statusCode,
     responseTime: `${time.toFixed(2)}ms`,
     ip: req.ip,
-    userAgent: userAgent.substring(0, 50) // Truncate long user agents
+    userAgent: userAgent.substring(0, 50), // Truncate long user agents
   };
 
   // Log based on response time
@@ -37,7 +37,7 @@ export const responseTimeMiddleware = responseTime((req, res, time) => {
       method,
       route,
       status_code: statusCode.toString(),
-      status_category: `${Math.floor(statusCode / 100)}xx`
+      status_category: `${Math.floor(statusCode / 100)}xx`,
     });
 
     // Track error rates
@@ -46,7 +46,7 @@ export const responseTimeMiddleware = responseTime((req, res, time) => {
         method,
         route,
         status_code: statusCode.toString(),
-        error_type: statusCode >= 500 ? 'server_error' : 'client_error'
+        error_type: statusCode >= 500 ? 'server_error' : 'client_error',
       });
     }
   } catch (error) {
@@ -78,7 +78,7 @@ export class PerformanceMonitor {
         minTime: Infinity,
         maxTime: 0,
         errors: 0,
-        slowRequests: 0
+        slowRequests: 0,
       });
     }
 
@@ -87,11 +87,11 @@ export class PerformanceMonitor {
     metric.totalTime += time;
     metric.minTime = Math.min(metric.minTime, time);
     metric.maxTime = Math.max(metric.maxTime, time);
-    
+
     if (statusCode >= 400) {
       metric.errors++;
     }
-    
+
     if (time > this.slowRequestThreshold) {
       metric.slowRequests++;
     }
@@ -102,7 +102,7 @@ export class PerformanceMonitor {
    */
   getSummary() {
     const summary = {};
-    
+
     for (const [route, metric] of this.metrics.entries()) {
       summary[route] = {
         requests: metric.count,
@@ -110,10 +110,10 @@ export class PerformanceMonitor {
         minResponseTime: metric.minTime === Infinity ? 0 : metric.minTime,
         maxResponseTime: metric.maxTime,
         errorRate: metric.count > 0 ? (metric.errors / metric.count) * 100 : 0,
-        slowRequestRate: metric.count > 0 ? (metric.slowRequests / metric.count) * 100 : 0
+        slowRequestRate: metric.count > 0 ? (metric.slowRequests / metric.count) * 100 : 0,
       };
     }
-    
+
     return summary;
   }
 
@@ -133,16 +133,16 @@ export const performanceMonitor = new PerformanceMonitor();
  */
 export const enhancedResponseTimeMiddleware = (req, res, next) => {
   const start = Date.now();
-  
+
   // Capture response finish
   res.on('finish', () => {
     const time = Date.now() - start;
     const route = req.route?.path || req.path;
-    
+
     // Track in performance monitor
     performanceMonitor.trackRoute(route, time, res.statusCode);
   });
-  
+
   next();
 };
 
@@ -159,5 +159,5 @@ export default {
   responseTimeMiddleware,
   enhancedResponseTimeMiddleware,
   requestIdMiddleware,
-  performanceMonitor
+  performanceMonitor,
 };

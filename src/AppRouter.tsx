@@ -8,11 +8,13 @@ import { LeadEnrichmentLanding } from './components/LeadEnrichmentLanding';
 import { EnrichmentResults } from './components/EnrichmentResults';
 import { PublicEnrichedDemo } from './components/PublicEnrichedDemo';
 import { ErrorBoundary } from './components/ErrorBoundary';
-import { HarveySyndicate } from './components/HarveySyndicate';
-import { HarveyWarRoom } from './components/HarveyWarRoom';
-import { HarveyCallQueueInterface } from './components/HarveyCallQueueInterface';
-import { HarveyBattleMode } from './components/HarveyBattleMode';
-import { HarveyMetricsDashboard } from './components/HarveyMetricsDashboard';
+import {
+  LazyHarveySyndicate,
+  LazyHarveyWarRoom,
+  LazyHarveyCallQueueInterface,
+  LazyHarveyBattleMode,
+  LazyHarveyMetricsDashboard,
+} from './components/lazy/LazyHarveyComponents';
 import { AuthCallback } from './pages/AuthCallback';
 
 export const AppRouter: React.FC = () => {
@@ -24,22 +26,22 @@ export const AppRouter: React.FC = () => {
           <Routes>
             {/* Main app routes */}
             <Route path="/" element={<App />} />
-            
+
             {/* Lead enrichment routes */}
             <Route path="/enrich" element={<LeadEnrichmentLanding />} />
             <Route path="/enrich/results" element={<EnrichmentResults />} />
             <Route path="/demo" element={<PublicEnrichedDemo />} />
-            
-            {/* Harvey Syndicate routes */}
-            <Route path="/harvey" element={<HarveySyndicate />} />
-            <Route path="/harvey/warroom" element={<HarveyWarRoom />} />
-            <Route path="/harvey/queue" element={<HarveyCallQueueInterface />} />
-            <Route path="/harvey/battle" element={<HarveyBattleMode />} />
-            <Route path="/harvey/metrics" element={<HarveyMetricsDashboard />} />
-            
+
+            {/* Harvey Syndicate routes - Lazy loaded */}
+            <Route path="/harvey" element={<LazyHarveySyndicate />} />
+            <Route path="/harvey/warroom" element={<LazyHarveyWarRoom />} />
+            <Route path="/harvey/queue" element={<LazyHarveyCallQueueInterface />} />
+            <Route path="/harvey/battle" element={<LazyHarveyBattleMode />} />
+            <Route path="/harvey/metrics" element={<LazyHarveyMetricsDashboard />} />
+
             {/* Auth callback route */}
             <Route path="/auth/callback" element={<AuthCallback />} />
-            
+
             {/* Redirect any unknown routes to home */}
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>

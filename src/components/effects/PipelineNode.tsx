@@ -118,13 +118,7 @@ export const PipelineNode: React.FC<PipelineNodeProps> = ({
       )}
 
       {/* Click burst effect */}
-      <ParticleBurst
-        x={size / 2}
-        y={size / 2}
-        color={color}
-        trigger={showBurst}
-        count={16}
-      />
+      <ParticleBurst x={size / 2} y={size / 2} color={color} trigger={showBurst} count={16} />
     </motion.div>
   );
 };
@@ -147,7 +141,7 @@ const JunctionNode: React.FC<{ size: number; color: string; connections: number 
         strokeWidth="3"
         opacity="0.8"
       />
-      
+
       {/* Inner circle */}
       <circle
         cx={size / 2}
@@ -157,13 +151,13 @@ const JunctionNode: React.FC<{ size: number; color: string; connections: number 
         stroke={color}
         strokeWidth="2"
       />
-      
+
       {/* Connection points */}
       {Array.from({ length: connections }, (_, i) => {
         const angle = (i / connections) * Math.PI * 2 - Math.PI / 2;
         const x = size / 2 + Math.cos(angle) * (size / 2 - 8);
         const y = size / 2 + Math.sin(angle) * (size / 2 - 8);
-        
+
         return (
           <motion.circle
             key={i}
@@ -207,7 +201,7 @@ const ProcessorNode: React.FC<{ size: number; color: string; processing: boolean
         strokeWidth="3"
         opacity="0.8"
       />
-      
+
       {/* Processing gears */}
       <g transform={`translate(${size / 2}, ${size / 2})`}>
         <motion.g
@@ -231,14 +225,9 @@ const ProcessorNode: React.FC<{ size: number; color: string; processing: boolean
           ))}
         </motion.g>
       </g>
-      
+
       {/* Center dot */}
-      <circle
-        cx={size / 2}
-        cy={size / 2}
-        r="3"
-        fill="#fff"
-      />
+      <circle cx={size / 2} cy={size / 2} r="3" fill="#fff" />
     </svg>
   );
 };
@@ -262,7 +251,7 @@ const ValveNode: React.FC<{ size: number; color: string; active: boolean }> = ({
         stroke={color}
         strokeWidth="2"
       />
-      
+
       {/* Valve handle */}
       <motion.rect
         x={size / 2 - 2}
@@ -279,7 +268,7 @@ const ValveNode: React.FC<{ size: number; color: string; active: boolean }> = ({
         }}
         transition={{ duration: 0.5 }}
       />
-      
+
       {/* Flow indicator */}
       <AnimatePresence>
         {active && (
@@ -323,7 +312,7 @@ const MeterNode: React.FC<{ size: number; color: string; value: number }> = ({
         stroke={`${color}20`}
         strokeWidth="6"
       />
-      
+
       {/* Value arc */}
       <motion.circle
         cx={size / 2}
@@ -342,7 +331,7 @@ const MeterNode: React.FC<{ size: number; color: string; value: number }> = ({
           transformOrigin: `${size / 2}px ${size / 2}px`,
         }}
       />
-      
+
       {/* Center value */}
       <text
         x={size / 2}

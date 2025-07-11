@@ -7,7 +7,7 @@ import {
   Button,
   Typography,
   LinearProgress,
-  Box
+  Box,
 } from '@mui/material';
 import { Warning } from '@mui/icons-material';
 
@@ -18,12 +18,7 @@ interface SessionWarningProps {
   onLogout: () => void;
 }
 
-const SessionWarning: React.FC<SessionWarningProps> = ({
-  open,
-  timeLeft,
-  onExtend,
-  onLogout
-}) => {
+const SessionWarning: React.FC<SessionWarningProps> = ({ open, timeLeft, onExtend, onLogout }) => {
   const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
@@ -48,14 +43,10 @@ const SessionWarning: React.FC<SessionWarningProps> = ({
       </DialogTitle>
       <DialogContent>
         <Typography gutterBottom>
-          Your session will expire in {formatTime(timeLeft)} due to inactivity.
-          Would you like to continue working?
+          Your session will expire in {formatTime(timeLeft)} due to inactivity. Would you like to
+          continue working?
         </Typography>
-        <LinearProgress 
-          variant="determinate" 
-          value={progress} 
-          sx={{ mt: 2, mb: 1 }}
-        />
+        <LinearProgress variant="determinate" value={progress} sx={{ mt: 2, mb: 1 }} />
       </DialogContent>
       <DialogActions>
         <Button onClick={onLogout} color="secondary">

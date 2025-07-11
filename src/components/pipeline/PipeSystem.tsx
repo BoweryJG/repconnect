@@ -25,7 +25,7 @@ export const PipeSystem: React.FC<PipeSystemProps> = ({
   const [selectedPipe, setSelectedPipe] = useState<string | null>(null);
   const [hoveredNode, setHoveredNode] = useState<string | null>(null);
   const [mousePosition, setMousePosition] = useState<Point>({ x: 0, y: 0 });
-  
+
   const handleMouseMove = useCallback((e: React.MouseEvent<SVGSVGElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
     setMousePosition({
@@ -33,36 +33,35 @@ export const PipeSystem: React.FC<PipeSystemProps> = ({
       y: e.clientY - rect.top,
     });
   }, []);
-  
-  const handlePipeClick = useCallback((pipeId: string) => {
-    setSelectedPipe(pipeId);
-    onPipeClick?.(pipeId);
-  }, [onPipeClick]);
-  
-  const handleNodeClick = useCallback((nodeId: string) => {
-    onNodeClick?.(nodeId);
-  }, [onNodeClick]);
-  
+
+  const handlePipeClick = useCallback(
+    (pipeId: string) => {
+      setSelectedPipe(pipeId);
+      onPipeClick?.(pipeId);
+    },
+    [onPipeClick]
+  );
+
+  const handleNodeClick = useCallback(
+    (nodeId: string) => {
+      onNodeClick?.(nodeId);
+    },
+    [onNodeClick]
+  );
+
   const backgroundPattern = useMemo(() => {
     const patternId = 'grid-pattern';
     return (
       <defs>
-        <pattern
-          id={patternId}
-          x="0"
-          y="0"
-          width="50"
-          height="50"
-          patternUnits="userSpaceOnUse"
-        >
+        <pattern id={patternId} x="0" y="0" width="50" height="50" patternUnits="userSpaceOnUse">
           <circle cx="1" cy="1" r="0.5" fill="#ffffff" opacity="0.1" />
         </pattern>
-        
+
         <radialGradient id="background-gradient">
           <stop offset="0%" stopColor="#0a0f1b" />
           <stop offset="100%" stopColor="#000511" />
         </radialGradient>
-        
+
         <filter id="global-glow">
           <feGaussianBlur stdDeviation="4" />
           <feComponentTransfer>
@@ -72,7 +71,7 @@ export const PipeSystem: React.FC<PipeSystemProps> = ({
       </defs>
     );
   }, []);
-  
+
   const performanceStyle = useMemo(() => {
     if (config.performanceMode === 'performance') {
       return {
@@ -82,14 +81,15 @@ export const PipeSystem: React.FC<PipeSystemProps> = ({
     }
     return {};
   }, [config.performanceMode]);
-  
+
   return (
     <div
       className="pipe-system-container"
       style={{
         width: '100%',
         height: '100%',
-        background: config.backgroundColor || 'radial-gradient(circle at center, #0a0f1b 0%, #000511 100%)',
+        background:
+          config.backgroundColor || 'radial-gradient(circle at center, #0a0f1b 0%, #000511 100%)',
         position: 'relative',
         overflow: 'hidden',
         ...performanceStyle,
@@ -107,20 +107,11 @@ export const PipeSystem: React.FC<PipeSystemProps> = ({
         }}
       >
         {backgroundPattern}
-        
+
         {/* Background */}
-        <rect
-          width={width}
-          height={height}
-          fill="url(#background-gradient)"
-        />
-        <rect
-          width={width}
-          height={height}
-          fill="url(#grid-pattern)"
-          opacity={0.3}
-        />
-        
+        <rect width={width} height={height} fill="url(#background-gradient)" />
+        <rect width={width} height={height} fill="url(#grid-pattern)" opacity={0.3} />
+
         {/* Ambient glow following mouse */}
         {config.globalGlow && (
           <circle
@@ -135,7 +126,7 @@ export const PipeSystem: React.FC<PipeSystemProps> = ({
             }}
           />
         )}
-        
+
         {/* Render nodes first (behind pipes) */}
         {nodes.map((node) => (
           <PipeNode
@@ -146,7 +137,7 @@ export const PipeSystem: React.FC<PipeSystemProps> = ({
             onClick={handleNodeClick}
           />
         ))}
-        
+
         {/* Render pipes */}
         {config.pipes.map((pipe) => (
           <AnimatedPipe
@@ -158,7 +149,7 @@ export const PipeSystem: React.FC<PipeSystemProps> = ({
             onClick={config.enableInteractions ? handlePipeClick : undefined}
           />
         ))}
-        
+
         {/* Global effects layer */}
         {config.globalPulse && (
           <rect
@@ -170,12 +161,7 @@ export const PipeSystem: React.FC<PipeSystemProps> = ({
             opacity={0}
             className="global-pulse"
           >
-            <animate
-              attributeName="opacity"
-              values="0;0.3;0"
-              dur="4s"
-              repeatCount="indefinite"
-            />
+            <animate attributeName="opacity" values="0;0.3;0" dur="4s" repeatCount="indefinite" />
           </rect>
         )}
       </svg>

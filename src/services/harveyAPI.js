@@ -13,25 +13,24 @@ class HarveyAPI {
 
   // Initialize Harvey for your entire sales team
   async initializeTeam(reps) {
-        
     for (const rep of reps) {
       await this.addRep(rep);
     }
-    
+
     this.initialized = true;
-        return { success: true, repsInitialized: reps.length };
+    return { success: true, repsInitialized: reps.length };
   }
 
   // Add a single rep to Harvey's coaching
   async addRep({ id, name, phone, email }) {
     const result = await harveyCoach.initializeRep(id, name);
-    
+
     // Start monitoring
     await harveyCallMonitor.startMonitoring(id, name);
-    
+
     // Store rep info for quick access
     this.activeReps.set(id, { id, name, phone, email });
-    
+
     return result;
   }
 
@@ -75,7 +74,7 @@ class HarveyAPI {
       mode,
       message,
       severity,
-      actionRequired: true
+      actionRequired: true,
     });
   }
 
@@ -83,12 +82,12 @@ class HarveyAPI {
   async getRepStats(repId) {
     const dailyStats = await harveyCoach.getRepDailyStats(repId);
     const performance = await harveyCoach.calculatePerformance(repId);
-    
+
     return {
       daily: dailyStats,
       performance,
       harveyScore: performance.harveyScore,
-      rank: performance.rank
+      rank: performance.rank,
     };
   }
 
@@ -106,15 +105,15 @@ class HarveyAPI {
   async analyzeCall({ repId, callId, duration, outcome, transcript }) {
     const analysis = await harveyCoach.analyzeTranscript(transcript);
     const critique = harveyCoach.generateCallCritique(analysis);
-    
+
     // Store the analysis
     await harveyCoach.storeCallAnalysis(repId, callId, analysis, critique);
-    
+
     // Deliver coaching if needed
     if (analysis.weaknessCount > 2 || outcome === 'no_decision') {
       await this.intervene(repId, 'poor call performance', 'high');
     }
-    
+
     return { analysis, critique };
   }
 
@@ -130,7 +129,7 @@ class HarveyAPI {
       initialized: this.initialized,
       activeReps: this.activeReps.size,
       personality: 'Maximum Harvey',
-      quote: "I don't play the odds, I play the man."
+      quote: "I don't play the odds, I play the man.",
     };
   }
 }
@@ -142,19 +141,18 @@ const harveyAPI = new HarveyAPI();
 export async function autoInitialize() {
   try {
     const { supabase } = await import('../lib/supabase.js');
-    
+
     // Get all active sales reps
     const { data: reps, error } = await supabase
       .from('users')
       .select('id, name, phone, email')
       .eq('role', 'sales_rep')
       .eq('active', true);
-    
+
     if (!error && reps && reps.length > 0) {
       await harveyAPI.initializeTeam(reps);
     }
-  } catch (error) {
-      }
+  } catch (error) {}
 }
 
 export default harveyAPI;
@@ -170,5 +168,5 @@ export const {
   createChallenge,
   analyzeCall,
   getWisdom,
-  healthCheck
+  healthCheck,
 } = harveyAPI;

@@ -7,7 +7,7 @@ import logger from '../../utils/logger.js';
  */
 export function initializeSentry(app) {
   const dsn = process.env.SENTRY_DSN;
-  
+
   if (!dsn) {
     logger.warn('Sentry DSN not configured. Error tracking disabled.');
     return;
@@ -34,15 +34,17 @@ export function initializeSentry(app) {
         // Filter out non-critical errors
         if (event.exception) {
           const error = hint.originalException;
-          
+
           // Don't send certain expected errors
-          if (error?.message?.includes('ECONNREFUSED') ||
-              error?.message?.includes('ETIMEDOUT') ||
-              error?.message?.includes('Socket hang up')) {
+          if (
+            error?.message?.includes('ECONNREFUSED') ||
+            error?.message?.includes('ETIMEDOUT') ||
+            error?.message?.includes('Socket hang up')
+          ) {
             return null;
           }
         }
-        
+
         // Remove sensitive data
         if (event.request) {
           // Remove auth headers
@@ -50,7 +52,7 @@ export function initializeSentry(app) {
             delete event.request.headers.authorization;
             delete event.request.headers.cookie;
           }
-          
+
           // Remove sensitive query params
           if (event.request.query_string) {
             event.request.query_string = event.request.query_string
@@ -58,7 +60,7 @@ export function initializeSentry(app) {
               .replace(/token=[^&]+/g, 'token=***');
           }
         }
-        
+
         return event;
       },
       // Breadcrumb filtering
@@ -67,30 +69,30 @@ export function initializeSentry(app) {
         if (breadcrumb.category === 'console' && breadcrumb.level === 'debug') {
           return null;
         }
-        
+
         // Sanitize data in breadcrumbs
         if (breadcrumb.data && typeof breadcrumb.data === 'object') {
           const sanitized = { ...breadcrumb.data };
-          
+
           // Remove sensitive fields
-          ['password', 'token', 'api_key', 'secret'].forEach(field => {
+          ['password', 'token', 'api_key', 'secret'].forEach((field) => {
             if (sanitized[field]) {
               sanitized[field] = '***';
             }
           });
-          
+
           breadcrumb.data = sanitized;
         }
-        
+
         return breadcrumb;
-      }
+      },
     });
 
     // Add Sentry handlers to Express app
     if (app) {
       // The request handler must be the first middleware on the app
       app.use(Sentry.Handlers.requestHandler());
-      
+
       // The tracing handler creates a trace for every incoming request
       app.use(Sentry.Handlers.tracingHandler());
     }
@@ -112,7 +114,7 @@ export const sentryErrorHandler = Sentry.Handlers.errorHandler({
       return true;
     }
     return false;
-  }
+  },
 });
 
 /**
@@ -157,7 +159,7 @@ export const addContext = (key, context) => {
  */
 export const captureException = (error, context = {}) => {
   Sentry.captureException(error, {
-    extra: context
+    extra: context,
   });
 };
 
@@ -176,5 +178,5 @@ export default {
   clearUser,
   addContext,
   captureException,
-  captureMessage
+  captureMessage,
 };

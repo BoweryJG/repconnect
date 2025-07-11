@@ -1,19 +1,13 @@
 import express from 'express';
 import twilio from 'twilio';
-import { createClient } from '@supabase/supabase-js';
 import dotenv from 'dotenv';
 import logger from '../utils/logger.js';
+import { databaseService, tables } from '../src/services/databaseService.js';
 
 // Load environment variables
 dotenv.config();
 
 const router = express.Router();
-
-// Initialize Supabase client
-const supabase = createClient(
-  process.env.SUPABASE_URL || 'https://placeholder.supabase.co',
-  process.env.SUPABASE_SERVICE_KEY || 'placeholder-key'
-);
 
 // Twilio webhook validation (optional but recommended for security)
 const validateTwilioRequest = (req, res, next) => {

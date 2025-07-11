@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+
+# Run tests for changed files only
+npm run test:changed

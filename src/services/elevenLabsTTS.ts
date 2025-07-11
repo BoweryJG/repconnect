@@ -46,23 +46,30 @@ export class ElevenLabsTTSService extends EventEmitter {
   constructor() {
     super();
     this.config = {
-      apiKey: 'sk_178e9e2ea1aea0c7787cd5f3bbe21bc6c293912af43137a4',
+      apiKey: process.env.REACT_APP_ELEVENLABS_API_KEY || '',
       baseUrl: 'https://api.elevenlabs.io/v1',
       wsBaseUrl: 'wss://api.elevenlabs.io/v1',
       defaultVoiceSettings: {
         stability: 0.75,
         similarityBoost: 0.85,
         style: 0.3,
-        speakerBoost: true
-      }
+        speakerBoost: true,
+      },
     };
   }
 
   async initialize(): Promise<void> {
     try {
+      // Validate API key is configured
+      if (!this.config.apiKey) {
+        throw new Error(
+          'ElevenLabs API key is not configured. Please set REACT_APP_ELEVENLABS_API_KEY environment variable.'
+        );
+      }
+
       // Initialize audio context
       this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-      
+
       // Resume audio context if suspended (for browser autoplay policies)
       if (this.audioContext.state === 'suspended') {
         await this.audioContext.resume();
@@ -85,18 +92,18 @@ export class ElevenLabsTTSService extends EventEmitter {
     }
 
     const { voiceId, stability, similarityBoost, style, speakerBoost } = agentConfig.voiceConfig;
-    
+
     return {
       voiceId,
       voiceSettings: {
         stability,
         similarityBoost,
         style,
-        speakerBoost
+        speakerBoost,
       },
       modelId: 'eleven_turbo_v2',
       outputFormat: 'pcm_44100',
-      optimizeStreamingLatency: 2 // Optimize for low latency
+      optimizeStreamingLatency: 2, // Optimize for low latency
     };
   }
 
@@ -141,11 +148,11 @@ export class ElevenLabsTTSService extends EventEmitter {
 
           // Send initial configuration
           const initMessage = {
-            text: " ",
+            text: ' ',
             voice_settings: options.voiceSettings || this.config.defaultVoiceSettings,
             generation_config: {
-              chunk_length_schedule: [120, 160, 250, 290]
-            }
+              chunk_length_schedule: [120, 160, 250, 290],
+            },
           };
 
           this.websocket!.send(JSON.stringify(initMessage));
@@ -153,7 +160,7 @@ export class ElevenLabsTTSService extends EventEmitter {
           // Send the actual text
           const textMessage = {
             text: text,
-            flush: true
+            flush: true,
           };
 
           this.websocket!.send(JSON.stringify(textMessage));
@@ -182,7 +189,7 @@ export class ElevenLabsTTSService extends EventEmitter {
                 resolve();
               }
             } catch (e) {
-              console.error('Error parsing WebSocket message:', e);
+              // Error parsing WebSocket message - handle silently
             }
           }
         };
@@ -197,7 +204,6 @@ export class ElevenLabsTTSService extends EventEmitter {
           this.isConnected = false;
           this.emit('stream-closed');
         };
-
       } catch (error) {
         this.emit('error', { type: 'stream-setup', error });
         reject(error);
@@ -215,7 +221,7 @@ export class ElevenLabsTTSService extends EventEmitter {
     const totalLength = this.streamBuffer.reduce((acc, buf) => acc + buf.byteLength, 0);
     const combinedBuffer = new ArrayBuffer(totalLength);
     const combinedView = new Uint8Array(combinedBuffer);
-    
+
     let offset = 0;
     for (const buffer of this.streamBuffer) {
       combinedView.set(new Uint8Array(buffer), offset);
@@ -228,12 +234,12 @@ export class ElevenLabsTTSService extends EventEmitter {
     // Convert PCM to AudioBuffer
     try {
       const audioBuffer = await this.pcmToAudioBuffer(combinedBuffer);
-      
+
       // Add to queue
       this.audioQueue.push({
         audioData: combinedBuffer,
         timestamp: Date.now(),
-        duration: audioBuffer.duration
+        duration: audioBuffer.duration,
       });
 
       // Start playback if not already playing
@@ -244,7 +250,7 @@ export class ElevenLabsTTSService extends EventEmitter {
       // Play this buffer
       await this.playAudioBuffer(audioBuffer);
     } catch (error) {
-      console.error('Error processing audio buffer:', error);
+      // Error processing audio buffer
       this.emit('error', { type: 'audio-processing', error });
     }
   }
@@ -261,19 +267,19 @@ export class ElevenLabsTTSService extends EventEmitter {
     const sampleRate = 44100;
     const numChannels = 1;
     const bytesPerSample = 2;
-    
+
     const dataView = new DataView(pcmData);
     const length = pcmData.byteLength / bytesPerSample;
-    
+
     const audioBuffer = this.audioContext.createBuffer(numChannels, length, sampleRate);
     const channelData = audioBuffer.getChannelData(0);
-    
+
     // Convert 16-bit PCM to float32
     for (let i = 0; i < length; i++) {
       const sample = dataView.getInt16(i * bytesPerSample, true);
       channelData[i] = sample / 32768.0;
     }
-    
+
     return audioBuffer;
   }
 
@@ -291,7 +297,7 @@ export class ElevenLabsTTSService extends EventEmitter {
       // Schedule playback
       const currentTime = this.audioContext!.currentTime;
       const startTime = Math.max(currentTime, this.nextPlayTime);
-      
+
       source.onended = () => {
         this.currentSource = null;
         resolve();
@@ -299,7 +305,7 @@ export class ElevenLabsTTSService extends EventEmitter {
 
       source.start(startTime);
       this.currentSource = source;
-      
+
       // Update next play time for gapless playback
       this.nextPlayTime = startTime + audioBuffer.duration;
     });
@@ -310,7 +316,7 @@ export class ElevenLabsTTSService extends EventEmitter {
    */
   private startPlayback(): void {
     if (this.isPlaying) return;
-    
+
     this.isPlaying = true;
     this.nextPlayTime = this.audioContext?.currentTime || 0;
     this.emit('playback-started');
@@ -340,10 +346,10 @@ export class ElevenLabsTTSService extends EventEmitter {
           stability,
           similarity_boost: similarityBoost,
           style,
-          use_speaker_boost: speakerBoost
+          use_speaker_boost: speakerBoost,
         },
-        output_format: 'mp3_44100_128'
-      })
+        output_format: 'mp3_44100_128',
+      }),
     });
 
     if (!response.ok) {
@@ -376,7 +382,7 @@ export class ElevenLabsTTSService extends EventEmitter {
       const source = this.audioContext!.createBufferSource();
       source.buffer = audioBuffer;
       source.connect(this.audioContext!.destination);
-      
+
       return new Promise((resolve) => {
         source.onended = () => resolve();
         source.start(0);
@@ -396,12 +402,12 @@ export class ElevenLabsTTSService extends EventEmitter {
       this.currentSource.stop();
       this.currentSource = null;
     }
-    
+
     this.audioQueue = [];
     this.streamBuffer = [];
     this.isPlaying = false;
     this.nextPlayTime = 0;
-    
+
     this.emit('playback-stopped');
   }
 
@@ -455,7 +461,7 @@ export class ElevenLabsTTSService extends EventEmitter {
     try {
       // Stream TTS through WebSocket
       await this.streamTextToSpeech(text, agentId);
-      
+
       // Audio chunks will be emitted via 'audio-chunk' events
       // WebRTC integration can listen to these events
       this.emit('webrtc-audio-ready', { sessionId, agentId });
@@ -470,17 +476,17 @@ export class ElevenLabsTTSService extends EventEmitter {
    */
   dispose(): void {
     this.stopPlayback();
-    
+
     if (this.websocket) {
       this.websocket.close();
       this.websocket = null;
     }
-    
+
     if (this.audioContext) {
       this.audioContext.close();
       this.audioContext = null;
     }
-    
+
     this.removeAllListeners();
   }
 
@@ -491,14 +497,17 @@ export class ElevenLabsTTSService extends EventEmitter {
     return Object.entries(agentConfigs).map(([agentId, config]) => ({
       agentId,
       agentName: config.name,
-      voiceId: config.voiceConfig.voiceId
+      voiceId: config.voiceConfig.voiceId,
     }));
   }
 
   /**
    * Test voice for a specific agent
    */
-  async testAgentVoice(agentId: string, testText: string = "Hello, I'm here to help you today."): Promise<void> {
+  async testAgentVoice(
+    agentId: string,
+    testText: string = "Hello, I'm here to help you today."
+  ): Promise<void> {
     try {
       const audioData = await this.generateSpeech(testText, agentId);
       await this.playAudio(audioData, 'mp3');

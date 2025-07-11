@@ -29,14 +29,20 @@ interface PremiumGradientBackgroundProps {
   variant?: 'aurora' | 'cosmic' | 'sunset' | 'ocean';
 }
 
-export const PremiumGradientBackground: React.FC<PremiumGradientBackgroundProps> = ({ variant = 'aurora' }) => {
+export const PremiumGradientBackground: React.FC<PremiumGradientBackgroundProps> = ({
+  variant = 'aurora',
+}) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const gradients = {
-    aurora: 'linear-gradient(125deg, #0A0A0B 0%, #1a1a2e 25%, #16213e 50%, #0f3460 75%, #e94560 100%)',
-    cosmic: 'linear-gradient(125deg, #0A0A0B 0%, #2D1B69 25%, #0F0C29 50%, #24243e 75%, #302b63 100%)',
-    sunset: 'linear-gradient(125deg, #0A0A0B 0%, #1a1c20 25%, #2d1b69 50%, #e94560 75%, #f27121 100%)',
-    ocean: 'linear-gradient(125deg, #0A0A0B 0%, #0f3460 25%, #16213e 50%, #1a1a2e 75%, #e94560 100%)',
+    aurora:
+      'linear-gradient(125deg, #0A0A0B 0%, #1a1a2e 25%, #16213e 50%, #0f3460 75%, #e94560 100%)',
+    cosmic:
+      'linear-gradient(125deg, #0A0A0B 0%, #2D1B69 25%, #0F0C29 50%, #24243e 75%, #302b63 100%)',
+    sunset:
+      'linear-gradient(125deg, #0A0A0B 0%, #1a1c20 25%, #2d1b69 50%, #e94560 75%, #f27121 100%)',
+    ocean:
+      'linear-gradient(125deg, #0A0A0B 0%, #0f3460 25%, #16213e 50%, #1a1a2e 75%, #e94560 100%)',
   };
 
   useEffect(() => {
@@ -119,7 +125,7 @@ export const PremiumGradientBackground: React.FC<PremiumGradientBackgroundProps>
           zIndex: -3,
         }}
       />
-      
+
       {/* Animated orbs */}
       <div
         style={{
@@ -165,7 +171,7 @@ export const PremiumGradientBackground: React.FC<PremiumGradientBackgroundProps>
           zIndex: -2,
         }}
       />
-      
+
       {/* Particle canvas */}
       <canvas
         ref={canvasRef}
@@ -179,7 +185,7 @@ export const PremiumGradientBackground: React.FC<PremiumGradientBackgroundProps>
           opacity: 0.6,
         }}
       />
-      
+
       {/* Noise texture overlay */}
       <div
         style={{

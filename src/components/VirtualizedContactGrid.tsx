@@ -24,7 +24,7 @@ export const VirtualizedContactGrid: React.FC<VirtualizedContactGridProps> = ({
   // Prevent division by zero and ensure minimum dimensions
   const safeWidth = Math.max(width || 1200, CARD_WIDTH + CARD_GAP);
   const safeHeight = Math.max(height || 600, CARD_HEIGHT + CARD_GAP);
-  
+
   const columnCount = Math.max(1, Math.floor(safeWidth / (CARD_WIDTH + CARD_GAP)));
   const rowCount = Math.ceil(contacts.length / columnCount);
 
@@ -33,9 +33,9 @@ export const VirtualizedContactGrid: React.FC<VirtualizedContactGridProps> = ({
     if (index >= contacts.length) return null;
 
     const contact = contacts[index];
-    
+
     return (
-      <div 
+      <div
         style={{
           ...style,
           padding: CARD_GAP / 2,

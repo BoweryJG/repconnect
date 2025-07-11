@@ -11,4 +11,4 @@ export const HarveyCallQueueInterface: React.FC = () => {
       </p>
     </div>
   );
-}
+};

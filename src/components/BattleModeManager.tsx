@@ -34,9 +34,9 @@ interface BattleModeManagerProps {
   currentUserName: string;
 }
 
-export const BattleModeManager: React.FC<BattleModeManagerProps> = ({ 
-  currentUserId, 
-  currentUserName 
+export const BattleModeManager: React.FC<BattleModeManagerProps> = ({
+  currentUserId,
+  currentUserName,
 }) => {
   const [battleRequests, setBattleRequests] = useState<any[]>([]);
   const [activeBattle, setActiveBattle] = useState<BattleMode | null>(null);
@@ -72,12 +72,12 @@ export const BattleModeManager: React.FC<BattleModeManagerProps> = ({
 
   const acceptBattleRequest = async (battleId: string) => {
     await warRoomService.acceptBattle(battleId);
-    setBattleRequests(prev => prev.filter(req => req.id !== battleId));
+    setBattleRequests((prev) => prev.filter((req) => req.id !== battleId));
   };
 
   const declineBattleRequest = async (battleId: string) => {
     await warRoomService.declineBattle(battleId);
-    setBattleRequests(prev => prev.filter(req => req.id !== battleId));
+    setBattleRequests((prev) => prev.filter((req) => req.id !== battleId));
   };
 
   if (!activeBattle) return null;
@@ -113,14 +113,17 @@ export const BattleModeManager: React.FC<BattleModeManagerProps> = ({
               >
                 <SportsMma style={{ fontSize: 64, color: '#EC4899' }} />
               </motion.div>
-              <Typography variant="h2" sx={{ 
-                fontWeight: 900, 
-                background: 'linear-gradient(135deg, #EC4899 0%, #6366F1 100%)',
-                backgroundClip: 'text',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                mt: 2,
-              }}>
+              <Typography
+                variant="h2"
+                sx={{
+                  fontWeight: 900,
+                  background: 'linear-gradient(135deg, #EC4899 0%, #6366F1 100%)',
+                  backgroundClip: 'text',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  mt: 2,
+                }}
+              >
                 BATTLE MODE
               </Typography>
               <Typography variant="h5" sx={{ color: 'text.secondary', mt: 1 }}>
@@ -141,25 +144,29 @@ export const BattleModeManager: React.FC<BattleModeManagerProps> = ({
 
               {/* Center Display */}
               <Grid item xs={12} md={2}>
-                <div style={{ 
-                  display: 'flex', 
-                  flexDirection: 'column', 
-                  alignItems: 'center', 
-                  justifyContent: 'center',
-                  height: '100%',
-                  gap: '32px',
-                }}>
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    height: '100%',
+                    gap: '32px',
+                  }}
+                >
                   <Typography variant="h1" sx={{ color: '#EC4899', fontWeight: 900 }}>
                     VS
                   </Typography>
-                  
+
                   {/* Score Display */}
-                  <Paper sx={{ 
-                    p: 2, 
-                    background: 'rgba(236, 72, 153, 0.1)',
-                    border: '2px solid rgba(236, 72, 153, 0.5)',
-                    borderRadius: 2,
-                  }}>
+                  <Paper
+                    sx={{
+                      p: 2,
+                      background: 'rgba(236, 72, 153, 0.1)',
+                      border: '2px solid rgba(236, 72, 153, 0.5)',
+                      borderRadius: 2,
+                    }}
+                  >
                     <Typography variant="h3" sx={{ textAlign: 'center', fontWeight: 900 }}>
                       {activeBattle.scores.rep1} - {activeBattle.scores.rep2}
                     </Typography>
@@ -168,9 +175,7 @@ export const BattleModeManager: React.FC<BattleModeManagerProps> = ({
                   {/* Timer */}
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <Timer />
-                    <Typography variant="h6">
-                      {formatDuration(activeBattle.startTime)}
-                    </Typography>
+                    <Typography variant="h6">{formatDuration(activeBattle.startTime)}</Typography>
                   </div>
                 </div>
               </Grid>
@@ -221,22 +226,24 @@ export const BattleModeManager: React.FC<BattleModeManagerProps> = ({
               textAlign: 'center',
             }}
           >
-            <motion.div
-              animate={{ rotate: [0, 360] }}
-              transition={{ duration: 1 }}
-            >
+            <motion.div animate={{ rotate: [0, 360] }} transition={{ duration: 1 }}>
               <Trophy sx={{ fontSize: 120, color: '#FFD700' }} />
             </motion.div>
-            <Typography variant="h2" sx={{ 
-              fontWeight: 900, 
-              color: '#FFD700',
-              mt: 2,
-              textShadow: '0 0 20px rgba(255, 215, 0, 0.5)',
-            }}>
+            <Typography
+              variant="h2"
+              sx={{
+                fontWeight: 900,
+                color: '#FFD700',
+                mt: 2,
+                textShadow: '0 0 20px rgba(255, 215, 0, 0.5)',
+              }}
+            >
               WINNER
             </Typography>
             <Typography variant="h3" sx={{ color: 'white', mt: 1 }}>
-              {activeBattle.winner === activeBattle.rep1?.repId ? activeBattle.rep1.repName : activeBattle.rep2?.repName}
+              {activeBattle.winner === activeBattle.rep1?.repId
+                ? activeBattle.rep1.repName
+                : activeBattle.rep2?.repName}
             </Typography>
           </motion.div>
         )}
@@ -249,22 +256,18 @@ export const BattleModeManager: React.FC<BattleModeManagerProps> = ({
         maxWidth="sm"
         fullWidth
       >
-        <DialogTitle>
-          Challenge to Battle
-        </DialogTitle>
+        <DialogTitle>Challenge to Battle</DialogTitle>
         <DialogContent>
           <Typography variant="body1" sx={{ mb: 2 }}>
             Challenge <strong>{selectedOpponent?.repName}</strong> to a sales battle?
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-            Both reps must be on active calls. The battle will compare real-time performance metrics,
-            confidence scores, and Harvey's analysis.
+            Both reps must be on active calls. The battle will compare real-time performance
+            metrics, confidence scores, and Harvey's analysis.
           </Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setShowBattleDialog(false)}>
-            Cancel
-          </Button>
+          <Button onClick={() => setShowBattleDialog(false)}>Cancel</Button>
           <Button
             onClick={sendBattleRequest}
             variant="contained"
@@ -288,14 +291,17 @@ const BattleRepCard: React.FC<{
 }> = ({ call, score, isCurrentUser }) => {
   if (!call) return null;
 
-  const statusColor = call.confidence > 70 ? '#10B981' : call.confidence > 40 ? '#F59E0B' : '#EF4444';
+  const statusColor =
+    call.confidence > 70 ? '#10B981' : call.confidence > 40 ? '#F59E0B' : '#EF4444';
 
   return (
-    <Card sx={{
-      background: isCurrentUser ? 'rgba(99, 102, 241, 0.1)' : 'rgba(26, 26, 26, 0.95)',
-      border: `2px solid ${statusColor}`,
-      height: '100%',
-    }}>
+    <Card
+      sx={{
+        background: isCurrentUser ? 'rgba(99, 102, 241, 0.1)' : 'rgba(26, 26, 26, 0.95)',
+        border: `2px solid ${statusColor}`,
+        height: '100%',
+      }}
+    >
       <CardContent>
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px' }}>
@@ -327,12 +333,14 @@ const BattleRepCard: React.FC<{
         </div>
 
         {/* Battle Score */}
-        <Paper sx={{
-          p: 2,
-          mb: 3,
-          background: 'rgba(236, 72, 153, 0.1)',
-          border: '1px solid rgba(236, 72, 153, 0.3)',
-        }}>
+        <Paper
+          sx={{
+            p: 2,
+            mb: 3,
+            background: 'rgba(236, 72, 153, 0.1)',
+            border: '1px solid rgba(236, 72, 153, 0.3)',
+          }}
+        >
           <Typography variant="h6" sx={{ color: '#EC4899', mb: 1 }}>
             Battle Score
           </Typography>
@@ -409,13 +417,15 @@ const BattleRepCard: React.FC<{
 
         {/* Harvey's Advice */}
         {call.harveyAdvice && (
-          <div style={{
-            marginTop: '24px',
-            padding: '16px',
-            background: 'rgba(236, 72, 153, 0.1)',
-            border: '1px solid rgba(236, 72, 153, 0.3)',
-            borderRadius: '8px',
-          }}>
+          <div
+            style={{
+              marginTop: '24px',
+              padding: '16px',
+              background: 'rgba(236, 72, 153, 0.1)',
+              border: '1px solid rgba(236, 72, 153, 0.3)',
+              borderRadius: '8px',
+            }}
+          >
             <Typography variant="caption" sx={{ color: '#EC4899', fontWeight: 700 }}>
               HARVEY'S ADVICE
             </Typography>
@@ -441,7 +451,8 @@ const MetricDisplay: React.FC<{
       {label}
     </Typography>
     <Typography variant="h4" sx={{ color, fontWeight: 700 }}>
-      {value}{unit}
+      {value}
+      {unit}
     </Typography>
   </div>
 );

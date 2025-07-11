@@ -10,17 +10,19 @@ export const createNeuralNetwork = (
     const start = nodes[from];
     const end = nodes[to];
     const { controlPoint1, controlPoint2 } = generateOrganicPath(start, end, 0.4);
-    
+
     return {
       id: `neural-${from}-${to}`,
-      segments: [{
-        id: `segment-${index}`,
-        start,
-        end,
-        controlPoint1,
-        controlPoint2,
-        width: 2 + Math.random() * 2,
-      }],
+      segments: [
+        {
+          id: `segment-${index}`,
+          start,
+          end,
+          controlPoint1,
+          controlPoint2,
+          width: 2 + Math.random() * 2,
+        },
+      ],
       gradientStart: `hsl(${from * 60}, 100%, 50%)`,
       gradientEnd: `hsl(${to * 60}, 100%, 50%)`,
       animationDuration: 3 + Math.random() * 2,
@@ -40,17 +42,19 @@ export const createPortalRings = (
 ): PipeConfig[] => {
   return Array.from({ length: ringCount }, (_, i) => {
     const radius = baseRadius + i * 30;
-    
+
     return {
       id: `portal-ring-${i}`,
-      segments: [{
-        id: `ring-${i}`,
-        start: { x: center.x + radius, y: center.y },
-        end: { x: center.x + radius, y: center.y },
-        controlPoint1: { x: center.x + radius, y: center.y - radius },
-        controlPoint2: { x: center.x - radius, y: center.y + radius },
-        width: 4 - i * 0.5,
-      }],
+      segments: [
+        {
+          id: `ring-${i}`,
+          start: { x: center.x + radius, y: center.y },
+          end: { x: center.x + radius, y: center.y },
+          controlPoint1: { x: center.x + radius, y: center.y - radius },
+          controlPoint2: { x: center.x - radius, y: center.y + radius },
+          width: 4 - i * 0.5,
+        },
+      ],
       color: ['#00ffff', '#ff00ff', '#ffff00'][i % 3],
       animationDuration: 4 + i,
       glowIntensity: 5 - i,
@@ -69,7 +73,7 @@ export const createDataFlow = (
     segments: waypoints.slice(0, -1).map((point, i) => {
       const next = waypoints[i + 1];
       const { controlPoint1, controlPoint2 } = generateOrganicPath(point, next, 0.2);
-      
+
       return {
         id: `flow-segment-${i}`,
         start: point,
@@ -86,7 +90,7 @@ export const createDataFlow = (
     flowSpeed: 1,
     interactive: true,
   };
-  
+
   const branches = branchPoints.map((branch, i) => {
     const startPoint = interpolatePoints(
       waypoints[Math.floor(branch.at)],
@@ -94,17 +98,19 @@ export const createDataFlow = (
       branch.at % 1
     );
     const { controlPoint1, controlPoint2 } = generateOrganicPath(startPoint, branch.to, 0.3);
-    
+
     return {
       id: `branch-${i}`,
-      segments: [{
-        id: `branch-segment-${i}`,
-        start: startPoint,
-        end: branch.to,
-        controlPoint1,
-        controlPoint2,
-        width: 3,
-      }],
+      segments: [
+        {
+          id: `branch-segment-${i}`,
+          start: startPoint,
+          end: branch.to,
+          controlPoint1,
+          controlPoint2,
+          width: 3,
+        },
+      ],
       color: ['#ffaa00', '#ff00aa', '#aaff00'][i % 3],
       animationDuration: 4,
       animationDelay: 0.5 + i * 0.5,
@@ -113,7 +119,7 @@ export const createDataFlow = (
       interactive: true,
     };
   });
-  
+
   return [mainPipe, ...branches];
 };
 
@@ -126,7 +132,7 @@ export const createOrganicWeb = (
   const nodes: NodeConfig[] = Array.from({ length: nodeCount }, (_, i) => {
     const angle = (i / nodeCount) * Math.PI * 2;
     const r = radius * (0.8 + Math.random() * 0.4);
-    
+
     return {
       id: `web-node-${i}`,
       position: {
@@ -138,26 +144,28 @@ export const createOrganicWeb = (
       radius: 6 + Math.random() * 4,
     };
   });
-  
+
   const pipes: PipeConfig[] = [];
-  
+
   for (let i = 0; i < nodeCount; i++) {
     for (let j = i + 1; j < nodeCount; j++) {
       if (Math.random() < interconnectedness) {
         const start = nodes[i].position;
         const end = nodes[j].position;
         const { controlPoint1, controlPoint2 } = generateOrganicPath(start, end, 0.5);
-        
+
         pipes.push({
           id: `web-pipe-${i}-${j}`,
-          segments: [{
-            id: `web-segment-${i}-${j}`,
-            start,
-            end,
-            controlPoint1,
-            controlPoint2,
-            width: 1 + Math.random() * 3,
-          }],
+          segments: [
+            {
+              id: `web-segment-${i}-${j}`,
+              start,
+              end,
+              controlPoint1,
+              controlPoint2,
+              width: 1 + Math.random() * 3,
+            },
+          ],
           gradientStart: nodes[i].color || '#ffffff',
           gradientEnd: nodes[j].color || '#ffffff',
           animationDuration: 3 + Math.random() * 4,
@@ -170,6 +178,6 @@ export const createOrganicWeb = (
       }
     }
   }
-  
+
   return { pipes, nodes };
 };

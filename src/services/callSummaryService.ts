@@ -58,22 +58,23 @@ export class CallSummaryService {
 
   constructor() {
     const supabaseUrl = process.env.REACT_APP_SUPABASE_URL || process.env.SUPABASE_URL || '';
-    const supabaseKey = process.env.REACT_APP_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY || '';
+    const supabaseKey =
+      process.env.REACT_APP_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY || '';
     this.openAIApiKey = process.env.OPENAI_API_KEY || '';
-    
+
     this.supabase = createClient(supabaseUrl, supabaseKey);
   }
 
   async generateSummary(request: CallSummaryRequest): Promise<CallSummary> {
     const startTime = Date.now();
-    
+
     try {
       // Generate summary using OpenAI
       const prompt = this.buildPrompt(request.transcription, request.format || 'detailed');
       const aiResponse = await this.callOpenAI(prompt);
-      
+
       const summary = this.parseAIResponse(aiResponse.choices[0].message.content);
-      
+
       // Save to database
       await this.saveSummaryToDatabase({
         callSid: request.callSid,
@@ -83,25 +84,28 @@ export class CallSummaryService {
         processingTimeMs: Date.now() - startTime,
         tokenCount: {
           input: aiResponse.usage?.prompt_tokens || 0,
-          output: aiResponse.usage?.completion_tokens || 0
+          output: aiResponse.usage?.completion_tokens || 0,
         },
-        regenerate: request.regenerate || false
+        regenerate: request.regenerate || false,
       });
-      
+
       // Update calls table
       await this.updateCallAnalysisStatus(request.callSid, true);
-      
+
       return summary;
     } catch (error) {
-            throw new Error('Failed to generate call summary');
+      throw new Error('Failed to generate call summary');
     }
   }
 
   private buildPrompt(transcription: string, format: 'brief' | 'detailed' | 'executive'): string {
     const formatInstructions = {
-      brief: 'Provide a concise summary in 2-3 sentences, highlighting only the most critical points.',
-      detailed: 'Provide a comprehensive summary including all important details, context, and nuances.',
-      executive: 'Provide a high-level executive summary focusing on business impact, decisions, and strategic outcomes.'
+      brief:
+        'Provide a concise summary in 2-3 sentences, highlighting only the most critical points.',
+      detailed:
+        'Provide a comprehensive summary including all important details, context, and nuances.',
+      executive:
+        'Provide a high-level executive summary focusing on business impact, decisions, and strategic outcomes.',
     };
 
     return `Analyze the following call transcription and provide a structured summary.
@@ -154,24 +158,25 @@ Important guidelines:
     const response = await fetch(`${this.openAIBaseUrl}/chat/completions`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${this.openAIApiKey}`,
-        'Content-Type': 'application/json'
+        Authorization: `Bearer ${this.openAIApiKey}`,
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         model: 'gpt-4-turbo-preview',
         messages: [
           {
             role: 'system',
-            content: 'You are an AI assistant specialized in analyzing business calls and providing structured summaries. Always respond with valid JSON.'
+            content:
+              'You are an AI assistant specialized in analyzing business calls and providing structured summaries. Always respond with valid JSON.',
           },
           {
             role: 'user',
-            content: prompt
-          }
+            content: prompt,
+          },
         ],
         temperature: 0.7,
-        max_tokens: 4000
-      })
+        max_tokens: 4000,
+      }),
     });
 
     if (!response.ok) {
@@ -188,31 +193,33 @@ Important guidelines:
       if (!jsonMatch) {
         throw new Error('No JSON found in AI response');
       }
-      
+
       const parsed = JSON.parse(jsonMatch[0]);
-      
+
       // Validate and normalize the response
       return {
         executiveSummary: parsed.executiveSummary || 'No summary available',
         keyPoints: Array.isArray(parsed.keyPoints) ? parsed.keyPoints : [],
-        actionItems: Array.isArray(parsed.actionItems) ? parsed.actionItems.map((item: any) => ({
-          task: item.task || '',
-          assignee: item.assignee,
-          priority: item.priority || 'medium',
-          dueDate: item.dueDate
-        })) : [],
+        actionItems: Array.isArray(parsed.actionItems)
+          ? parsed.actionItems.map((item: any) => ({
+              task: item.task || '',
+              assignee: item.assignee,
+              priority: item.priority || 'medium',
+              dueDate: item.dueDate,
+            }))
+          : [],
         sentimentAnalysis: {
           overall: parsed.sentimentAnalysis?.overall || 'neutral',
           score: parsed.sentimentAnalysis?.score || 0,
           emotions: parsed.sentimentAnalysis?.emotions || {},
-          keyMoments: Array.isArray(parsed.sentimentAnalysis?.keyMoments) 
-            ? parsed.sentimentAnalysis.keyMoments 
-            : []
+          keyMoments: Array.isArray(parsed.sentimentAnalysis?.keyMoments)
+            ? parsed.sentimentAnalysis.keyMoments
+            : [],
         },
-        nextSteps: Array.isArray(parsed.nextSteps) ? parsed.nextSteps : []
+        nextSteps: Array.isArray(parsed.nextSteps) ? parsed.nextSteps : [],
       };
     } catch (error) {
-            throw new Error('Failed to parse AI response');
+      throw new Error('Failed to parse AI response');
     }
   }
 
@@ -235,7 +242,7 @@ Important guidelines:
       .single();
 
     if (callError || !callData) {
-            // Continue without call_id
+      // Continue without call_id
     }
 
     const analysisData = {
@@ -251,7 +258,7 @@ Important guidelines:
       ai_provider: 'openrouter',
       processing_time_ms: processingTimeMs,
       token_count: tokenCount,
-      regenerated_at: regenerate ? new Date().toISOString() : null
+      regenerated_at: regenerate ? new Date().toISOString() : null,
     };
 
     if (regenerate) {
@@ -267,16 +274,14 @@ Important guidelines:
         .from('call_analysis')
         .update({
           ...analysisData,
-          summary_version: (existingAnalysis?.summary_version || 0) + 1
+          summary_version: (existingAnalysis?.summary_version || 0) + 1,
         })
         .eq('call_sid', callSid);
 
       if (error) throw error;
     } else {
       // Insert new analysis
-      const { error } = await this.supabase
-        .from('call_analysis')
-        .insert(analysisData);
+      const { error } = await this.supabase.from('call_analysis').insert(analysisData);
 
       if (error) throw error;
     }
@@ -289,7 +294,7 @@ Important guidelines:
       .eq('call_sid', callSid);
 
     if (error) {
-          }
+    }
   }
 
   async getSummary(callSid: string): Promise<CallSummary | null> {
@@ -310,13 +315,13 @@ Important guidelines:
       keyPoints: data.key_points || [],
       actionItems: data.action_items || [],
       sentimentAnalysis: data.sentiment_analysis || {},
-      nextSteps: data.next_steps || []
+      nextSteps: data.next_steps || [],
     };
   }
 
   async updateSummary(callSid: string, updates: Partial<CallSummary>): Promise<void> {
     const updateData: any = {};
-    
+
     if (updates.executiveSummary) updateData.executive_summary = updates.executiveSummary;
     if (updates.keyPoints) updateData.key_points = updates.keyPoints;
     if (updates.actionItems) updateData.action_items = updates.actionItems;

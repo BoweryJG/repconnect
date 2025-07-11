@@ -22,7 +22,7 @@ export const IconicPipelineIntegration: React.FC<IconicPipelineIntegrationProps>
   backgroundPipes = true,
   interactiveBorders = true,
   borderWidth = 120,
-  glowIntensity = 0.8
+  glowIntensity = 0.8,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
@@ -52,7 +52,7 @@ export const IconicPipelineIntegration: React.FC<IconicPipelineIntegrationProps>
         const rect = containerRef.current.getBoundingClientRect();
         setMousePos({
           x: e.clientX - rect.left,
-          y: e.clientY - rect.top
+          y: e.clientY - rect.top,
         });
       }
     };
@@ -64,7 +64,7 @@ export const IconicPipelineIntegration: React.FC<IconicPipelineIntegrationProps>
   // Get preset configuration based on variant
   const getPresetConfig = (): PipeSystemConfig => {
     const { width, height } = dimensions;
-    
+
     switch (variant) {
       case 'neural': {
         // Create a grid of nodes for neural network
@@ -75,7 +75,7 @@ export const IconicPipelineIntegration: React.FC<IconicPipelineIntegrationProps>
           for (let j = 0; j < cols; j++) {
             nodes.push({
               x: (j + 1) * (width / (cols + 1)),
-              y: (i + 1) * (height / (rows + 1))
+              y: (i + 1) * (height / (rows + 1)),
             });
           }
         }
@@ -94,7 +94,7 @@ export const IconicPipelineIntegration: React.FC<IconicPipelineIntegrationProps>
           { x: width * 0.3, y: height * 0.3 },
           { x: width * 0.5, y: height * 0.6 },
           { x: width * 0.7, y: height * 0.4 },
-          { x: width * 0.9, y: height * 0.5 }
+          { x: width * 0.9, y: height * 0.5 },
         ];
         return { pipes: createDataFlow(flowPoints, []) };
       }
@@ -109,22 +109,24 @@ export const IconicPipelineIntegration: React.FC<IconicPipelineIntegrationProps>
           pipes: [
             {
               id: 'minimal-1',
-              segments: [{
-                id: 'seg-1',
-                start: { x: 0, y: 50 },
-                end: { x: dimensions.width, y: 50 },
-                controlPoint1: { x: dimensions.width * 0.3, y: 20 },
-                controlPoint2: { x: dimensions.width * 0.7, y: 80 },
-                width: 2
-              }],
+              segments: [
+                {
+                  id: 'seg-1',
+                  start: { x: 0, y: 50 },
+                  end: { x: dimensions.width, y: 50 },
+                  controlPoint1: { x: dimensions.width * 0.3, y: 20 },
+                  controlPoint2: { x: dimensions.width * 0.7, y: 80 },
+                  width: 2,
+                },
+              ],
               gradientStart: '#0EA5E9',
               gradientEnd: '#6366F1',
               animationDuration: 8,
-              glowIntensity: 0.5
-            }
+              glowIntensity: 0.5,
+            },
           ],
           enableInteractions: false,
-          performanceMode: 'performance'
+          performanceMode: 'performance',
         };
       default: {
         // Default to neural network pattern
@@ -135,7 +137,7 @@ export const IconicPipelineIntegration: React.FC<IconicPipelineIntegrationProps>
           for (let j = 0; j < cols; j++) {
             nodes.push({
               x: (j + 1) * (width / (cols + 1)),
-              y: (i + 1) * (height / (rows + 1))
+              y: (i + 1) * (height / (rows + 1)),
             });
           }
         }
@@ -153,104 +155,124 @@ export const IconicPipelineIntegration: React.FC<IconicPipelineIntegrationProps>
     const config = getPresetConfig();
     const borderPipes: PipeSystemConfig = {
       ...config,
-      pipes: []
+      pipes: [],
     };
 
     // Top border pipe
     borderPipes.pipes.push({
       id: 'border-top',
-      segments: [{
-        id: 'top-seg',
-        start: { x: borderWidth, y: 10 },
-        end: { x: dimensions.width - borderWidth, y: 10 },
-        controlPoint1: { x: dimensions.width * 0.3, y: 5 },
-        controlPoint2: { x: dimensions.width * 0.7, y: 15 },
-        width: 3
-      }],
+      segments: [
+        {
+          id: 'top-seg',
+          start: { x: borderWidth, y: 10 },
+          end: { x: dimensions.width - borderWidth, y: 10 },
+          controlPoint1: { x: dimensions.width * 0.3, y: 5 },
+          controlPoint2: { x: dimensions.width * 0.7, y: 15 },
+          width: 3,
+        },
+      ],
       gradientStart: config.pipes[0]?.gradientStart || '#00ffff',
       gradientEnd: config.pipes[0]?.gradientEnd || '#ff00ff',
       animationDuration: 6,
       glowIntensity: borderGlow ? glowIntensity : 0,
-      flowSpeed: 1.2
+      flowSpeed: 1.2,
     });
 
     // Bottom border pipe
     borderPipes.pipes.push({
       id: 'border-bottom',
-      segments: [{
-        id: 'bottom-seg',
-        start: { x: dimensions.width - borderWidth, y: dimensions.height - 10 },
-        end: { x: borderWidth, y: dimensions.height - 10 },
-        controlPoint1: { x: dimensions.width * 0.7, y: dimensions.height - 5 },
-        controlPoint2: { x: dimensions.width * 0.3, y: dimensions.height - 15 },
-        width: 3
-      }],
+      segments: [
+        {
+          id: 'bottom-seg',
+          start: { x: dimensions.width - borderWidth, y: dimensions.height - 10 },
+          end: { x: borderWidth, y: dimensions.height - 10 },
+          controlPoint1: { x: dimensions.width * 0.7, y: dimensions.height - 5 },
+          controlPoint2: { x: dimensions.width * 0.3, y: dimensions.height - 15 },
+          width: 3,
+        },
+      ],
       gradientStart: config.pipes[0]?.gradientEnd || '#ff00ff',
       gradientEnd: config.pipes[0]?.gradientStart || '#00ffff',
       animationDuration: 6,
       glowIntensity: borderGlow ? glowIntensity : 0,
-      flowSpeed: 1.2
+      flowSpeed: 1.2,
     });
 
     // Left border pipe
     borderPipes.pipes.push({
       id: 'border-left',
-      segments: [{
-        id: 'left-seg',
-        start: { x: 10, y: borderWidth },
-        end: { x: 10, y: dimensions.height - borderWidth },
-        controlPoint1: { x: 5, y: dimensions.height * 0.3 },
-        controlPoint2: { x: 15, y: dimensions.height * 0.7 },
-        width: 3
-      }],
+      segments: [
+        {
+          id: 'left-seg',
+          start: { x: 10, y: borderWidth },
+          end: { x: 10, y: dimensions.height - borderWidth },
+          controlPoint1: { x: 5, y: dimensions.height * 0.3 },
+          controlPoint2: { x: 15, y: dimensions.height * 0.7 },
+          width: 3,
+        },
+      ],
       gradientStart: config.pipes[0]?.gradientStart || '#00ffff',
       gradientEnd: config.pipes[0]?.gradientEnd || '#ff00ff',
       animationDuration: 5,
       glowIntensity: borderGlow ? glowIntensity : 0,
-      flowSpeed: 1.5
+      flowSpeed: 1.5,
     });
 
     // Right border pipe
     borderPipes.pipes.push({
       id: 'border-right',
-      segments: [{
-        id: 'right-seg',
-        start: { x: dimensions.width - 10, y: dimensions.height - borderWidth },
-        end: { x: dimensions.width - 10, y: borderWidth },
-        controlPoint1: { x: dimensions.width - 5, y: dimensions.height * 0.7 },
-        controlPoint2: { x: dimensions.width - 15, y: dimensions.height * 0.3 },
-        width: 3
-      }],
+      segments: [
+        {
+          id: 'right-seg',
+          start: { x: dimensions.width - 10, y: dimensions.height - borderWidth },
+          end: { x: dimensions.width - 10, y: borderWidth },
+          controlPoint1: { x: dimensions.width - 5, y: dimensions.height * 0.7 },
+          controlPoint2: { x: dimensions.width - 15, y: dimensions.height * 0.3 },
+          width: 3,
+        },
+      ],
       gradientStart: config.pipes[0]?.gradientEnd || '#ff00ff',
       gradientEnd: config.pipes[0]?.gradientStart || '#00ffff',
       animationDuration: 5,
       glowIntensity: borderGlow ? glowIntensity : 0,
-      flowSpeed: 1.5
+      flowSpeed: 1.5,
     });
 
     // Corner connector pipes
     const corners = [
       { from: 'border-top', to: 'border-right', x: dimensions.width - borderWidth, y: borderWidth },
-      { from: 'border-right', to: 'border-bottom', x: dimensions.width - borderWidth, y: dimensions.height - borderWidth },
-      { from: 'border-bottom', to: 'border-left', x: borderWidth, y: dimensions.height - borderWidth },
-      { from: 'border-left', to: 'border-top', x: borderWidth, y: borderWidth }
+      {
+        from: 'border-right',
+        to: 'border-bottom',
+        x: dimensions.width - borderWidth,
+        y: dimensions.height - borderWidth,
+      },
+      {
+        from: 'border-bottom',
+        to: 'border-left',
+        x: borderWidth,
+        y: dimensions.height - borderWidth,
+      },
+      { from: 'border-left', to: 'border-top', x: borderWidth, y: borderWidth },
     ];
 
     corners.forEach((corner, idx) => {
       borderPipes.pipes.push({
         id: `corner-${idx}`,
-        segments: [{
-          id: `corner-seg-${idx}`,
-          start: { x: corner.x - 20, y: corner.y },
-          end: { x: corner.x, y: corner.y - 20 },
-          controlPoint1: { x: corner.x - 10, y: corner.y - 5 },
-          controlPoint2: { x: corner.x - 5, y: corner.y - 10 },
-          width: 2.5
-        }],
+        segments: [
+          {
+            id: `corner-seg-${idx}`,
+            start: { x: corner.x - 20, y: corner.y },
+            end: { x: corner.x, y: corner.y - 20 },
+            controlPoint1: { x: corner.x - 10, y: corner.y - 5 },
+            controlPoint2: { x: corner.x - 5, y: corner.y - 10 },
+            width: 2.5,
+          },
+        ],
         gradientStart: '#A855F7',
         gradientEnd: '#EC4899',
         animationDuration: 3,
-        glowIntensity: borderGlow ? glowIntensity * 1.2 : 0
+        glowIntensity: borderGlow ? glowIntensity * 1.2 : 0,
       });
     });
 
@@ -262,7 +284,7 @@ export const IconicPipelineIntegration: React.FC<IconicPipelineIntegrationProps>
     const config = getPresetConfig();
     const bgPipes: PipeSystemConfig = {
       ...config,
-      pipes: []
+      pipes: [],
     };
 
     // Create a grid of subtle background pipes
@@ -275,19 +297,21 @@ export const IconicPipelineIntegration: React.FC<IconicPipelineIntegrationProps>
       const y = i * gridSize;
       bgPipes.pipes.push({
         id: `bg-h-${i}`,
-        segments: [{
-          id: `bg-h-seg-${i}`,
-          start: { x: 50, y },
-          end: { x: dimensions.width - 50, y },
-          controlPoint1: { x: dimensions.width * 0.25, y: y - 20 },
-          controlPoint2: { x: dimensions.width * 0.75, y: y + 20 },
-          width: 1
-        }],
+        segments: [
+          {
+            id: `bg-h-seg-${i}`,
+            start: { x: 50, y },
+            end: { x: dimensions.width - 50, y },
+            controlPoint1: { x: dimensions.width * 0.25, y: y - 20 },
+            controlPoint2: { x: dimensions.width * 0.75, y: y + 20 },
+            width: 1,
+          },
+        ],
         gradientStart: 'rgba(14, 165, 233, 0.3)',
         gradientEnd: 'rgba(168, 85, 247, 0.3)',
         animationDuration: 12 + Math.random() * 6,
         glowIntensity: 0.2,
-        opacity: 0.3
+        opacity: 0.3,
       });
     }
 
@@ -296,19 +320,21 @@ export const IconicPipelineIntegration: React.FC<IconicPipelineIntegrationProps>
       const x = i * gridSize;
       bgPipes.pipes.push({
         id: `bg-v-${i}`,
-        segments: [{
-          id: `bg-v-seg-${i}`,
-          start: { x, y: 50 },
-          end: { x, y: dimensions.height - 50 },
-          controlPoint1: { x: x - 20, y: dimensions.height * 0.25 },
-          controlPoint2: { x: x + 20, y: dimensions.height * 0.75 },
-          width: 1
-        }],
+        segments: [
+          {
+            id: `bg-v-seg-${i}`,
+            start: { x, y: 50 },
+            end: { x, y: dimensions.height - 50 },
+            controlPoint1: { x: x - 20, y: dimensions.height * 0.25 },
+            controlPoint2: { x: x + 20, y: dimensions.height * 0.75 },
+            width: 1,
+          },
+        ],
         gradientStart: 'rgba(236, 72, 153, 0.3)',
         gradientEnd: 'rgba(99, 102, 241, 0.3)',
         animationDuration: 10 + Math.random() * 8,
         glowIntensity: 0.2,
-        opacity: 0.3
+        opacity: 0.3,
       });
     }
 
@@ -324,17 +350,19 @@ export const IconicPipelineIntegration: React.FC<IconicPipelineIntegrationProps>
         height: '100%',
         overflow: 'hidden',
         borderRadius: '16px',
-        background: 'rgba(10, 10, 11, 0.95)'
+        background: 'rgba(10, 10, 11, 0.95)',
       }}
     >
       {/* Background pipes layer */}
       {backgroundPipes && (
-        <div style={{
-          position: 'absolute',
-          inset: 0,
-          opacity: 0.4,
-          pointerEvents: 'none'
-        }}>
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            opacity: 0.4,
+            pointerEvents: 'none',
+          }}
+        >
           <PipeSystem
             config={generateBackgroundPipes()}
             width={dimensions.width}
@@ -344,12 +372,14 @@ export const IconicPipelineIntegration: React.FC<IconicPipelineIntegrationProps>
       )}
 
       {/* Border pipes layer */}
-      <div style={{
-        position: 'absolute',
-        inset: 0,
-        pointerEvents: interactiveBorders ? 'auto' : 'none',
-        zIndex: 10
-      }}>
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          pointerEvents: interactiveBorders ? 'auto' : 'none',
+          zIndex: 10,
+        }}
+      >
         <PipeSystem
           config={generateBorderPipes()}
           width={dimensions.width}
@@ -358,13 +388,15 @@ export const IconicPipelineIntegration: React.FC<IconicPipelineIntegrationProps>
       </div>
 
       {/* Content layer */}
-      <div style={{
-        position: 'relative',
-        width: '100%',
-        height: '100%',
-        zIndex: 5,
-        padding: `${borderWidth}px`
-      }}>
+      <div
+        style={{
+          position: 'relative',
+          width: '100%',
+          height: '100%',
+          zIndex: 5,
+          padding: `${borderWidth}px`,
+        }}
+      >
         {children}
       </div>
 
@@ -377,25 +409,25 @@ export const IconicPipelineIntegration: React.FC<IconicPipelineIntegrationProps>
             width: '100%',
             height: '100%',
             pointerEvents: 'none',
-            zIndex: 15
+            zIndex: 15,
           }}
         >
           <defs>
             <filter id="corner-glow">
-              <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+              <feGaussianBlur stdDeviation="4" result="coloredBlur" />
               <feMerge>
-                <feMergeNode in="coloredBlur"/>
-                <feMergeNode in="SourceGraphic"/>
+                <feMergeNode in="coloredBlur" />
+                <feMergeNode in="SourceGraphic" />
               </feMerge>
             </filter>
           </defs>
-          
+
           {/* Corner junction nodes */}
           {[
             { x: borderWidth, y: borderWidth },
             { x: dimensions.width - borderWidth, y: borderWidth },
             { x: dimensions.width - borderWidth, y: dimensions.height - borderWidth },
-            { x: borderWidth, y: dimensions.height - borderWidth }
+            { x: borderWidth, y: dimensions.height - borderWidth },
           ].map((pos, idx) => (
             <motion.circle
               key={`corner-${idx}`}
@@ -407,12 +439,12 @@ export const IconicPipelineIntegration: React.FC<IconicPipelineIntegrationProps>
               initial={{ scale: 0.8, opacity: 0.6 }}
               animate={{
                 scale: [0.8, 1.2, 0.8],
-                opacity: [0.6, 1, 0.6]
+                opacity: [0.6, 1, 0.6],
               }}
               transition={{
                 duration: 3,
                 repeat: Infinity,
-                delay: idx * 0.5
+                delay: idx * 0.5,
               }}
             />
           ))}

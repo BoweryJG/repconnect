@@ -13,7 +13,7 @@ interface AgentCarouselProps {
 const AgentCarousel: React.FC<AgentCarouselProps> = ({
   agents,
   onAgentSelect,
-  selectedAgentId
+  selectedAgentId,
 }) => {
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: false,
@@ -28,17 +28,14 @@ const AgentCarousel: React.FC<AgentCarouselProps> = ({
       '(min-width: 768px)': {
         // Desktop: Show multiple cards
         slidesToScroll: 1,
-      }
-    }
+      },
+    },
   });
 
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
 
-  const scrollTo = useCallback(
-    (index: number) => emblaApi && emblaApi.scrollTo(index),
-    [emblaApi]
-  );
+  const scrollTo = useCallback((index: number) => emblaApi && emblaApi.scrollTo(index), [emblaApi]);
 
   const onSelect = useCallback(() => {
     if (!emblaApi) return;
@@ -62,23 +59,21 @@ const AgentCarousel: React.FC<AgentCarouselProps> = ({
     scrollTo(index);
   };
 
-  const renderAgentIcon = (avatar: { icon: LucideIcon; backgroundColor: string; iconColor: string } | string) => {
+  const renderAgentIcon = (
+    avatar: { icon: LucideIcon; backgroundColor: string; iconColor: string } | string
+  ) => {
     if (typeof avatar === 'string') {
-      return (
-        <div className="agent-avatar-emoji">
-          {avatar}
-        </div>
-      );
+      return <div className="agent-avatar-emoji">{avatar}</div>;
     }
-    
+
     // Handle icon object
     const Icon = avatar.icon;
     return (
-      <div 
+      <div
         className="agent-avatar-icon"
-        style={{ 
+        style={{
           backgroundColor: avatar.backgroundColor,
-          color: avatar.iconColor 
+          color: avatar.iconColor,
         }}
       >
         <Icon size={32} />
@@ -98,15 +93,15 @@ const AgentCarousel: React.FC<AgentCarouselProps> = ({
               <div
                 className={`agent-card ${!agent.available ? 'unavailable' : ''}`}
                 onClick={() => agent.available && handleAgentClick(agent, index)}
-                style={{
-                  '--agent-color': agent.color,
-                  cursor: agent.available ? 'pointer' : 'not-allowed'
-                } as React.CSSProperties}
+                style={
+                  {
+                    '--agent-color': agent.color,
+                    cursor: agent.available ? 'pointer' : 'not-allowed',
+                  } as React.CSSProperties
+                }
               >
                 <div className="agent-card-inner">
-                  <div className="agent-avatar">
-                    {renderAgentIcon(agent.avatar)}
-                  </div>
+                  <div className="agent-avatar">{renderAgentIcon(agent.avatar)}</div>
                   <div className="agent-info">
                     <h3 className="agent-name">{agent.name}</h3>
                     <p className="agent-specialty">{agent.specialty}</p>
@@ -123,7 +118,7 @@ const AgentCarousel: React.FC<AgentCarouselProps> = ({
           ))}
         </div>
       </div>
-      
+
       {/* Scroll indicators for mobile */}
       <div className="embla__dots">
         {scrollSnaps.map((_, index) => (

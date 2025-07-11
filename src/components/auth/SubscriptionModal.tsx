@@ -10,10 +10,10 @@ interface SubscriptionModalProps {
   currentTier?: string;
 }
 
-export const SubscriptionModal: React.FC<SubscriptionModalProps> = ({ 
-  isOpen, 
-  onClose, 
-  currentTier = 'free' 
+export const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
+  isOpen,
+  onClose,
+  currentTier = 'free',
 }) => {
   const { user } = useAuth();
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('monthly');
@@ -22,7 +22,7 @@ export const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
 
   const handleSubscribe = async (tierId: string) => {
     if (!user) {
-            return;
+      return;
     }
 
     setIsLoading(true);
@@ -39,7 +39,7 @@ export const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
         window.location.href = sessionUrl;
       }
     } catch (error) {
-          } finally {
+    } finally {
       setIsLoading(false);
       setSelectedTier(null);
     }
@@ -47,7 +47,7 @@ export const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
 
   if (!isOpen) return null;
 
-  const tiers = Object.values(SUBSCRIPTION_TIERS).filter(tier => tier.id !== 'free');
+  const tiers = Object.values(SUBSCRIPTION_TIERS).filter((tier) => tier.id !== 'free');
   const annualSavings = billingCycle === 'annual' ? 0.2 : 0; // 20% discount
 
   return (
@@ -85,19 +85,16 @@ export const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
         <div className="tiers-grid">
           {tiers.map((tier) => {
             const isCurrentTier = tier.id === currentTier;
-            const price = billingCycle === 'monthly' 
-              ? tier.price.monthly 
-              : Math.round(tier.price.annual / 12);
-            
+            const price =
+              billingCycle === 'monthly' ? tier.price.monthly : Math.round(tier.price.annual / 12);
+
             return (
-              <div 
-                key={tier.id} 
+              <div
+                key={tier.id}
                 className={`tier-card ${isCurrentTier ? 'current' : ''} ${tier.id === 'growth' ? 'popular' : ''}`}
                 style={{ '--tier-color': tier.color } as React.CSSProperties}
               >
-                {tier.id === 'growth' && (
-                  <div className="popular-badge">MOST POPULAR</div>
-                )}
+                {tier.id === 'growth' && <div className="popular-badge">MOST POPULAR</div>}
 
                 <div className="tier-header">
                   <h3 className="tier-name">{tier.name}</h3>
@@ -107,9 +104,7 @@ export const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
                     <span className="price-period">/month</span>
                   </div>
                   {billingCycle === 'annual' && (
-                    <div className="annual-total">
-                      ${tier.price.annual} billed annually
-                    </div>
+                    <div className="annual-total">${tier.price.annual} billed annually</div>
                   )}
                 </div>
 
@@ -117,8 +112,8 @@ export const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
                   {tier.features.map((feature, index) => (
                     <div key={index} className="feature-item">
                       <svg className="feature-icon" width="16" height="16" viewBox="0 0 24 24">
-                        <path 
-                          fill="currentColor" 
+                        <path
+                          fill="currentColor"
                           d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"
                         />
                       </svg>
@@ -147,9 +142,7 @@ export const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
 
         {/* Footer */}
         <div className="subscription-footer">
-          <p className="footer-text">
-            All plans include a 14-day free trial. Cancel anytime.
-          </p>
+          <p className="footer-text">All plans include a 14-day free trial. Cancel anytime.</p>
           <p className="footer-security">
             <span className="security-icon">🔒</span>
             Secured by Stripe. Your payment info is never stored on our servers.

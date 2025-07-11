@@ -8,16 +8,11 @@ export const SECURITY_CONFIG = {
       'https://cbopynuvhcymbumjnvay.supabase.co',
     ],
     allowedMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: [
-      'Content-Type',
-      'Authorization',
-      'X-Requested-With',
-      'X-CSRF-Token',
-    ],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'X-CSRF-Token'],
     credentials: true,
     maxAge: 86400, // 24 hours
   },
-  
+
   // API rate limiting
   rateLimiting: {
     windowMs: 15 * 60 * 1000, // 15 minutes
@@ -27,7 +22,7 @@ export const SECURITY_CONFIG = {
       upload: 10,
     },
   },
-  
+
   // Content Security Policy
   csp: {
     directives: {
@@ -53,7 +48,7 @@ export const SECURITY_CONFIG = {
       manifestSrc: ["'self'"],
     },
   },
-  
+
   // Security headers
   headers: {
     'X-Content-Type-Options': 'nosniff',
@@ -63,7 +58,7 @@ export const SECURITY_CONFIG = {
     'Permissions-Policy': 'camera=(), microphone=(self), geolocation=()',
     'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
   },
-  
+
   // Authentication settings
   auth: {
     tokenExpiry: 24 * 60 * 60 * 1000, // 24 hours
@@ -72,7 +67,7 @@ export const SECURITY_CONFIG = {
     maxLoginAttempts: 5,
     lockoutDuration: 15 * 60 * 1000, // 15 minutes
   },
-  
+
   // Input validation limits
   validation: {
     maxNameLength: 100,
@@ -90,7 +85,7 @@ export const SECURITY_CONFIG = {
       'text/csv',
     ],
   },
-  
+
   // API security
   api: {
     timeout: 30000, // 30 seconds
@@ -116,39 +111,36 @@ const getCSRFToken = (): string => {
 };
 
 // Create secure fetch wrapper
-export const secureFetch = async (
-  url: string,
-  options: RequestInit = {}
-): Promise<Response> => {
+export const secureFetch = async (url: string, options: RequestInit = {}): Promise<Response> => {
   // Validate URL
   if (!isValidUrl(url)) {
     throw new Error('Invalid URL');
   }
-  
+
   // Apply security headers
   const secureOptions: RequestInit = {
     ...options,
     headers: secureHeaders(options.headers),
     credentials: 'include', // Include cookies
   };
-  
+
   // Add timeout
   const controller = new AbortController();
   const timeout = setTimeout(() => {
     controller.abort();
   }, SECURITY_CONFIG.api.timeout);
-  
+
   try {
     const response = await fetch(url, {
       ...secureOptions,
       signal: controller.signal,
     });
-    
+
     clearTimeout(timeout);
-    
+
     // Check for security headers in response
     validateResponseHeaders(response);
-    
+
     return response;
   } catch (error) {
     clearTimeout(timeout);
@@ -160,12 +152,12 @@ export const secureFetch = async (
 const isValidUrl = (url: string): boolean => {
   try {
     const urlObj = new URL(url, window.location.origin);
-    
+
     // Check protocol
     if (!['http:', 'https:'].includes(urlObj.protocol)) {
       return false;
     }
-    
+
     // Check for local/internal IPs (basic check)
     const hostname = urlObj.hostname;
     if (
@@ -178,7 +170,7 @@ const isValidUrl = (url: string): boolean => {
       // Only allow in development
       return process.env.NODE_ENV === 'development';
     }
-    
+
     return true;
   } catch {
     return false;
@@ -187,13 +179,10 @@ const isValidUrl = (url: string): boolean => {
 
 // Validate response security headers
 const validateResponseHeaders = (response: Response): void => {
-  const requiredHeaders = [
-    'X-Content-Type-Options',
-    'X-Frame-Options',
-  ];
-  
+  const requiredHeaders = ['X-Content-Type-Options', 'X-Frame-Options'];
+
   if (process.env.NODE_ENV === 'production') {
-    requiredHeaders.forEach(header => {
+    requiredHeaders.forEach((header) => {
       if (!response.headers.has(header)) {
         console.warn(`Missing security header: ${header}`);
       }

@@ -66,7 +66,7 @@ export const QuantumDialer: React.FC<QuantumDialerProps> = ({ isOpen, onClose, o
     } else {
       document.body.style.overflow = '';
     }
-    
+
     // Cleanup on unmount
     return () => {
       document.body.style.overflow = '';
@@ -137,12 +137,12 @@ export const QuantumDialer: React.FC<QuantumDialerProps> = ({ isOpen, onClose, o
       ctx.strokeStyle = 'rgba(0, 255, 255, 0.1)';
       ctx.lineWidth = 0.5;
       for (let i = 0; i < 10; i++) {
-        const x = (i * 50) + 25;
+        const x = i * 50 + 25;
         ctx.beginPath();
         ctx.moveTo(x, 0);
         ctx.lineTo(x, 500);
         ctx.stroke();
-        
+
         ctx.beginPath();
         ctx.moveTo(0, x);
         ctx.lineTo(500, x);
@@ -161,21 +161,21 @@ export const QuantumDialer: React.FC<QuantumDialerProps> = ({ isOpen, onClose, o
 
   const handleNumberClick = (num: string) => {
     if (phoneNumber.length < 15) {
-      setPhoneNumber(prev => prev + num);
+      setPhoneNumber((prev) => prev + num);
     }
   };
 
   const handleBackspace = () => {
-    setPhoneNumber(prev => prev.slice(0, -1));
+    setPhoneNumber((prev) => prev.slice(0, -1));
   };
 
   const handleDial = () => {
     if (phoneNumber.length >= 10) {
-            onDial(phoneNumber);
+      onDial(phoneNumber);
       // Don't clear the number or close immediately - let the parent handle that
       // This gives time to see any errors
     } else {
-            toast.warning('Please enter at least 10 digits');
+      toast.warning('Please enter at least 10 digits');
     }
   };
 
@@ -183,7 +183,7 @@ export const QuantumDialer: React.FC<QuantumDialerProps> = ({ isOpen, onClose, o
     const cleaned = number.replace(/\D/g, '');
     const match = cleaned.match(/^(\d{0,3})(\d{0,3})(\d{0,4})$/);
     if (!match) return number;
-    
+
     const parts = match.slice(1).filter(Boolean);
     if (parts.length === 0) return '';
     if (parts.length === 1) return parts[0];
@@ -261,7 +261,8 @@ export const QuantumDialer: React.FC<QuantumDialerProps> = ({ isOpen, onClose, o
                   position: 'relative',
                   width: '100%',
                   height: '100%',
-                  background: 'linear-gradient(135deg, rgba(0, 20, 40, 0.9) 0%, rgba(0, 40, 80, 0.8) 100%)',
+                  background:
+                    'linear-gradient(135deg, rgba(0, 20, 40, 0.9) 0%, rgba(0, 40, 80, 0.8) 100%)',
                   backdropFilter: 'blur(20px)',
                   border: '2px solid rgba(0, 255, 255, 0.3)',
                   borderRadius: '32px',
@@ -279,14 +280,22 @@ export const QuantumDialer: React.FC<QuantumDialerProps> = ({ isOpen, onClose, o
                     left: 0,
                     right: 0,
                     height: '100%',
-                    background: 'linear-gradient(180deg, transparent 0%, rgba(0, 255, 255, 0.1) 50%, transparent 100%)',
+                    background:
+                      'linear-gradient(180deg, transparent 0%, rgba(0, 255, 255, 0.1) 50%, transparent 100%)',
                     animation: `${scanlineAnimation} 3s linear infinite`,
                     pointerEvents: 'none',
                   }}
                 />
 
                 {/* Header */}
-                <div style={{ padding: isMobile ? '16px' : '24px', textAlign: 'center', position: 'relative', flex: '0 0 auto' }}>
+                <div
+                  style={{
+                    padding: isMobile ? '16px' : '24px',
+                    textAlign: 'center',
+                    position: 'relative',
+                    flex: '0 0 auto',
+                  }}
+                >
                   <IconButton
                     onClick={onClose}
                     sx={{
@@ -364,7 +373,7 @@ export const QuantumDialer: React.FC<QuantumDialerProps> = ({ isOpen, onClose, o
                 {/* 3D Phone Visualizer - Show on desktop and hide on portrait mobile */}
                 {!isMobile && (
                   <div style={{ flex: '0 0 auto', padding: '8px 0' }}>
-                    <Phone3DVisualizer 
+                    <Phone3DVisualizer
                       isActive={phoneNumber.length > 0}
                       phoneNumber={phoneNumber}
                     />
@@ -586,8 +595,8 @@ export const QuantumDialer: React.FC<QuantumDialerProps> = ({ isOpen, onClose, o
                     </Typography>
                   </motion.button>
 
-                  <motion.div 
-                    whileHover={{ scale: 1.05 }} 
+                  <motion.div
+                    whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     style={{
                       width: '100%',
@@ -655,18 +664,19 @@ export const QuantumDialer: React.FC<QuantumDialerProps> = ({ isOpen, onClose, o
                       sx={{
                         width: 80,
                         height: 80,
-                        background: phoneNumber.length >= 10
-                          ? 'linear-gradient(135deg, rgba(0, 255, 0, 0.3) 0%, rgba(0, 255, 0, 0.1) 100%)'
-                          : 'rgba(100, 100, 100, 0.1)',
+                        background:
+                          phoneNumber.length >= 10
+                            ? 'linear-gradient(135deg, rgba(0, 255, 0, 0.3) 0%, rgba(0, 255, 0, 0.1) 100%)'
+                            : 'rgba(100, 100, 100, 0.1)',
                         border: `2px solid ${phoneNumber.length >= 10 ? 'rgba(0, 255, 0, 0.5)' : 'rgba(100, 100, 100, 0.3)'}`,
                         color: phoneNumber.length >= 10 ? '#00FF00' : '#666666',
                         '&:hover': {
-                          background: phoneNumber.length >= 10
-                            ? 'rgba(0, 255, 0, 0.2)'
-                            : 'rgba(100, 100, 100, 0.1)',
-                          boxShadow: phoneNumber.length >= 10
-                            ? '0 0 30px rgba(0, 255, 0, 0.5)'
-                            : 'none',
+                          background:
+                            phoneNumber.length >= 10
+                              ? 'rgba(0, 255, 0, 0.2)'
+                              : 'rgba(100, 100, 100, 0.1)',
+                          boxShadow:
+                            phoneNumber.length >= 10 ? '0 0 30px rgba(0, 255, 0, 0.5)' : 'none',
                         },
                         '&:disabled': {
                           color: '#666666',

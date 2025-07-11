@@ -99,46 +99,55 @@ export const DigitalRolodex: React.FC<DigitalRolodexProps> = ({
   }, []);
 
   // Voice announcement function
-  const announceContact = useCallback((contact: Contact) => {
-    if (!voiceEnabled || !speechRef.current) return;
-    
-    // Cancel any ongoing speech
-    window.speechSynthesis.cancel();
-    
-    // Announce contact name
-    speechRef.current.text = contact.name;
-    window.speechSynthesis.speak(speechRef.current);
-  }, [voiceEnabled]);
+  const announceContact = useCallback(
+    (contact: Contact) => {
+      if (!voiceEnabled || !speechRef.current) return;
+
+      // Cancel any ongoing speech
+      window.speechSynthesis.cancel();
+
+      // Announce contact name
+      speechRef.current.text = contact.name;
+      window.speechSynthesis.speak(speechRef.current);
+    },
+    [voiceEnabled]
+  );
 
   // Handle scroll events
-  const handleScroll = useCallback((scrollInfo: { scrollOffset: number }) => {
-    const newIndex = Math.floor(scrollInfo.scrollOffset / ITEM_HEIGHT);
-    
-    if (newIndex !== currentScrollIndex && processedContacts[newIndex]) {
-      setCurrentScrollIndex(newIndex);
-      announceContact(processedContacts[newIndex]);
-    }
-  }, [currentScrollIndex, processedContacts, announceContact]);
+  const handleScroll = useCallback(
+    (scrollInfo: { scrollOffset: number }) => {
+      const newIndex = Math.floor(scrollInfo.scrollOffset / ITEM_HEIGHT);
+
+      if (newIndex !== currentScrollIndex && processedContacts[newIndex]) {
+        setCurrentScrollIndex(newIndex);
+        announceContact(processedContacts[newIndex]);
+      }
+    },
+    [currentScrollIndex, processedContacts, announceContact]
+  );
 
   // Jump to letter
-  const jumpToLetter = useCallback((letter: string) => {
-    const index = letterIndices[letter];
-    if (index !== undefined && listRef.current) {
-      listRef.current.scrollToItem(index, 'start');
-      setSelectedLetter(letter);
-      
-      // Announce the letter and first contact
-      if (voiceEnabled && processedContacts[index]) {
-        window.speechSynthesis.cancel();
-        if (speechRef.current) {
-          speechRef.current.text = `${letter}. ${processedContacts[index].name}`;
-          window.speechSynthesis.speak(speechRef.current);
+  const jumpToLetter = useCallback(
+    (letter: string) => {
+      const index = letterIndices[letter];
+      if (index !== undefined && listRef.current) {
+        listRef.current.scrollToItem(index, 'start');
+        setSelectedLetter(letter);
+
+        // Announce the letter and first contact
+        if (voiceEnabled && processedContacts[index]) {
+          window.speechSynthesis.cancel();
+          if (speechRef.current) {
+            speechRef.current.text = `${letter}. ${processedContacts[index].name}`;
+            window.speechSynthesis.speak(speechRef.current);
+          }
         }
+
+        setTimeout(() => setSelectedLetter(null), 1000);
       }
-      
-      setTimeout(() => setSelectedLetter(null), 1000);
-    }
-  }, [letterIndices, voiceEnabled, processedContacts]);
+    },
+    [letterIndices, voiceEnabled, processedContacts]
+  );
 
   // Row renderer
   const Row = ({ index, style }: { index: number; style: React.CSSProperties }) => {
@@ -267,148 +276,148 @@ export const DigitalRolodex: React.FC<DigitalRolodexProps> = ({
           position: 'relative',
         }}
       >
-      {/* Main Rolodex */}
-      <div
-        style={{
-          flex: 1,
-          display: 'flex',
-          flexDirection: 'column',
-          background: 'rgba(255, 255, 255, 0.05)',
-          backdropFilter: 'blur(10px)',
-          border: '1px solid rgba(255, 255, 255, 0.1)',
-          borderRadius: '24px',
-          overflow: 'hidden',
-        }}
-      >
-        {/* Search Header */}
-        <div style={{ padding: '24px', borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>
-          <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-            <TextField
-              fullWidth
-              placeholder="Search contacts..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIcon sx={{ color: 'rgba(255, 255, 255, 0.5)' }} />
-                  </InputAdornment>
-                ),
-                sx: {
-                  backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                  borderRadius: 2,
-                  fontSize: '1.1rem',
-                  '& input': {
-                    padding: '12px 8px',
+        {/* Main Rolodex */}
+        <div
+          style={{
+            flex: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            background: 'rgba(255, 255, 255, 0.05)',
+            backdropFilter: 'blur(10px)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            borderRadius: '24px',
+            overflow: 'hidden',
+          }}
+        >
+          {/* Search Header */}
+          <div style={{ padding: '24px', borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>
+            <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+              <TextField
+                fullWidth
+                placeholder="Search contacts..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon sx={{ color: 'rgba(255, 255, 255, 0.5)' }} />
+                    </InputAdornment>
+                  ),
+                  sx: {
+                    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                    borderRadius: 2,
+                    fontSize: '1.1rem',
+                    '& input': {
+                      padding: '12px 8px',
+                    },
                   },
-                },
-              }}
-            />
-            <IconButton
-              onClick={() => setVoiceEnabled(!voiceEnabled)}
-              sx={{
-                color: voiceEnabled ? 'primary.main' : 'rgba(255, 255, 255, 0.3)',
-                backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                '&:hover': {
-                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                },
-              }}
-              title={voiceEnabled ? 'Disable voice announcements' : 'Enable voice announcements'}
-            >
-              {voiceEnabled ? <VolumeUpIcon /> : <VolumeOffIcon />}
-            </IconButton>
-          </div>
-          <Typography
-            variant="body2"
-            sx={{
-              mt: 1,
-              color: 'rgba(255, 255, 255, 0.7)',
-              fontSize: '0.95rem',
-            }}
-          >
-            {processedContacts.length} of {contacts.length} contacts
-            {voiceEnabled && ' • Voice enabled'}
-          </Typography>
-        </div>
-
-        {/* Contact List */}
-        <div style={{ flex: 1, position: 'relative' }}>
-          <List
-            ref={listRef}
-            height={window.innerHeight - 200}
-            itemCount={processedContacts.length}
-            itemSize={ITEM_HEIGHT}
-            width="100%"
-            onScroll={handleScroll}
-          >
-            {Row}
-          </List>
-
-          {/* Letter Overlay */}
-          {selectedLetter && (
-            <div
-              style={{
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)',
-                fontSize: '5rem',
-                fontWeight: 700,
-                color: '#6366F1',
-                pointerEvents: 'none',
-                animation: 'fadeOut 1s forwards',
-              }}
-            >
-              {selectedLetter}
+                }}
+              />
+              <IconButton
+                onClick={() => setVoiceEnabled(!voiceEnabled)}
+                sx={{
+                  color: voiceEnabled ? 'primary.main' : 'rgba(255, 255, 255, 0.3)',
+                  backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                  '&:hover': {
+                    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                  },
+                }}
+                title={voiceEnabled ? 'Disable voice announcements' : 'Enable voice announcements'}
+              >
+                {voiceEnabled ? <VolumeUpIcon /> : <VolumeOffIcon />}
+              </IconButton>
             </div>
-          )}
-        </div>
-      </div>
-
-      {/* Alphabet Navigation */}
-      <div
-        style={{
-          width: '40px',
-          marginLeft: '16px',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          background: 'rgba(255, 255, 255, 0.05)',
-          backdropFilter: 'blur(10px)',
-          border: '1px solid rgba(255, 255, 255, 0.1)',
-          borderRadius: '24px',
-          padding: '16px 0',
-        }}
-      >
-        {ALPHABET.map((letter) => {
-          const hasContacts = !!letterIndices[letter];
-          return (
-            <Button
-              key={letter}
-              onClick={() => jumpToLetter(letter)}
-              disabled={!hasContacts}
+            <Typography
+              variant="body2"
               sx={{
-                minWidth: 'auto',
-                p: 0,
-                height: 24,
-                fontSize: '0.85rem',
-                fontWeight: 600,
-                color: hasContacts ? 'rgba(255, 255, 255, 0.7)' : 'rgba(255, 255, 255, 0.2)',
-                '&:hover': {
-                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                  color: 'white',
-                },
-                '&:disabled': {
-                  color: 'rgba(255, 255, 255, 0.2)',
-                },
+                mt: 1,
+                color: 'rgba(255, 255, 255, 0.7)',
+                fontSize: '0.95rem',
               }}
             >
-              {letter}
-            </Button>
-          );
-        })}
+              {processedContacts.length} of {contacts.length} contacts
+              {voiceEnabled && ' • Voice enabled'}
+            </Typography>
+          </div>
+
+          {/* Contact List */}
+          <div style={{ flex: 1, position: 'relative' }}>
+            <List
+              ref={listRef}
+              height={window.innerHeight - 200}
+              itemCount={processedContacts.length}
+              itemSize={ITEM_HEIGHT}
+              width="100%"
+              onScroll={handleScroll}
+            >
+              {Row}
+            </List>
+
+            {/* Letter Overlay */}
+            {selectedLetter && (
+              <div
+                style={{
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  fontSize: '5rem',
+                  fontWeight: 700,
+                  color: '#6366F1',
+                  pointerEvents: 'none',
+                  animation: 'fadeOut 1s forwards',
+                }}
+              >
+                {selectedLetter}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Alphabet Navigation */}
+        <div
+          style={{
+            width: '40px',
+            marginLeft: '16px',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            background: 'rgba(255, 255, 255, 0.05)',
+            backdropFilter: 'blur(10px)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            borderRadius: '24px',
+            padding: '16px 0',
+          }}
+        >
+          {ALPHABET.map((letter) => {
+            const hasContacts = !!letterIndices[letter];
+            return (
+              <Button
+                key={letter}
+                onClick={() => jumpToLetter(letter)}
+                disabled={!hasContacts}
+                sx={{
+                  minWidth: 'auto',
+                  p: 0,
+                  height: 24,
+                  fontSize: '0.85rem',
+                  fontWeight: 600,
+                  color: hasContacts ? 'rgba(255, 255, 255, 0.7)' : 'rgba(255, 255, 255, 0.2)',
+                  '&:hover': {
+                    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                    color: 'white',
+                  },
+                  '&:disabled': {
+                    color: 'rgba(255, 255, 255, 0.2)',
+                  },
+                }}
+              >
+                {letter}
+              </Button>
+            );
+          })}
+        </div>
       </div>
-    </div>
     </>
   );
 };

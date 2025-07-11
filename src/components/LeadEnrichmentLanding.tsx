@@ -1,15 +1,15 @@
 import React, { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Typography, 
-  Container, 
-  Button, 
+import {
+  Typography,
+  Container,
+  Button,
   Chip,
   Paper,
   Grid,
   Avatar,
-  LinearProgress
+  LinearProgress,
 } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
@@ -24,7 +24,9 @@ interface LeadEnrichmentLandingProps {
   isPublicMode?: boolean;
 }
 
-export const LeadEnrichmentLanding: React.FC<LeadEnrichmentLandingProps> = ({ isPublicMode = true }) => {
+export const LeadEnrichmentLanding: React.FC<LeadEnrichmentLandingProps> = ({
+  isPublicMode = true,
+}) => {
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [enrichmentCount] = useState(Math.floor(Math.random() * 500) + 2500);
@@ -41,9 +43,9 @@ export const LeadEnrichmentLanding: React.FC<LeadEnrichmentLandingProps> = ({ is
     accept: {
       'text/csv': ['.csv'],
       'application/vnd.ms-excel': ['.xls'],
-      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx']
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
     },
-    maxFiles: 1
+    maxFiles: 1,
   });
 
   const handleTryWithSampleData = () => {
@@ -58,29 +60,29 @@ export const LeadEnrichmentLanding: React.FC<LeadEnrichmentLandingProps> = ({ is
     {
       icon: <CheckCircleIcon />,
       title: 'Data Cleaning',
-      description: 'Remove duplicates, fix formatting, validate emails'
+      description: 'Remove duplicates, fix formatting, validate emails',
     },
     {
       icon: <TrendingUpIcon />,
       title: 'Lead Scoring',
-      description: 'AI-powered heat scores based on engagement'
+      description: 'AI-powered heat scores based on engagement',
     },
     {
       icon: <GroupIcon />,
       title: 'Smart Segmentation',
-      description: 'Identify champions, decision makers, quick wins'
+      description: 'Identify champions, decision makers, quick wins',
     },
     {
       icon: <AutoAwesomeIcon />,
       title: 'Instant Enrichment',
-      description: 'Company data, social presence, intent signals'
-    }
+      description: 'Company data, social presence, intent signals',
+    },
   ];
 
   const testimonials = [
     { name: 'Sarah J.', role: 'Sales Director', text: 'Found 3 hot leads I completely missed!' },
     { name: 'Mike R.', role: 'BDR', text: 'The heat score is scary accurate' },
-    { name: 'Lisa T.', role: 'VP Sales', text: 'Saved hours of manual research' }
+    { name: 'Lisa T.', role: 'VP Sales', text: 'Saved hours of manual research' },
   ];
 
   if (uploadedFile && !isProcessing) {
@@ -88,12 +90,14 @@ export const LeadEnrichmentLanding: React.FC<LeadEnrichmentLandingProps> = ({ is
   }
 
   return (
-    <div style={{ 
-      minHeight: '100vh', 
-      background: 'linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%)',
-      paddingTop: 64,
-      paddingBottom: 64
-    }}>
+    <div
+      style={{
+        minHeight: '100vh',
+        background: 'linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%)',
+        paddingTop: 64,
+        paddingBottom: 64,
+      }}
+    >
       <Container maxWidth="lg">
         {/* Hero Section */}
         <motion.div
@@ -102,15 +106,15 @@ export const LeadEnrichmentLanding: React.FC<LeadEnrichmentLandingProps> = ({ is
           transition={{ duration: 0.6 }}
         >
           <div style={{ textAlign: 'center', marginBottom: 48 }}>
-            <Typography 
-              variant="h2" 
+            <Typography
+              variant="h2"
               sx={{
                 fontWeight: 800,
                 background: 'linear-gradient(135deg, #FFFFFF 0%, #6366F1 50%, #EC4899 100%)',
                 backgroundClip: 'text',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
-                mb: 2
+                mb: 2,
               }}
             >
               Turn Your Messy Lead List Into Gold
@@ -118,15 +122,15 @@ export const LeadEnrichmentLanding: React.FC<LeadEnrichmentLandingProps> = ({ is
             <Typography variant="h5" color="text.secondary" sx={{ mb: 1 }}>
               In 30 Seconds or Less
             </Typography>
-            <Chip 
+            <Chip
               icon={<FlashOnIcon />}
               label={`${enrichmentCount.toLocaleString()} lists enriched today`}
-              sx={{ 
+              sx={{
                 background: 'rgba(99, 102, 241, 0.2)',
                 border: '1px solid rgba(99, 102, 241, 0.3)',
                 fontSize: '14px',
                 py: 2,
-                px: 1
+                px: 1,
               }}
             />
           </div>
@@ -144,20 +148,16 @@ export const LeadEnrichmentLanding: React.FC<LeadEnrichmentLandingProps> = ({ is
               p: 8,
               mb: 4,
               textAlign: 'center',
-              background: isDragActive 
-                ? 'rgba(99, 102, 241, 0.15)' 
-                : 'rgba(255, 255, 255, 0.03)',
+              background: isDragActive ? 'rgba(99, 102, 241, 0.15)' : 'rgba(255, 255, 255, 0.03)',
               border: '2px dashed',
-              borderColor: isDragActive 
-                ? 'rgba(99, 102, 241, 0.5)' 
-                : 'rgba(255, 255, 255, 0.2)',
+              borderColor: isDragActive ? 'rgba(99, 102, 241, 0.5)' : 'rgba(255, 255, 255, 0.2)',
               borderRadius: 4,
               cursor: 'pointer',
               transition: 'all 0.3s ease',
               '&:hover': {
                 background: 'rgba(99, 102, 241, 0.08)',
-                borderColor: 'rgba(99, 102, 241, 0.3)'
-              }
+                borderColor: 'rgba(99, 102, 241, 0.3)',
+              },
             }}
           >
             <input {...getInputProps()} />
@@ -182,8 +182,8 @@ export const LeadEnrichmentLanding: React.FC<LeadEnrichmentLandingProps> = ({ is
                   color: '#EC4899',
                   '&:hover': {
                     background: 'rgba(236, 72, 153, 0.2)',
-                    borderColor: '#EC4899'
-                  }
+                    borderColor: '#EC4899',
+                  },
                 }}
               >
                 Try with Sample Data
@@ -206,7 +206,7 @@ export const LeadEnrichmentLanding: React.FC<LeadEnrichmentLandingProps> = ({ is
                 zIndex: 9999,
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center'
+                justifyContent: 'center',
               }}
             >
               <div style={{ textAlign: 'center' }}>
@@ -231,18 +231,20 @@ export const LeadEnrichmentLanding: React.FC<LeadEnrichmentLandingProps> = ({ is
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.3 + index * 0.1 }}
               >
-                <Paper sx={{ 
-                  p: 3, 
-                  height: '100%',
-                  background: 'rgba(255, 255, 255, 0.03)',
-                  border: '1px solid rgba(255, 255, 255, 0.1)',
-                  transition: 'all 0.3s ease',
-                  '&:hover': {
-                    background: 'rgba(99, 102, 241, 0.05)',
-                    borderColor: 'rgba(99, 102, 241, 0.2)',
-                    transform: 'translateY(-4px)'
-                  }
-                }}>
+                <Paper
+                  sx={{
+                    p: 3,
+                    height: '100%',
+                    background: 'rgba(255, 255, 255, 0.03)',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    transition: 'all 0.3s ease',
+                    '&:hover': {
+                      background: 'rgba(99, 102, 241, 0.05)',
+                      borderColor: 'rgba(99, 102, 241, 0.2)',
+                      transform: 'translateY(-4px)',
+                    },
+                  }}
+                >
                   <div style={{ color: '#6366F1', marginBottom: 16 }}>
                     {React.cloneElement(feature.icon, { sx: { fontSize: 40 } })}
                   </div>
@@ -278,9 +280,7 @@ export const LeadEnrichmentLanding: React.FC<LeadEnrichmentLandingProps> = ({ is
                     <Typography variant="body1" sx={{ mb: 2, fontStyle: 'italic' }}>
                       "{testimonial.text}"
                     </Typography>
-                    <Typography variant="subtitle2">
-                      {testimonial.name}
-                    </Typography>
+                    <Typography variant="subtitle2">{testimonial.name}</Typography>
                     <Typography variant="caption" color="text.secondary">
                       {testimonial.role}
                     </Typography>
@@ -297,16 +297,18 @@ export const LeadEnrichmentLanding: React.FC<LeadEnrichmentLandingProps> = ({ is
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.8 }}
         >
-          <div style={{ 
-            textAlign: 'center', 
-            paddingTop: 48,
-            paddingBottom: 48,
-            paddingLeft: 32,
-            paddingRight: 32,
-            background: 'rgba(99, 102, 241, 0.1)',
-            borderRadius: 16,
-            border: '1px solid rgba(99, 102, 241, 0.2)'
-          }}>
+          <div
+            style={{
+              textAlign: 'center',
+              paddingTop: 48,
+              paddingBottom: 48,
+              paddingLeft: 32,
+              paddingRight: 32,
+              background: 'rgba(99, 102, 241, 0.1)',
+              borderRadius: 16,
+              border: '1px solid rgba(99, 102, 241, 0.2)',
+            }}
+          >
             <Typography variant="h5" sx={{ mb: 2, fontWeight: 600 }}>
               No Credit Card Required • Free Forever Plan
             </Typography>

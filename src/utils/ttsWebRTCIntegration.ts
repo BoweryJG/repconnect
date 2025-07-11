@@ -20,7 +20,7 @@ interface AudioProcessor {
 export class TTSWebRTCIntegration extends EventEmitter {
   private audioProcessors: Map<string, AudioProcessor> = new Map();
   private activeStreams: Map<string, MediaStream> = new Map();
-  
+
   constructor() {
     super();
     this.setupEventHandlers();
@@ -49,8 +49,13 @@ export class TTSWebRTCIntegration extends EventEmitter {
    * Set up TTS integration for a WebRTC session
    */
   async setupTTSForSession(config: TTSWebRTCConfig): Promise<void> {
-    const { sessionId, agentId, enableEchoCancellation = true, enableNoiseSuppression = true } = config;
-    
+    const {
+      sessionId,
+      agentId,
+      enableEchoCancellation = true,
+      enableNoiseSuppression = true,
+    } = config;
+
     try {
       // Get the WebRTC session
       const session = webRTCVoiceService.getSession(sessionId);
@@ -61,7 +66,7 @@ export class TTSWebRTCIntegration extends EventEmitter {
       // Create audio processing pipeline
       const processor = await this.createAudioProcessor({
         echoCancellation: enableEchoCancellation,
-        noiseSuppression: enableNoiseSuppression
+        noiseSuppression: enableNoiseSuppression,
       });
 
       this.audioProcessors.set(sessionId, processor);
@@ -71,8 +76,8 @@ export class TTSWebRTCIntegration extends EventEmitter {
 
       // Replace or mix the audio stream in the peer connection
       const senders = session.peerConnection.getSenders();
-      const audioSender = senders.find(sender => sender.track?.kind === 'audio');
-      
+      const audioSender = senders.find((sender) => sender.track?.kind === 'audio');
+
       if (audioSender && processor.stream.getAudioTracks().length > 0) {
         await audioSender.replaceTrack(processor.stream.getAudioTracks()[0]);
       }
@@ -92,14 +97,14 @@ export class TTSWebRTCIntegration extends EventEmitter {
     noiseSuppression: boolean;
   }): Promise<AudioProcessor> {
     const context = new AudioContext({ sampleRate: 44100 });
-    
+
     // Create gain node for volume control
     const gainNode = context.createGain();
     gainNode.gain.value = 1.0;
 
     // Create destination for WebRTC
     const destination = context.createMediaStreamDestination();
-    
+
     // Connect gain to destination
     gainNode.connect(destination);
 
@@ -113,7 +118,7 @@ export class TTSWebRTCIntegration extends EventEmitter {
       source,
       destination,
       gainNode,
-      stream: destination.stream
+      stream: destination.stream,
     };
   }
 
@@ -121,24 +126,24 @@ export class TTSWebRTCIntegration extends EventEmitter {
    * Inject TTS audio into WebRTC stream
    */
   private async injectAudioToWebRTC(
-    sessionId: string, 
+    sessionId: string,
     audioData: ArrayBuffer,
     processor: AudioProcessor
   ): Promise<void> {
     try {
       // Convert ArrayBuffer to AudioBuffer
       const audioBuffer = await processor.context.decodeAudioData(audioData.slice(0));
-      
+
       // Create buffer source
       const bufferSource = processor.context.createBufferSource();
       bufferSource.buffer = audioBuffer;
-      
+
       // Connect to gain node
       bufferSource.connect(processor.gainNode);
-      
+
       // Schedule playback
       bufferSource.start();
-      
+
       // Clean up when done
       bufferSource.onended = () => {
         bufferSource.disconnect();
@@ -146,7 +151,7 @@ export class TTSWebRTCIntegration extends EventEmitter {
 
       this.emit('audio-injected', { sessionId, duration: audioBuffer.duration });
     } catch (error) {
-      console.error('Error injecting audio:', error);
+      // Error injecting audio
       this.emit('error', { type: 'audio-injection', error, sessionId });
     }
   }
@@ -163,7 +168,7 @@ export class TTSWebRTCIntegration extends EventEmitter {
 
       // Process text through ElevenLabs TTS
       await elevenLabsTTS.processTextForWebRTC(text, sessionId, agentId);
-      
+
       this.emit('text-processed', { sessionId, textLength: text.length });
     } catch (error) {
       this.emit('error', { type: 'speak-text', error, sessionId });
@@ -205,7 +210,7 @@ export class TTSWebRTCIntegration extends EventEmitter {
 
     const stream = this.activeStreams.get(sessionId);
     if (stream) {
-      stream.getTracks().forEach(track => track.stop());
+      stream.getTracks().forEach((track) => track.stop());
       this.activeStreams.delete(sessionId);
     }
 
@@ -219,7 +224,7 @@ export class TTSWebRTCIntegration extends EventEmitter {
     for (const sessionId of this.audioProcessors.keys()) {
       this.cleanupSession(sessionId);
     }
-    
+
     this.removeAllListeners();
   }
 
@@ -252,7 +257,7 @@ export async function enableTTSForWebRTCCall(
     sessionId,
     agentId,
     enableEchoCancellation: true,
-    enableNoiseSuppression: true
+    enableNoiseSuppression: true,
   });
 
   // Speak text through TTS

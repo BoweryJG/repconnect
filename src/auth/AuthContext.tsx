@@ -78,57 +78,60 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, []);
 
   // Create or update user profile
-  const createOrUpdateProfile = useCallback(async (user: User) => {
-    try {
-      const existingProfile = await fetchProfile(user.id);
-      
-      if (!existingProfile) {
-        // Create new profile
-        const { data, error } = await supabase
-          .from('user_profiles')
-          .insert({
-            user_id: user.id,
-            full_name: user.user_metadata?.full_name || user.email?.split('@')[0],
-            avatar_url: user.user_metadata?.avatar_url,
-            subscription: {
-              tier: 'free',
-              status: 'active'
-            }
-          })
-          .select()
-          .single();
+  const createOrUpdateProfile = useCallback(
+    async (user: User) => {
+      try {
+        const existingProfile = await fetchProfile(user.id);
 
-        if (error) {
-          logger.error('Error creating profile:', error);
-          return null;
+        if (!existingProfile) {
+          // Create new profile
+          const { data, error } = await supabase
+            .from('user_profiles')
+            .insert({
+              user_id: user.id,
+              full_name: user.user_metadata?.full_name || user.email?.split('@')[0],
+              avatar_url: user.user_metadata?.avatar_url,
+              subscription: {
+                tier: 'free',
+                status: 'active',
+              },
+            })
+            .select()
+            .single();
+
+          if (error) {
+            logger.error('Error creating profile:', error);
+            return null;
+          }
+
+          return data as UserProfile;
+        } else {
+          // Update existing profile
+          const { data, error } = await supabase
+            .from('user_profiles')
+            .update({
+              full_name: user.user_metadata?.full_name || existingProfile.full_name,
+              avatar_url: user.user_metadata?.avatar_url || existingProfile.avatar_url,
+              updated_at: new Date().toISOString(),
+            })
+            .eq('user_id', user.id)
+            .select()
+            .single();
+
+          if (error) {
+            logger.error('Error updating profile:', error);
+            return existingProfile;
+          }
+
+          return data as UserProfile;
         }
-
-        return data as UserProfile;
-      } else {
-        // Update existing profile
-        const { data, error } = await supabase
-          .from('user_profiles')
-          .update({
-            full_name: user.user_metadata?.full_name || existingProfile.full_name,
-            avatar_url: user.user_metadata?.avatar_url || existingProfile.avatar_url,
-            updated_at: new Date().toISOString()
-          })
-          .eq('user_id', user.id)
-          .select()
-          .single();
-
-        if (error) {
-          logger.error('Error updating profile:', error);
-          return existingProfile;
-        }
-
-        return data as UserProfile;
+      } catch (error) {
+        logger.error('Error in createOrUpdateProfile:', error);
+        return null;
       }
-    } catch (error) {
-      logger.error('Error in createOrUpdateProfile:', error);
-      return null;
-    }
-  }, [fetchProfile]);
+    },
+    [fetchProfile]
+  );
 
   // Initialize auth state
   useEffect(() => {
@@ -136,7 +139,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       try {
         // First, check if we have a cookie session
         const cookieUser = await authService.getCurrentUser();
-        
+
         if (cookieUser) {
           setUser(cookieUser);
           const userProfile = await fetchProfile(cookieUser.id);
@@ -145,14 +148,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           }
         } else {
           // Fallback to Supabase session
-          const { data: { session: currentSession } } = await supabase.auth.getSession();
-          
+          const {
+            data: { session: currentSession },
+          } = await supabase.auth.getSession();
+
           if (currentSession?.user) {
             // Exchange Supabase session for cookie session
             await authService.loginWithCookies(currentSession);
             setSession(currentSession);
             setUser(currentSession.user);
-            
+
             const userProfile = await createOrUpdateProfile(currentSession.user);
             if (userProfile) {
               setProfile(userProfile);
@@ -169,14 +174,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     initializeAuth();
 
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (session?.user) {
         // Exchange new session for cookies
         await authService.loginWithCookies(session);
         setSession(session);
         setUser(session.user);
-        
+
         const userProfile = await createOrUpdateProfile(session.user);
         if (userProfile) {
           setProfile(userProfile);
@@ -237,8 +243,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           queryParams: {
             access_type: 'offline',
             prompt: 'consent',
-          }
-        }
+          },
+        },
       });
 
       if (error) {
@@ -267,7 +273,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // Refresh profile data
   const refreshProfile = useCallback(async () => {
     if (!user) return;
-    
+
     const userProfile = await fetchProfile(user.id);
     if (userProfile) {
       setProfile(userProfile);
@@ -294,13 +300,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     signOut,
     refreshProfile,
     showSessionWarning,
-    extendSession
+    extendSession,
   };
 
   return (
     <AuthContext.Provider value={value}>
       {children}
-      <SessionWarning 
+      <SessionWarning
         open={showSessionWarning}
         timeLeft={sessionTimeLeft}
         onExtend={extendSession}

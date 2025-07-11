@@ -4,11 +4,7 @@ export const easeInOutCubic = (t: number): number => {
 
 export const easeOutElastic = (t: number): number => {
   const c4 = (2 * Math.PI) / 3;
-  return t === 0
-    ? 0
-    : t === 1
-    ? 1
-    : Math.pow(2, -10 * t) * Math.sin((t * 10 - 0.75) * c4) + 1;
+  return t === 0 ? 0 : t === 1 ? 1 : Math.pow(2, -10 * t) * Math.sin((t * 10 - 0.75) * c4) + 1;
 };
 
 export const generateKeyframes = (name: string, keyframes: string): string => {
@@ -88,25 +84,24 @@ export const particleAnimation = generateKeyframes(
   `
 );
 
-export const generateGradientAnimation = (
-  gradientId: string,
-  colors: string[]
-): string => {
-  const stops = colors.map((color, i) => {
-    const offset = (i / (colors.length - 1)) * 100;
-    return `${offset}% { stop-color: ${color}; }`;
-  }).join(' ');
-  
+export const generateGradientAnimation = (gradientId: string, colors: string[]): string => {
+  const stops = colors
+    .map((color, i) => {
+      const offset = (i / (colors.length - 1)) * 100;
+      return `${offset}% { stop-color: ${color}; }`;
+    })
+    .join(' ');
+
   return generateKeyframes(`gradient-${gradientId}`, stops);
 };
 
-export const generatePathMorphAnimation = (
-  paths: string[]
-): string => {
-  const steps = paths.map((path, i) => {
-    const percentage = (i / (paths.length - 1)) * 100;
-    return `${percentage}% { d: path('${path}'); }`;
-  }).join(' ');
-  
+export const generatePathMorphAnimation = (paths: string[]): string => {
+  const steps = paths
+    .map((path, i) => {
+      const percentage = (i / (paths.length - 1)) * 100;
+      return `${percentage}% { d: path('${path}'); }`;
+    })
+    .join(' ');
+
   return generateKeyframes('pathMorph', steps);
 };

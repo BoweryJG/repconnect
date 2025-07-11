@@ -14,7 +14,7 @@ export const ElevenLabsTTSDemo: React.FC = () => {
 
   useEffect(() => {
     // Initialize TTS service
-    elevenLabsTTS.initialize().catch(err => {
+    elevenLabsTTS.initialize().catch((err) => {
       setError('Failed to initialize TTS service: ' + err.message);
     });
 
@@ -109,12 +109,8 @@ export const ElevenLabsTTSDemo: React.FC = () => {
   return (
     <div className="p-6 max-w-4xl mx-auto bg-white rounded-lg shadow-lg">
       <h2 className="text-2xl font-bold mb-6">ElevenLabs TTS Service Demo</h2>
-      
-      {error && (
-        <div className="mb-4 p-4 bg-red-100 text-red-700 rounded-lg">
-          {error}
-        </div>
-      )}
+
+      {error && <div className="mb-4 p-4 bg-red-100 text-red-700 rounded-lg">{error}</div>}
 
       <div className="mb-6">
         <label className="block text-sm font-medium mb-2">Select Agent Voice:</label>

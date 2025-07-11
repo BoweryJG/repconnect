@@ -39,19 +39,19 @@ export interface HarveyModes {
   enabled: boolean; // Master on/off switch
   voiceEnabled: boolean; // Voice connection on/off
   coachingMode: 'off' | 'gentle' | 'normal' | 'aggressive' | 'brutal'; // Coaching intensity
-  
+
   // Feature Modes
   dailyVerdicts: boolean; // Daily performance reviews
   realTimeCoaching: boolean; // In-call whisper coaching
   publicShaming: boolean; // Public failure announcements
   battleMode: boolean; // Competitive calling battles
   afterDarkMode: boolean; // Enhanced late-night features
-  
+
   // Interaction Modes
   voiceCommands: boolean; // Voice control enabled
   autoIntervention: boolean; // Automatic coaching triggers
   motivationalInsults: boolean; // Harvey's signature style
-  
+
   // Performance Modes
   strictMode: boolean; // No mercy on failures
   trainingWheels: boolean; // Gentler for new reps
@@ -64,10 +64,10 @@ interface HarveyControlPanelProps {
   embedded?: boolean; // For embedding in Harvey Syndicate
 }
 
-export const HarveyControlPanel: React.FC<HarveyControlPanelProps> = ({ 
-  open = true, 
+export const HarveyControlPanel: React.FC<HarveyControlPanelProps> = ({
+  open = true,
   onClose,
-  embedded = false 
+  embedded = false,
 }) => {
   const [expanded, setExpanded] = useState(!embedded);
   const [modes, setModes] = useState<HarveyModes>({
@@ -86,7 +86,7 @@ export const HarveyControlPanel: React.FC<HarveyControlPanelProps> = ({
     trainingWheels: false,
     eliteOnly: false,
   });
-  
+
   const [directMessage, setDirectMessage] = useState('');
   const [harveyResponse, setHarveyResponse] = useState('');
   const [isListening, setIsListening] = useState(false);
@@ -102,10 +102,10 @@ export const HarveyControlPanel: React.FC<HarveyControlPanelProps> = ({
   const handleModeChange = (mode: keyof HarveyModes, value: any) => {
     const newModes = { ...modes, [mode]: value };
     setModes(newModes);
-    
+
     // Save to localStorage
     localStorage.setItem('harveyModes', JSON.stringify(newModes));
-    
+
     // Apply changes to Harvey
     applyModeChanges(mode, value);
   };
@@ -127,15 +127,15 @@ export const HarveyControlPanel: React.FC<HarveyControlPanelProps> = ({
           setHarveyResponse("I'm back. Try not to disappoint me this time.");
         }
         break;
-        
+
       case 'voiceEnabled':
         harveyWebRTC.setMuted(!value);
         break;
-        
+
       case 'coachingMode':
         await harveyService.updateCoachingMode(value);
         break;
-        
+
       default:
         // Update other modes via API
         await harveyService.updateModes({ [mode]: value });
@@ -144,9 +144,9 @@ export const HarveyControlPanel: React.FC<HarveyControlPanelProps> = ({
 
   const sendDirectMessage = async () => {
     if (!directMessage.trim()) return;
-    
+
     setHarveyResponse('...');
-    
+
     try {
       const response = await harveyService.submitVoiceCommand(directMessage);
       setHarveyResponse(response.response);
@@ -169,11 +169,16 @@ export const HarveyControlPanel: React.FC<HarveyControlPanelProps> = ({
 
   const getCoachingModeColor = (mode: string) => {
     switch (mode) {
-      case 'gentle': return '#10B981';
-      case 'normal': return '#3B82F6';
-      case 'aggressive': return '#F59E0B';
-      case 'brutal': return '#EF4444';
-      default: return '#6B7280';
+      case 'gentle':
+        return '#10B981';
+      case 'normal':
+        return '#3B82F6';
+      case 'aggressive':
+        return '#F59E0B';
+      case 'brutal':
+        return '#EF4444';
+      default:
+        return '#6B7280';
     }
   };
 
@@ -213,29 +218,38 @@ export const HarveyControlPanel: React.FC<HarveyControlPanelProps> = ({
     },
   ];
 
-  const applyPreset = (preset: typeof quickPresets[0]) => {
+  const applyPreset = (preset: (typeof quickPresets)[0]) => {
     const newModes = { ...modes, ...preset.settings };
     setModes(newModes);
     localStorage.setItem('harveyModes', JSON.stringify(newModes));
-    
+
     // Apply all changes
     Object.entries(preset.settings).forEach(([key, value]) => {
       applyModeChanges(key as keyof HarveyModes, value);
     });
-    
-    setHarveyResponse(`${preset.name} activated. ${
-      preset.name === 'Maximum Harvey' 
-        ? "Hope you're ready for the real deal." 
-        : preset.name === 'Rookie Mode'
-        ? "Training wheels are for children, but fine."
-        : "A balanced approach. Acceptable."
-    }`);
+
+    setHarveyResponse(
+      `${preset.name} activated. ${
+        preset.name === 'Maximum Harvey'
+          ? "Hope you're ready for the real deal."
+          : preset.name === 'Rookie Mode'
+            ? 'Training wheels are for children, but fine.'
+            : 'A balanced approach. Acceptable.'
+      }`
+    );
   };
 
   const content = (
     <div style={{ padding: embedded ? '16px' : '24px' }}>
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          marginBottom: '24px',
+        }}
+      >
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
           <Gavel sx={{ fontSize: 28, color: '#FFD700' }} />
           <Typography variant="h5" sx={{ fontWeight: 700 }}>
@@ -269,9 +283,7 @@ export const HarveyControlPanel: React.FC<HarveyControlPanelProps> = ({
           label={
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <PowerSettingsNew />
-              <Typography variant="h6">
-                Harvey {modes.enabled ? 'Active' : 'Offline'}
-              </Typography>
+              <Typography variant="h6">Harvey {modes.enabled ? 'Active' : 'Offline'}</Typography>
             </div>
           }
         />
@@ -357,7 +369,13 @@ export const HarveyControlPanel: React.FC<HarveyControlPanelProps> = ({
           <Typography variant="subtitle2" sx={{ mb: 2 }}>
             Features
           </Typography>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '8px' }}>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+              gap: '8px',
+            }}
+          >
             <FormControlLabel
               control={
                 <Switch
@@ -374,7 +392,7 @@ export const HarveyControlPanel: React.FC<HarveyControlPanelProps> = ({
                 </div>
               }
             />
-            
+
             <FormControlLabel
               control={
                 <Switch
@@ -391,7 +409,7 @@ export const HarveyControlPanel: React.FC<HarveyControlPanelProps> = ({
                 </div>
               }
             />
-            
+
             <FormControlLabel
               control={
                 <Switch
@@ -408,7 +426,7 @@ export const HarveyControlPanel: React.FC<HarveyControlPanelProps> = ({
                 </div>
               }
             />
-            
+
             <FormControlLabel
               control={
                 <Switch
@@ -425,7 +443,7 @@ export const HarveyControlPanel: React.FC<HarveyControlPanelProps> = ({
                 </div>
               }
             />
-            
+
             <FormControlLabel
               control={
                 <Switch
@@ -450,7 +468,7 @@ export const HarveyControlPanel: React.FC<HarveyControlPanelProps> = ({
                 </div>
               }
             />
-            
+
             <FormControlLabel
               control={
                 <Switch
@@ -467,7 +485,7 @@ export const HarveyControlPanel: React.FC<HarveyControlPanelProps> = ({
                 </div>
               }
             />
-            
+
             <FormControlLabel
               control={
                 <Switch
@@ -484,7 +502,7 @@ export const HarveyControlPanel: React.FC<HarveyControlPanelProps> = ({
                 </div>
               }
             />
-            
+
             <FormControlLabel
               control={
                 <Switch
@@ -511,7 +529,7 @@ export const HarveyControlPanel: React.FC<HarveyControlPanelProps> = ({
           <Typography variant="subtitle2" sx={{ mb: 2 }}>
             Talk to Harvey
           </Typography>
-          
+
           <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
             <TextField
               fullWidth
@@ -555,11 +573,11 @@ export const HarveyControlPanel: React.FC<HarveyControlPanelProps> = ({
               <Mic sx={{ color: isListening ? '#EC4899' : 'inherit' }} />
             </IconButton>
           </div>
-          
+
           {harveyResponse && (
-            <Alert 
-              severity="info" 
-              sx={{ 
+            <Alert
+              severity="info"
+              sx={{
                 background: 'rgba(255, 215, 0, 0.1)',
                 border: '1px solid rgba(255, 215, 0, 0.3)',
                 '& .MuiAlert-icon': {
@@ -588,15 +606,15 @@ export const HarveyControlPanel: React.FC<HarveyControlPanelProps> = ({
           </Typography>
           <Typography variant="body2" sx={{ mt: 1 }}>
             Harvey is {modes.enabled ? 'active' : 'offline'} in{' '}
-            <Chip 
-              label={modes.coachingMode?.toUpperCase() || 'OFF'} 
-              size="small" 
-              sx={{ 
+            <Chip
+              label={modes.coachingMode?.toUpperCase() || 'OFF'}
+              size="small"
+              sx={{
                 bgcolor: getCoachingModeColor(modes.coachingMode || 'off'),
                 height: 20,
-              }} 
+              }}
             />{' '}
-            mode with {Object.values(modes).filter(v => v === true).length - 2} features enabled.
+            mode with {Object.values(modes).filter((v) => v === true).length - 2} features enabled.
           </Typography>
         </div>
       </Collapse>

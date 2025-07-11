@@ -1,0 +1,225 @@
+{
+  "version": "1.0.0",
+  "health_checks": {
+    "endpoints": {
+      "basic": {
+        "path": "/health",
+        "interval": 30000,
+        "timeout": 5000,
+        "expected_status": 200,
+        "expected_response": {
+          "status": "healthy"
+        }
+      },
+      "detailed": {
+        "path": "/api/health",
+        "interval": 60000,
+        "timeout": 10000,
+        "expected_status": [200, 503],
+        "critical": true
+      },
+      "liveness": {
+        "path": "/health/live",
+        "interval": 10000,
+        "timeout": 3000,
+        "expected_status": 200,
+        "kubernetes": {
+          "probe_type": "liveness",
+          "initial_delay": 30,
+          "period": 10,
+          "failure_threshold": 3
+        }
+      },
+      "readiness": {
+        "path": "/health/ready",
+        "interval": 15000,
+        "timeout": 5000,
+        "expected_status": 200,
+        "kubernetes": {
+          "probe_type": "readiness",
+          "initial_delay": 10,
+          "period": 15,
+          "failure_threshold": 3,
+          "success_threshold": 1
+        }
+      },
+      "startup": {
+        "path": "/health/startup",
+        "interval": 5000,
+        "timeout": 3000,
+        "expected_status": 200,
+        "kubernetes": {
+          "probe_type": "startup",
+          "initial_delay": 0,
+          "period": 5,
+          "failure_threshold": 30
+        }
+      }
+    },
+    "services": {
+      "database": {
+        "name": "PostgreSQL (Supabase)",
+        "type": "database",
+        "check_query": "SELECT 1",
+        "timeout": 5000,
+        "critical": true,
+        "pool_checks": {
+          "min_idle_connections": 2,
+          "max_usage_percent": 90
+        }
+      },
+      "redis": {
+        "name": "Redis Cache",
+        "type": "cache",
+        "check_command": "PING",
+        "expected_response": "PONG",
+        "timeout": 3000,
+        "critical": false
+      },
+      "twilio": {
+        "name": "Twilio API",
+        "type": "external_api",
+        "check_endpoint": "https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}.json",
+        "timeout": 10000,
+        "critical": true,
+        "rate_limit": {
+          "checks_per_minute": 2
+        }
+      },
+      "deepgram": {
+        "name": "Deepgram API",
+        "type": "external_api",
+        "check_endpoint": "https://api.deepgram.com/v1/projects",
+        "timeout": 10000,
+        "critical": false,
+        "rate_limit": {
+          "checks_per_minute": 1
+        }
+      },
+      "openai": {
+        "name": "OpenAI API",
+        "type": "external_api",
+        "check_endpoint": "https://api.openai.com/v1/models",
+        "timeout": 15000,
+        "critical": false,
+        "rate_limit": {
+          "checks_per_minute": 1
+        }
+      }
+    },
+    "thresholds": {
+      "response_time": {
+        "healthy": 1000,
+        "degraded": 3000,
+        "unhealthy": 5000
+      },
+      "error_rate": {
+        "healthy": 0.01,
+        "degraded": 0.05,
+        "unhealthy": 0.1
+      },
+      "cpu_usage": {
+        "healthy": 70,
+        "degraded": 85,
+        "unhealthy": 95
+      },
+      "memory_usage": {
+        "healthy": 75,
+        "degraded": 85,
+        "unhealthy": 95
+      },
+      "disk_usage": {
+        "healthy": 70,
+        "degraded": 80,
+        "unhealthy": 90
+      }
+    },
+    "dependencies": {
+      "checks": [
+        {
+          "name": "Frontend Assets",
+          "type": "http",
+          "url": "${FRONTEND_URL}/static/js/main.js",
+          "method": "HEAD",
+          "expected_status": 200,
+          "timeout": 5000
+        },
+        {
+          "name": "Backend API",
+          "type": "http",
+          "url": "${BACKEND_URL}/api/health",
+          "method": "GET",
+          "expected_status": 200,
+          "timeout": 5000,
+          "critical": true
+        },
+        {
+          "name": "Harvey Service",
+          "type": "http",
+          "url": "${HARVEY_API_URL}/status",
+          "method": "GET",
+          "expected_status": 200,
+          "timeout": 10000
+        },
+        {
+          "name": "WebSocket Service",
+          "type": "websocket",
+          "url": "${HARVEY_WS_URL}",
+          "timeout": 5000,
+          "ping_interval": 30000
+        }
+      ]
+    },
+    "aggregation": {
+      "rules": [
+        {
+          "name": "Overall System Health",
+          "components": ["database", "api", "frontend"],
+          "calculation": "weighted_average",
+          "weights": {
+            "database": 0.4,
+            "api": 0.4,
+            "frontend": 0.2
+          }
+        },
+        {
+          "name": "Critical Services",
+          "components": ["database", "twilio", "authentication"],
+          "calculation": "all_healthy",
+          "failure_impact": "system_down"
+        },
+        {
+          "name": "Performance Health",
+          "metrics": ["response_time", "error_rate", "throughput"],
+          "calculation": "composite_score"
+        }
+      ]
+    },
+    "reporting": {
+      "status_page": {
+        "enabled": true,
+        "public": true,
+        "url": "/status",
+        "update_interval": 60000,
+        "history_retention": "30d"
+      },
+      "dashboards": {
+        "grafana": {
+          "enabled": true,
+          "datasource": "prometheus",
+          "dashboard_ids": ["system-health", "api-performance", "business-metrics"]
+        },
+        "datadog": {
+          "enabled": false,
+          "api_key": "${DATADOG_API_KEY}",
+          "app_key": "${DATADOG_APP_KEY}"
+        }
+      },
+      "notifications": {
+        "status_changes": true,
+        "degraded_performance": true,
+        "scheduled_maintenance": true
+      }
+    }
+  }
+}

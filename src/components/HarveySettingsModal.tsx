@@ -20,10 +20,7 @@ interface HarveySettingsModalProps {
   onClose: () => void;
 }
 
-export const HarveySettingsModal: React.FC<HarveySettingsModalProps> = ({
-  open,
-  onClose,
-}) => {
+export const HarveySettingsModal: React.FC<HarveySettingsModalProps> = ({ open, onClose }) => {
   const [testingConnection, setTestingConnection] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState<string>('');
   const { subscriptionTier } = useStore();
@@ -31,7 +28,7 @@ export const HarveySettingsModal: React.FC<HarveySettingsModalProps> = ({
   const testHarveyConnection = async () => {
     setTestingConnection(true);
     setConnectionStatus('Connecting to Harvey...');
-    
+
     try {
       await harveyWebRTC.connect({
         userId: 'test-user',
@@ -140,7 +137,8 @@ export const HarveySettingsModal: React.FC<HarveySettingsModalProps> = ({
                 }}
               >
                 <Typography variant="body2">
-                  Harvey is available on Premium plans. Upgrade to unlock real-time AI coaching during calls.
+                  Harvey is available on Premium plans. Upgrade to unlock real-time AI coaching
+                  during calls.
                 </Typography>
               </Alert>
             )}

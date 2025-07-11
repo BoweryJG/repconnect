@@ -1,39 +1,12 @@
 import express from 'express';
-import { createClient } from '@supabase/supabase-js';
 import dotenv from 'dotenv';
 import logger from '../utils/logger.js';
+import { databaseService, tables } from '../src/services/databaseService.js';
 
 // Load environment variables
 dotenv.config();
 
 const router = express.Router();
-
-// Initialize Supabase client with error handling
-let supabase;
-try {
-  if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_KEY) {
-    console.warn('Warning: Supabase environment variables not found. Using placeholder values for testing.');
-    supabase = createClient(
-      process.env.SUPABASE_URL || 'https://placeholder.supabase.co',
-      process.env.SUPABASE_SERVICE_KEY || 'placeholder-key'
-    );
-  } else {
-    supabase = createClient(
-      process.env.SUPABASE_URL,
-      process.env.SUPABASE_SERVICE_KEY
-    );
-  }
-} catch (error) {
-  console.error('Error initializing Supabase client:', error);
-  // Create a mock client for testing
-  supabase = {
-    from: () => ({
-      select: () => ({ eq: () => ({ single: () => Promise.resolve({ data: null, error: 'Supabase not configured' }) }) }),
-      insert: () => Promise.resolve({ data: null, error: 'Supabase not configured' }),
-      update: () => ({ eq: () => Promise.resolve({ data: null, error: 'Supabase not configured' }) })
-    })
-  };
-}
 
 /**
  * Start a new coaching session

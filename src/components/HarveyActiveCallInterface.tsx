@@ -58,7 +58,9 @@ export const HarveyActiveCallInterface: React.FC<HarveyActiveCallInterfaceProps>
   const [isExpanded, setIsExpanded] = useState(true);
   const [isMuted, setIsMuted] = useState(false);
   const [harveyVolume, setHarveyVolume] = useState(true);
-  const [connectionStatus, setConnectionStatus] = useState<'connecting' | 'connected' | 'reconnecting'>('connecting');
+  const [connectionStatus, setConnectionStatus] = useState<
+    'connecting' | 'connected' | 'reconnecting'
+  >('connecting');
   const [insights, setInsights] = useState<CoachingInsight[]>([]);
   const [metrics, setMetrics] = useState<CallMetrics>({
     talkRatio: 50,
@@ -130,7 +132,7 @@ export const HarveyActiveCallInterface: React.FC<HarveyActiveCallInterfaceProps>
       case 'gentle':
         return "I'm here to help. Let's make this call count.";
       case 'aggressive':
-        return "Time to close. No excuses, no hesitation.";
+        return 'Time to close. No excuses, no hesitation.';
       case 'brutal':
         return "Show me you're not just another wannabe. Close or go home.";
       default:
@@ -140,14 +142,14 @@ export const HarveyActiveCallInterface: React.FC<HarveyActiveCallInterfaceProps>
 
   const playHarveyAudio = (audioData: string) => {
     if (!audioContextRef.current) return;
-    
+
     const audio = new Audio(audioData);
     audio.volume = 0.3; // Harvey whispers
     audio.play();
   };
 
   const updateMetricsFromAnalysis = (analysis: any) => {
-    setMetrics(prev => ({
+    setMetrics((prev) => ({
       ...prev,
       confidence: analysis.confidence || prev.confidence,
       pace: analysis.pace || prev.pace,
@@ -157,10 +159,11 @@ export const HarveyActiveCallInterface: React.FC<HarveyActiveCallInterfaceProps>
   const startInsightGeneration = () => {
     // Generate first insight quickly in mock mode
     setTimeout(() => generateInsight(), 3000);
-    
+
     // Simulate Harvey's real-time insights
     const interval = setInterval(() => {
-      if (Math.random() > 0.5) { // More frequent in mock mode
+      if (Math.random() > 0.5) {
+        // More frequent in mock mode
         generateInsight();
       }
     }, 8000); // Every 8 seconds
@@ -169,34 +172,39 @@ export const HarveyActiveCallInterface: React.FC<HarveyActiveCallInterfaceProps>
   };
 
   const generateInsight = () => {
-    const insightTypes: Array<'tip' | 'warning' | 'praise' | 'critical'> = ['tip', 'warning', 'praise', 'critical'];
+    const insightTypes: Array<'tip' | 'warning' | 'praise' | 'critical'> = [
+      'tip',
+      'warning',
+      'praise',
+      'critical',
+    ];
     const type = insightTypes[Math.floor(Math.random() * insightTypes.length)];
-    
+
     const messages: Record<typeof type, string[]> = {
       tip: [
-        "Ask about their current pain points now.",
+        'Ask about their current pain points now.',
         "Time to pivot - they're losing interest.",
-        "Bridge to value proposition. Do it now.",
+        'Bridge to value proposition. Do it now.',
       ],
       warning: [
         "You're talking too much. Let them speak.",
-        "Energy dropping. Pick up the pace.",
+        'Energy dropping. Pick up the pace.',
         "They're getting defensive. Soften approach.",
       ],
       praise: [
-        "Good objection handling. Keep that energy.",
-        "Perfect timing on that question.",
+        'Good objection handling. Keep that energy.',
+        'Perfect timing on that question.',
         "They're engaged. Push for commitment.",
       ],
       critical: [
-        "Stop rambling. Get to the point.",
-        "You just missed a buying signal. Pay attention.",
+        'Stop rambling. Get to the point.',
+        'You just missed a buying signal. Pay attention.',
         "That was weak. Where's your conviction?",
       ],
     };
 
     const message = messages[type][Math.floor(Math.random() * messages[type].length)];
-    
+
     addInsight({
       id: Date.now().toString(),
       type,
@@ -207,7 +215,7 @@ export const HarveyActiveCallInterface: React.FC<HarveyActiveCallInterfaceProps>
   };
 
   const addInsight = (insight: CoachingInsight) => {
-    setInsights(prev => [insight, ...prev].slice(0, 5));
+    setInsights((prev) => [insight, ...prev].slice(0, 5));
   };
 
   const toggleMute = () => {
@@ -221,18 +229,25 @@ export const HarveyActiveCallInterface: React.FC<HarveyActiveCallInterfaceProps>
 
   const getInsightIcon = (type: string) => {
     switch (type) {
-      case 'tip': return <TipsAndUpdates sx={{ color: '#3B82F6' }} />;
-      case 'warning': return <Warning sx={{ color: '#F59E0B' }} />;
-      case 'praise': return <CheckCircle sx={{ color: '#10B981' }} />;
-      case 'critical': return <Gavel sx={{ color: '#EF4444' }} />;
+      case 'tip':
+        return <TipsAndUpdates sx={{ color: '#3B82F6' }} />;
+      case 'warning':
+        return <Warning sx={{ color: '#F59E0B' }} />;
+      case 'praise':
+        return <CheckCircle sx={{ color: '#10B981' }} />;
+      case 'critical':
+        return <Gavel sx={{ color: '#EF4444' }} />;
     }
   };
 
   const getMomentumColor = () => {
     switch (metrics.momentum) {
-      case 'building': return '#10B981';
-      case 'steady': return '#3B82F6';
-      case 'losing': return '#EF4444';
+      case 'building':
+        return '#10B981';
+      case 'steady':
+        return '#3B82F6';
+      case 'losing':
+        return '#EF4444';
     }
   };
 
@@ -265,7 +280,8 @@ export const HarveyActiveCallInterface: React.FC<HarveyActiveCallInterfaceProps>
           <div
             style={{
               padding: '16px',
-              background: 'linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 165, 0, 0.1) 100%)',
+              background:
+                'linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 165, 0, 0.1) 100%)',
               borderBottom: '1px solid rgba(255, 215, 0, 0.2)',
               display: 'flex',
               alignItems: 'center',
@@ -275,9 +291,14 @@ export const HarveyActiveCallInterface: React.FC<HarveyActiveCallInterfaceProps>
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
               <motion.div
                 animate={{
-                  boxShadow: connectionStatus === 'connected' 
-                    ? ['0 0 10px rgba(255, 215, 0, 0.3)', '0 0 20px rgba(255, 215, 0, 0.5)', '0 0 10px rgba(255, 215, 0, 0.3)']
-                    : '0 0 10px rgba(255, 215, 0, 0.1)',
+                  boxShadow:
+                    connectionStatus === 'connected'
+                      ? [
+                          '0 0 10px rgba(255, 215, 0, 0.3)',
+                          '0 0 20px rgba(255, 215, 0, 0.5)',
+                          '0 0 10px rgba(255, 215, 0, 0.3)',
+                        ]
+                      : '0 0 10px rgba(255, 215, 0, 0.1)',
                 }}
                 transition={{ duration: 2, repeat: Infinity }}
                 style={{
@@ -339,7 +360,12 @@ export const HarveyActiveCallInterface: React.FC<HarveyActiveCallInterfaceProps>
                         borderRadius: 3,
                         backgroundColor: 'rgba(255, 255, 255, 0.1)',
                         '& .MuiLinearProgress-bar': {
-                          background: metrics.talkRatio > 70 ? '#EF4444' : metrics.talkRatio < 30 ? '#F59E0B' : '#10B981',
+                          background:
+                            metrics.talkRatio > 70
+                              ? '#EF4444'
+                              : metrics.talkRatio < 30
+                                ? '#F59E0B'
+                                : '#10B981',
                         },
                       }}
                     />
@@ -388,9 +414,19 @@ export const HarveyActiveCallInterface: React.FC<HarveyActiveCallInterfaceProps>
               <Typography variant="subtitle2" sx={{ marginBottom: '8px', color: '#FFD700' }}>
                 Live Coaching
               </Typography>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '16px' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '8px',
+                  marginBottom: '16px',
+                }}
+              >
                 {insights.length === 0 ? (
-                  <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.5)', fontStyle: 'italic' }}>
+                  <Typography
+                    variant="body2"
+                    sx={{ color: 'rgba(255, 255, 255, 0.5)', fontStyle: 'italic' }}
+                  >
                     Harvey is analyzing...
                   </Typography>
                 ) : (
@@ -403,18 +439,26 @@ export const HarveyActiveCallInterface: React.FC<HarveyActiveCallInterfaceProps>
                     >
                       <Alert
                         severity={
-                          insight.type === 'praise' ? 'success' :
-                          insight.type === 'warning' ? 'warning' :
-                          insight.type === 'critical' ? 'error' : 'info'
+                          insight.type === 'praise'
+                            ? 'success'
+                            : insight.type === 'warning'
+                              ? 'warning'
+                              : insight.type === 'critical'
+                                ? 'error'
+                                : 'info'
                         }
                         icon={getInsightIcon(insight.type)}
                         sx={{
                           background: 'rgba(0, 0, 0, 0.3)',
                           border: '1px solid',
-                          borderColor: 
-                            insight.type === 'praise' ? 'rgba(16, 185, 129, 0.5)' :
-                            insight.type === 'warning' ? 'rgba(245, 158, 11, 0.5)' :
-                            insight.type === 'critical' ? 'rgba(239, 68, 68, 0.5)' : 'rgba(59, 130, 246, 0.5)',
+                          borderColor:
+                            insight.type === 'praise'
+                              ? 'rgba(16, 185, 129, 0.5)'
+                              : insight.type === 'warning'
+                                ? 'rgba(245, 158, 11, 0.5)'
+                                : insight.type === 'critical'
+                                  ? 'rgba(239, 68, 68, 0.5)'
+                                  : 'rgba(59, 130, 246, 0.5)',
                           '& .MuiAlert-message': {
                             fontSize: '0.875rem',
                           },
@@ -428,7 +472,9 @@ export const HarveyActiveCallInterface: React.FC<HarveyActiveCallInterfaceProps>
               </div>
 
               {/* Controls */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div
+                style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+              >
                 <div style={{ display: 'flex', gap: '8px' }}>
                   <IconButton
                     size="small"
@@ -455,7 +501,11 @@ export const HarveyActiveCallInterface: React.FC<HarveyActiveCallInterfaceProps>
                       },
                     }}
                   >
-                    {harveyVolume ? <VolumeUp sx={{ fontSize: 20 }} /> : <VolumeOff sx={{ fontSize: 20 }} />}
+                    {harveyVolume ? (
+                      <VolumeUp sx={{ fontSize: 20 }} />
+                    ) : (
+                      <VolumeOff sx={{ fontSize: 20 }} />
+                    )}
                   </IconButton>
                 </div>
                 <Chip

@@ -25,30 +25,30 @@ interface UserAvatarProps {
   onClick?: () => void;
 }
 
-export const UserAvatar: React.FC<UserAvatarProps> = ({ 
-  user, 
-  profile, 
-  size = 32, 
+export const UserAvatar: React.FC<UserAvatarProps> = ({
+  user,
+  profile,
+  size = 32,
   showInitials = true,
-  onClick 
+  onClick,
 }) => {
   // Get user display name
-  const displayName = profile?.full_name || 
-    user.user_metadata?.full_name || 
-    user.user_metadata?.name || 
-    user.email?.split('@')[0] || 
+  const displayName =
+    profile?.full_name ||
+    user.user_metadata?.full_name ||
+    user.user_metadata?.name ||
+    user.email?.split('@')[0] ||
     'User';
 
   // Get avatar URL from various sources
-  const avatarUrl = profile?.avatar_url || 
-    user.user_metadata?.avatar_url || 
-    user.user_metadata?.picture;
+  const avatarUrl =
+    profile?.avatar_url || user.user_metadata?.avatar_url || user.user_metadata?.picture;
 
   // Generate initials from display name
   const getInitials = (name: string): string => {
     return name
       .split(' ')
-      .map(word => word.charAt(0))
+      .map((word) => word.charAt(0))
       .join('')
       .toUpperCase()
       .slice(0, 2);
@@ -92,7 +92,7 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
       >
         {!avatarUrl && initials}
       </Avatar>
-      
+
       {showInitials && (
         <Typography
           variant="body2"

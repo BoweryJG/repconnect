@@ -23,7 +23,9 @@ export const PerformanceDashboard: React.FC = () => {
   const [batteryLevel, setBatteryLevel] = useState(1);
   const [isCharging, setIsCharging] = useState(false);
   const [networkType, setNetworkType] = useState<'slow' | 'fast' | 'offline'>('fast');
-  const [powerMode, setPowerMode] = useState<'performance' | 'balanced' | 'battery-saver'>('balanced');
+  const [powerMode, setPowerMode] = useState<'performance' | 'balanced' | 'battery-saver'>(
+    'balanced'
+  );
   const [quality, setQuality] = useState<any>({});
 
   useEffect(() => {
@@ -60,10 +62,14 @@ export const PerformanceDashboard: React.FC = () => {
 
   const getTemperatureColor = () => {
     switch (temperature) {
-      case 'cool': return '#10B981';
-      case 'warm': return '#F59E0B';
-      case 'hot': return '#EF4444';
-      case 'critical': return '#991B1B';
+      case 'cool':
+        return '#10B981';
+      case 'warm':
+        return '#F59E0B';
+      case 'hot':
+        return '#EF4444';
+      case 'critical':
+        return '#991B1B';
     }
   };
 
@@ -75,7 +81,7 @@ export const PerformanceDashboard: React.FC = () => {
     borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
     '&:last-child': {
       borderBottom: 'none',
-    }
+    },
   };
 
   return (
@@ -97,7 +103,14 @@ export const PerformanceDashboard: React.FC = () => {
         border: '1px solid rgba(255, 255, 255, 0.125)',
       }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          marginBottom: '16px',
+        }}
+      >
         <Typography variant="h6" fontWeight="600">
           Performance Monitor
         </Typography>
@@ -183,9 +196,7 @@ export const PerformanceDashboard: React.FC = () => {
               <Typography variant="body2" fontWeight="600">
                 {Math.round(batteryLevel * 100)}%
               </Typography>
-              {isCharging && (
-                <Chip label="Charging" size="small" color="success" />
-              )}
+              {isCharging && <Chip label="Charging" size="small" color="success" />}
             </div>
           </div>
 
@@ -198,12 +209,20 @@ export const PerformanceDashboard: React.FC = () => {
             <Chip
               label={networkType}
               size="small"
-              color={networkType === 'fast' ? 'success' : networkType === 'slow' ? 'warning' : 'error'}
+              color={
+                networkType === 'fast' ? 'success' : networkType === 'slow' ? 'warning' : 'error'
+              }
             />
           </div>
 
           {/* Quality Settings */}
-          <div style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+          <div
+            style={{
+              marginTop: '16px',
+              paddingTop: '16px',
+              borderTop: '1px solid rgba(255,255,255,0.1)',
+            }}
+          >
             <Typography variant="caption" color="text.secondary" gutterBottom>
               Current Quality Settings
             </Typography>
@@ -212,9 +231,7 @@ export const PerformanceDashboard: React.FC = () => {
                 • Particles: {quality.particleCount?.toLocaleString() || 0}
               </Typography>
               <br />
-              <Typography variant="caption">
-                • Blur: {quality.blurQuality || 'N/A'}
-              </Typography>
+              <Typography variant="caption">• Blur: {quality.blurQuality || 'N/A'}</Typography>
               <br />
               <Typography variant="caption">
                 • 3D Effects: {quality.enable3D ? 'Enabled' : 'Disabled'}

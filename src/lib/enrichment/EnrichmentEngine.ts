@@ -48,32 +48,75 @@ export class EnrichmentEngine {
     { domain: 'innovate.io', size: '50-200', industry: 'Technology' },
     { domain: 'globalent.com', size: '10000+', industry: 'Enterprise Software' },
     { domain: 'startupxyz.com', size: '10-50', industry: 'SaaS' },
-    { domain: 'megacorp.net', size: '5000-10000', industry: 'Financial Services' }
+    { domain: 'megacorp.net', size: '5000-10000', industry: 'Financial Services' },
   ];
 
   private static titleLevels = {
-    'ceo': 'C-Suite',
-    'cto': 'C-Suite',
-    'cfo': 'C-Suite',
-    'vp': 'VP',
-    'director': 'Director',
-    'manager': 'Manager',
-    'lead': 'Senior',
-    'senior': 'Senior',
-    'junior': 'Junior',
-    'intern': 'Entry'
+    ceo: 'C-Suite',
+    cto: 'C-Suite',
+    cfo: 'C-Suite',
+    vp: 'VP',
+    director: 'Director',
+    manager: 'Manager',
+    lead: 'Senior',
+    senior: 'Senior',
+    junior: 'Junior',
+    intern: 'Entry',
   };
 
-  private static firstNames = ['James', 'Sarah', 'Michael', 'Emily', 'David', 'Lisa', 'Robert', 'Jennifer', 'William', 'Jessica'];
-  private static lastNames = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 'Davis', 'Rodriguez', 'Martinez'];
-  private static companies = ['TechCorp', 'Innovate Inc', 'Global Enterprises', 'StartupXYZ', 'MegaCorp'];
-  private static titles = ['VP Sales', 'Sales Director', 'Marketing Manager', 'CEO', 'CTO', 'Product Manager', 'BDR', 'Account Executive', 'Solutions Architect', 'Customer Success Manager'];
+  private static firstNames = [
+    'James',
+    'Sarah',
+    'Michael',
+    'Emily',
+    'David',
+    'Lisa',
+    'Robert',
+    'Jennifer',
+    'William',
+    'Jessica',
+  ];
+  private static lastNames = [
+    'Smith',
+    'Johnson',
+    'Williams',
+    'Brown',
+    'Jones',
+    'Garcia',
+    'Miller',
+    'Davis',
+    'Rodriguez',
+    'Martinez',
+  ];
+  private static companies = [
+    'TechCorp',
+    'Innovate Inc',
+    'Global Enterprises',
+    'StartupXYZ',
+    'MegaCorp',
+  ];
+  private static titles = [
+    'VP Sales',
+    'Sales Director',
+    'Marketing Manager',
+    'CEO',
+    'CTO',
+    'Product Manager',
+    'BDR',
+    'Account Executive',
+    'Solutions Architect',
+    'Customer Success Manager',
+  ];
 
-  static async enrichLeads(leads: LeadData[], uploadId?: string, isPublicMode: boolean = true): Promise<EnrichedLead[]> {
+  static async enrichLeads(
+    leads: LeadData[],
+    uploadId?: string,
+    isPublicMode: boolean = true
+  ): Promise<EnrichedLead[]> {
     const enrichedLeads: EnrichedLead[] = [];
 
     for (const lead of leads) {
-      const enriched = isPublicMode 
+      const enriched = isPublicMode
         ? await this.mockEnrichLead(lead)
         : await this.realEnrichLead(lead);
 
@@ -90,17 +133,22 @@ export class EnrichmentEngine {
 
   private static async mockEnrichLead(lead: LeadData): Promise<EnrichedLead> {
     // Generate realistic mock data
-    const firstName = lead.firstName || this.firstNames[Math.floor(Math.random() * this.firstNames.length)];
-    const lastName = lead.lastName || this.lastNames[Math.floor(Math.random() * this.lastNames.length)];
-    const company = lead.company || this.companies[Math.floor(Math.random() * this.companies.length)];
+    const firstName =
+      lead.firstName || this.firstNames[Math.floor(Math.random() * this.firstNames.length)];
+    const lastName =
+      lead.lastName || this.lastNames[Math.floor(Math.random() * this.lastNames.length)];
+    const company =
+      lead.company || this.companies[Math.floor(Math.random() * this.companies.length)];
     const title = lead.title || this.titles[Math.floor(Math.random() * this.titles.length)];
-    
+
     const companyDomain = lead.website || `${company.toLowerCase().replace(/\s+/g, '')}.com`;
-    const email = lead.email || `${firstName.toLowerCase()}.${lastName.toLowerCase()}@${companyDomain}`;
-    
+    const email =
+      lead.email || `${firstName.toLowerCase()}.${lastName.toLowerCase()}@${companyDomain}`;
+
     // Determine company info
-    const companyInfo = this.mockCompanyData[Math.floor(Math.random() * this.mockCompanyData.length)];
-    
+    const companyInfo =
+      this.mockCompanyData[Math.floor(Math.random() * this.mockCompanyData.length)];
+
     // Calculate heat score based on various factors
     const scoringFactors = [];
     let heatScore = 50; // Base score
@@ -108,7 +156,7 @@ export class EnrichmentEngine {
     // Title level scoring
     const titleLower = title.toLowerCase();
     const titleLevel = this.getTitleLevel(titleLower);
-    
+
     if (titleLevel === 'C-Suite') {
       heatScore += 30;
       scoringFactors.push({ factor: 'C-Suite Executive', impact: 'positive' as const, weight: 30 });
@@ -123,30 +171,37 @@ export class EnrichmentEngine {
     // Company size scoring
     if (companyInfo.size === '1000-5000' || companyInfo.size === '5000-10000') {
       heatScore += 15;
-      scoringFactors.push({ factor: 'Enterprise Company', impact: 'positive' as const, weight: 15 });
+      scoringFactors.push({
+        factor: 'Enterprise Company',
+        impact: 'positive' as const,
+        weight: 15,
+      });
     }
 
     // Mock engagement data
     const hasEngagement = Math.random() > 0.5;
-    const engagementHistory = hasEngagement ? {
-      websiteVisits: Math.floor(Math.random() * 10) + 1,
-      contentDownloads: Math.floor(Math.random() * 5),
-      webinarAttendance: Math.floor(Math.random() * 3),
-      emailOpens: Math.floor(Math.random() * 20) + 5,
-      lastEngagement: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000)
-    } : undefined;
+    const engagementHistory = hasEngagement
+      ? {
+          websiteVisits: Math.floor(Math.random() * 10) + 1,
+          contentDownloads: Math.floor(Math.random() * 5),
+          webinarAttendance: Math.floor(Math.random() * 3),
+          emailOpens: Math.floor(Math.random() * 20) + 5,
+          lastEngagement: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000),
+        }
+      : undefined;
 
     if (engagementHistory) {
-      const engagementScore = Math.min(20, 
-        (engagementHistory.websiteVisits * 2) + 
-        (engagementHistory.contentDownloads * 3) + 
-        (engagementHistory.webinarAttendance * 5)
+      const engagementScore = Math.min(
+        20,
+        engagementHistory.websiteVisits * 2 +
+          engagementHistory.contentDownloads * 3 +
+          engagementHistory.webinarAttendance * 5
       );
       heatScore += engagementScore;
-      scoringFactors.push({ 
-        factor: `High Engagement (${engagementHistory.websiteVisits} visits, ${engagementHistory.contentDownloads} downloads)`, 
-        impact: 'positive' as const, 
-        weight: engagementScore 
+      scoringFactors.push({
+        factor: `High Engagement (${engagementHistory.websiteVisits} visits, ${engagementHistory.contentDownloads} downloads)`,
+        impact: 'positive' as const,
+        weight: engagementScore,
       });
     }
 
@@ -161,20 +216,24 @@ export class EnrichmentEngine {
       enriched: {
         fullName: `${firstName} ${lastName}`,
         email,
-        phone: lead.phone || `+1 (555) ${Math.floor(Math.random() * 900) + 100}-${Math.floor(Math.random() * 9000) + 1000}`,
+        phone:
+          lead.phone ||
+          `+1 (555) ${Math.floor(Math.random() * 900) + 100}-${Math.floor(Math.random() * 9000) + 1000}`,
         company,
         companyDomain,
         companySize: companyInfo.size,
         industry: companyInfo.industry,
         title,
         titleLevel,
-        linkedin: lead.linkedin || `https://linkedin.com/in/${firstName.toLowerCase()}-${lastName.toLowerCase()}`,
+        linkedin:
+          lead.linkedin ||
+          `https://linkedin.com/in/${firstName.toLowerCase()}-${lastName.toLowerCase()}`,
         location: this.getRandomLocation(),
         heatScore,
         segment,
         engagementHistory,
-        scoringFactors
-      }
+        scoringFactors,
+      },
     };
   }
 
@@ -195,8 +254,8 @@ export class EnrichmentEngine {
   }
 
   private static determineSegment(
-    heatScore: number, 
-    titleLevel: string, 
+    heatScore: number,
+    titleLevel: string,
     engagement?: any
   ): EnrichedLead['enriched']['segment'] {
     if (heatScore >= 80 && (titleLevel === 'C-Suite' || titleLevel === 'VP')) {
@@ -222,48 +281,48 @@ export class EnrichmentEngine {
       'Los Angeles, CA',
       'Denver, CO',
       'Atlanta, GA',
-      'Miami, FL'
+      'Miami, FL',
     ];
     return locations[Math.floor(Math.random() * locations.length)];
   }
 
-  private static async storeEnrichedLead(uploadId: string, enrichedLead: EnrichedLead): Promise<void> {
+  private static async storeEnrichedLead(
+    uploadId: string,
+    enrichedLead: EnrichedLead
+  ): Promise<void> {
     try {
-      await supabase
-        .from('enriched_leads')
-        .insert({
-          upload_id: uploadId,
-          original_data: enrichedLead.original,
-          enriched_data: enrichedLead.enriched,
-          heat_score: enrichedLead.enriched.heatScore,
-          segment: enrichedLead.enriched.segment,
-          company_domain: enrichedLead.enriched.companyDomain,
-          company_size: enrichedLead.enriched.companySize,
-          industry: enrichedLead.enriched.industry
-        });
-    } catch (error) {
-    }
+      await supabase.from('enriched_leads').insert({
+        upload_id: uploadId,
+        original_data: enrichedLead.original,
+        enriched_data: enrichedLead.enriched,
+        heat_score: enrichedLead.enriched.heatScore,
+        segment: enrichedLead.enriched.segment,
+        company_domain: enrichedLead.enriched.companyDomain,
+        company_size: enrichedLead.enriched.companySize,
+        industry: enrichedLead.enriched.industry,
+      });
+    } catch (error) {}
   }
 
   static generateSampleLeads(count: number = 50): LeadData[] {
     const leads: LeadData[] = [];
-    
+
     for (let i = 0; i < count; i++) {
       const firstName = this.firstNames[Math.floor(Math.random() * this.firstNames.length)];
       const lastName = this.lastNames[Math.floor(Math.random() * this.lastNames.length)];
       const company = this.companies[Math.floor(Math.random() * this.companies.length)];
       const title = this.titles[Math.floor(Math.random() * this.titles.length)];
-      
+
       leads.push({
         firstName,
         lastName,
         email: `${firstName.toLowerCase()}.${lastName.toLowerCase()}@${company.toLowerCase().replace(/\s+/g, '')}.com`,
         phone: `+1 (555) ${Math.floor(Math.random() * 900) + 100}-${Math.floor(Math.random() * 9000) + 1000}`,
         company,
-        title
+        title,
       });
     }
-    
+
     return leads;
   }
 }

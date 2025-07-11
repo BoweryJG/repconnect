@@ -42,7 +42,7 @@ export const getBezelContainer = (theme: Theme, config: BezelConfig = {}) => {
     colorTheme = {
       impossible: '255, 0, 255',
       shift: '0, 255, 255',
-      deep: '255, 0, 170'
+      deep: '255, 0, 170',
     },
     elevation = 1,
   } = config;
@@ -72,7 +72,7 @@ export const getBezelContainer = (theme: Theme, config: BezelConfig = {}) => {
     transition: theme.transitions.create(['transform', 'box-shadow'], {
       duration: theme.transitions.duration.standard,
     }),
-    
+
     // Glass refraction overlay
     ...(glassEffect && {
       '&::before': {
@@ -107,7 +107,7 @@ export const getBezelContainer = (theme: Theme, config: BezelConfig = {}) => {
         transition: 'all 1s ease',
       },
     }),
-    
+
     '&:hover': {
       transform: 'translateY(-2px)',
       boxShadow: `
@@ -129,7 +129,11 @@ export const getBezelContainer = (theme: Theme, config: BezelConfig = {}) => {
 };
 
 // Get screw component styles
-export const getScrewStyles = (theme: Theme, position: { top?: number; bottom?: number; left?: number; right?: number }, angle: string = '10deg') => ({
+export const getScrewStyles = (
+  theme: Theme,
+  position: { top?: number; bottom?: number; left?: number; right?: number },
+  angle: string = '10deg'
+) => ({
   wrapper: {
     position: 'absolute' as const,
     ...position,
@@ -172,7 +176,7 @@ export const getScrewStyles = (theme: Theme, position: { top?: number; bottom?: 
     animation: `${animations.screwWiggle} 5s ease-in-out infinite`,
     '--angle': angle,
     transform: `rotate(${angle})`,
-    
+
     // Phillips head grooves
     '&::before': {
       content: '""',
@@ -227,7 +231,11 @@ export const getScrewStyles = (theme: Theme, position: { top?: number; bottom?: 
 });
 
 // Get edge mount styles
-export const getEdgeMountStyles = (theme: Theme, side: 'left' | 'right', colorTheme = { shift: '0, 255, 255', impossible: '255, 0, 255' }) => ({
+export const getEdgeMountStyles = (
+  theme: Theme,
+  side: 'left' | 'right',
+  colorTheme = { shift: '0, 255, 255', impossible: '255, 0, 255' }
+) => ({
   position: 'absolute' as const,
   top: theme.spacing(1.5),
   bottom: theme.spacing(1.5),
@@ -245,13 +253,13 @@ export const getEdgeMountStyles = (theme: Theme, side: 'left' | 'right', colorTh
   }),
   transform: 'scaleY(1)',
   animation: `${animations.edgeGlow} 4s ease-in-out infinite`,
-  
+
   '&:hover': {
     opacity: 1,
     boxShadow: `0 0 12px rgba(${colorTheme.shift}, 0.3)`,
     transform: 'scaleY(1.1)',
   },
-  
+
   '&::after': {
     content: '""',
     position: 'absolute',
@@ -264,7 +272,7 @@ export const getEdgeMountStyles = (theme: Theme, side: 'left' | 'right', colorTh
     opacity: 0.1,
     transition: theme.transitions.create('opacity'),
   },
-  
+
   '&:hover::after': {
     opacity: 0.5,
   },
@@ -273,12 +281,12 @@ export const getEdgeMountStyles = (theme: Theme, side: 'left' | 'right', colorTh
 // Create a premium card with bezel design
 export const createBezelCard = (theme: Theme, config: BezelConfig = {}) => {
   const baseStyles = getBezelContainer(theme, config);
-  
+
   return {
     ...baseStyles,
     padding: theme.spacing(3),
     marginBottom: theme.spacing(2),
-    
+
     // Add corner screws if enabled
     ...(config.showScrews && {
       '& .bezel-screws': {
@@ -288,7 +296,7 @@ export const createBezelCard = (theme: Theme, config: BezelConfig = {}) => {
         '& > *:nth-of-type(4)': getScrewStyles(theme, { bottom: 12, right: 12 }, '18deg'),
       },
     }),
-    
+
     // Add edge mounts if enabled
     ...(config.showEdgeMounts && {
       '& .bezel-edge-left': getEdgeMountStyles(theme, 'left', config.colorTheme),
@@ -304,13 +312,16 @@ export const withBezelDesign = (styles: any, theme: Theme, config: BezelConfig =
 });
 
 // Premium button with forcefield effect
-export const getPremiumButtonStyles = (theme: Theme, colorTheme = { impossible: '255, 0, 255', shift: '0, 255, 255' }) => ({
+export const getPremiumButtonStyles = (
+  theme: Theme,
+  colorTheme = { impossible: '255, 0, 255', shift: '0, 255, 255' }
+) => ({
   position: 'relative' as const,
   overflow: 'hidden',
   transition: theme.transitions.create(['all'], {
     duration: theme.transitions.duration.standard,
   }),
-  
+
   '&::after': {
     content: '""',
     position: 'absolute',
@@ -325,18 +336,18 @@ export const getPremiumButtonStyles = (theme: Theme, colorTheme = { impossible: 
     opacity: 0,
     transition: theme.transitions.create(['all']),
   },
-  
+
   '&:hover::after': {
     opacity: 1,
     transform: 'translate(-50%, -50%) scale(1.15) rotate(180deg)',
     animation: `forcefieldRotate 2s linear infinite`,
   },
-  
+
   '@keyframes forcefieldRotate': {
     '0%': { transform: 'translate(-50%, -50%) scale(1.15) rotate(0deg)' },
     '100%': { transform: 'translate(-50%, -50%) scale(1.15) rotate(360deg)' },
   },
-  
+
   '&::before': {
     content: '""',
     position: 'absolute',
@@ -351,11 +362,11 @@ export const getPremiumButtonStyles = (theme: Theme, colorTheme = { impossible: 
     )`,
     transition: 'left 0.5s',
   },
-  
+
   '&:hover::before': {
     left: '100%',
   },
-  
+
   '&:hover': {
     transform: 'translateY(-2px)',
     boxShadow: `

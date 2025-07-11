@@ -12,11 +12,13 @@ export interface Agent {
   id: string;
   name: string;
   tagline: string;
-  avatar: {
-    icon: LucideIcon;
-    backgroundColor: string;
-    iconColor: string;
-  } | string;
+  avatar:
+    | {
+        icon: LucideIcon;
+        backgroundColor: string;
+        iconColor: string;
+      }
+    | string;
   colorScheme: {
     primary: string;
     secondary: string;

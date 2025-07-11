@@ -26,7 +26,7 @@ export class DeepgramBridge extends EventEmitter {
       apiKey: process.env.REACT_APP_DEEPGRAM_API_KEY || '',
       apiUrl: 'wss://api.deepgram.com/v1/listen',
       model: 'nova-2',
-      version: 'latest'
+      version: 'latest',
     };
 
     this.setupWebRTCAudioHandler();
@@ -35,14 +35,12 @@ export class DeepgramBridge extends EventEmitter {
 
   private setupWebRTCAudioHandler(): void {
     // Listen for audio data from WebRTC service
-    webRTCVoiceService.on('audio-data', (data: {
-      sessionId: string;
-      audio: Int16Array;
-      sampleRate: number;
-      timestamp: number;
-    }) => {
-      this.handleWebRTCAudio(data);
-    });
+    webRTCVoiceService.on(
+      'audio-data',
+      (data: { sessionId: string; audio: Int16Array; sampleRate: number; timestamp: number }) => {
+        this.handleWebRTCAudio(data);
+      }
+    );
   }
 
   private handleWebRTCAudio(data: {
@@ -56,7 +54,7 @@ export class DeepgramBridge extends EventEmitter {
       this.audioBuffers.set(data.sessionId, {
         sessionId: data.sessionId,
         buffer: [],
-        lastProcessed: Date.now()
+        lastProcessed: Date.now(),
       });
     }
 
@@ -83,7 +81,7 @@ export class DeepgramBridge extends EventEmitter {
       const combinedAudio = new Int16Array(totalLength);
       let offset = 0;
 
-      buffer.buffer.forEach(chunk => {
+      buffer.buffer.forEach((chunk) => {
         combinedAudio.set(chunk, offset);
         offset += chunk.length;
       });
@@ -98,7 +96,8 @@ export class DeepgramBridge extends EventEmitter {
 
     // Clean up stale buffers
     this.audioBuffers.forEach((buffer, sessionId) => {
-      if (Date.now() - buffer.lastProcessed > 30000) { // 30 seconds
+      if (Date.now() - buffer.lastProcessed > 30000) {
+        // 30 seconds
         this.audioBuffers.delete(sessionId);
       }
     });
@@ -106,7 +105,7 @@ export class DeepgramBridge extends EventEmitter {
 
   async connectToDeepgram(sessionId: string): Promise<void> {
     if (this.deepgramConnections.has(sessionId)) {
-            return;
+      return;
     }
 
     return new Promise((resolve, reject) => {
@@ -126,20 +125,20 @@ export class DeepgramBridge extends EventEmitter {
         utterances: 'false',
         interim_results: 'true',
         endpointing: '200',
-        vad_events: 'true'
+        vad_events: 'true',
       });
 
       // In browser, we include auth token in URL parameters
       params.set('token', this.config.apiKey);
       const url = `${this.config.apiUrl}?${params.toString()}`;
-      
+
       const ws = new WebSocket(url);
 
       ws.binaryType = 'arraybuffer';
 
       ws.onopen = () => {
-                this.deepgramConnections.set(sessionId, ws);
-        
+        this.deepgramConnections.set(sessionId, ws);
+
         // Send keep-alive message periodically
         const keepAlive = setInterval(() => {
           if (ws.readyState === WebSocket.OPEN) {
@@ -148,7 +147,7 @@ export class DeepgramBridge extends EventEmitter {
             clearInterval(keepAlive);
           }
         }, 10000);
-        
+
         this.emit('ready', sessionId);
         resolve();
       };
@@ -157,17 +156,16 @@ export class DeepgramBridge extends EventEmitter {
         try {
           const message = JSON.parse(event.data.toString());
           this.handleDeepgramMessage(sessionId, message);
-        } catch (error) {
-                  }
+        } catch (error) {}
       };
 
       ws.onerror = (error) => {
-                this.emit('error', { sessionId, error });
+        this.emit('error', { sessionId, error });
         reject(error);
       };
 
       ws.onclose = () => {
-                this.deepgramConnections.delete(sessionId);
+        this.deepgramConnections.delete(sessionId);
         this.audioBuffers.delete(sessionId);
         this.emit('disconnected', sessionId);
       };
@@ -194,7 +192,7 @@ export class DeepgramBridge extends EventEmitter {
           isFinal: message.is_final || false,
           confidence: transcript.confidence || 0,
           language: message.channel.language || 'en-US',
-          timestamp: Date.now()
+          timestamp: Date.now(),
         });
 
         // Send transcript to WebRTC data channel
@@ -204,7 +202,7 @@ export class DeepgramBridge extends EventEmitter {
             type: 'transcript',
             text: transcript.transcript,
             isFinal: message.is_final || false,
-            confidence: transcript.confidence || 0
+            confidence: transcript.confidence || 0,
           });
         }
       }
@@ -215,7 +213,7 @@ export class DeepgramBridge extends EventEmitter {
       this.emit('speech_final', {
         sessionId,
         duration: message.duration,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       });
     }
 
@@ -223,7 +221,7 @@ export class DeepgramBridge extends EventEmitter {
     if (message.metadata) {
       this.emit('metadata', {
         sessionId,
-        metadata: message.metadata
+        metadata: message.metadata,
       });
     }
 
@@ -231,7 +229,7 @@ export class DeepgramBridge extends EventEmitter {
     if (message.type === 'Error') {
       this.emit('error', {
         sessionId,
-        error: new Error(message.error || 'Unknown Deepgram error')
+        error: new Error(message.error || 'Unknown Deepgram error'),
       });
     }
   }
@@ -246,13 +244,13 @@ export class DeepgramBridge extends EventEmitter {
   async sendText(sessionId: string, text: string): Promise<void> {
     // Deepgram is primarily for transcription, not synthesis
     // This method is here for API compatibility but won't do synthesis
-        
+
     // Emit a mock response for compatibility
     this.emit('synthesis', {
       sessionId,
       audio: new Int16Array(0),
       text: text,
-      duration: 0
+      duration: 0,
     });
   }
 
@@ -275,7 +273,7 @@ export class DeepgramBridge extends EventEmitter {
       this.processingInterval = null;
     }
 
-    const promises = Array.from(this.deepgramConnections.keys()).map(sessionId => 
+    const promises = Array.from(this.deepgramConnections.keys()).map((sessionId) =>
       this.disconnect(sessionId)
     );
     await Promise.all(promises);

@@ -26,7 +26,7 @@ export const SettingsNavbar: React.FC<SettingsNavbarProps> = ({
   activeTab,
   onTabChange,
   syncCount = 0,
-  onClose
+  onClose,
 }) => {
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const [enableEffects, setEnableEffects] = useState(true);
@@ -47,34 +47,40 @@ export const SettingsNavbar: React.FC<SettingsNavbarProps> = ({
   ];
 
   return (
-    <nav style={{
-      position: 'sticky',
-      top: 0,
-      zIndex: 100,
-      background: 'linear-gradient(90deg, rgba(26, 26, 26, 0.95) 0%, rgba(30, 30, 30, 0.9) 20%, rgba(26, 26, 26, 0.85) 50%, rgba(30, 30, 30, 0.9) 80%, rgba(26, 26, 26, 0.95) 100%)',
-      backdropFilter: 'blur(20px) saturate(180%)',
-      WebkitBackdropFilter: 'blur(20px) saturate(180%)',
-      borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
-      boxShadow: '0 4px 30px rgba(0, 0, 0, 0.5), 0 1px 0 rgba(255, 255, 255, 0.05) inset',
-      height: '80px',
-      padding: '0 24px',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      overflow: 'hidden',
-    }}>
+    <nav
+      style={{
+        position: 'sticky',
+        top: 0,
+        zIndex: 100,
+        background:
+          'linear-gradient(90deg, rgba(26, 26, 26, 0.95) 0%, rgba(30, 30, 30, 0.9) 20%, rgba(26, 26, 26, 0.85) 50%, rgba(30, 30, 30, 0.9) 80%, rgba(26, 26, 26, 0.95) 100%)',
+        backdropFilter: 'blur(20px) saturate(180%)',
+        WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+        borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+        boxShadow: '0 4px 30px rgba(0, 0, 0, 0.5), 0 1px 0 rgba(255, 255, 255, 0.05) inset',
+        height: '80px',
+        padding: '0 24px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        overflow: 'hidden',
+      }}
+    >
       {/* Glass refraction overlay */}
       {enableEffects && (
-        <div style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: 'linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.02) 50%, transparent 100%)',
-          animation: 'glassShimmer 8s ease-in-out infinite',
-          pointerEvents: 'none',
-        }} />
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background:
+              'linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.02) 50%, transparent 100%)',
+            animation: 'glassShimmer 8s ease-in-out infinite',
+            pointerEvents: 'none',
+          }}
+        />
       )}
 
       {/* Logo/Brand */}
@@ -115,20 +121,40 @@ export const SettingsNavbar: React.FC<SettingsNavbarProps> = ({
             }}
           >
             <div style={{ width: 24, height: 24, position: 'relative' }}>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" style={{ width: '100%', height: '100%' }}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 32 32"
+                style={{ width: '100%', height: '100%' }}
+              >
                 <defs>
                   <linearGradient id="pipelineGradSync" x1="0%" y1="0%" x2="100%" y2="100%">
                     <stop offset="0%" stopColor="#9f58fa" />
                     <stop offset="100%" stopColor="#4B96DC" />
                   </linearGradient>
                 </defs>
-                <circle cx="16" cy="16" r="12" fill="none" stroke="url(#pipelineGradSync)" strokeWidth="2" opacity="0.8" />
-                <circle cx="16" cy="16" r="8" fill="none" stroke="url(#pipelineGradSync)" strokeWidth="1.5" opacity="0.5" />
+                <circle
+                  cx="16"
+                  cy="16"
+                  r="12"
+                  fill="none"
+                  stroke="url(#pipelineGradSync)"
+                  strokeWidth="2"
+                  opacity="0.8"
+                />
+                <circle
+                  cx="16"
+                  cy="16"
+                  r="8"
+                  fill="none"
+                  stroke="url(#pipelineGradSync)"
+                  strokeWidth="1.5"
+                  opacity="0.5"
+                />
                 <circle cx="16" cy="16" r="3" fill="url(#pipelineGradSync)" />
               </svg>
             </div>
-            <Typography 
-              sx={{ 
+            <Typography
+              sx={{
                 fontFamily: 'Orbitron, monospace',
                 fontWeight: 600,
                 fontSize: '14px',
@@ -140,14 +166,16 @@ export const SettingsNavbar: React.FC<SettingsNavbarProps> = ({
           </div>
         )}
         {/* Animated jewel core */}
-        <div style={{
-          position: 'relative',
-          width: '48px',
-          height: '48px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}>
+        <div
+          style={{
+            position: 'relative',
+            width: '48px',
+            height: '48px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
           {enableEffects && (
             <>
               <motion.div
@@ -178,28 +206,34 @@ export const SettingsNavbar: React.FC<SettingsNavbarProps> = ({
               />
             </>
           )}
-          <div style={{
-            width: '32px',
-            height: '32px',
-            background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #00d4ff 100%)',
-            borderRadius: '50%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            boxShadow: '0 0 20px rgba(99, 102, 241, 0.5)',
-            position: 'relative',
-            zIndex: 1,
-          }}>
+          <div
+            style={{
+              width: '32px',
+              height: '32px',
+              background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #00d4ff 100%)',
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 0 20px rgba(99, 102, 241, 0.5)',
+              position: 'relative',
+              zIndex: 1,
+            }}
+          >
             <SyncIcon style={{ fontSize: 20, color: 'white' }} />
           </div>
         </div>
 
         <div>
-          <Typography variant="h6" fontWeight="700" style={{
-            background: 'linear-gradient(135deg, #e8e8e8 0%, #999 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}>
+          <Typography
+            variant="h6"
+            fontWeight="700"
+            style={{
+              background: 'linear-gradient(135deg, #e8e8e8 0%, #999 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+            }}
+          >
             Sync Center
           </Typography>
           <Typography variant="caption" style={{ color: 'rgba(255, 255, 255, 0.5)' }}>
@@ -209,11 +243,13 @@ export const SettingsNavbar: React.FC<SettingsNavbarProps> = ({
       </motion.div>
 
       {/* Navigation Items */}
-      <div style={{
-        display: 'flex',
-        gap: '8px',
-        alignItems: 'center',
-      }}>
+      <div
+        style={{
+          display: 'flex',
+          gap: '8px',
+          alignItems: 'center',
+        }}
+      >
         {navItems.map((item, index) => (
           <motion.div
             key={item.id}
@@ -229,14 +265,16 @@ export const SettingsNavbar: React.FC<SettingsNavbarProps> = ({
               whileTap={{ scale: 0.95 }}
               onClick={() => onTabChange(item.id)}
               style={{
-                background: activeTab === item.id
-                  ? 'linear-gradient(135deg, rgba(99, 102, 241, 0.3) 0%, rgba(139, 92, 246, 0.2) 100%)'
-                  : hoveredItem === item.id
-                  ? 'rgba(255, 255, 255, 0.08)'
-                  : 'transparent',
-                border: activeTab === item.id
-                  ? '1px solid rgba(99, 102, 241, 0.5)'
-                  : '1px solid transparent',
+                background:
+                  activeTab === item.id
+                    ? 'linear-gradient(135deg, rgba(99, 102, 241, 0.3) 0%, rgba(139, 92, 246, 0.2) 100%)'
+                    : hoveredItem === item.id
+                      ? 'rgba(255, 255, 255, 0.08)'
+                      : 'transparent',
+                border:
+                  activeTab === item.id
+                    ? '1px solid rgba(99, 102, 241, 0.5)'
+                    : '1px solid transparent',
                 borderRadius: '16px',
                 padding: '12px 20px',
                 display: 'flex',
@@ -262,7 +300,8 @@ export const SettingsNavbar: React.FC<SettingsNavbarProps> = ({
                     left: 0,
                     right: 0,
                     bottom: 0,
-                    background: 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent)',
+                    background:
+                      'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent)',
                     pointerEvents: 'none',
                   }}
                 />
@@ -282,7 +321,7 @@ export const SettingsNavbar: React.FC<SettingsNavbarProps> = ({
                   {item.icon}
                 </div>
               </Badge>
-              
+
               <Typography
                 variant="body2"
                 fontWeight={activeTab === item.id ? 600 : 400}
@@ -357,14 +396,16 @@ export const SettingsNavbar: React.FC<SettingsNavbarProps> = ({
           border: '1px solid rgba(0, 255, 136, 0.3)',
         }}
       >
-        <div style={{
-          width: '8px',
-          height: '8px',
-          borderRadius: '50%',
-          background: '#00ff88',
-          boxShadow: '0 0 10px #00ff88',
-          animation: 'pulse 2s ease-in-out infinite',
-        }} />
+        <div
+          style={{
+            width: '8px',
+            height: '8px',
+            borderRadius: '50%',
+            background: '#00ff88',
+            boxShadow: '0 0 10px #00ff88',
+            animation: 'pulse 2s ease-in-out infinite',
+          }}
+        />
         <Typography variant="caption" style={{ color: '#00ff88' }}>
           AI Ready
         </Typography>

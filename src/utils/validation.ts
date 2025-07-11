@@ -8,7 +8,7 @@ export const sanitizeHTML = (input: string): string => {
     .replace(/on\w+\s*=\s*"[^"]*"/gi, '')
     .replace(/on\w+\s*=\s*'[^']*'/gi, '')
     .replace(/javascript:/gi, '');
-  
+
   return cleaned.trim();
 };
 
@@ -68,12 +68,14 @@ export const validateURL = (url: string): boolean => {
 };
 
 // Password strength validation
-export const validatePassword = (password: string): {
+export const validatePassword = (
+  password: string
+): {
   isValid: boolean;
   errors: string[];
 } => {
   const errors: string[] = [];
-  
+
   if (password.length < 8) {
     errors.push('Password must be at least 8 characters long');
   }
@@ -89,7 +91,7 @@ export const validatePassword = (password: string): {
   if (!/[!@#$%^&*]/.test(password)) {
     errors.push('Password must contain at least one special character');
   }
-  
+
   return {
     isValid: errors.length === 0,
     errors,
@@ -114,69 +116,75 @@ export const escapeHtml = (text: string): string => {
     '"': '&quot;',
     "'": '&#039;',
   };
-  return text.replace(/[&<>"']/g, m => map[m]);
+  return text.replace(/[&<>"']/g, (m) => map[m]);
 };
 
 // File upload validation
-export const validateFileUpload = (file: File, options?: {
-  maxSize?: number; // in bytes
-  allowedTypes?: string[];
-}): { isValid: boolean; error?: string } => {
+export const validateFileUpload = (
+  file: File,
+  options?: {
+    maxSize?: number; // in bytes
+    allowedTypes?: string[];
+  }
+): { isValid: boolean; error?: string } => {
   const { maxSize = 10 * 1024 * 1024, allowedTypes = [] } = options || {};
-  
+
   if (file.size > maxSize) {
     return { isValid: false, error: `File size exceeds ${maxSize / 1024 / 1024}MB limit` };
   }
-  
+
   if (allowedTypes.length > 0 && !allowedTypes.includes(file.type)) {
-    return { isValid: false, error: `File type not allowed. Allowed types: ${allowedTypes.join(', ')}` };
+    return {
+      isValid: false,
+      error: `File type not allowed. Allowed types: ${allowedTypes.join(', ')}`,
+    };
   }
-  
+
   // Check for potentially dangerous file extensions
   const dangerousExtensions = ['.exe', '.bat', '.cmd', '.sh', '.ps1', '.vbs'];
   const fileName = file.name.toLowerCase();
-  if (dangerousExtensions.some(ext => fileName.endsWith(ext))) {
+  if (dangerousExtensions.some((ext) => fileName.endsWith(ext))) {
     return { isValid: false, error: 'File type not allowed for security reasons' };
   }
-  
+
   return { isValid: true };
 };
 
 // Rate limiting helper
 export class RateLimiter {
   private attempts: Map<string, number[]> = new Map();
-  
+
   constructor(
     private maxAttempts: number,
     private windowMs: number
   ) {}
-  
+
   isAllowed(identifier: string): boolean {
     const now = Date.now();
     const attempts = this.attempts.get(identifier) || [];
-    
+
     // Remove old attempts outside the window
-    const validAttempts = attempts.filter(time => now - time < this.windowMs);
-    
+    const validAttempts = attempts.filter((time) => now - time < this.windowMs);
+
     if (validAttempts.length >= this.maxAttempts) {
       return false;
     }
-    
+
     validAttempts.push(now);
     this.attempts.set(identifier, validAttempts);
-    
+
     // Cleanup old entries periodically
     if (Math.random() < 0.01) {
       this.cleanup();
     }
-    
+
     return true;
   }
-  
+
   private cleanup(): void {
     const now = Date.now();
     for (const [key, attempts] of this.attempts.entries()) {
-      const validAttempts = attempts.filter(time => now - time < this.windowMs);
+      const validAttempts = attempts.filter((time) => now - time < this.windowMs);
       if (validAttempts.length === 0) {
         this.attempts.delete(key);
       } else {
@@ -184,7 +192,7 @@ export class RateLimiter {
       }
     }
   }
-  
+
   reset(identifier: string): void {
     this.attempts.delete(identifier);
   }

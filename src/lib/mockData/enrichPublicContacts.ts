@@ -17,7 +17,6 @@ export async function enrichPublicContacts() {
       return;
     }
 
-
     // Note: The enriched_public_contacts table should be created in Supabase dashboard
     // For now, we'll check if the table exists by attempting a query
     const { error: checkError } = await supabase
@@ -90,14 +89,17 @@ export async function enrichPublicContacts() {
         CREATE INDEX idx_enriched_contacts_city_state ON enriched_public_contacts(city, state);
         CREATE INDEX idx_enriched_contacts_original_id ON enriched_public_contacts(original_id);
       `;
-      
+
       const { error: createError } = await supabase.rpc('exec_sql', { sql: createTableQuery });
       return;
     }
 
     // Clear existing enriched data if table exists
     if (!checkError) {
-      await supabase.from('enriched_public_contacts').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+      await supabase
+        .from('enriched_public_contacts')
+        .delete()
+        .neq('id', '00000000-0000-0000-0000-000000000000');
     }
 
     // City/State mapping for enrichment
@@ -121,23 +123,28 @@ export async function enrichPublicContacts() {
       { city: 'Portland', state: 'OR' },
       { city: 'Las Vegas', state: 'NV' },
       { city: 'Charlotte', state: 'NC' },
-      { city: 'Nashville', state: 'TN' }
+      { city: 'Nashville', state: 'TN' },
     ];
 
     // Enrich each contact
     const enrichedContacts: any[] = [];
-    
+
     for (let i = 0; i < publicContacts.length; i++) {
       const contact = publicContacts[i];
-      
+
       // Assign city/state in round-robin fashion
       const location = cityStateMap[i % cityStateMap.length];
-      
+
       // Determine practice type from specialization
-      const practiceType = ['Dermatology', 'Aesthetic Medicine', 'Plastic Surgery', 'MedSpa'].includes(contact.specialization) 
-        ? 'Medical' 
+      const practiceType = [
+        'Dermatology',
+        'Aesthetic Medicine',
+        'Plastic Surgery',
+        'MedSpa',
+      ].includes(contact.specialization)
+        ? 'Medical'
         : 'Dental';
-      
+
       const baseContact = {
         id: contact.id,
         name: `${contact.first_name} ${contact.last_name}`,
@@ -145,11 +152,11 @@ export async function enrichPublicContacts() {
         specialization: contact.specialization,
         city: location.city,
         state: location.state,
-        practice_type: practiceType
+        practice_type: practiceType,
       };
 
       const enriched = enrichContact(baseContact);
-      
+
       // Transform for database insertion
       const dbRecord = {
         original_id: contact.id,
@@ -159,14 +166,14 @@ export async function enrichPublicContacts() {
         city: enriched.city,
         state: enriched.state,
         practice_type: enriched.practice_type,
-        
+
         // Contact Information
         email: enriched.email,
         phone: enriched.phone,
         mobile: enriched.mobile,
         fax: enriched.fax,
         website: enriched.website,
-        
+
         // Professional Profile
         title: enriched.title,
         years_experience: enriched.yearsExperience,
@@ -174,7 +181,7 @@ export async function enrichPublicContacts() {
         certifications: enriched.certifications,
         languages: enriched.languages,
         bio: enriched.bio,
-        
+
         // Social Media
         linkedin: enriched.linkedin,
         facebook: enriched.facebook,
@@ -182,13 +189,13 @@ export async function enrichPublicContacts() {
         instagram: enriched.instagram,
         healthgrades: enriched.healthgrades,
         zocdoc: enriched.zocdoc,
-        
+
         // Practice Details
         address: enriched.address,
         suite: enriched.suite,
         zip_code: enriched.zipCode,
         office_hours: enriched.officeHours,
-        
+
         // Business Information
         insurance_accepted: enriched.insuranceAccepted,
         payment_methods: enriched.paymentMethods,
@@ -196,7 +203,7 @@ export async function enrichPublicContacts() {
         wheelchair_accessible: enriched.wheelchairAccessible,
         accepting_new_patients: enriched.acceptingNewPatients,
         telehealth: enriched.telehealth,
-        
+
         // Reviews & Ratings
         google_rating: enriched.googleRating,
         google_review_count: enriched.googleReviewCount,
@@ -206,19 +213,19 @@ export async function enrichPublicContacts() {
         healthgrades_review_count: enriched.healthgradesReviewCount,
         overall_rating: enriched.overallRating,
         total_reviews: enriched.totalReviews,
-        
+
         // Enrichment Scores
         heat_score: enriched.heatScore,
         segment: enriched.segment,
         lead_quality: enriched.leadQuality,
         response_rate: enriched.responseRate,
         engagement_score: enriched.engagementScore,
-        
+
         // Metadata
         last_enriched: enriched.lastEnriched,
         enrichment_source: enriched.enrichmentSource,
         data_completeness: enriched.dataCompleteness,
-        verification_status: enriched.verificationStatus
+        verification_status: enriched.verificationStatus,
       };
 
       enrichedContacts.push(dbRecord);
@@ -228,30 +235,32 @@ export async function enrichPublicContacts() {
     const batchSize = 5;
     for (let i = 0; i < enrichedContacts.length; i += batchSize) {
       const batch = enrichedContacts.slice(i, i + batchSize);
-      const { error: insertError } = await supabase
-        .from('enriched_public_contacts')
-        .insert(batch);
+      const { error: insertError } = await supabase.from('enriched_public_contacts').insert(batch);
 
       if (insertError) {
       } else {
       }
     }
 
-    
     // Return summary statistics
     const stats = {
       total: enrichedContacts.length,
-      champions: enrichedContacts.filter(c => c.segment === 'champion').length,
-      decisionMakers: enrichedContacts.filter(c => c.segment === 'decision-maker').length,
-      acceptingNewPatients: enrichedContacts.filter(c => c.accepting_new_patients).length,
-      withTelehealth: enrichedContacts.filter(c => c.telehealth).length,
-      averageHeatScore: Math.round(enrichedContacts.reduce((sum, c) => sum + c.heat_score, 0) / enrichedContacts.length),
-      averageRating: Math.round(enrichedContacts.reduce((sum, c) => sum + c.overall_rating, 0) / enrichedContacts.length * 100) / 100
+      champions: enrichedContacts.filter((c) => c.segment === 'champion').length,
+      decisionMakers: enrichedContacts.filter((c) => c.segment === 'decision-maker').length,
+      acceptingNewPatients: enrichedContacts.filter((c) => c.accepting_new_patients).length,
+      withTelehealth: enrichedContacts.filter((c) => c.telehealth).length,
+      averageHeatScore: Math.round(
+        enrichedContacts.reduce((sum, c) => sum + c.heat_score, 0) / enrichedContacts.length
+      ),
+      averageRating:
+        Math.round(
+          (enrichedContacts.reduce((sum, c) => sum + c.overall_rating, 0) /
+            enrichedContacts.length) *
+            100
+        ) / 100,
     };
 
-
     return { enrichedContacts, stats };
-
   } catch (error) {
     throw error;
   }
@@ -269,7 +278,7 @@ export async function getEnrichedPublicContacts(): Promise<EnrichedContact[]> {
   }
 
   // Transform database records back to EnrichedContact format
-  return data.map(record => ({
+  return data.map((record) => ({
     id: record.original_id,
     name: record.name,
     practice_name: record.practice_name,
@@ -277,39 +286,39 @@ export async function getEnrichedPublicContacts(): Promise<EnrichedContact[]> {
     city: record.city,
     state: record.state,
     practice_type: record.practice_type,
-    
+
     email: record.email,
     phone: record.phone,
     mobile: record.mobile,
     fax: record.fax,
     website: record.website,
-    
+
     title: record.title,
     yearsExperience: record.years_experience,
     education: record.education,
     certifications: record.certifications,
     languages: record.languages,
     bio: record.bio,
-    
+
     linkedin: record.linkedin,
     facebook: record.facebook,
     twitter: record.twitter,
     instagram: record.instagram,
     healthgrades: record.healthgrades,
     zocdoc: record.zocdoc,
-    
+
     address: record.address,
     suite: record.suite,
     zipCode: record.zip_code,
     officeHours: record.office_hours,
-    
+
     insuranceAccepted: record.insurance_accepted,
     paymentMethods: record.payment_methods,
     parkingAvailable: record.parking_available,
     wheelchairAccessible: record.wheelchair_accessible,
     acceptingNewPatients: record.accepting_new_patients,
     telehealth: record.telehealth,
-    
+
     googleRating: record.google_rating,
     googleReviewCount: record.google_review_count,
     yelpRating: record.yelp_rating,
@@ -318,16 +327,16 @@ export async function getEnrichedPublicContacts(): Promise<EnrichedContact[]> {
     healthgradesReviewCount: record.healthgrades_review_count,
     overallRating: record.overall_rating,
     totalReviews: record.total_reviews,
-    
+
     heatScore: record.heat_score,
     segment: record.segment,
     leadQuality: record.lead_quality,
     responseRate: record.response_rate,
     engagementScore: record.engagement_score,
-    
+
     lastEnriched: record.last_enriched,
     enrichmentSource: record.enrichment_source,
     dataCompleteness: record.data_completeness,
-    verificationStatus: record.verification_status
+    verificationStatus: record.verification_status,
   }));
 }

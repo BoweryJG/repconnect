@@ -32,23 +32,22 @@ export const SyncDashboard: React.FC<SyncDashboardProps> = ({ onClose }) => {
   const [activeQueue, setActiveQueue] = useState<string | null>(null);
   const [callingQueueId, setCallingQueueId] = useState<string | null>(null);
   const contacts = useStore((state) => state.contacts);
-  
+
   const presets = SmartCallQueue.generatePresets();
 
   const handleVoiceCommand = async (query: string) => {
     try {
       const queue = await SmartCallQueue.createQueue(query, contacts);
       setQueues([...queues, queue]);
-      
+
       // Auto-start sync
       handleSyncQueue(queue.id);
-    } catch (error) {
-          }
+    } catch (error) {}
   };
 
   const handleSyncQueue = async (queueId: string) => {
     setActiveQueue(queueId);
-    const queueIndex = queues.findIndex(q => q.id === queueId);
+    const queueIndex = queues.findIndex((q) => q.id === queueId);
     if (queueIndex === -1) return;
 
     const updatedQueues = [...queues];
@@ -56,44 +55,41 @@ export const SyncDashboard: React.FC<SyncDashboardProps> = ({ onClose }) => {
     setQueues(updatedQueues);
 
     try {
-      await SmartCallQueue.syncQueue(
-        updatedQueues[queueIndex],
-        (progress) => {
-          setQueues(prev => {
-            const updated = [...prev];
-            const idx = updated.findIndex(q => q.id === queueId);
-            if (idx !== -1) {
-              updated[idx].progress = progress;
-            }
-            return updated;
-          });
-        }
-      );
+      await SmartCallQueue.syncQueue(updatedQueues[queueIndex], (progress) => {
+        setQueues((prev) => {
+          const updated = [...prev];
+          const idx = updated.findIndex((q) => q.id === queueId);
+          if (idx !== -1) {
+            updated[idx].progress = progress;
+          }
+          return updated;
+        });
+      });
 
-      setQueues(prev => {
+      setQueues((prev) => {
         const updated = [...prev];
-        const idx = updated.findIndex(q => q.id === queueId);
+        const idx = updated.findIndex((q) => q.id === queueId);
         if (idx !== -1) {
           updated[idx].status = 'completed';
         }
         return updated;
       });
     } catch (error) {
-      setQueues(prev => {
+      setQueues((prev) => {
         const updated = [...prev];
-        const idx = updated.findIndex(q => q.id === queueId);
+        const idx = updated.findIndex((q) => q.id === queueId);
         if (idx !== -1) {
           updated[idx].status = 'error';
         }
         return updated;
       });
     }
-    
+
     setActiveQueue(null);
   };
 
   const handleDeleteQueue = (queueId: string) => {
-    setQueues(queues.filter(q => q.id !== queueId));
+    setQueues(queues.filter((q) => q.id !== queueId));
   };
 
   const renderContent = () => {
@@ -157,7 +153,14 @@ export const SyncDashboard: React.FC<SyncDashboardProps> = ({ onClose }) => {
                 <Typography variant="h6" fontWeight="600" gutterBottom>
                   Sync Queues
                 </Typography>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginTop: '16px' }}>
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '16px',
+                    marginTop: '16px',
+                  }}
+                >
                   {queues.map((queue) => (
                     <motion.div
                       key={queue.id}
@@ -176,18 +179,24 @@ export const SyncDashboard: React.FC<SyncDashboardProps> = ({ onClose }) => {
                       }}
                     >
                       {/* Status indicator */}
-                      <div style={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        height: '3px',
-                        background: queue.status === 'completed' ? '#00ff88' :
-                                   queue.status === 'error' ? '#ff0040' :
-                                   queue.status === 'syncing' ? '#00d4ff' : 
-                                   'rgba(255, 255, 255, 0.1)',
-                        boxShadow: queue.status === 'syncing' ? '0 0 10px #00d4ff' : 'none',
-                      }} />
+                      <div
+                        style={{
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
+                          right: 0,
+                          height: '3px',
+                          background:
+                            queue.status === 'completed'
+                              ? '#00ff88'
+                              : queue.status === 'error'
+                                ? '#ff0040'
+                                : queue.status === 'syncing'
+                                  ? '#00d4ff'
+                                  : 'rgba(255, 255, 255, 0.1)',
+                          boxShadow: queue.status === 'syncing' ? '0 0 10px #00d4ff' : 'none',
+                        }}
+                      />
 
                       <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                         <div style={{ flex: 1 }}>
@@ -203,14 +212,15 @@ export const SyncDashboard: React.FC<SyncDashboardProps> = ({ onClose }) => {
                             )}
                           </div>
                           <Typography variant="caption" color="text.secondary">
-                            {queue.contacts.length} contacts • Created {new Date(queue.createdAt).toLocaleTimeString()}
+                            {queue.contacts.length} contacts • Created{' '}
+                            {new Date(queue.createdAt).toLocaleTimeString()}
                           </Typography>
-                          
+
                           {queue.status === 'syncing' && (
                             <div style={{ marginTop: '12px' }}>
-                              <LinearProgress 
-                                variant="determinate" 
-                                value={queue.progress} 
+                              <LinearProgress
+                                variant="determinate"
+                                value={queue.progress}
                                 sx={{
                                   height: '6px',
                                   borderRadius: '3px',
@@ -263,7 +273,7 @@ export const SyncDashboard: React.FC<SyncDashboardProps> = ({ onClose }) => {
                                 '&:hover': {
                                   background: 'linear-gradient(135deg, #00ff88 0%, #00d4ff 100%)',
                                   transform: 'scale(1.05)',
-                                }
+                                },
                               }}
                             >
                               Start Calling
@@ -287,7 +297,14 @@ export const SyncDashboard: React.FC<SyncDashboardProps> = ({ onClose }) => {
                           <Typography variant="caption" color="text.secondary" gutterBottom>
                             Preview (showing first 3)
                           </Typography>
-                          <div style={{ display: 'flex', gap: '8px', marginTop: '8px', flexWrap: 'wrap' }}>
+                          <div
+                            style={{
+                              display: 'flex',
+                              gap: '8px',
+                              marginTop: '8px',
+                              flexWrap: 'wrap',
+                            }}
+                          >
                             {queue.contacts.slice(0, 3).map((contact) => (
                               <Chip
                                 key={contact.id}
@@ -336,30 +353,29 @@ export const SyncDashboard: React.FC<SyncDashboardProps> = ({ onClose }) => {
                   flexDirection: 'column',
                 }}
               >
-                <div style={{ 
-                  display: 'flex', 
-                  justifyContent: 'space-between', 
-                  alignItems: 'center',
-                  padding: '16px 24px',
-                  borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
-                }}>
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    padding: '16px 24px',
+                    borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+                  }}
+                >
                   <Typography variant="h5" sx={{ color: '#fff' }}>
                     Call Queue Manager
                   </Typography>
-                  <Button
-                    onClick={() => setCallingQueueId(null)}
-                    sx={{ color: '#fff' }}
-                  >
+                  <Button onClick={() => setCallingQueueId(null)} sx={{ color: '#fff' }}>
                     Close
                   </Button>
                 </div>
                 <div style={{ flex: 1, overflow: 'auto' }}>
-                  <QueueCallInterface 
-                    queueId={callingQueueId} 
+                  <QueueCallInterface
+                    queueId={callingQueueId}
                     onComplete={() => {
                       setCallingQueueId(null);
                       // Refresh queue status
-                      const updatedQueues = queues.map(q => 
+                      const updatedQueues = queues.map((q) =>
                         q.id === callingQueueId ? { ...q, status: 'completed' as const } : q
                       );
                       setQueues(updatedQueues);
@@ -370,7 +386,7 @@ export const SyncDashboard: React.FC<SyncDashboardProps> = ({ onClose }) => {
             )}
           </div>
         );
-      
+
       case 'ai':
         return (
           <div style={{ textAlign: 'center', padding: '64px 0' }}>
@@ -379,7 +395,7 @@ export const SyncDashboard: React.FC<SyncDashboardProps> = ({ onClose }) => {
             </Typography>
           </div>
         );
-      
+
       case 'performance':
         return (
           <div style={{ textAlign: 'center', padding: '64px 0' }}>
@@ -388,7 +404,7 @@ export const SyncDashboard: React.FC<SyncDashboardProps> = ({ onClose }) => {
             </Typography>
           </div>
         );
-      
+
       case 'history':
         return (
           <div style={{ textAlign: 'center', padding: '64px 0' }}>
@@ -397,7 +413,7 @@ export const SyncDashboard: React.FC<SyncDashboardProps> = ({ onClose }) => {
             </Typography>
           </div>
         );
-      
+
       case 'settings':
         return (
           <div style={{ textAlign: 'center', padding: '64px 0' }}>
@@ -406,30 +422,34 @@ export const SyncDashboard: React.FC<SyncDashboardProps> = ({ onClose }) => {
             </Typography>
           </div>
         );
-      
+
       default:
         return null;
     }
   };
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      background: '#0a0a0a',
-      position: 'relative',
-    }}>
+    <div
+      style={{
+        minHeight: '100vh',
+        background: '#0a0a0a',
+        position: 'relative',
+      }}
+    >
       <SettingsNavbar
         activeTab={activeTab}
         onTabChange={setActiveTab}
-        syncCount={queues.filter(q => q.status === 'syncing').length}
+        syncCount={queues.filter((q) => q.status === 'syncing').length}
         onClose={onClose}
       />
-      
-      <div style={{
-        maxWidth: '1200px',
-        margin: '0 auto',
-        padding: '32px 24px',
-      }}>
+
+      <div
+        style={{
+          maxWidth: '1200px',
+          margin: '0 auto',
+          padding: '32px 24px',
+        }}
+      >
         <AnimatePresence mode="wait">
           <motion.div
             key={activeTab}

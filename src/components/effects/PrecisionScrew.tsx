@@ -1,7 +1,13 @@
 import React, { useMemo } from 'react';
 
 interface PrecisionScrewProps {
-  position: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'top-center' | 'bottom-center';
+  position:
+    | 'top-left'
+    | 'top-right'
+    | 'bottom-left'
+    | 'bottom-right'
+    | 'top-center'
+    | 'bottom-center';
   size?: 'small' | 'medium' | 'large';
   grooveType?: 'slot' | 'phillips';
   angleRange?: number; // Max rotation angle (e.g., 30 = -30 to +30 degrees)
@@ -49,18 +55,20 @@ export const PrecisionScrew: React.FC<PrecisionScrewProps> = ({
     '--groove-angle': `${grooveAngle}deg`,
   } as React.CSSProperties;
 
-  const jewelStyle: React.CSSProperties = jewelColor ? {
-    background: `radial-gradient(
+  const jewelStyle: React.CSSProperties = jewelColor
+    ? {
+        background: `radial-gradient(
       circle at center,
       rgba(255, 255, 255, 0.9) 0%,
       ${jewelColor} 30%,
       ${jewelColor} 60%,
       rgba(255, 0, 170, 0.5) 100%
     )`,
-  } : {};
+      }
+    : {};
 
   return (
-    <div 
+    <div
       className={`screw-wrapper ${position} ${size} ${premium ? 'premium' : ''} ${className}`}
       style={screwStyle}
     >

@@ -13,11 +13,10 @@ export const useResponsive = () => {
       const width = window.innerWidth;
       const height = window.innerHeight;
       setWindowDimensions({ width, height });
-      
+
       const newIsMobile = width < 768;
       const newIsTablet = width >= 768 && width < 1024;
-      
-      
+
       setIsMobile(newIsMobile);
       setIsTablet(newIsTablet);
     };

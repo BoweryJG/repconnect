@@ -49,9 +49,9 @@ class PhoneService {
   private apiClient = axios.create({
     baseURL: `${OSBACKEND_URL}/api/phone`,
     headers: {
-      'Authorization': `Bearer ${OSBACKEND_API_KEY}`,
-      'Content-Type': 'application/json'
-    }
+      Authorization: `Bearer ${OSBACKEND_API_KEY}`,
+      'Content-Type': 'application/json',
+    },
   });
 
   // Default to WebRTC for voice calls
@@ -78,7 +78,7 @@ class PhoneService {
       const response = await this.apiClient.post('/phone-numbers/search', params);
       return response.data;
     } catch (error) {
-            throw error;
+      throw error;
     }
   }
 
@@ -92,12 +92,12 @@ class PhoneService {
         capabilities: {
           voice: true,
           SMS: true,
-          MMS: true
-        }
+          MMS: true,
+        },
       });
       return response.data;
     } catch (error) {
-            throw error;
+      throw error;
     }
   }
 
@@ -110,12 +110,12 @@ class PhoneService {
         const response = await this.apiClient.post('/calls/initiate', {
           from,
           to,
-          recordCall
+          recordCall,
         });
         return response.data;
       }
     } catch (error) {
-            throw error;
+      throw error;
     }
   }
 
@@ -128,23 +128,23 @@ class PhoneService {
           from,
           to,
           userAgent: navigator.userAgent,
-          timestamp: new Date().toISOString()
-        }
+          timestamp: new Date().toISOString(),
+        },
       });
       return response.data;
     } catch (error) {
-            throw error;
+      throw error;
     }
   }
 
   async endWebRTCCall(sessionId: string) {
     try {
       const response = await this.apiClient.post('/webrtc/end-session', {
-        sessionId
+        sessionId,
       });
       return response.data;
     } catch (error) {
-            throw error;
+      throw error;
     }
   }
 
@@ -153,7 +153,7 @@ class PhoneService {
       const response = await this.apiClient.get('/webrtc/sessions');
       return response.data.sessions;
     } catch (error) {
-            throw error;
+      throw error;
     }
   }
 
@@ -189,7 +189,7 @@ class PhoneService {
       const response = await this.apiClient.get(`/calls/${callId}/recording`);
       return response.data;
     } catch (error) {
-            throw error;
+      throw error;
     }
   }
 
@@ -199,21 +199,23 @@ class PhoneService {
       const response = await this.apiClient.post('/sms/send', {
         from,
         to,
-        body
+        body,
       });
       return response.data;
     } catch (error) {
-            throw error;
+      throw error;
     }
   }
 
   async getSMSConversations(phoneNumber?: string) {
     let query = supabase
       .from('sms_conversations')
-      .select(`
+      .select(
+        `
         *,
         phone_numbers!inner(phone_number, friendly_name)
-      `)
+      `
+      )
       .order('last_message_at', { ascending: false });
 
     if (phoneNumber) {
@@ -246,7 +248,7 @@ class PhoneService {
       const response = await this.apiClient.get(`/usage/summary?${params}`);
       return response.data;
     } catch (error) {
-            throw error;
+      throw error;
     }
   }
 
@@ -260,14 +262,17 @@ class PhoneService {
     if (error) throw error;
 
     // Aggregate by type
-    const stats = usage?.reduce((acc, record) => {
-      if (!acc[record.type]) {
-        acc[record.type] = { quantity: 0, cost: 0 };
-      }
-      acc[record.type].quantity += record.quantity || 0;
-      acc[record.type].cost += record.total_cost || 0;
-      return acc;
-    }, {} as Record<string, { quantity: number; cost: number }>);
+    const stats = usage?.reduce(
+      (acc, record) => {
+        if (!acc[record.type]) {
+          acc[record.type] = { quantity: 0, cost: 0 };
+        }
+        acc[record.type].quantity += record.quantity || 0;
+        acc[record.type].cost += record.total_cost || 0;
+        return acc;
+      },
+      {} as Record<string, { quantity: number; cost: number }>
+    );
 
     return stats || {};
   }
@@ -282,7 +287,7 @@ class PhoneService {
           event: 'INSERT',
           schema: 'public',
           table: 'call_logs',
-          filter: `to_number=eq.${phoneNumber}`
+          filter: `to_number=eq.${phoneNumber}`,
         },
         (payload: any) => callback(payload.new as CallLog)
       )
@@ -298,7 +303,7 @@ class PhoneService {
           event: 'INSERT',
           schema: 'public',
           table: 'sms_messages',
-          filter: `to_number=eq.${phoneNumber},direction=eq.inbound`
+          filter: `to_number=eq.${phoneNumber},direction=eq.inbound`,
         },
         (payload: any) => callback(payload.new as SMSMessage)
       )

@@ -66,15 +66,15 @@ function DataSphere({ position, color, value, label }: any) {
 function ParticleField() {
   const points = useRef<THREE.Points>(null);
   const particlesCount = 1000;
-  
+
   const positions = new Float32Array(particlesCount * 3);
   const colors = new Float32Array(particlesCount * 3);
-  
+
   for (let i = 0; i < particlesCount; i++) {
     positions[i * 3] = (Math.random() - 0.5) * 20;
     positions[i * 3 + 1] = (Math.random() - 0.5) * 20;
     positions[i * 3 + 2] = (Math.random() - 0.5) * 20;
-    
+
     colors[i * 3] = Math.random();
     colors[i * 3 + 1] = Math.random();
     colors[i * 3 + 2] = Math.random();
@@ -119,7 +119,7 @@ function ParticleField() {
 
 function HolographicGrid() {
   const gridRef = useRef<THREE.GridHelper>(null);
-  
+
   useFrame((state) => {
     if (gridRef.current) {
       gridRef.current.rotation.y = state.clock.elapsedTime * 0.02;
@@ -131,12 +131,7 @@ function HolographicGrid() {
       <gridHelper ref={gridRef} args={[20, 20, '#00FFFF', '#004444']} />
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -5, 0]}>
         <planeGeometry args={[30, 30]} />
-        <meshBasicMaterial
-          color="#000033"
-          transparent
-          opacity={0.2}
-          side={THREE.DoubleSide}
-        />
+        <meshBasicMaterial color="#000033" transparent opacity={0.2} side={THREE.DoubleSide} />
       </mesh>
     </>
   );
@@ -147,7 +142,10 @@ interface MissionControlDashboardProps {
   onClose: () => void;
 }
 
-export const MissionControlDashboard: React.FC<MissionControlDashboardProps> = ({ isOpen, onClose }) => {
+export const MissionControlDashboard: React.FC<MissionControlDashboardProps> = ({
+  isOpen,
+  onClose,
+}) => {
   const { contacts } = useStore();
   const [metrics, setMetrics] = useState({
     totalCalls: 0,
@@ -160,13 +158,13 @@ export const MissionControlDashboard: React.FC<MissionControlDashboardProps> = (
 
   useEffect(() => {
     // Calculate real metrics
-    const callsPerContact = contacts.map(c => c.callCount || 0);
+    const callsPerContact = contacts.map((c) => c.callCount || 0);
     const totalCalls = callsPerContact.reduce((sum, count) => sum + count, 0);
-    
+
     setMetrics({
       totalCalls,
-      successRate: totalCalls > 0 ? Math.round((totalCalls * 0.87) * 100) / 100 : 0,
-      avgDuration: totalCalls > 0 ? Math.round((totalCalls * 3.5) * 10) / 10 : 0,
+      successRate: totalCalls > 0 ? Math.round(totalCalls * 0.87 * 100) / 100 : 0,
+      avgDuration: totalCalls > 0 ? Math.round(totalCalls * 3.5 * 10) / 10 : 0,
       activeConnections: contacts.length,
       systemHealth: 90 + Math.random() * 10,
       apiLatency: 20 + Math.random() * 50,
@@ -204,7 +202,9 @@ export const MissionControlDashboard: React.FC<MissionControlDashboardProps> = (
                 zIndex: 10,
               }}
             >
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div
+                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+              >
                 <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
                   {/* Pipeline Logo Link */}
                   <div
@@ -230,20 +230,40 @@ export const MissionControlDashboard: React.FC<MissionControlDashboardProps> = (
                     }}
                   >
                     <div style={{ width: 24, height: 24, position: 'relative' }}>
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" style={{ width: '100%', height: '100%' }}>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 32 32"
+                        style={{ width: '100%', height: '100%' }}
+                      >
                         <defs>
                           <linearGradient id="pipelineGrad" x1="0%" y1="0%" x2="100%" y2="100%">
                             <stop offset="0%" stopColor="#9f58fa" />
                             <stop offset="100%" stopColor="#4B96DC" />
                           </linearGradient>
                         </defs>
-                        <circle cx="16" cy="16" r="12" fill="none" stroke="url(#pipelineGrad)" strokeWidth="2" opacity="0.8" />
-                        <circle cx="16" cy="16" r="8" fill="none" stroke="url(#pipelineGrad)" strokeWidth="1.5" opacity="0.5" />
+                        <circle
+                          cx="16"
+                          cy="16"
+                          r="12"
+                          fill="none"
+                          stroke="url(#pipelineGrad)"
+                          strokeWidth="2"
+                          opacity="0.8"
+                        />
+                        <circle
+                          cx="16"
+                          cy="16"
+                          r="8"
+                          fill="none"
+                          stroke="url(#pipelineGrad)"
+                          strokeWidth="1.5"
+                          opacity="0.5"
+                        />
                         <circle cx="16" cy="16" r="3" fill="url(#pipelineGrad)" />
                       </svg>
                     </div>
-                    <Typography 
-                      sx={{ 
+                    <Typography
+                      sx={{
                         fontFamily: 'Orbitron, monospace',
                         fontWeight: 600,
                         fontSize: '14px',
@@ -255,32 +275,33 @@ export const MissionControlDashboard: React.FC<MissionControlDashboardProps> = (
                   </div>
                   <div>
                     <Typography
-                    variant="h3"
-                    sx={{
-                      fontWeight: 800,
-                      fontFamily: 'monospace',
-                      letterSpacing: 4,
-                      background: 'linear-gradient(135deg, #00FFFF 0%, #0080FF 50%, #FF00FF 100%)',
-                      backgroundClip: 'text',
-                      WebkitBackgroundClip: 'text',
-                      WebkitTextFillColor: 'transparent',
-                      textTransform: 'uppercase',
-                      mb: 1,
-                    }}
-                  >
-                    Mission Control
-                  </Typography>
-                  <Typography
-                    variant="caption"
-                    sx={{
-                      color: 'rgba(0, 255, 255, 0.6)',
-                      textTransform: 'uppercase',
-                      letterSpacing: 3,
-                      fontFamily: 'monospace',
-                    }}
-                  >
-                    Real-Time System Analytics
-                  </Typography>
+                      variant="h3"
+                      sx={{
+                        fontWeight: 800,
+                        fontFamily: 'monospace',
+                        letterSpacing: 4,
+                        background:
+                          'linear-gradient(135deg, #00FFFF 0%, #0080FF 50%, #FF00FF 100%)',
+                        backgroundClip: 'text',
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent',
+                        textTransform: 'uppercase',
+                        mb: 1,
+                      }}
+                    >
+                      Mission Control
+                    </Typography>
+                    <Typography
+                      variant="caption"
+                      sx={{
+                        color: 'rgba(0, 255, 255, 0.6)',
+                        textTransform: 'uppercase',
+                        letterSpacing: 3,
+                        fontFamily: 'monospace',
+                      }}
+                    >
+                      Real-Time System Analytics
+                    </Typography>
                   </div>
                 </div>
                 <IconButton
@@ -307,10 +328,10 @@ export const MissionControlDashboard: React.FC<MissionControlDashboardProps> = (
               <ambientLight intensity={0.2} />
               <pointLight position={[10, 10, 10]} intensity={1} color="#00FFFF" />
               <pointLight position={[-10, -10, -10]} intensity={0.5} color="#FF00FF" />
-              
+
               <ParticleField />
               <HolographicGrid />
-              
+
               {/* Data Spheres */}
               <DataSphere
                 position={[-5, 0, 0]}
@@ -348,7 +369,7 @@ export const MissionControlDashboard: React.FC<MissionControlDashboardProps> = (
                 value={`${metrics.avgDuration}m`}
                 label="Avg Duration"
               />
-              
+
               <OrbitControls
                 enableZoom={false}
                 enablePan={false}

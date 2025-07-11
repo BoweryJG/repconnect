@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Documentation
+    url: https://docs.repconnect.com
+    about: Please check our documentation for common questions
+  - name: Community Support
+    url: https://github.com/${{ github.repository }}/discussions
+    about: Ask questions and discuss with the community
+  - name: Security Issue
+    url: mailto:security@repconnect.com
+    about: Please report security vulnerabilities directly via email

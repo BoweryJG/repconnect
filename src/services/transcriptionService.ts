@@ -34,26 +34,28 @@ class TranscriptionService {
   private async connect() {
     try {
       // Get the auth token - temporarily make it optional for testing
-      const { data: { session } } = await supabase.auth.getSession();
-      
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
       const backendUrl = process.env.REACT_APP_BACKEND_URL || 'https://osbackend-zl1h.onrender.com';
-                  
+
       // Connect to the namespace within the Socket.IO server
       this.socket = io(`${backendUrl}/call-transcription-ws`, {
-        path: '/agents-ws',  // This is the Socket.IO server path
+        path: '/agents-ws', // This is the Socket.IO server path
         auth: {
-          token: session?.access_token || ''  // Require auth token
+          token: session?.access_token || '', // Require auth token
         },
         transports: ['websocket'],
         reconnection: true,
         reconnectionDelay: 1000,
         reconnectionDelayMax: 5000,
-        reconnectionAttempts: this.maxReconnectAttempts
+        reconnectionAttempts: this.maxReconnectAttempts,
       });
 
       this.setupEventListeners();
     } catch (error) {
-            this.handleReconnect();
+      this.handleReconnect();
     }
   }
 
@@ -61,9 +63,9 @@ class TranscriptionService {
     if (!this.socket) return;
 
     this.socket.on('connect', () => {
-            this.isConnected = true;
+      this.isConnected = true;
       this.reconnectAttempts = 0;
-      
+
       // Re-subscribe to active sessions
       this.sessions.forEach((session, callSid) => {
         this.socket?.emit('subscribe', { callSid });
@@ -71,11 +73,11 @@ class TranscriptionService {
     });
 
     this.socket.on('disconnect', () => {
-            this.isConnected = false;
+      this.isConnected = false;
     });
 
     this.socket.on('error', (error) => {
-            this.sessions.forEach(session => {
+      this.sessions.forEach((session) => {
         session.onError(new Error(error.message || 'Connection error'));
       });
     });
@@ -83,11 +85,11 @@ class TranscriptionService {
     this.socket.on('connect_error', (error: any) => {
       // Only log first connection error to avoid console spam
       if (this.reconnectAttempts === 0) {
-              }
+      }
     });
 
     this.socket.on('transcription:update', (data: any) => {
-            const session = this.sessions.get(data.callSid);
+      const session = this.sessions.get(data.callSid);
       if (session) {
         // Convert backend format to expected TranscriptionUpdate format
         const update: TranscriptionUpdate = {
@@ -97,16 +99,16 @@ class TranscriptionService {
           timestamp: new Date(data.timestamp || Date.now()),
           confidence: data.confidence,
           sentiment: data.sentiment,
-          speaker: data.speaker
+          speaker: data.speaker,
         };
         session.onUpdate(update);
-        
+
         // Send transcription to Harvey for real-time coaching
         if (update.text && update.speaker) {
           harveyWebRTC.sendTranscriptionToHarvey(update.text, update.speaker);
         }
       } else {
-              }
+      }
     });
 
     this.socket.on('transcription:complete', (data: { callSid: string }) => {
@@ -117,11 +119,10 @@ class TranscriptionService {
       }
     });
 
-    this.socket.on('transcription:started', (data: any) => {
-          });
+    this.socket.on('transcription:started', (data: any) => {});
 
     this.socket.on('transcription:error', (data: { callSid: string; error: string }) => {
-            const session = this.sessions.get(data.callSid);
+      const session = this.sessions.get(data.callSid);
       if (session) {
         session.onError(new Error(data.error));
       }
@@ -130,12 +131,12 @@ class TranscriptionService {
 
   private handleReconnect() {
     if (this.reconnectAttempts >= this.maxReconnectAttempts) {
-            return;
+      return;
     }
 
     this.reconnectAttempts++;
     const delay = Math.min(1000 * Math.pow(2, this.reconnectAttempts), 30000);
-    
+
     // Silent reconnection attempts
     setTimeout(() => {
       this.connect();
@@ -148,9 +149,8 @@ class TranscriptionService {
     onError: (error: Error) => void,
     onComplete: () => void
   ) {
-            
     if (!this.socket || !this.isConnected) {
-            onError(new Error('Not connected to transcription service'));
+      onError(new Error('Not connected to transcription service'));
       return;
     }
 
@@ -159,11 +159,11 @@ class TranscriptionService {
       callSid,
       onUpdate,
       onError,
-      onComplete
+      onComplete,
     });
 
     // Subscribe to transcription updates for this call
-        this.socket.emit('subscribe:call', callSid);
+    this.socket.emit('subscribe:call', callSid);
   }
 
   public stopTranscription(callSid: string) {
@@ -186,19 +186,27 @@ class TranscriptionService {
       if (error) throw error;
       return data;
     } catch (error) {
-            throw error;
+      throw error;
     }
   }
 
   public async getSentimentAnalysis(text: string): Promise<'positive' | 'neutral' | 'negative'> {
     // Simple sentiment analysis - in production, this would call an AI service
     const positiveWords = ['great', 'excellent', 'good', 'happy', 'pleased', 'satisfied', 'thank'];
-    const negativeWords = ['bad', 'poor', 'unhappy', 'disappointed', 'frustrated', 'angry', 'problem'];
-    
+    const negativeWords = [
+      'bad',
+      'poor',
+      'unhappy',
+      'disappointed',
+      'frustrated',
+      'angry',
+      'problem',
+    ];
+
     const lowerText = text.toLowerCase();
-    const positiveCount = positiveWords.filter(word => lowerText.includes(word)).length;
-    const negativeCount = negativeWords.filter(word => lowerText.includes(word)).length;
-    
+    const positiveCount = positiveWords.filter((word) => lowerText.includes(word)).length;
+    const negativeCount = negativeWords.filter((word) => lowerText.includes(word)).length;
+
     if (positiveCount > negativeCount) return 'positive';
     if (negativeCount > positiveCount) return 'negative';
     return 'neutral';

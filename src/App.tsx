@@ -47,9 +47,15 @@ import { harveyService } from './services/harveyService';
 import AgentSelector from './components/AgentSelector';
 import SessionWarning from './components/SessionWarning';
 import ChatbotIntegration from './components/ChatbotLauncher/ChatbotIntegration';
+import { SmartPreloader } from './utils/dynamicImports';
+import { bundlePerformance } from './utils/bundlePerformance';
 
-// Lazy load heavy components
-const MissionControlDashboard = React.lazy(() => import('./components/MissionControlDashboard').then(module => ({ default: module.MissionControlDashboard })));
+// Lazy load heavy components with optimized loading
+const MissionControlDashboard = React.lazy(() =>
+  import(
+    /* webpackChunkName: "mission-control" */ './components/MissionControlDashboardOptimized'
+  ).then((module) => ({ default: module.MissionControlDashboard }))
+);
 
 function AppContent() {
   const { isMobile } = useResponsive();
@@ -67,7 +73,7 @@ function AppContent() {
   const [newContactPhone, setNewContactPhone] = useState('');
   const [viewMode, setViewMode] = useState<'rolodex' | 'grid'>('rolodex');
   const [gridDimensions, setGridDimensions] = useState({ width: 1200, height: 600 });
-  
+
   // Debug grid dimensions
   useEffect(() => {
     logger.debug('Grid dimensions updated:', gridDimensions);
@@ -76,9 +82,11 @@ function AppContent() {
   const [isDemoMode, setIsDemoMode] = useState(false);
   const [showUsageWarning, setShowUsageWarning] = useState(false);
   const [harveyLoading, setHarveyLoading] = useState(false);
-  const [harveyConnectionStatus, setHarveyConnectionStatus] = useState<'connecting' | 'connected' | 'failed' | 'reconnecting'>('connecting');
+  const [harveyConnectionStatus, setHarveyConnectionStatus] = useState<
+    'connecting' | 'connected' | 'failed' | 'reconnecting'
+  >('connecting');
   const [harveyError, setHarveyError] = useState<string | undefined>();
-  
+
   const {
     contacts,
     addContact,
@@ -104,31 +112,33 @@ function AppContent() {
         .from('contacts')
         .select('*')
         .order('created_at', { ascending: false });
-      
+
       if (error) {
         logger.error('Supabase error:', error);
         throw error;
       }
-      
+
       logger.info('Loaded contacts:', data?.length || 0);
       logger.debug('First contact:', data?.[0]); // Debug first contact
-      
+
       // Convert Supabase data to Contact format and set all at once
-      const formattedContacts = data?.map(contact => ({
-        id: crypto.randomUUID(),
-        name: `${contact.first_name || ''} ${contact.last_name || ''}`.trim() || 'Unknown',
-        phoneNumber: contact.phone_number || contact.cell || '',
-        email: contact.email,
-        notes: contact.notes || `${contact.summary || ''}\n${contact.tech_interests || ''}`.trim(),
-        tags: [
-          contact.specialty,
-          contact.lead_tier,
-          contact.contact_priority,
-          contact.territory
-        ].filter(Boolean),
-        callCount: 0
-      })) || [];
-      
+      const formattedContacts =
+        data?.map((contact) => ({
+          id: crypto.randomUUID(),
+          name: `${contact.first_name || ''} ${contact.last_name || ''}`.trim() || 'Unknown',
+          phoneNumber: contact.phone_number || contact.cell || '',
+          email: contact.email,
+          notes:
+            contact.notes || `${contact.summary || ''}\n${contact.tech_interests || ''}`.trim(),
+          tags: [
+            contact.specialty,
+            contact.lead_tier,
+            contact.contact_priority,
+            contact.territory,
+          ].filter(Boolean),
+          callCount: 0,
+        })) || [];
+
       // Set all contacts at once, replacing any existing ones
       setContacts(formattedContacts);
     } catch (error) {
@@ -170,6 +180,20 @@ function AppContent() {
       // Quality changes are handled internally by the renderer
     });
 
+    // Track bundle performance in development
+    if (process.env.NODE_ENV === 'development') {
+      console.log(
+        '📊 Bundle Performance Monitor initialized. Use window.bundlePerformance.generateReport() to see metrics.'
+      );
+    }
+
+    // Preload likely next routes based on current location
+    const currentRoute = window.location.pathname;
+    const likelyRoutes = bundlePerformance.predictAndPreload(currentRoute);
+    likelyRoutes.forEach((route) => {
+      SmartPreloader.preloadOnRoute(route);
+    });
+
     return () => {
       unsubscribe();
     };
@@ -193,14 +217,16 @@ function AppContent() {
     };
   }, [viewMode]);
 
-  const checkUsageAndProceed = (action: keyof ReturnType<typeof usageTracker.getUsageStats>['features']) => {
+  const checkUsageAndProceed = (
+    action: keyof ReturnType<typeof usageTracker.getUsageStats>['features']
+  ) => {
     if (!user) {
       const shouldBlock = usageTracker.trackAction(action);
       if (shouldBlock) {
         setShowLoginModal(true);
         return false;
       }
-      
+
       const remaining = usageTracker.getRemainingActions();
       if (remaining <= 3 && remaining > 0) {
         setShowUsageWarning(true);
@@ -212,11 +238,11 @@ function AppContent() {
 
   const handleMakeCall = async (contact: any) => {
     if (!checkUsageAndProceed('callsInitiated')) return;
-    
+
     // Initialize Harvey first
     setHarveyLoading(true);
     setHarveyConnectionStatus('connecting');
-    
+
     try {
       // Connect to Harvey
       await harveyWebRTC.connect({
@@ -231,39 +257,40 @@ function AppContent() {
           logger.debug('Harvey audio received');
         },
       });
-      
+
       // Give Harvey a moment to stabilize
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
       // Pre-call whisper from Harvey
       if (harveyWebRTC) {
         // Send contact info to Harvey for pre-call analysis
         harveyWebRTC.sendVoiceCommand(`prepare: Calling ${contact.name} at ${contact.phoneNumber}`);
-        
+
         // Emit pre-call coaching
-        window.dispatchEvent(new CustomEvent('harvey-coaching', {
-          detail: {
-            type: 'coaching',
-            message: `Calling ${contact.name}. Remember to lead with value.`,
-            timestamp: Date.now(),
-          }
-        }));
+        window.dispatchEvent(
+          new CustomEvent('harvey-coaching', {
+            detail: {
+              type: 'coaching',
+              message: `Calling ${contact.name}. Remember to lead with value.`,
+              timestamp: Date.now(),
+            },
+          })
+        );
       }
-      
     } catch (error: any) {
       logger.error('Harvey connection failed:', error);
       setHarveyError('Failed to connect to Harvey. Proceeding without AI coaching.');
       setHarveyConnectionStatus('failed');
       // Continue with call even if Harvey fails
     }
-    
+
     // Format the phone number to ensure it has country code
     let formattedNumber = contact.phoneNumber.replace(/\D/g, '');
     if (!formattedNumber.startsWith('1') && formattedNumber.length === 10) {
       formattedNumber = '1' + formattedNumber;
     }
     formattedNumber = '+' + formattedNumber;
-    
+
     setCallInProgress(true);
     setActiveCall({
       id: crypto.randomUUID(),
@@ -276,7 +303,7 @@ function AppContent() {
 
     try {
       await twilioService.makeCall(formattedNumber);
-      
+
       // Log to Supabase
       await supabase.from('calls').insert({
         contact_id: contact.id,
@@ -285,31 +312,36 @@ function AppContent() {
         status: 'initiated',
         created_at: new Date().toISOString(),
       });
-      
+
       // Harvey is now active during the call
       setHarveyLoading(false);
-      
     } catch (error: any) {
       logger.error('Error making call:', error);
       setCallInProgress(false);
       setActiveCall(null);
       setHarveyLoading(false);
       harveyWebRTC.disconnect();
-      
+
       // Show user-friendly error message
-      const errorMessage = error.response?.data?.error || error.response?.data?.details?.error || error.message || 'Unknown error';
-      showError(`Call failed: ${errorMessage}. Please check that the phone number is valid and Twilio account is active.`);
+      const errorMessage =
+        error.response?.data?.error ||
+        error.response?.data?.details?.error ||
+        error.message ||
+        'Unknown error';
+      showError(
+        `Call failed: ${errorMessage}. Please check that the phone number is valid and Twilio account is active.`
+      );
     }
   };
 
   const handleDialNumber = async (phoneNumber: string) => {
     if (!checkUsageAndProceed('dialerOpened')) return;
     logger.debug('🔍 [APP DEBUG] Starting dial process for:', phoneNumber);
-    
+
     // Initialize Harvey first
     setHarveyLoading(true);
     setHarveyConnectionStatus('connecting');
-    
+
     try {
       // Connect to Harvey
       await harveyWebRTC.connect({
@@ -324,41 +356,42 @@ function AppContent() {
           logger.debug('Harvey audio received');
         },
       });
-      
+
       // Give Harvey a moment to stabilize
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
       // Pre-call whisper from Harvey
       if (harveyWebRTC) {
         // Send contact info to Harvey for pre-call analysis
         harveyWebRTC.sendVoiceCommand(`prepare: Calling ${phoneNumber}`);
-        
+
         // Emit pre-call coaching
-        window.dispatchEvent(new CustomEvent('harvey-coaching', {
-          detail: {
-            type: 'coaching',
-            message: `Calling ${phoneNumber}. Remember to lead with value.`,
-            timestamp: Date.now(),
-          }
-        }));
+        window.dispatchEvent(
+          new CustomEvent('harvey-coaching', {
+            detail: {
+              type: 'coaching',
+              message: `Calling ${phoneNumber}. Remember to lead with value.`,
+              timestamp: Date.now(),
+            },
+          })
+        );
       }
-      
     } catch (error: any) {
       logger.error('Harvey connection failed:', error);
       setHarveyError('Failed to connect to Harvey. Proceeding without AI coaching.');
       setHarveyConnectionStatus('failed');
       // Continue with call even if Harvey fails
     }
-    
+
     // Format the phone number to ensure it has country code
     let formattedNumber = phoneNumber.replace(/\D/g, '');
     if (!formattedNumber.startsWith('1') && formattedNumber.length === 10) {
       formattedNumber = '1' + formattedNumber;
     }
     formattedNumber = '+' + formattedNumber;
-    
+
     logger.debug('🔍 [APP DEBUG] Formatted number:', formattedNumber);
-    
+
     setCallInProgress(true);
     setActiveCall({
       id: crypto.randomUUID(),
@@ -377,45 +410,51 @@ function AppContent() {
         undefined,
         { enableStream: true } // Enable real-time transcription
       );
-      
+
       logger.info('✅ [APP DEBUG] Call initiated successfully:', result);
-      
+
       // Update activeCall with the call SID for transcription
       if (result.call && result.call.sid) {
         setActiveCall({
           ...activeCall!,
-          callSid: result.call.sid
+          callSid: result.call.sid,
         });
       }
-      
+
       // Log to Supabase
       await supabase.from('calls').insert({
         phone_number: formattedNumber,
         type: 'outgoing',
         status: 'initiated',
         created_at: new Date().toISOString(),
-        call_sid: result.call?.sid
+        call_sid: result.call?.sid,
       });
-      
+
       logger.info('✅ [APP DEBUG] Call logged to database');
-      
+
       // Harvey is now active during the call
       setHarveyLoading(false);
-      
+
       // Close dialer on success
       setShowDialer(false);
     } catch (error: any) {
       logger.error('❌ [APP DEBUG] Call failed:', {
         error: error.message,
         response: error.response?.data,
-        status: error.response?.status
+        status: error.response?.status,
       });
       setCallInProgress(false);
       setActiveCall(null);
-      
+
       // Show user-friendly error message
-      const errorMessage = error.response?.data?.error || error.response?.data?.details?.error || error.message || 'Unknown error';
-      showError(`Call failed: ${errorMessage}. Please check that the phone number is valid and Twilio account is active.`);
+      const errorMessage =
+        error.response?.data?.error ||
+        error.response?.data?.details?.error ||
+        error.message ||
+        'Unknown error';
+      showError(
+        `Call failed: ${errorMessage}. Please check that the phone number is valid and Twilio account is active.`
+      );
     }
   };
 
@@ -423,7 +462,7 @@ function AppContent() {
     // Submit call performance to Harvey for analysis
     if (activeCall && activeCall.callSid) {
       const duration = callDuration || activeCall.duration || 0;
-      
+
       // Get call recording for Harvey's analysis
       try {
         const recordings = await twilioService.getCallRecordings(activeCall.callSid);
@@ -434,7 +473,7 @@ function AppContent() {
       } catch (error) {
         logger.error('Failed to get call recording:', error);
       }
-      
+
       await harveyService.submitCallPerformance({
         callId: activeCall.callSid,
         duration: duration,
@@ -443,10 +482,10 @@ function AppContent() {
           // These would come from harveyWebRTC voice analysis
           confidence: 75,
           pace: 'normal',
-        }
+        },
       });
     }
-    
+
     setCallInProgress(false);
     setActiveCall(null);
     setHarveyLoading(false);
@@ -462,7 +501,7 @@ function AppContent() {
         const nameParts = newContactName.trim().split(' ');
         const firstName = nameParts[0] || '';
         const lastName = nameParts.slice(1).join(' ') || '';
-        
+
         // Insert into Supabase
         const { error } = await supabase
           .from('contacts')
@@ -474,15 +513,15 @@ function AppContent() {
           })
           .select()
           .single();
-          
+
         if (error) throw error;
-        
+
         // Add to local store
         addContact({
           name: newContactName,
           phoneNumber: newContactPhone,
         });
-        
+
         setNewContactName('');
         setNewContactPhone('');
         showSuccess('Contact added successfully!');
@@ -494,81 +533,95 @@ function AppContent() {
   };
 
   return (
-      <div
-        style={{
-          minHeight: '100vh',
-          position: 'relative',
-          overflowX: 'hidden',
-          background: '#0A0A0B',
-        }}
-      >
-        {/* Subtle Pipeline Background */}
-        <SubtlePipelineBackground />
-        
-        {/* Usage Warning Banner */}
-        {showUsageWarning && !user && (
-          <motion.div
-            initial={{ y: -100, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: -100, opacity: 0 }}
-            style={{
-              position: 'fixed',
-              top: isMobile ? 64 : 76,
-              left: 0,
-              right: 0,
-              background: 'linear-gradient(90deg, #FF6B35 0%, #F53969 100%)',
-              padding: '12px 24px',
-              textAlign: 'center',
-              zIndex: 1000,
-              boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)',
-            }}
-          >
-            <Typography variant="body2" sx={{ color: 'white', fontWeight: 600 }}>
-              ⚡ {usageTracker.getRemainingActions()} free actions remaining. Sign in to unlock unlimited access!
-            </Typography>
-          </motion.div>
-        )}
-        
-        {/* Demo Mode Banner */}
-        {isDemoMode && !showUsageWarning && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            style={{
-              position: 'fixed',
-              top: isMobile ? 64 : 76,
-              left: 0,
-              right: 0,
-              background: 'linear-gradient(90deg, #4B96DC 0%, #00d4ff 100%)',
-              padding: '8px 24px',
-              textAlign: 'center',
-              zIndex: 1000,
-              boxShadow: '0 2px 10px rgba(0, 0, 0, 0.2)',
-            }}
-          >
-            <Typography variant="body2" sx={{ color: 'white', fontWeight: 500 }}>
-              🎯 Demo Mode - Explore RepConnect with sample data. {usageTracker.getRemainingActions()} actions remaining.
-            </Typography>
-          </motion.div>
-        )}
-        
-        {/* Main App */}
-        <div style={{ position: 'relative', zIndex: 1 }}>
-          <PremiumNavbar 
-            onDialerOpen={() => setShowDialer(true)}
-            aiEnabled={aiEnabled}
-            onAIToggle={toggleAI}
-            onSyncDashboardOpen={() => setShowSyncDashboard(true)}
-            onMissionControlOpen={() => setShowMissionControl(true)}
-            onAISettingsOpen={() => setShowAISettings(true)}
-            onPerformanceOpen={() => setShowPerformance(true)}
-            onCallHistoryOpen={() => setShowCallHistory(true)}
-            onCoachConnectOpen={() => setShowCoachConnect(true)}
-            onHarveySettingsOpen={() => setShowHarveySettings(true)}
-          />
-          
-          <div style={{ padding: isMobile ? '8px' : '12px', paddingTop: isDemoMode || showUsageWarning ? (isMobile ? '120px' : '140px') : (isMobile ? '80px' : '96px') }}>
-            <Container maxWidth="xl" sx={{ pb: { xs: 4, sm: 8 }, px: { xs: 2, sm: 4 } }}>
+    <div
+      style={{
+        minHeight: '100vh',
+        position: 'relative',
+        overflowX: 'hidden',
+        background: '#0A0A0B',
+      }}
+    >
+      {/* Subtle Pipeline Background */}
+      <SubtlePipelineBackground />
+
+      {/* Usage Warning Banner */}
+      {showUsageWarning && !user && (
+        <motion.div
+          initial={{ y: -100, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: -100, opacity: 0 }}
+          style={{
+            position: 'fixed',
+            top: isMobile ? 64 : 76,
+            left: 0,
+            right: 0,
+            background: 'linear-gradient(90deg, #FF6B35 0%, #F53969 100%)',
+            padding: '12px 24px',
+            textAlign: 'center',
+            zIndex: 1000,
+            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)',
+          }}
+        >
+          <Typography variant="body2" sx={{ color: 'white', fontWeight: 600 }}>
+            ⚡ {usageTracker.getRemainingActions()} free actions remaining. Sign in to unlock
+            unlimited access!
+          </Typography>
+        </motion.div>
+      )}
+
+      {/* Demo Mode Banner */}
+      {isDemoMode && !showUsageWarning && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          style={{
+            position: 'fixed',
+            top: isMobile ? 64 : 76,
+            left: 0,
+            right: 0,
+            background: 'linear-gradient(90deg, #4B96DC 0%, #00d4ff 100%)',
+            padding: '8px 24px',
+            textAlign: 'center',
+            zIndex: 1000,
+            boxShadow: '0 2px 10px rgba(0, 0, 0, 0.2)',
+          }}
+        >
+          <Typography variant="body2" sx={{ color: 'white', fontWeight: 500 }}>
+            🎯 Demo Mode - Explore RepConnect with sample data. {usageTracker.getRemainingActions()}{' '}
+            actions remaining.
+          </Typography>
+        </motion.div>
+      )}
+
+      {/* Main App */}
+      <div style={{ position: 'relative', zIndex: 1 }}>
+        <PremiumNavbar
+          onDialerOpen={() => setShowDialer(true)}
+          aiEnabled={aiEnabled}
+          onAIToggle={toggleAI}
+          onSyncDashboardOpen={() => setShowSyncDashboard(true)}
+          onMissionControlOpen={() => setShowMissionControl(true)}
+          onAISettingsOpen={() => setShowAISettings(true)}
+          onPerformanceOpen={() => setShowPerformance(true)}
+          onCallHistoryOpen={() => setShowCallHistory(true)}
+          onCoachConnectOpen={() => setShowCoachConnect(true)}
+          onHarveySettingsOpen={() => setShowHarveySettings(true)}
+        />
+
+        <div
+          style={{
+            padding: isMobile ? '8px' : '12px',
+            paddingTop:
+              isDemoMode || showUsageWarning
+                ? isMobile
+                  ? '120px'
+                  : '140px'
+                : isMobile
+                  ? '80px'
+                  : '96px',
+          }}
+        >
+          <Container maxWidth="xl" sx={{ pb: { xs: 4, sm: 8 }, px: { xs: 2, sm: 4 } }}>
             {/* Add Contact Section */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -603,14 +656,10 @@ function AppContent() {
                 }}
               >
                 {/* Cartier-Level Precision Screws */}
-                <CornerScrews 
-                  size="medium"
-                  grooveType="phillips"
-                  premium={true}
-                />
-                
+                <CornerScrews size="medium" grooveType="phillips" premium={true} />
+
                 {/* Edge Mounts */}
-                <div 
+                <div
                   className="bezel-edge-left"
                   style={{
                     position: 'absolute',
@@ -618,13 +667,14 @@ function AppContent() {
                     bottom: 12,
                     left: -3,
                     width: 2,
-                    background: 'linear-gradient(to bottom, rgba(99, 102, 241, 0.2), rgba(236, 72, 153, 0.1))',
+                    background:
+                      'linear-gradient(to bottom, rgba(99, 102, 241, 0.2), rgba(236, 72, 153, 0.1))',
                     boxShadow: '0 0 6px rgba(236, 72, 153, 0.15)',
                     opacity: 0.6,
                     borderRadius: '2px 0 0 2px',
                   }}
                 />
-                <div 
+                <div
                   className="bezel-edge-right"
                   style={{
                     position: 'absolute',
@@ -632,22 +682,25 @@ function AppContent() {
                     bottom: 12,
                     right: -3,
                     width: 2,
-                    background: 'linear-gradient(to bottom, rgba(99, 102, 241, 0.2), rgba(236, 72, 153, 0.1))',
+                    background:
+                      'linear-gradient(to bottom, rgba(99, 102, 241, 0.2), rgba(236, 72, 153, 0.1))',
                     boxShadow: '0 0 6px rgba(236, 72, 153, 0.15)',
                     opacity: 0.6,
                     borderRadius: '0 2px 2px 0',
                   }}
                 />
                 {/* Header with title and widget */}
-                <div style={{ 
-                  display: 'flex', 
-                  alignItems: 'flex-start',
-                  marginBottom: isMobile ? '16px' : '24px',
-                  gap: '16px'
-                }}>
-                  <Typography 
-                    variant="h5" 
-                    sx={{ 
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'flex-start',
+                    marginBottom: isMobile ? '16px' : '24px',
+                    gap: '16px',
+                  }}
+                >
+                  <Typography
+                    variant="h5"
+                    sx={{
                       fontWeight: 700,
                       fontSize: { xs: '1.25rem', sm: '1.5rem' },
                       background: 'linear-gradient(135deg, #FFFFFF 0%, #D1D5DB 100%)',
@@ -660,37 +713,39 @@ function AppContent() {
                   >
                     Quick Add Contact
                   </Typography>
-                  
+
                   {/* Instant Lead Enricher */}
-                  <CompactEnrichmentWidget 
+                  <CompactEnrichmentWidget
                     embedded={true}
                     onEnrichmentComplete={(leads) => {
                       // Add enriched leads to contacts
-                      leads.forEach(lead => {
+                      leads.forEach((lead) => {
                         if (lead.enriched) {
                           addContact({
                             name: lead.enriched.fullName || 'Unknown',
                             phoneNumber: lead.enriched.phone || lead.enriched.mobile || '',
                             email: lead.enriched.email || '',
                             notes: `${lead.enriched.company || ''} - ${lead.enriched.title || ''}`,
-                            tags: [lead.enriched.segment, lead.enriched.industry].filter(Boolean)
+                            tags: [lead.enriched.segment, lead.enriched.industry].filter(Boolean),
                           });
                         }
                       });
                     }}
                   />
                 </div>
-                
-                <div style={{ 
-                  display: 'flex', 
-                  flexDirection: isMobile ? 'column' : 'row',
-                  gap: isMobile ? '12px' : '16px'
-                }}>
+
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: isMobile ? 'column' : 'row',
+                    gap: isMobile ? '12px' : '16px',
+                  }}
+                >
                   <TextField
                     label="Name"
                     value={newContactName}
                     onChange={(e) => setNewContactName(e.target.value)}
-                    sx={{ 
+                    sx={{
                       flex: 1,
                       '& .MuiInputLabel-root': {
                         color: 'text.secondary',
@@ -708,7 +763,7 @@ function AppContent() {
                     label="Phone Number"
                     value={newContactPhone}
                     onChange={(e) => setNewContactPhone(e.target.value)}
-                    sx={{ 
+                    sx={{
                       flex: 1,
                       '& .MuiInputLabel-root': {
                         color: 'text.secondary',
@@ -728,7 +783,7 @@ function AppContent() {
                     onClick={handleAddContact}
                     disabled={!newContactName || !newContactPhone}
                     fullWidth={isMobile}
-                    sx={{ 
+                    sx={{
                       px: { xs: 3, sm: 4 },
                       py: { xs: 1.5, sm: 1.5 },
                       background: 'linear-gradient(135deg, #6366F1 0%, #EC4899 100%)',
@@ -749,18 +804,25 @@ function AppContent() {
                 </div>
               </div>
             </motion.div>
-            
+
             {/* View Mode Toggle */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.1 }}
             >
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  marginBottom: '32px',
+                }}
+              >
                 <div>
-                  <Typography 
-                    variant="h3" 
-                    sx={{ 
+                  <Typography
+                    variant="h3"
+                    sx={{
                       fontWeight: 800,
                       background: 'linear-gradient(135deg, #FFFFFF 0%, #6366F1 100%)',
                       backgroundClip: 'text',
@@ -771,9 +833,9 @@ function AppContent() {
                   >
                     Your Contacts
                   </Typography>
-                  <Typography 
-                    variant="h5" 
-                    sx={{ 
+                  <Typography
+                    variant="h5"
+                    sx={{
                       color: 'text.secondary',
                       fontWeight: 500,
                     }}
@@ -785,7 +847,7 @@ function AppContent() {
                   variant="outlined"
                   startIcon={viewMode === 'rolodex' ? <ViewModuleIcon /> : <DashboardIcon />}
                   onClick={() => setViewMode(viewMode === 'rolodex' ? 'grid' : 'rolodex')}
-                  sx={{ 
+                  sx={{
                     background: 'rgba(99, 102, 241, 0.1)',
                     backdropFilter: 'blur(10px)',
                     px: 3,
@@ -797,14 +859,14 @@ function AppContent() {
                       borderColor: '#6366F1',
                       background: 'rgba(99, 102, 241, 0.2)',
                       boxShadow: '0 8px 24px rgba(99, 102, 241, 0.3)',
-                    }
+                    },
                   }}
                 >
                   {viewMode === 'rolodex' ? 'Grid View' : 'Rolodex View'}
                 </Button>
               </div>
             </motion.div>
-            
+
             {/* Contacts Display */}
             <div
               style={{
@@ -840,7 +902,7 @@ function AppContent() {
                   { top: 12, left: 12, angle: '10deg' },
                   { top: 12, right: 12, angle: '22deg' },
                   { bottom: 12, left: 12, angle: '-12deg' },
-                  { bottom: 12, right: 12, angle: '18deg' }
+                  { bottom: 12, right: 12, angle: '18deg' },
                 ].map((pos, idx) => (
                   <div
                     key={idx}
@@ -850,8 +912,10 @@ function AppContent() {
                       width: 10,
                       height: 10,
                       borderRadius: '50%',
-                      background: 'radial-gradient(circle at center, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.15) 40%, transparent 70%)',
-                      boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.5), inset 0 -1px 1px rgba(255, 255, 255, 0.1), 0 1px 1px rgba(255, 255, 255, 0.05)',
+                      background:
+                        'radial-gradient(circle at center, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.15) 40%, transparent 70%)',
+                      boxShadow:
+                        'inset 0 1px 2px rgba(0, 0, 0, 0.5), inset 0 -1px 1px rgba(255, 255, 255, 0.1), 0 1px 1px rgba(255, 255, 255, 0.05)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -864,9 +928,11 @@ function AppContent() {
                         position: 'relative',
                         width: 6,
                         height: 6,
-                        background: 'radial-gradient(circle at 35% 35%, #e0e0e0 0%, #b8b8b8 15%, #888 40%, #555 70%, #222 100%)',
+                        background:
+                          'radial-gradient(circle at 35% 35%, #e0e0e0 0%, #b8b8b8 15%, #888 40%, #555 70%, #222 100%)',
                         borderRadius: '50%',
-                        boxShadow: 'inset 0 0.5px 1px rgba(255, 255, 255, 0.4), inset 0 -0.5px 1px rgba(0, 0, 0, 0.5), 0 0.5px 2px rgba(0, 0, 0, 0.8)',
+                        boxShadow:
+                          'inset 0 0.5px 1px rgba(255, 255, 255, 0.4), inset 0 -0.5px 1px rgba(0, 0, 0, 0.5), 0 0.5px 2px rgba(0, 0, 0, 0.8)',
                         border: '0.5px solid rgba(0, 0, 0, 0.2)',
                         transform: `rotate(${pos.angle})`,
                       }}
@@ -874,9 +940,9 @@ function AppContent() {
                   </div>
                 ))}
               </div>
-              
+
               {/* Edge Mounts */}
-              <div 
+              <div
                 className="bezel-edge-left"
                 style={{
                   position: 'absolute',
@@ -884,13 +950,14 @@ function AppContent() {
                   bottom: 12,
                   left: -4,
                   width: 3,
-                  background: 'linear-gradient(to bottom, rgba(255, 0, 255, 0.2), rgba(0, 255, 255, 0.1))',
+                  background:
+                    'linear-gradient(to bottom, rgba(255, 0, 255, 0.2), rgba(0, 255, 255, 0.1))',
                   boxShadow: '0 0 8px rgba(0, 255, 255, 0.15)',
                   opacity: 0.6,
                   borderRadius: '2px 0 0 2px',
                 }}
               />
-              <div 
+              <div
                 className="bezel-edge-right"
                 style={{
                   position: 'absolute',
@@ -898,13 +965,14 @@ function AppContent() {
                   bottom: 12,
                   right: -4,
                   width: 3,
-                  background: 'linear-gradient(to bottom, rgba(255, 0, 255, 0.2), rgba(0, 255, 255, 0.1))',
+                  background:
+                    'linear-gradient(to bottom, rgba(255, 0, 255, 0.2), rgba(0, 255, 255, 0.1))',
                   boxShadow: '0 0 8px rgba(0, 255, 255, 0.15)',
                   opacity: 0.6,
                   borderRadius: '0 2px 2px 0',
                 }}
               />
-              
+
               {viewMode === 'rolodex' ? (
                 <div style={{ height: '100%', padding: 24 }}>
                   <DigitalRolodex
@@ -917,9 +985,9 @@ function AppContent() {
                   />
                 </div>
               ) : (
-                <div 
+                <div
                   ref={gridContainerRef}
-                  style={{ 
+                  style={{
                     height: '100%',
                     width: '100%',
                     padding: 24,
@@ -935,7 +1003,7 @@ function AppContent() {
                 </div>
               )}
             </div>
-            
+
             {contacts.length === 0 && (
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
@@ -985,8 +1053,8 @@ function AppContent() {
                   >
                     <AutoAwesomeIcon sx={{ fontSize: 60, color: 'white' }} />
                   </div>
-                  <Typography 
-                    variant="h5" 
+                  <Typography
+                    variant="h5"
                     gutterBottom
                     sx={{
                       fontWeight: 700,
@@ -1018,14 +1086,14 @@ function AppContent() {
                   >
                     Add First Contact
                   </Button>
-                  
+
                   {/* Bezel Screws */}
                   <div className="bezel-screws">
                     {[
                       { top: 24, left: 24 },
                       { top: 24, right: 24 },
                       { bottom: 24, left: 24 },
-                      { bottom: 24, right: 24 }
+                      { bottom: 24, right: 24 },
                     ].map((pos, idx) => (
                       <div
                         key={idx}
@@ -1035,8 +1103,10 @@ function AppContent() {
                           width: 8,
                           height: 8,
                           borderRadius: '50%',
-                          background: 'radial-gradient(circle at center, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.15) 40%, transparent 70%)',
-                          boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.5), inset 0 -1px 1px rgba(255, 255, 255, 0.1)',
+                          background:
+                            'radial-gradient(circle at center, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.15) 40%, transparent 70%)',
+                          boxShadow:
+                            'inset 0 1px 2px rgba(0, 0, 0, 0.5), inset 0 -1px 1px rgba(255, 255, 255, 0.1)',
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
@@ -1046,7 +1116,8 @@ function AppContent() {
                           style={{
                             width: 5,
                             height: 5,
-                            background: 'radial-gradient(circle at 35% 35%, #e0e0e0 0%, #888 40%, #222 100%)',
+                            background:
+                              'radial-gradient(circle at 35% 35%, #e0e0e0 0%, #888 40%, #222 100%)',
                             borderRadius: '50%',
                             boxShadow: 'inset 0 0.5px 1px rgba(255, 255, 255, 0.3)',
                           }}
@@ -1058,121 +1129,126 @@ function AppContent() {
               </motion.div>
             )}
           </Container>
-          </div>
         </div>
-        
-        {/* Harvey Loading Screen */}
-        <HarveyLoadingScreen
-          isLoading={harveyLoading}
-          connectionStatus={harveyConnectionStatus}
-          error={harveyError}
-        />
+      </div>
 
-        {/* Harvey Active Call Interface */}
-        <HarveyActiveCallInterface
-          isActive={isCallInProgress && harveyConnectionStatus === 'connected'}
-          contactName={contacts.find(c => c.id === activeCall?.contactId)?.name}
-          phoneNumber={activeCall?.phoneNumber}
-        />
+      {/* Harvey Loading Screen */}
+      <HarveyLoadingScreen
+        isLoading={harveyLoading}
+        connectionStatus={harveyConnectionStatus}
+        error={harveyError}
+      />
 
-        {/* Call Interface Overlay */}
-        <AnimatePresence>
-          {isCallInProgress && activeCall && (
-            <CallInterface
-              contact={{
-                name: contacts.find(c => c.id === activeCall.contactId)?.name || 'Unknown',
-                phoneNumber: activeCall.phoneNumber,
-                avatar: contacts.find(c => c.id === activeCall.contactId)?.avatar,
-              }}
-              callSid={activeCall.callSid}
-              onEndCall={handleEndCall}
-            />
-          )}
-        </AnimatePresence>
+      {/* Harvey Active Call Interface */}
+      <HarveyActiveCallInterface
+        isActive={isCallInProgress && harveyConnectionStatus === 'connected'}
+        contactName={contacts.find((c) => c.id === activeCall?.contactId)?.name}
+        phoneNumber={activeCall?.phoneNumber}
+      />
 
-        {/* Quantum Dialer */}
-        <QuantumDialer
-          isOpen={showDialer}
-          onClose={() => setShowDialer(false)}
-          onDial={handleDialNumber}
-        />
-
-        {/* Mission Control Dashboard */}
-        <React.Suspense fallback={<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}><CircularProgress /></div>}>
-          <MissionControlDashboard
-            isOpen={showMissionControl}
-            onClose={() => setShowMissionControl(false)}
+      {/* Call Interface Overlay */}
+      <AnimatePresence>
+        {isCallInProgress && activeCall && (
+          <CallInterface
+            contact={{
+              name: contacts.find((c) => c.id === activeCall.contactId)?.name || 'Unknown',
+              phoneNumber: activeCall.phoneNumber,
+              avatar: contacts.find((c) => c.id === activeCall.contactId)?.avatar,
+            }}
+            callSid={activeCall.callSid}
+            onEndCall={handleEndCall}
           />
-        </React.Suspense>
+        )}
+      </AnimatePresence>
 
-        {/* AI Settings Modal */}
-        <AISettings
-          open={showAISettings}
-          onClose={() => setShowAISettings(false)}
+      {/* Quantum Dialer */}
+      <QuantumDialer
+        isOpen={showDialer}
+        onClose={() => setShowDialer(false)}
+        onDial={handleDialNumber}
+      />
+
+      {/* Mission Control Dashboard */}
+      <React.Suspense
+        fallback={
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              height: '100vh',
+            }}
+          >
+            <CircularProgress />
+          </div>
+        }
+      >
+        <MissionControlDashboard
+          isOpen={showMissionControl}
+          onClose={() => setShowMissionControl(false)}
         />
+      </React.Suspense>
 
-        {/* Performance History Modal */}
-        <PerformanceHistory
-          open={showPerformance}
-          onClose={() => setShowPerformance(false)}
-        />
+      {/* AI Settings Modal */}
+      <AISettings open={showAISettings} onClose={() => setShowAISettings(false)} />
 
-        {/* Call History Dashboard */}
-        <CallHistoryDashboard
-          open={showCallHistory}
-          onClose={() => setShowCallHistory(false)}
-        />
+      {/* Performance History Modal */}
+      <PerformanceHistory open={showPerformance} onClose={() => setShowPerformance(false)} />
 
-        {/* Sync Dashboard Modal */}
-        <AnimatePresence>
-          {showSyncDashboard && (
+      {/* Call History Dashboard */}
+      <CallHistoryDashboard open={showCallHistory} onClose={() => setShowCallHistory(false)} />
+
+      {/* Sync Dashboard Modal */}
+      <AnimatePresence>
+        {showSyncDashboard && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            style={{
+              position: 'fixed',
+              inset: 0,
+              zIndex: 1300,
+              background: 'rgba(0, 0, 0, 0.8)',
+            }}
+            onClick={() => setShowSyncDashboard(false)}
+          >
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+              initial={{ y: '100%' }}
+              animate={{ y: 0 }}
+              exit={{ y: '100%' }}
+              transition={{ type: 'spring', damping: 30, stiffness: 300 }}
               style={{
-                position: 'fixed',
+                position: 'absolute',
                 inset: 0,
-                zIndex: 1300,
-                background: 'rgba(0, 0, 0, 0.8)',
+                background: '#0a0a0a',
+                overflow: 'auto',
               }}
-              onClick={() => setShowSyncDashboard(false)}
+              onClick={(e) => e.stopPropagation()}
             >
-              <motion.div
-                initial={{ y: '100%' }}
-                animate={{ y: 0 }}
-                exit={{ y: '100%' }}
-                transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-                style={{
+              <IconButton
+                onClick={() => setShowSyncDashboard(false)}
+                sx={{
                   position: 'absolute',
-                  inset: 0,
-                  background: '#0a0a0a',
-                  overflow: 'auto',
+                  top: 16,
+                  right: 16,
+                  zIndex: 1,
+                  background: 'rgba(255, 255, 255, 0.1)',
+                  '&:hover': {
+                    background: 'rgba(255, 255, 255, 0.2)',
+                  },
                 }}
-                onClick={(e) => e.stopPropagation()}
               >
-                <IconButton
-                  onClick={() => setShowSyncDashboard(false)}
-                  sx={{
-                    position: 'absolute',
-                    top: 16,
-                    right: 16,
-                    zIndex: 1,
-                    background: 'rgba(255, 255, 255, 0.1)',
-                    '&:hover': {
-                      background: 'rgba(255, 255, 255, 0.2)',
-                    },
-                  }}
-                >
-                  <CloseIcon />
-                </IconButton>
-                <SyncDashboard onClose={() => setShowSyncDashboard(false)} />
-              </motion.div>
+                <CloseIcon />
+              </IconButton>
+              <SyncDashboard onClose={() => setShowSyncDashboard(false)} />
             </motion.div>
-          )}
-        </AnimatePresence>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-        {/* Login Modal */}
+      {/* Login Modal */}
+      <ErrorBoundary>
         <LoginModal
           isOpen={showLoginModal}
           onClose={() => setShowLoginModal(false)}
@@ -1184,81 +1260,75 @@ function AppContent() {
             }
           }}
         />
+      </ErrorBoundary>
 
-        {/* Subscription Modal */}
-        <SubscriptionModal
-          isOpen={showSubscriptionModal}
-          onClose={() => setShowSubscriptionModal(false)}
-          currentTier={subscriptionTier}
-        />
+      {/* Subscription Modal */}
+      <SubscriptionModal
+        isOpen={showSubscriptionModal}
+        onClose={() => setShowSubscriptionModal(false)}
+        currentTier={subscriptionTier}
+      />
 
-        {/* Harvey Settings Modal */}
-        <HarveySettingsModal
-          open={showHarveySettings}
-          onClose={() => setShowHarveySettings(false)}
-        />
+      {/* Harvey Settings Modal */}
+      <HarveySettingsModal open={showHarveySettings} onClose={() => setShowHarveySettings(false)} />
 
-        {/* Coach Connect Modal */}
-        <AnimatePresence>
-          {showCoachConnect && (
+      {/* Coach Connect Modal */}
+      <AnimatePresence>
+        {showCoachConnect && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            style={{
+              position: 'fixed',
+              inset: 0,
+              zIndex: 1300,
+              background: 'rgba(0, 0, 0, 0.8)',
+            }}
+            onClick={() => setShowCoachConnect(false)}
+          >
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+              initial={{ y: '100%' }}
+              animate={{ y: 0 }}
+              exit={{ y: '100%' }}
+              transition={{ type: 'spring', damping: 30, stiffness: 300 }}
               style={{
-                position: 'fixed',
+                position: 'absolute',
                 inset: 0,
-                zIndex: 1300,
-                background: 'rgba(0, 0, 0, 0.8)',
+                background: '#0a0a0a',
+                overflow: 'auto',
               }}
-              onClick={() => setShowCoachConnect(false)}
+              onClick={(e) => e.stopPropagation()}
             >
-              <motion.div
-                initial={{ y: '100%' }}
-                animate={{ y: 0 }}
-                exit={{ y: '100%' }}
-                transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-                style={{
+              <IconButton
+                onClick={() => setShowCoachConnect(false)}
+                sx={{
                   position: 'absolute',
-                  inset: 0,
-                  background: '#0a0a0a',
-                  overflow: 'auto',
+                  top: 16,
+                  right: 16,
+                  zIndex: 1,
+                  background: 'rgba(255, 255, 255, 0.1)',
+                  '&:hover': {
+                    background: 'rgba(255, 255, 255, 0.2)',
+                  },
                 }}
-                onClick={(e) => e.stopPropagation()}
               >
-                <IconButton
-                  onClick={() => setShowCoachConnect(false)}
-                  sx={{
-                    position: 'absolute',
-                    top: 16,
-                    right: 16,
-                    zIndex: 1,
-                    background: 'rgba(255, 255, 255, 0.1)',
-                    '&:hover': {
-                      background: 'rgba(255, 255, 255, 0.2)',
-                    },
-                  }}
-                >
-                  <CloseIcon />
-                </IconButton>
-                <InstantCoachConnect />
-              </motion.div>
+                <CloseIcon />
+              </IconButton>
+              <InstantCoachConnect />
             </motion.div>
-          )}
-        </AnimatePresence>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-        {/* Agent Selector FAB */}
-        <AgentSelector />
+      {/* Agent Selector FAB */}
+      <AgentSelector />
 
-        {/* Luxury Chatbot Launcher */}
-        <ChatbotIntegration 
-          position="bottom-right"
-          glowColor="#3B82F6"
-        />
+      {/* Luxury Chatbot Launcher */}
+      <ChatbotIntegration position="bottom-right" glowColor="#3B82F6" />
 
-        {/* Session Warning Dialog is handled by AuthContext */}
-
-      </div>
+      {/* Session Warning Dialog is handled by AuthContext */}
+    </div>
   );
 }
 

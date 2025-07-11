@@ -30,11 +30,11 @@ export const PipelineConnector: React.FC<PipelineConnectorProps> = ({
   useEffect(() => {
     const updatePositions = () => {
       const newPositions: Record<string, { start: DOMRect; end: DOMRect }> = {};
-      
+
       connections.forEach((conn) => {
         const startEl = document.querySelector(conn.startElement);
         const endEl = document.querySelector(conn.endElement);
-        
+
         if (startEl && endEl) {
           newPositions[`${conn.startElement}-${conn.endElement}`] = {
             start: startEl.getBoundingClientRect(),
@@ -42,25 +42,25 @@ export const PipelineConnector: React.FC<PipelineConnectorProps> = ({
           };
         }
       });
-      
+
       setPositions(newPositions);
     };
 
     updatePositions();
-    
+
     // Update on scroll and resize
     window.addEventListener('scroll', updatePositions);
     window.addEventListener('resize', updatePositions);
-    
+
     // Use ResizeObserver for element size changes
     const observer = new ResizeObserver(updatePositions);
-    connections.forEach(conn => {
+    connections.forEach((conn) => {
       const startEl = document.querySelector(conn.startElement);
       const endEl = document.querySelector(conn.endElement);
       if (startEl) observer.observe(startEl);
       if (endEl) observer.observe(endEl);
     });
-    
+
     return () => {
       window.removeEventListener('scroll', updatePositions);
       window.removeEventListener('resize', updatePositions);
@@ -69,28 +69,28 @@ export const PipelineConnector: React.FC<PipelineConnectorProps> = ({
   }, [connections]);
 
   const generatePath = (
-    start: DOMRect, 
-    end: DOMRect, 
+    start: DOMRect,
+    end: DOMRect,
     type: 'straight' | 'curved' | 'elbow' = 'curved'
   ): string => {
     const startX = start.left + start.width / 2;
     const startY = start.top + start.height / 2;
     const endX = end.left + end.width / 2;
     const endY = end.top + end.height / 2;
-    
+
     switch (type) {
       case 'straight':
         return `M ${startX} ${startY} L ${endX} ${endY}`;
-        
+
       case 'curved':
         const controlX = (startX + endX) / 2;
         const controlY = (startY + endY) / 2 - Math.abs(endX - startX) * 0.2;
         return `M ${startX} ${startY} Q ${controlX} ${controlY}, ${endX} ${endY}`;
-        
+
       case 'elbow':
         const midX = (startX + endX) / 2;
         return `M ${startX} ${startY} L ${midX} ${startY} L ${midX} ${endY} L ${endX} ${endY}`;
-        
+
       default:
         return `M ${startX} ${startY} L ${endX} ${endY}`;
     }
@@ -118,28 +118,28 @@ export const PipelineConnector: React.FC<PipelineConnectorProps> = ({
             <stop offset="50%" stopColor="#0EA5E9" stopOpacity="0.6" />
             <stop offset="100%" stopColor="#0EA5E9" stopOpacity="0.2" />
           </linearGradient>
-          
+
           <linearGradient id="pipeGradient-purple" x1="0%" y1="0%" x2="100%" y2="0%">
             <stop offset="0%" stopColor="#A855F7" stopOpacity="0.2" />
             <stop offset="50%" stopColor="#A855F7" stopOpacity="0.6" />
             <stop offset="100%" stopColor="#A855F7" stopOpacity="0.2" />
           </linearGradient>
-          
+
           <linearGradient id="pipeGradient-orange" x1="0%" y1="0%" x2="100%" y2="0%">
             <stop offset="0%" stopColor="#F97316" stopOpacity="0.2" />
             <stop offset="50%" stopColor="#F97316" stopOpacity="0.6" />
             <stop offset="100%" stopColor="#F97316" stopOpacity="0.2" />
           </linearGradient>
-          
+
           {/* Glow filter */}
           <filter id="pipeGlow">
-            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+            <feGaussianBlur stdDeviation="3" result="coloredBlur" />
             <feMerge>
-              <feMergeNode in="coloredBlur"/>
-              <feMergeNode in="SourceGraphic"/>
+              <feMergeNode in="coloredBlur" />
+              <feMergeNode in="SourceGraphic" />
             </feMerge>
           </filter>
-          
+
           {/* Animated gradient for active pipes */}
           <linearGradient id="flowGradient" x1="0%" y1="0%" x2="100%" y2="0%">
             <stop offset="0%" stopColor="#60A5FA" stopOpacity="0">
@@ -171,18 +171,21 @@ export const PipelineConnector: React.FC<PipelineConnectorProps> = ({
             </stop>
           </linearGradient>
         </defs>
-        
+
         <AnimatePresence>
           {connections.map((conn) => {
             const key = `${conn.startElement}-${conn.endElement}`;
             const pos = positions[key];
             if (!pos) return null;
-            
+
             const path = generatePath(pos.start, pos.end, conn.type);
             const color = conn.color || '#0EA5E9';
-            const gradientId = color.includes('#F97316') ? 'orange' : 
-                              color.includes('#A855F7') ? 'purple' : 'blue';
-            
+            const gradientId = color.includes('#F97316')
+              ? 'orange'
+              : color.includes('#A855F7')
+                ? 'purple'
+                : 'blue';
+
             return (
               <motion.g
                 key={key}
@@ -201,9 +204,9 @@ export const PipelineConnector: React.FC<PipelineConnectorProps> = ({
                   filter="url(#pipeGlow)"
                   initial={{ pathLength: 0 }}
                   animate={{ pathLength: 1 }}
-                  transition={{ duration: 1, ease: "easeOut" }}
+                  transition={{ duration: 1, ease: 'easeOut' }}
                 />
-                
+
                 {/* Pipe core */}
                 <motion.path
                   d={path}
@@ -214,9 +217,9 @@ export const PipelineConnector: React.FC<PipelineConnectorProps> = ({
                   opacity="0.8"
                   initial={{ pathLength: 0 }}
                   animate={{ pathLength: 1 }}
-                  transition={{ duration: 1, ease: "easeOut", delay: 0.2 }}
+                  transition={{ duration: 1, ease: 'easeOut', delay: 0.2 }}
                 />
-                
+
                 {/* Flow animation overlay */}
                 {conn.active !== false && (
                   <motion.path
@@ -229,7 +232,7 @@ export const PipelineConnector: React.FC<PipelineConnectorProps> = ({
                     style={{ mixBlendMode: 'screen' }}
                   />
                 )}
-                
+
                 {/* Pulse animation on hover */}
                 {pulseOnHover && (
                   <motion.path
@@ -248,27 +251,28 @@ export const PipelineConnector: React.FC<PipelineConnectorProps> = ({
           })}
         </AnimatePresence>
       </svg>
-      
+
       {/* Particle streams */}
-      {showParticles && connections.map((conn) => {
-        const key = `${conn.startElement}-${conn.endElement}`;
-        const pos = positions[key];
-        if (!pos || conn.active === false) return null;
-        
-        return (
-          <ParticleStream
-            key={`particles-${key}`}
-            startX={pos.start.left + pos.start.width / 2}
-            startY={pos.start.top + pos.start.height / 2}
-            endX={pos.end.left + pos.end.width / 2}
-            endY={pos.end.top + pos.end.height / 2}
-            particleCount={conn.particleCount || 5}
-            color={conn.color || '#60A5FA'}
-            speed={conn.flowSpeed || 3}
-            active={conn.active === undefined ? true : conn.active}
-          />
-        );
-      })}
+      {showParticles &&
+        connections.map((conn) => {
+          const key = `${conn.startElement}-${conn.endElement}`;
+          const pos = positions[key];
+          if (!pos || conn.active === false) return null;
+
+          return (
+            <ParticleStream
+              key={`particles-${key}`}
+              startX={pos.start.left + pos.start.width / 2}
+              startY={pos.start.top + pos.start.height / 2}
+              endX={pos.end.left + pos.end.width / 2}
+              endY={pos.end.top + pos.end.height / 2}
+              particleCount={conn.particleCount || 5}
+              color={conn.color || '#60A5FA'}
+              speed={conn.flowSpeed || 3}
+              active={conn.active === undefined ? true : conn.active}
+            />
+          );
+        })}
     </>
   );
 };

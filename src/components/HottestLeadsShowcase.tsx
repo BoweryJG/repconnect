@@ -8,7 +8,7 @@ import {
   Avatar,
   IconButton,
   Tooltip,
-  Paper
+  Paper,
 } from '@mui/material';
 import { motion } from 'framer-motion';
 import FireIcon from '@mui/icons-material/Whatshot';
@@ -52,13 +52,16 @@ export const HottestLeadsShowcase: React.FC<HottestLeadsShowcaseProps> = ({ lead
   return (
     <div>
       {/* Hero Section */}
-      <Paper sx={{ 
-        p: 4, 
-        mb: 4,
-        background: 'linear-gradient(135deg, rgba(255, 0, 64, 0.1) 0%, rgba(255, 107, 53, 0.05) 100%)',
-        border: '1px solid rgba(255, 0, 64, 0.2)',
-        textAlign: 'center'
-      }}>
+      <Paper
+        sx={{
+          p: 4,
+          mb: 4,
+          background:
+            'linear-gradient(135deg, rgba(255, 0, 64, 0.1) 0%, rgba(255, 107, 53, 0.05) 100%)',
+          border: '1px solid rgba(255, 0, 64, 0.2)',
+          textAlign: 'center',
+        }}
+      >
         <FireIcon sx={{ fontSize: 60, color: '#ff0040', mb: 2 }} />
         <Typography variant="h3" sx={{ fontWeight: 800, mb: 2 }}>
           Your 10 Hottest Leads
@@ -78,33 +81,37 @@ export const HottestLeadsShowcase: React.FC<HottestLeadsShowcaseProps> = ({ lead
               transition={{ duration: 0.5, delay: index * 0.1 }}
               whileHover={{ y: -4 }}
             >
-              <Card sx={{ 
-                height: '100%',
-                background: 'rgba(255, 255, 255, 0.03)',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-                position: 'relative',
-                overflow: 'visible',
-                transition: 'all 0.3s ease',
-                '&:hover': {
-                  background: 'rgba(255, 255, 255, 0.05)',
-                  borderColor: `${getScoreColor(lead.enriched.heatScore)}40`,
-                  boxShadow: `0 8px 32px ${getScoreColor(lead.enriched.heatScore)}20`
-                }
-              }}>
+              <Card
+                sx={{
+                  height: '100%',
+                  background: 'rgba(255, 255, 255, 0.03)',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  position: 'relative',
+                  overflow: 'visible',
+                  transition: 'all 0.3s ease',
+                  '&:hover': {
+                    background: 'rgba(255, 255, 255, 0.05)',
+                    borderColor: `${getScoreColor(lead.enriched.heatScore)}40`,
+                    boxShadow: `0 8px 32px ${getScoreColor(lead.enriched.heatScore)}20`,
+                  },
+                }}
+              >
                 {/* Rank Badge */}
-                <div style={{
-                  position: 'absolute',
-                  top: -12,
-                  left: 20,
-                  background: `linear-gradient(135deg, ${getScoreColor(lead.enriched.heatScore)} 0%, ${getScoreColor(lead.enriched.heatScore)}dd 100%)`,
-                  borderRadius: '50%',
-                  width: 40,
-                  height: 40,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  boxShadow: `0 4px 20px ${getScoreColor(lead.enriched.heatScore)}60`
-                }}>
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: -12,
+                    left: 20,
+                    background: `linear-gradient(135deg, ${getScoreColor(lead.enriched.heatScore)} 0%, ${getScoreColor(lead.enriched.heatScore)}dd 100%)`,
+                    borderRadius: '50%',
+                    width: 40,
+                    height: 40,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    boxShadow: `0 4px 20px ${getScoreColor(lead.enriched.heatScore)}60`,
+                  }}
+                >
                   <Typography variant="h6" sx={{ color: 'white', fontWeight: 800 }}>
                     {index + 1}
                   </Typography>
@@ -112,14 +119,23 @@ export const HottestLeadsShowcase: React.FC<HottestLeadsShowcaseProps> = ({ lead
 
                 <CardContent sx={{ pt: 4 }}>
                   {/* Header */}
-                  <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 24 }}>
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'flex-start',
+                      justifyContent: 'space-between',
+                      marginBottom: 24,
+                    }}
+                  >
                     <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                      <Avatar sx={{ 
-                        width: 56, 
-                        height: 56,
-                        background: `linear-gradient(135deg, ${getScoreColor(lead.enriched.heatScore)}40 0%, ${getScoreColor(lead.enriched.heatScore)}20 100%)`,
-                        border: `2px solid ${getScoreColor(lead.enriched.heatScore)}60`
-                      }}>
+                      <Avatar
+                        sx={{
+                          width: 56,
+                          height: 56,
+                          background: `linear-gradient(135deg, ${getScoreColor(lead.enriched.heatScore)}40 0%, ${getScoreColor(lead.enriched.heatScore)}20 100%)`,
+                          border: `2px solid ${getScoreColor(lead.enriched.heatScore)}60`,
+                        }}
+                      >
                         <PersonIcon />
                       </Avatar>
                       <div>
@@ -129,7 +145,9 @@ export const HottestLeadsShowcase: React.FC<HottestLeadsShowcaseProps> = ({ lead
                         <Typography variant="body2" color="text.secondary">
                           {lead.enriched.title}
                         </Typography>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 4 }}>
+                        <div
+                          style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 4 }}
+                        >
                           <BusinessIcon sx={{ fontSize: 16, color: 'text.secondary' }} />
                           <Typography variant="caption" color="text.secondary">
                             {lead.enriched.company} • {lead.enriched.companySize}
@@ -137,33 +155,42 @@ export const HottestLeadsShowcase: React.FC<HottestLeadsShowcaseProps> = ({ lead
                         </div>
                       </div>
                     </div>
-                    
+
                     {/* Heat Score */}
                     <div style={{ textAlign: 'center' }}>
-                      <div style={{ 
-                        position: 'relative',
-                        width: 60,
-                        height: 60,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center'
-                      }}>
-                        <div style={{
-                          position: 'absolute',
-                          inset: 0,
-                          borderRadius: '50%',
-                          background: `conic-gradient(${getScoreColor(lead.enriched.heatScore)} ${lead.enriched.heatScore * 3.6}deg, rgba(255, 255, 255, 0.1) 0deg)`,
-                        }} />
-                        <div style={{
-                          position: 'absolute',
-                          inset: 4,
-                          borderRadius: '50%',
-                          background: '#0a0a0a',
+                      <div
+                        style={{
+                          position: 'relative',
+                          width: 60,
+                          height: 60,
                           display: 'flex',
                           alignItems: 'center',
-                          justifyContent: 'center'
-                        }}>
-                          <Typography variant="h6" sx={{ fontWeight: 800, color: getScoreColor(lead.enriched.heatScore) }}>
+                          justifyContent: 'center',
+                        }}
+                      >
+                        <div
+                          style={{
+                            position: 'absolute',
+                            inset: 0,
+                            borderRadius: '50%',
+                            background: `conic-gradient(${getScoreColor(lead.enriched.heatScore)} ${lead.enriched.heatScore * 3.6}deg, rgba(255, 255, 255, 0.1) 0deg)`,
+                          }}
+                        />
+                        <div
+                          style={{
+                            position: 'absolute',
+                            inset: 4,
+                            borderRadius: '50%',
+                            background: '#0a0a0a',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                          }}
+                        >
+                          <Typography
+                            variant="h6"
+                            sx={{ fontWeight: 800, color: getScoreColor(lead.enriched.heatScore) }}
+                          >
                             {lead.enriched.heatScore}
                           </Typography>
                         </div>
@@ -177,19 +204,19 @@ export const HottestLeadsShowcase: React.FC<HottestLeadsShowcaseProps> = ({ lead
                   {/* Segment & Industry */}
                   <div style={{ display: 'flex', gap: 8, marginBottom: 24 }}>
                     <Chip
-                      icon={<span style={{ fontSize: 16 }}>{getSegmentIcon(lead.enriched.segment)}</span>}
+                      icon={
+                        <span style={{ fontSize: 16 }}>
+                          {getSegmentIcon(lead.enriched.segment)}
+                        </span>
+                      }
                       label={lead.enriched.segment}
                       size="small"
                       sx={{
                         background: `${getScoreColor(lead.enriched.heatScore)}20`,
-                        border: `1px solid ${getScoreColor(lead.enriched.heatScore)}40`
+                        border: `1px solid ${getScoreColor(lead.enriched.heatScore)}40`,
                       }}
                     />
-                    <Chip
-                      label={lead.enriched.industry}
-                      size="small"
-                      variant="outlined"
-                    />
+                    <Chip label={lead.enriched.industry} size="small" variant="outlined" />
                     {lead.enriched.titleLevel && (
                       <Chip
                         label={lead.enriched.titleLevel}
@@ -208,10 +235,12 @@ export const HottestLeadsShowcase: React.FC<HottestLeadsShowcaseProps> = ({ lead
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                       {lead.enriched.scoringFactors.slice(0, 3).map((factor, idx) => (
                         <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                          <TrendingUpIcon sx={{ 
-                            fontSize: 16, 
-                            color: factor.impact === 'positive' ? '#00ff88' : '#ff4757' 
-                          }} />
+                          <TrendingUpIcon
+                            sx={{
+                              fontSize: 16,
+                              color: factor.impact === 'positive' ? '#00ff88' : '#ff4757',
+                            }}
+                          />
                           <Typography variant="caption">
                             {factor.factor} (+{factor.weight})
                           </Typography>
@@ -222,7 +251,14 @@ export const HottestLeadsShowcase: React.FC<HottestLeadsShowcaseProps> = ({ lead
 
                   {/* Engagement History */}
                   {lead.enriched.engagementHistory && (
-                    <div style={{ marginBottom: 24, padding: 16, background: 'rgba(0, 255, 136, 0.05)', borderRadius: 8 }}>
+                    <div
+                      style={{
+                        marginBottom: 24,
+                        padding: 16,
+                        background: 'rgba(0, 255, 136, 0.05)',
+                        borderRadius: 8,
+                      }}
+                    >
                       <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 600 }}>
                         Recent Activity:
                       </Typography>
@@ -256,7 +292,11 @@ export const HottestLeadsShowcase: React.FC<HottestLeadsShowcaseProps> = ({ lead
                             Last Seen
                           </Typography>
                           <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                            {lead.enriched.engagementHistory.lastEngagement ? new Date(lead.enriched.engagementHistory.lastEngagement).toLocaleDateString() : 'N/A'}
+                            {lead.enriched.engagementHistory.lastEngagement
+                              ? new Date(
+                                  lead.enriched.engagementHistory.lastEngagement
+                                ).toLocaleDateString()
+                              : 'N/A'}
                           </Typography>
                         </Grid>
                       </Grid>
@@ -266,22 +306,22 @@ export const HottestLeadsShowcase: React.FC<HottestLeadsShowcaseProps> = ({ lead
                   {/* Contact Actions */}
                   <div style={{ display: 'flex', gap: 8 }}>
                     <Tooltip title={lead.enriched.email}>
-                      <IconButton 
+                      <IconButton
                         size="small"
-                        sx={{ 
+                        sx={{
                           background: 'rgba(99, 102, 241, 0.1)',
-                          '&:hover': { background: 'rgba(99, 102, 241, 0.2)' }
+                          '&:hover': { background: 'rgba(99, 102, 241, 0.2)' },
                         }}
                       >
                         <EmailIcon fontSize="small" />
                       </IconButton>
                     </Tooltip>
                     <Tooltip title={lead.enriched.phone}>
-                      <IconButton 
+                      <IconButton
                         size="small"
-                        sx={{ 
+                        sx={{
                           background: 'rgba(236, 72, 153, 0.1)',
-                          '&:hover': { background: 'rgba(236, 72, 153, 0.2)' }
+                          '&:hover': { background: 'rgba(236, 72, 153, 0.2)' },
                         }}
                       >
                         <PhoneIcon fontSize="small" />
@@ -289,12 +329,12 @@ export const HottestLeadsShowcase: React.FC<HottestLeadsShowcaseProps> = ({ lead
                     </Tooltip>
                     {lead.enriched.linkedin && (
                       <Tooltip title="View LinkedIn">
-                        <IconButton 
+                        <IconButton
                           size="small"
                           onClick={() => window.open(lead.enriched.linkedin, '_blank')}
-                          sx={{ 
+                          sx={{
                             background: 'rgba(0, 119, 181, 0.1)',
-                            '&:hover': { background: 'rgba(0, 119, 181, 0.2)' }
+                            '&:hover': { background: 'rgba(0, 119, 181, 0.2)' },
                           }}
                         >
                           <LinkedInIcon fontSize="small" />
@@ -303,11 +343,11 @@ export const HottestLeadsShowcase: React.FC<HottestLeadsShowcaseProps> = ({ lead
                     )}
                     <div style={{ flex: 1 }} />
                     <Tooltip title="Add to favorites">
-                      <IconButton 
+                      <IconButton
                         size="small"
-                        sx={{ 
+                        sx={{
                           background: 'rgba(255, 215, 0, 0.1)',
-                          '&:hover': { background: 'rgba(255, 215, 0, 0.2)' }
+                          '&:hover': { background: 'rgba(255, 215, 0, 0.2)' },
                         }}
                       >
                         <StarIcon fontSize="small" />

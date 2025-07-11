@@ -90,21 +90,31 @@ export const PerformanceHistory: React.FC<PerformanceHistoryProps> = ({ open, on
 
   const getOutcomeColor = (outcome: string) => {
     switch (outcome) {
-      case 'success': return 'success';
-      case 'no-answer': return 'warning';
-      case 'failed': return 'error';
-      case 'voicemail': return 'info';
-      default: return 'default';
+      case 'success':
+        return 'success';
+      case 'no-answer':
+        return 'warning';
+      case 'failed':
+        return 'error';
+      case 'voicemail':
+        return 'info';
+      default:
+        return 'default';
     }
   };
 
   const getOutcomeIcon = (outcome: string) => {
     switch (outcome) {
-      case 'success': return <CheckCircleIcon />;
-      case 'no-answer': return <AccessTimeIcon />;
-      case 'failed': return <CancelIcon />;
-      case 'voicemail': return <PhoneIcon />;
-      default: return <PhoneIcon />;
+      case 'success':
+        return <CheckCircleIcon />;
+      case 'no-answer':
+        return <AccessTimeIcon />;
+      case 'failed':
+        return <CancelIcon />;
+      case 'voicemail':
+        return <PhoneIcon />;
+      default:
+        return <PhoneIcon />;
     }
   };
 
@@ -116,7 +126,8 @@ export const PerformanceHistory: React.FC<PerformanceHistoryProps> = ({ open, on
       fullWidth
       PaperProps={{
         sx: {
-          background: 'linear-gradient(135deg, rgba(26, 26, 26, 0.98) 0%, rgba(40, 40, 40, 0.95) 100%)',
+          background:
+            'linear-gradient(135deg, rgba(26, 26, 26, 0.98) 0%, rgba(40, 40, 40, 0.95) 100%)',
           backdropFilter: 'blur(20px)',
           border: '1px solid rgba(255, 255, 255, 0.1)',
           borderRadius: 3,
@@ -124,13 +135,15 @@ export const PerformanceHistory: React.FC<PerformanceHistoryProps> = ({ open, on
         },
       }}
     >
-      <DialogTitle sx={{ 
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        alignItems: 'center',
-        borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
-        pb: 2,
-      }}>
+      <DialogTitle
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+          pb: 2,
+        }}
+      >
         <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
           {/* Pipeline Logo Link */}
           <div
@@ -156,20 +169,40 @@ export const PerformanceHistory: React.FC<PerformanceHistoryProps> = ({ open, on
             }}
           >
             <div style={{ width: 24, height: 24, position: 'relative' }}>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" style={{ width: '100%', height: '100%' }}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 32 32"
+                style={{ width: '100%', height: '100%' }}
+              >
                 <defs>
                   <linearGradient id="pipelineGradPerf" x1="0%" y1="0%" x2="100%" y2="100%">
                     <stop offset="0%" stopColor="#9f58fa" />
                     <stop offset="100%" stopColor="#4B96DC" />
                   </linearGradient>
                 </defs>
-                <circle cx="16" cy="16" r="12" fill="none" stroke="url(#pipelineGradPerf)" strokeWidth="2" opacity="0.8" />
-                <circle cx="16" cy="16" r="8" fill="none" stroke="url(#pipelineGradPerf)" strokeWidth="1.5" opacity="0.5" />
+                <circle
+                  cx="16"
+                  cy="16"
+                  r="12"
+                  fill="none"
+                  stroke="url(#pipelineGradPerf)"
+                  strokeWidth="2"
+                  opacity="0.8"
+                />
+                <circle
+                  cx="16"
+                  cy="16"
+                  r="8"
+                  fill="none"
+                  stroke="url(#pipelineGradPerf)"
+                  strokeWidth="1.5"
+                  opacity="0.5"
+                />
                 <circle cx="16" cy="16" r="3" fill="url(#pipelineGradPerf)" />
               </svg>
             </div>
-            <Typography 
-              sx={{ 
+            <Typography
+              sx={{
                 fontFamily: 'Orbitron, monospace',
                 fontWeight: 600,
                 fontSize: '14px',
@@ -179,9 +212,9 @@ export const PerformanceHistory: React.FC<PerformanceHistoryProps> = ({ open, on
               Pipeline
             </Typography>
           </div>
-          <Typography 
-            variant="h5" 
-            sx={{ 
+          <Typography
+            variant="h5"
+            sx={{
               fontWeight: 700,
               background: 'linear-gradient(135deg, #FFFFFF 0%, #EC4899 100%)',
               backgroundClip: 'text',
@@ -198,10 +231,10 @@ export const PerformanceHistory: React.FC<PerformanceHistoryProps> = ({ open, on
       </DialogTitle>
 
       <DialogContent sx={{ mt: 2, p: 0 }}>
-        <Tabs 
-          value={tabValue} 
+        <Tabs
+          value={tabValue}
           onChange={(_, value) => setTabValue(value)}
-          sx={{ 
+          sx={{
             borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
             px: 3,
           }}
@@ -223,36 +256,42 @@ export const PerformanceHistory: React.FC<PerformanceHistoryProps> = ({ open, on
               <Grid container spacing={3} sx={{ mb: 4 }}>
                 {metrics.map((metric, index) => (
                   <Grid item xs={12} sm={6} md={3} key={index}>
-                    <Card sx={{
-                      p: 3,
-                      background: 'rgba(255, 255, 255, 0.03)',
-                      backdropFilter: 'blur(10px)',
-                      border: '1px solid rgba(255, 255, 255, 0.1)',
-                    }}>
+                    <Card
+                      sx={{
+                        p: 3,
+                        background: 'rgba(255, 255, 255, 0.03)',
+                        backdropFilter: 'blur(10px)',
+                        border: '1px solid rgba(255, 255, 255, 0.1)',
+                      }}
+                    >
                       <Typography variant="body2" color="text.secondary" gutterBottom>
                         {metric.label}
                       </Typography>
                       <Typography variant="h4" sx={{ fontWeight: 700, mb: 1 }}>
-                        {metric.value}{metric.max === 100 ? '%' : ''}
+                        {metric.value}
+                        {metric.max === 100 ? '%' : ''}
                       </Typography>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
+                      <div
+                        style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}
+                      >
                         {metric.change > 0 ? (
                           <TrendingUpIcon sx={{ color: 'success.main', fontSize: 20 }} />
                         ) : (
                           <TrendingDownIcon sx={{ color: 'error.main', fontSize: 20 }} />
                         )}
-                        <Typography 
-                          variant="body2" 
-                          sx={{ 
+                        <Typography
+                          variant="body2"
+                          sx={{
                             color: metric.change > 0 ? 'success.main' : 'error.main',
                             fontWeight: 600,
                           }}
                         >
-                          {metric.change > 0 ? '+' : ''}{metric.change}%
+                          {metric.change > 0 ? '+' : ''}
+                          {metric.change}%
                         </Typography>
                       </div>
-                      <LinearProgress 
-                        variant="determinate" 
+                      <LinearProgress
+                        variant="determinate"
                         value={(metric.value / metric.max) * 100}
                         sx={{
                           height: 6,
@@ -273,25 +312,32 @@ export const PerformanceHistory: React.FC<PerformanceHistoryProps> = ({ open, on
               <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
                 Recent Calls
               </Typography>
-              <Card sx={{
-                background: 'rgba(255, 255, 255, 0.03)',
-                backdropFilter: 'blur(10px)',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-              }}>
+              <Card
+                sx={{
+                  background: 'rgba(255, 255, 255, 0.03)',
+                  backdropFilter: 'blur(10px)',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                }}
+              >
                 <List>
                   {recentCalls.map((call, index) => (
-                    <ListItem 
+                    <ListItem
                       key={call.id}
                       sx={{
-                        borderBottom: index < recentCalls.length - 1 ? '1px solid rgba(255, 255, 255, 0.05)' : 'none',
+                        borderBottom:
+                          index < recentCalls.length - 1
+                            ? '1px solid rgba(255, 255, 255, 0.05)'
+                            : 'none',
                       }}
                     >
                       <ListItemIcon>
-                        <Avatar sx={{ 
-                          bgcolor: `${getOutcomeColor(call.outcome)}.main`,
-                          width: 40,
-                          height: 40,
-                        }}>
+                        <Avatar
+                          sx={{
+                            bgcolor: `${getOutcomeColor(call.outcome)}.main`,
+                            width: 40,
+                            height: 40,
+                          }}
+                        >
                           {getOutcomeIcon(call.outcome)}
                         </Avatar>
                       </ListItemIcon>
@@ -311,8 +357,8 @@ export const PerformanceHistory: React.FC<PerformanceHistoryProps> = ({ open, on
                         }
                       />
                       <div style={{ textAlign: 'right' }}>
-                        <Chip 
-                          label={call.outcome.replace('-', ' ')} 
+                        <Chip
+                          label={call.outcome.replace('-', ' ')}
                           size="small"
                           color={getOutcomeColor(call.outcome) as any}
                           sx={{ mb: 0.5 }}
@@ -371,25 +417,30 @@ export const PerformanceHistory: React.FC<PerformanceHistoryProps> = ({ open, on
               </Typography>
               <Grid container spacing={3}>
                 <Grid item xs={12} md={6}>
-                  <Card sx={{
-                    p: 3,
-                    background: 'rgba(99, 102, 241, 0.1)',
-                    border: '1px solid rgba(99, 102, 241, 0.3)',
-                  }}>
+                  <Card
+                    sx={{
+                      p: 3,
+                      background: 'rgba(99, 102, 241, 0.1)',
+                      border: '1px solid rgba(99, 102, 241, 0.3)',
+                    }}
+                  >
                     <Typography variant="h6" gutterBottom>
                       Best Call Times
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                      AI analysis shows your highest success rate is between 2-4 PM on Tuesdays and Thursdays.
+                      AI analysis shows your highest success rate is between 2-4 PM on Tuesdays and
+                      Thursdays.
                     </Typography>
                   </Card>
                 </Grid>
                 <Grid item xs={12} md={6}>
-                  <Card sx={{
-                    p: 3,
-                    background: 'rgba(236, 72, 153, 0.1)',
-                    border: '1px solid rgba(236, 72, 153, 0.3)',
-                  }}>
+                  <Card
+                    sx={{
+                      p: 3,
+                      background: 'rgba(236, 72, 153, 0.1)',
+                      border: '1px solid rgba(236, 72, 153, 0.3)',
+                    }}
+                  >
                     <Typography variant="h6" gutterBottom>
                       Conversation Patterns
                     </Typography>

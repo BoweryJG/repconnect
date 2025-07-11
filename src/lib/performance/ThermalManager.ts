@@ -42,15 +42,14 @@ export class ThermalManager {
           this.isCharging = battery.charging;
           this.notifyCallbacks();
         });
-      } catch (error) {
-      }
+      } catch (error) {}
     }
   }
 
   private initNetworkMonitoring() {
     if ('connection' in navigator) {
       const connection = (navigator as any).connection;
-      
+
       const updateNetworkType = () => {
         const effectiveType = connection.effectiveType;
         if (effectiveType === '4g' || effectiveType === '5g') {
@@ -84,7 +83,11 @@ export class ThermalManager {
     this.performanceUnsubscribe = performanceMonitor.subscribe((metrics) => {
       // Auto-adjust based on temperature with debouncing
       const now = Date.now();
-      if (metrics.temperature === 'critical' && !this.isCharging && now - lastPowerSavingTime > 10000) {
+      if (
+        metrics.temperature === 'critical' &&
+        !this.isCharging &&
+        now - lastPowerSavingTime > 10000
+      ) {
         this.enablePowerSaving();
         lastPowerSavingTime = now;
       }
@@ -98,10 +101,10 @@ export class ThermalManager {
 
   public getState(): ThermalState {
     const metrics = performanceMonitor.getMetrics();
-    
+
     // Determine power mode based on multiple factors
     let powerMode: PowerMode = 'balanced';
-    
+
     if (this.batteryLevel < 0.2 && !this.isCharging) {
       powerMode = 'battery-saver';
     } else if (this.batteryLevel > 0.5 && this.isCharging) {
@@ -118,7 +121,7 @@ export class ThermalManager {
       temperature: metrics.temperature,
       networkType: this.networkType,
       powerMode,
-      recommendations: this.getRecommendations(powerMode, metrics.temperature)
+      recommendations: this.getRecommendations(powerMode, metrics.temperature),
     };
   }
 
@@ -152,7 +155,7 @@ export class ThermalManager {
 
   private notifyCallbacks() {
     const state = this.getState();
-    this.callbacks.forEach(cb => cb(state));
+    this.callbacks.forEach((cb) => cb(state));
   }
 
   public destroy() {

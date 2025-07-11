@@ -8,16 +8,9 @@ import {
   Typography,
   Grid,
   CircularProgress,
-  Paper
+  Paper,
 } from '@mui/material';
-import {
-  Phone,
-  Psychology,
-  GpsFixed,
-  AutoAwesome,
-  Mic,
-  Message
-} from '@mui/icons-material';
+import { Phone, Psychology, GpsFixed, AutoAwesome, Mic, Message } from '@mui/icons-material';
 import { toast } from '../utils/toast';
 
 interface Coach {
@@ -46,7 +39,7 @@ const procedureCategories = [
   { id: 'fillers', name: 'Dermal Fillers', icon: '✨', color: 'info' },
   { id: 'emsculpt', name: 'EMSculpt NEO', icon: '💪', color: 'success' },
   { id: 'lasers', name: 'Aesthetic Lasers', icon: '🔬', color: 'error' },
-  { id: 'microneedling', name: 'RF Microneedling', icon: '📍', color: 'warning' }
+  { id: 'microneedling', name: 'RF Microneedling', icon: '📍', color: 'warning' },
 ];
 
 export default function InstantCoachConnect() {
@@ -68,7 +61,7 @@ export default function InstantCoachConnect() {
     let interval: NodeJS.Timeout;
     if (activeSession) {
       interval = setInterval(() => {
-        setSessionTime(prev => prev + 1);
+        setSessionTime((prev) => prev + 1);
       }, 1000);
     }
     return () => {
@@ -79,13 +72,15 @@ export default function InstantCoachConnect() {
   const loadAvailableCoaches = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/coaching/available-coaches/${selectedCategory}`);
+      const response = await fetch(
+        `${process.env.REACT_APP_BACKEND_URL}/api/coaching/available-coaches/${selectedCategory}`
+      );
       if (!response.ok) throw new Error('Failed to fetch coaches');
-      
+
       const data = await response.json();
       setAvailableCoaches(data.coaches || []);
     } catch (error) {
-          toast.error('Failed to load available coaches');
+      toast.error('Failed to load available coaches');
     } finally {
       setLoading(false);
     }
@@ -94,30 +89,33 @@ export default function InstantCoachConnect() {
   const connectToCoach = async (coachId: string, coachName: string) => {
     setConnecting(coachId);
     try {
-      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/coaching/start-session`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          repId: 'demo-rep-001',
-          coachId,
-          procedureCategory: selectedCategory,
-          sessionType: 'practice_pitch'
-        })
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_BACKEND_URL}/api/coaching/start-session`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            repId: 'demo-rep-001',
+            coachId,
+            procedureCategory: selectedCategory,
+            sessionType: 'practice_pitch',
+          }),
+        }
+      );
 
       if (!response.ok) throw new Error('Failed to start session');
-      
+
       const data = await response.json();
-      
+
       // Request microphone permission and start WebRTC
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({ 
-          audio: true, 
-          video: false 
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: true,
+          video: false,
         });
-        
+
         // Start the active session UI
         const sessionData = {
           sessionId: data.session.id,
@@ -125,21 +123,21 @@ export default function InstantCoachConnect() {
           coachId: coachId,
           coachName: coachName,
           stream: stream,
-          startTime: new Date()
+          startTime: new Date(),
         };
-        
+
         setActiveSession(sessionData);
         setSessionTime(0);
-        
+
         // Store globally for other components
         (window as any).currentCoachingSession = sessionData;
-        
       } catch (micError) {
-                toast.error('Session created but microphone access was denied. Please enable microphone permissions and try again.');
+        toast.error(
+          'Session created but microphone access was denied. Please enable microphone permissions and try again.'
+        );
       }
-
     } catch (error) {
-            toast.error('Failed to connect to coach');
+      toast.error('Failed to connect to coach');
     } finally {
       setConnecting(null);
     }
@@ -147,30 +145,29 @@ export default function InstantCoachConnect() {
 
   const endSession = async () => {
     if (!activeSession) return;
-    
+
     try {
       // Stop microphone stream
       if (activeSession.stream) {
         activeSession.stream.getTracks().forEach((track: MediaStreamTrack) => track.stop());
       }
-      
+
       // End session in backend
       await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/coaching/end-session`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           sessionId: activeSession.sessionId,
-          notes: `Session duration: ${Math.floor(sessionTime / 60)}:${(sessionTime % 60).toString().padStart(2, '0')}`
-        })
+          notes: `Session duration: ${Math.floor(sessionTime / 60)}:${(sessionTime % 60).toString().padStart(2, '0')}`,
+        }),
       });
-      
+
       // Clear session state
       setActiveSession(null);
       setSessionTime(0);
       (window as any).currentCoachingSession = null;
-      
     } catch (error) {
-          toast.error('Failed to end session properly');
+      toast.error('Failed to end session properly');
     }
   };
 
@@ -183,20 +180,26 @@ export default function InstantCoachConnect() {
   // If there's an active session, show the coaching interface
   if (activeSession) {
     return (
-      <div style={{ 
-        maxWidth: 800, 
-        margin: '0 auto', 
-        padding: '24px',
-        paddingTop: '64px' 
-      }}>
-        <Card sx={{ 
-          background: 'linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)',
-          border: '1px solid rgba(255,255,255,0.1)',
-          color: 'white'
-        }}>
+      <div
+        style={{
+          maxWidth: 800,
+          margin: '0 auto',
+          padding: '24px',
+          paddingTop: '64px',
+        }}
+      >
+        <Card
+          sx={{
+            background: 'linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)',
+            border: '1px solid rgba(255,255,255,0.1)',
+            color: 'white',
+          }}
+        >
           <CardHeader
             title={
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div
+                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+              >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                   <Psychology color="primary" />
                   <Typography variant="h5" sx={{ color: 'white' }}>
@@ -211,36 +214,35 @@ export default function InstantCoachConnect() {
             sx={{ pb: 1 }}
           />
           <CardContent>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px' }}>
-              <Chip 
-                icon={<Mic />} 
-                label="Microphone Active" 
-                color="success" 
-                variant="outlined"
-              />
-              <Chip 
-                icon={<GpsFixed />} 
+            <div
+              style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px' }}
+            >
+              <Chip icon={<Mic />} label="Microphone Active" color="success" variant="outlined" />
+              <Chip
+                icon={<GpsFixed />}
                 label={`Room: ${activeSession.roomId.split('-').pop()}`}
-                color="info" 
+                color="info"
                 variant="outlined"
               />
             </div>
-            
-            <Paper sx={{ 
-              p: 3, 
-              mb: 3, 
-              background: 'rgba(0,0,0,0.3)',
-              border: '1px solid rgba(255,255,255,0.1)'
-            }}>
+
+            <Paper
+              sx={{
+                p: 3,
+                mb: 3,
+                background: 'rgba(0,0,0,0.3)',
+                border: '1px solid rgba(255,255,255,0.1)',
+              }}
+            >
               <Typography variant="h6" gutterBottom sx={{ color: '#00d4ff' }}>
                 <AutoAwesome /> AI Coach is ready to help you practice!
               </Typography>
               <Typography variant="body1" color="text.secondary">
-                Start speaking to begin your practice session. The AI coach will respond with feedback, 
-                questions, and guidance specific to {selectedCategory} procedures.
+                Start speaking to begin your practice session. The AI coach will respond with
+                feedback, questions, and guidance specific to {selectedCategory} procedures.
               </Typography>
             </Paper>
-            
+
             <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
               <Button
                 variant="contained"
@@ -259,21 +261,16 @@ export default function InstantCoachConnect() {
   }
 
   return (
-    <div 
-      style={{ 
-        maxWidth: 1200, 
-        margin: '0 auto', 
-        padding: '24px', 
-        paddingTop: '64px' 
+    <div
+      style={{
+        maxWidth: 1200,
+        margin: '0 auto',
+        padding: '24px',
+        paddingTop: '64px',
       }}
     >
       <div style={{ marginBottom: '32px' }}>
-        <Typography 
-          variant="h4" 
-          component="h2" 
-          gutterBottom 
-          sx={{ color: 'white' }}
-        >
+        <Typography variant="h4" component="h2" gutterBottom sx={{ color: 'white' }}>
           Instant Coach Connect
         </Typography>
         <Typography variant="subtitle1" color="text.secondary">
@@ -283,12 +280,7 @@ export default function InstantCoachConnect() {
 
       {/* Procedure Category Selection */}
       <div style={{ marginBottom: '32px' }}>
-        <Typography 
-          variant="h5" 
-          component="h3" 
-          gutterBottom 
-          sx={{ color: 'white' }}
-        >
+        <Typography variant="h5" component="h3" gutterBottom sx={{ color: 'white' }}>
           What do you want to practice?
         </Typography>
         <Grid container spacing={2}>
@@ -301,18 +293,20 @@ export default function InstantCoachConnect() {
                   padding: 16,
                   textAlign: 'center',
                   cursor: 'pointer',
-                  backgroundColor: selectedCategory === category.id ? 'rgba(99, 102, 241, 0.2)' : 'rgba(255, 255, 255, 0.05)',
-                  border: selectedCategory === category.id ? '2px solid #6366F1' : '1px solid rgba(255, 255, 255, 0.1)'
+                  backgroundColor:
+                    selectedCategory === category.id
+                      ? 'rgba(99, 102, 241, 0.2)'
+                      : 'rgba(255, 255, 255, 0.05)',
+                  border:
+                    selectedCategory === category.id
+                      ? '2px solid #6366F1'
+                      : '1px solid rgba(255, 255, 255, 0.1)',
                 }}
               >
                 <Typography variant="h4" component="div" sx={{ mb: 1 }}>
                   {category.icon}
                 </Typography>
-                <Typography 
-                  variant="caption" 
-                  display="block" 
-                  sx={{ color: 'white' }}
-                >
+                <Typography variant="caption" display="block" sx={{ color: 'white' }}>
                   {category.name}
                 </Typography>
               </Paper>
@@ -324,12 +318,7 @@ export default function InstantCoachConnect() {
       {/* Available Coaches */}
       {selectedCategory && (
         <div>
-          <Typography 
-            variant="h5" 
-            component="h3" 
-            gutterBottom 
-            sx={{ color: 'white' }}
-          >
+          <Typography variant="h5" component="h3" gutterBottom sx={{ color: 'white' }}>
             Available Coaches
           </Typography>
           {loading ? (
@@ -340,13 +329,13 @@ export default function InstantCoachConnect() {
             <Grid container spacing={3}>
               {availableCoaches.map((specialization) => (
                 <Grid item xs={12} md={6} lg={4} key={specialization.id}>
-                  <Card 
-                    style={{ 
-                      height: '100%', 
-                      display: 'flex', 
+                  <Card
+                    style={{
+                      height: '100%',
+                      display: 'flex',
                       flexDirection: 'column',
                       backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                      border: '1px solid rgba(255, 255, 255, 0.1)'
+                      border: '1px solid rgba(255, 255, 255, 0.1)',
                     }}
                   >
                     <CardHeader
@@ -365,13 +354,18 @@ export default function InstantCoachConnect() {
                       <Typography variant="body2" color="text.secondary" paragraph>
                         {specialization.expertise_description}
                       </Typography>
-                      
+
                       <Typography variant="subtitle2" gutterBottom>
                         Common Questions:
                       </Typography>
                       <div style={{ marginBottom: '16px' }}>
                         {specialization.common_questions?.slice(0, 2).map((q, i) => (
-                          <Typography key={i} variant="caption" display="block" color="text.secondary">
+                          <Typography
+                            key={i}
+                            variant="caption"
+                            display="block"
+                            color="text.secondary"
+                          >
                             • {q}
                           </Typography>
                         ))}
@@ -380,7 +374,14 @@ export default function InstantCoachConnect() {
                       <Typography variant="subtitle2" gutterBottom>
                         Practice Scenarios:
                       </Typography>
-                      <div style={{ marginBottom: '16px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                      <div
+                        style={{
+                          marginBottom: '16px',
+                          display: 'flex',
+                          gap: '8px',
+                          flexWrap: 'wrap',
+                        }}
+                      >
                         {specialization.mock_scenarios?.slice(0, 2).map((scenario, i) => (
                           <Chip key={i} label={scenario.name} size="small" variant="outlined" />
                         ))}
@@ -389,8 +390,16 @@ export default function InstantCoachConnect() {
                       <Button
                         variant="contained"
                         fullWidth
-                        startIcon={connecting === specialization.coach_id ? <CircularProgress size={16} /> : <Phone />}
-                        onClick={() => connectToCoach(specialization.coach_id, specialization.coach?.name || '')}
+                        startIcon={
+                          connecting === specialization.coach_id ? (
+                            <CircularProgress size={16} />
+                          ) : (
+                            <Phone />
+                          )
+                        }
+                        onClick={() =>
+                          connectToCoach(specialization.coach_id, specialization.coach?.name || '')
+                        }
                         disabled={connecting === specialization.coach_id}
                       >
                         {connecting === specialization.coach_id ? 'Connecting...' : 'Connect Now'}
@@ -406,11 +415,11 @@ export default function InstantCoachConnect() {
 
       {/* Session Types */}
       {selectedCategory && !loading && availableCoaches.length > 0 && (
-        <Card 
-          style={{ 
+        <Card
+          style={{
             marginTop: 32,
             backgroundColor: 'rgba(255, 255, 255, 0.05)',
-            border: '1px solid rgba(255, 255, 255, 0.1)'
+            border: '1px solid rgba(255, 255, 255, 0.1)',
           }}
         >
           <CardHeader
@@ -422,18 +431,16 @@ export default function InstantCoachConnect() {
           <CardContent>
             <Grid container spacing={2}>
               <Grid item xs={6} md={3}>
-                <Paper 
-                  style={{ 
-                    padding: 16, 
+                <Paper
+                  style={{
+                    padding: 16,
                     textAlign: 'center',
                     backgroundColor: 'rgba(255, 255, 255, 0.02)',
-                    border: '1px solid rgba(255, 255, 255, 0.05)'
-                  }}>
+                    border: '1px solid rgba(255, 255, 255, 0.05)',
+                  }}
+                >
                   <Message sx={{ fontSize: 32, color: 'primary.main', mb: 1 }} />
-                  <Typography 
-                    variant="subtitle2" 
-                    sx={{ color: 'white' }}
-                  >
+                  <Typography variant="subtitle2" sx={{ color: 'white' }}>
                     Q&A Session
                   </Typography>
                   <Typography variant="caption" color="text.secondary">
@@ -442,18 +449,16 @@ export default function InstantCoachConnect() {
                 </Paper>
               </Grid>
               <Grid item xs={6} md={3}>
-                <Paper 
-                  style={{ 
-                    padding: 16, 
+                <Paper
+                  style={{
+                    padding: 16,
                     textAlign: 'center',
                     backgroundColor: 'rgba(255, 255, 255, 0.02)',
-                    border: '1px solid rgba(255, 255, 255, 0.05)'
-                  }}>
+                    border: '1px solid rgba(255, 255, 255, 0.05)',
+                  }}
+                >
                   <GpsFixed sx={{ fontSize: 32, color: 'success.main', mb: 1 }} />
-                  <Typography 
-                    variant="subtitle2" 
-                    sx={{ color: 'white' }}
-                  >
+                  <Typography variant="subtitle2" sx={{ color: 'white' }}>
                     Objection Handling
                   </Typography>
                   <Typography variant="caption" color="text.secondary">
@@ -462,18 +467,16 @@ export default function InstantCoachConnect() {
                 </Paper>
               </Grid>
               <Grid item xs={6} md={3}>
-                <Paper 
-                  style={{ 
-                    padding: 16, 
+                <Paper
+                  style={{
+                    padding: 16,
                     textAlign: 'center',
                     backgroundColor: 'rgba(255, 255, 255, 0.02)',
-                    border: '1px solid rgba(255, 255, 255, 0.05)'
-                  }}>
+                    border: '1px solid rgba(255, 255, 255, 0.05)',
+                  }}
+                >
                   <Psychology sx={{ fontSize: 32, color: 'secondary.main', mb: 1 }} />
-                  <Typography 
-                    variant="subtitle2" 
-                    sx={{ color: 'white' }}
-                  >
+                  <Typography variant="subtitle2" sx={{ color: 'white' }}>
                     Mock Consultation
                   </Typography>
                   <Typography variant="caption" color="text.secondary">
@@ -482,18 +485,16 @@ export default function InstantCoachConnect() {
                 </Paper>
               </Grid>
               <Grid item xs={6} md={3}>
-                <Paper 
-                  style={{ 
-                    padding: 16, 
+                <Paper
+                  style={{
+                    padding: 16,
                     textAlign: 'center',
                     backgroundColor: 'rgba(255, 255, 255, 0.02)',
-                    border: '1px solid rgba(255, 255, 255, 0.05)'
-                  }}>
+                    border: '1px solid rgba(255, 255, 255, 0.05)',
+                  }}
+                >
                   <AutoAwesome sx={{ fontSize: 32, color: 'warning.main', mb: 1 }} />
-                  <Typography 
-                    variant="subtitle2" 
-                    sx={{ color: 'white' }}
-                  >
+                  <Typography variant="subtitle2" sx={{ color: 'white' }}>
                     Pitch Practice
                   </Typography>
                   <Typography variant="caption" color="text.secondary">
@@ -507,4 +508,4 @@ export default function InstantCoachConnect() {
       )}
     </div>
   );
-};
+}

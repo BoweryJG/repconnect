@@ -1,0 +1,288 @@
+{
+  "version": "1.0.0",
+  "performance": {
+    "targets": {
+      "api": {
+        "response_time": {
+          "p50": 200,
+          "p95": 500,
+          "p99": 1000,
+          "max": 2000
+        },
+        "throughput": {
+          "min": 100,
+          "target": 1000
+        },
+        "error_rate": {
+          "max": 1,
+          "target": 0.1
+        }
+      },
+      "frontend": {
+        "page_load": {
+          "fcp": 1500,
+          "lcp": 2500,
+          "fid": 100,
+          "cls": 0.1,
+          "ttfb": 600
+        },
+        "bundle_size": {
+          "main": 300000,
+          "vendor": 500000,
+          "total": 1000000
+        }
+      },
+      "database": {
+        "query_time": {
+          "simple": 50,
+          "complex": 200,
+          "aggregate": 500
+        },
+        "connection_pool": {
+          "min": 5,
+          "max": 20,
+          "acquire_timeout": 1000
+        }
+      },
+      "realtime": {
+        "websocket_latency": 50,
+        "webrtc_setup": 3000,
+        "transcription_delay": 500
+      }
+    },
+    "monitoring": {
+      "api_endpoints": [
+        {
+          "path": "/api/auth/login",
+          "method": "POST",
+          "sla": {
+            "availability": 99.9,
+            "response_time_p95": 500
+          },
+          "tracking": {
+            "response_time": true,
+            "error_rate": true,
+            "throughput": true
+          }
+        },
+        {
+          "path": "/api/contacts",
+          "method": "GET",
+          "sla": {
+            "availability": 99.5,
+            "response_time_p95": 300
+          },
+          "tracking": {
+            "response_time": true,
+            "error_rate": true,
+            "throughput": true,
+            "result_size": true
+          }
+        },
+        {
+          "path": "/api/calls",
+          "method": "POST",
+          "sla": {
+            "availability": 99.9,
+            "response_time_p95": 1000
+          },
+          "tracking": {
+            "response_time": true,
+            "error_rate": true,
+            "throughput": true
+          }
+        },
+        {
+          "path": "/api/harvey/*",
+          "method": "ALL",
+          "sla": {
+            "availability": 99.0,
+            "response_time_p95": 2000
+          },
+          "tracking": {
+            "response_time": true,
+            "error_rate": true,
+            "throughput": true,
+            "ai_latency": true
+          }
+        },
+        {
+          "path": "/api/twilio/voice",
+          "method": "POST",
+          "sla": {
+            "availability": 99.99,
+            "response_time_p95": 200
+          },
+          "tracking": {
+            "response_time": true,
+            "error_rate": true,
+            "throughput": true
+          }
+        }
+      ],
+      "frontend_routes": [
+        {
+          "path": "/",
+          "name": "Dashboard",
+          "tracking": {
+            "page_load": true,
+            "interactions": true,
+            "errors": true
+          }
+        },
+        {
+          "path": "/contacts",
+          "name": "Contacts",
+          "tracking": {
+            "page_load": true,
+            "interactions": true,
+            "errors": true,
+            "data_fetch": true
+          }
+        },
+        {
+          "path": "/harvey",
+          "name": "Harvey Syndicate",
+          "tracking": {
+            "page_load": true,
+            "interactions": true,
+            "errors": true,
+            "webrtc_metrics": true
+          }
+        },
+        {
+          "path": "/harvey/warroom",
+          "name": "War Room",
+          "tracking": {
+            "page_load": true,
+            "interactions": true,
+            "errors": true,
+            "webrtc_metrics": true,
+            "3d_performance": true
+          }
+        }
+      ],
+      "custom_metrics": [
+        {
+          "name": "call_success_rate",
+          "type": "percentage",
+          "calculation": "successful_calls / total_calls * 100",
+          "tracking_interval": "5m"
+        },
+        {
+          "name": "harvey_ai_response_time",
+          "type": "histogram",
+          "buckets": [100, 250, 500, 1000, 2000, 5000],
+          "tracking_interval": "1m"
+        },
+        {
+          "name": "active_websocket_connections",
+          "type": "gauge",
+          "tracking_interval": "30s"
+        },
+        {
+          "name": "database_pool_utilization",
+          "type": "percentage",
+          "calculation": "active_connections / max_connections * 100",
+          "tracking_interval": "1m"
+        }
+      ]
+    },
+    "optimization": {
+      "api": {
+        "caching": {
+          "enabled": true,
+          "strategies": {
+            "contacts": {
+              "ttl": 300,
+              "invalidation": ["POST", "PUT", "DELETE"]
+            },
+            "user_settings": {
+              "ttl": 3600,
+              "invalidation": ["PUT"]
+            }
+          }
+        },
+        "compression": {
+          "enabled": true,
+          "threshold": 1024,
+          "level": 6
+        },
+        "pagination": {
+          "default_limit": 50,
+          "max_limit": 200
+        }
+      },
+      "frontend": {
+        "code_splitting": {
+          "enabled": true,
+          "chunks": {
+            "vendor": ["react", "react-dom", "@mui/material"],
+            "harvey": ["three", "@react-three/fiber"],
+            "charts": ["recharts", "d3"]
+          }
+        },
+        "lazy_loading": {
+          "routes": true,
+          "images": true,
+          "components": ["Harvey3DScene", "AnalyticsDashboard", "CallTranscript"]
+        },
+        "service_worker": {
+          "enabled": true,
+          "cache_strategies": {
+            "api": "network-first",
+            "assets": "cache-first",
+            "images": "cache-first"
+          }
+        }
+      },
+      "database": {
+        "query_optimization": {
+          "explain_threshold": 100,
+          "slow_query_log": true,
+          "index_hints": true
+        },
+        "connection_pooling": {
+          "min_idle": 5,
+          "max_idle": 10,
+          "max_open": 20,
+          "idle_timeout": 300000
+        }
+      }
+    },
+    "budgets": {
+      "performance": {
+        "javascript": {
+          "warning": 500000,
+          "error": 750000
+        },
+        "images": {
+          "warning": 2000000,
+          "error": 3000000
+        },
+        "total": {
+          "warning": 3000000,
+          "error": 5000000
+        }
+      },
+      "metrics": {
+        "fcp": {
+          "warning": 1800,
+          "error": 3000
+        },
+        "lcp": {
+          "warning": 2500,
+          "error": 4000
+        },
+        "tti": {
+          "warning": 3800,
+          "error": 7300
+        },
+        "speed_index": {
+          "warning": 3400,
+          "error": 5800
+        }
+      }
+    }
+  }
+}

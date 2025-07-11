@@ -7,10 +7,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 // Initialize Supabase client
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_KEY
-);
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
 
 // Harvey Coach Service - AI Sales Coach inspired by Harvey Specter
 class HarveyCoach {
@@ -21,14 +18,14 @@ class HarveyCoach {
     this.repPerformance = new Map();
     this.activeCoachingSessions = new Map();
     this.personality = 'harvey_specter';
-    
+
     // Harvey's coaching modes
     this.coachingModes = {
       MORNING_MOTIVATOR: 'morning_motivator',
-      POST_CALL_CRITIC: 'post_call_critic', 
+      POST_CALL_CRITIC: 'post_call_critic',
       LIVE_DEMO_MASTER: 'live_demo_master',
       PERFORMANCE_REVIEWER: 'performance_reviewer',
-      CLOSER: 'closer'
+      CLOSER: 'closer',
     };
 
     // Performance thresholds that trigger Harvey
@@ -37,20 +34,19 @@ class HarveyCoach {
       poorCloseRate: { threshold: 0.2 },
       missedOpportunities: { threshold: 3 },
       longCallNoClose: { threshold: 600 }, // 10 minutes
-      noResearchBeforeCall: true
+      noResearchBeforeCall: true,
     };
   }
 
   // Initialize Harvey for a sales rep
   async initializeRep(repId, repName) {
-        
     // Load rep's performance history
     const performance = await this.loadRepPerformance(repId);
     this.repPerformance.set(repId, performance);
-    
+
     // Start monitoring their activity
     this.startActivityMonitoring(repId);
-    
+
     // Morning check-in
     const now = new Date();
     if (now.getHours() < 10) {
@@ -58,11 +54,11 @@ class HarveyCoach {
         this.triggerMorningMotivation(repId, repName);
       }, 5000);
     }
-    
+
     return {
       status: 'initialized',
       currentScore: performance.harveyScore || 50,
-      message: `Harvey is watching, ${repName}. Don't disappoint me.`
+      message: `Harvey is watching, ${repName}. Don't disappoint me.`,
     };
   }
 
@@ -71,37 +67,38 @@ class HarveyCoach {
     return new Promise((resolve, reject) => {
       const ws = new WebSocket(this.moshiUrl, {
         headers: {
-          'Authorization': `Bearer ${this.moshiApiKey}`,
+          Authorization: `Bearer ${this.moshiApiKey}`,
           'X-Session-ID': sessionId,
-          'X-Voice-Profile': 'harvey_specter'
-        }
+          'X-Voice-Profile': 'harvey_specter',
+        },
       });
 
       const connection = {
         ws,
         sessionId,
-        isActive: false
+        isActive: false,
       };
 
       ws.on('open', () => {
-                
         // Configure Harvey's voice
-        ws.send(JSON.stringify({
-          type: 'config',
-          config: {
-            voice: {
-              style: 'confident',
-              speed: 1.1,
-              pitch: 0.95,
-              emphasis: 'strong'
+        ws.send(
+          JSON.stringify({
+            type: 'config',
+            config: {
+              voice: {
+                style: 'confident',
+                speed: 1.1,
+                pitch: 0.95,
+                emphasis: 'strong',
+              },
+              personality: {
+                assertiveness: 0.9,
+                humor: 0.7,
+                directness: 1.0,
+              },
             },
-            personality: {
-              assertiveness: 0.9,
-              humor: 0.7,
-              directness: 1.0
-            }
-          }
-        }));
+          })
+        );
 
         connection.isActive = true;
         this.connections.set(sessionId, connection);
@@ -109,11 +106,11 @@ class HarveyCoach {
       });
 
       ws.on('error', (error) => {
-                reject(error);
+        reject(error);
       });
 
       ws.on('close', () => {
-                this.connections.delete(sessionId);
+        this.connections.delete(sessionId);
       });
     });
   }
@@ -122,7 +119,7 @@ class HarveyCoach {
   async triggerMorningMotivation(repId, repName) {
     const performance = this.repPerformance.get(repId);
     const callsToday = await this.getCallsToday(repId);
-    
+
     let message;
     if (callsToday.count < 2) {
       message = `${repName}, it's 10 AM and you've made ${callsToday.count} calls. At this rate, you'll hit your quota... never. Get on the phone now, or I'm calling your manager.`;
@@ -136,37 +133,37 @@ class HarveyCoach {
       mode: this.coachingModes.MORNING_MOTIVATOR,
       message,
       severity: 'high',
-      actionRequired: true
+      actionRequired: true,
     });
   }
 
   // Analyze call performance in real-time
   async analyzeCallPerformance(callData) {
     const { repId, callId, duration, outcome, transcript } = callData;
-    
+
     // Quick analysis of what went wrong/right
     const analysis = await this.analyzeTranscript(transcript);
-    
+
     if (outcome === 'no_decision' || outcome === 'unsuccessful') {
       // Harvey intervenes immediately
       const critique = this.generateCallCritique(analysis);
-      
+
       await this.deliverCoaching(repId, {
         mode: this.coachingModes.POST_CALL_CRITIC,
         message: critique.message,
         severity: 'immediate',
         actionRequired: true,
-        suggestions: critique.suggestions
+        suggestions: critique.suggestions,
       });
     } else if (outcome === 'successful') {
       // Even success gets coached
       const feedback = this.generateSuccessFeedback(analysis);
-      
+
       await this.deliverCoaching(repId, {
         mode: this.coachingModes.CLOSER,
         message: feedback.message,
         severity: 'medium',
-        actionRequired: false
+        actionRequired: false,
       });
     }
   }
@@ -175,21 +172,34 @@ class HarveyCoach {
   generateCallCritique(analysis) {
     const critiques = {
       weak_opening: {
-        message: "Did you just ask 'Is this a good time?' That's not an opening, that's an apology. Start with value or don't start at all.",
-        suggestions: ["Lead with: 'I've got something that will save you 30% on supplies. Got 2 minutes?'"]
+        message:
+          "Did you just ask 'Is this a good time?' That's not an opening, that's an apology. Start with value or don't start at all.",
+        suggestions: [
+          "Lead with: 'I've got something that will save you 30% on supplies. Got 2 minutes?'",
+        ],
       },
       no_pain_discovery: {
-        message: "You talked for 10 minutes and never found their pain point. You're not a presenter, you're a problem solver. Find the problem!",
-        suggestions: ["Ask: 'What's your biggest challenge with your current supplier?'", "Then shut up and listen."]
+        message:
+          "You talked for 10 minutes and never found their pain point. You're not a presenter, you're a problem solver. Find the problem!",
+        suggestions: [
+          "Ask: 'What's your biggest challenge with your current supplier?'",
+          'Then shut up and listen.',
+        ],
       },
       weak_close: {
-        message: "You said 'Let me know if you're interested.' That's not closing, that's hoping. Assume the sale or go home.",
-        suggestions: ["Close with: 'I'll send the contract now. We can start saving you money next week.'"]
+        message:
+          "You said 'Let me know if you're interested.' That's not closing, that's hoping. Assume the sale or go home.",
+        suggestions: [
+          "Close with: 'I'll send the contract now. We can start saving you money next week.'",
+        ],
       },
       accepted_objection: {
-        message: "They said they're happy with their supplier and you gave up? That's when the sale begins, not ends.",
-        suggestions: ["Response: 'Great suppliers deserve competition. Let me be your backup option.'"]
-      }
+        message:
+          "They said they're happy with their supplier and you gave up? That's when the sale begins, not ends.",
+        suggestions: [
+          "Response: 'Great suppliers deserve competition. Let me be your backup option.'",
+        ],
+      },
     };
 
     // Pick the most relevant critique
@@ -200,18 +210,22 @@ class HarveyCoach {
   // Generate success feedback (Harvey style)
   generateSuccessFeedback(analysis) {
     return {
-      message: "Not bad. You actually listened before pitching. But you left money on the table - they were ready for the premium package. Next time, assume bigger.",
-      suggestions: ["Always present the premium option first", "They'll tell you if they want less"]
+      message:
+        'Not bad. You actually listened before pitching. But you left money on the table - they were ready for the premium package. Next time, assume bigger.',
+      suggestions: [
+        'Always present the premium option first',
+        "They'll tell you if they want less",
+      ],
     };
   }
 
   // Deliver coaching through multiple channels
   async deliverCoaching(repId, coaching) {
     const sessionId = `harvey-${repId}-${Date.now()}`;
-    
+
     // Record coaching session
     const coachingSession = await this.recordCoachingSession(repId, coaching);
-    
+
     // Deliver based on severity
     switch (coaching.severity) {
       case 'immediate':
@@ -227,7 +241,7 @@ class HarveyCoach {
         await this.deliverInAppCoaching(repId, coaching);
         break;
     }
-    
+
     // Update rep's Harvey score
     await this.updateHarveyScore(repId, coaching);
   }
@@ -236,38 +250,43 @@ class HarveyCoach {
   async deliverVoiceCoaching(sessionId, coaching) {
     try {
       const connection = await this.connectToMoshi(sessionId);
-      
+
       // Send Harvey's message
-      connection.ws.send(JSON.stringify({
-        type: 'speak',
-        text: coaching.message,
-        emotion: 'assertive',
-        urgency: 'high'
-      }));
-      
+      connection.ws.send(
+        JSON.stringify({
+          type: 'speak',
+          text: coaching.message,
+          emotion: 'assertive',
+          urgency: 'high',
+        })
+      );
+
       // If suggestions, deliver them too
       if (coaching.suggestions) {
         for (const suggestion of coaching.suggestions) {
-          await new Promise(resolve => setTimeout(resolve, 2000));
-          connection.ws.send(JSON.stringify({
-            type: 'speak',
-            text: suggestion,
-            emotion: 'instructive'
-          }));
+          await new Promise((resolve) => setTimeout(resolve, 2000));
+          connection.ws.send(
+            JSON.stringify({
+              type: 'speak',
+              text: suggestion,
+              emotion: 'instructive',
+            })
+          );
         }
       }
-      
+
       // Close with Harvey's signature
       setTimeout(() => {
-        connection.ws.send(JSON.stringify({
-          type: 'speak',
-          text: "That's how winners do it. Now show me you're a winner.",
-          emotion: 'confident'
-        }));
+        connection.ws.send(
+          JSON.stringify({
+            type: 'speak',
+            text: "That's how winners do it. Now show me you're a winner.",
+            emotion: 'confident',
+          })
+        );
       }, 5000);
-      
     } catch (error) {
-            // Fallback to SMS
+      // Fallback to SMS
       await this.deliverSMSCoaching(sessionId.split('-')[1], coaching);
     }
   }
@@ -275,101 +294,108 @@ class HarveyCoach {
   // Monitor rep activity in real-time
   async startActivityMonitoring(repId) {
     // Check every 30 minutes
-    setInterval(async () => {
-      const stats = await this.getRepDailyStats(repId);
-      const performance = this.repPerformance.get(repId);
-      
-      // Low activity trigger
-      const now = new Date();
-      if (now.getHours() === 14 && stats.callsToday < 10) {
-        await this.deliverCoaching(repId, {
-          mode: this.coachingModes.PERFORMANCE_REVIEWER,
-          message: `10 calls by 2 PM? Your competition made 20. You're not losing, you're not even playing.`,
-          severity: 'high',
-          actionRequired: true
-        });
-      }
-      
-      // Check close rate
-      if (stats.opportunitiesToday > 5 && stats.closedToday === 0) {
-        await this.deliverCoaching(repId, {
-          mode: this.coachingModes.POST_CALL_CRITIC,
-          message: `5 opportunities, 0 closes. Either you're saving them all for tomorrow, or you need my help. Call me. Now.`,
-          severity: 'immediate',
-          actionRequired: true
-        });
-      }
-    }, 30 * 60 * 1000); // Every 30 minutes
+    setInterval(
+      async () => {
+        const stats = await this.getRepDailyStats(repId);
+        const performance = this.repPerformance.get(repId);
+
+        // Low activity trigger
+        const now = new Date();
+        if (now.getHours() === 14 && stats.callsToday < 10) {
+          await this.deliverCoaching(repId, {
+            mode: this.coachingModes.PERFORMANCE_REVIEWER,
+            message: `10 calls by 2 PM? Your competition made 20. You're not losing, you're not even playing.`,
+            severity: 'high',
+            actionRequired: true,
+          });
+        }
+
+        // Check close rate
+        if (stats.opportunitiesToday > 5 && stats.closedToday === 0) {
+          await this.deliverCoaching(repId, {
+            mode: this.coachingModes.POST_CALL_CRITIC,
+            message: `5 opportunities, 0 closes. Either you're saving them all for tomorrow, or you need my help. Call me. Now.`,
+            severity: 'immediate',
+            actionRequired: true,
+          });
+        }
+      },
+      30 * 60 * 1000
+    ); // Every 30 minutes
   }
 
   // Challenge system
   async createDailyChallenge(repId) {
     const challenges = [
       {
-        title: "The Closer Challenge",
-        goal: "Close 3 deals before lunch",
+        title: 'The Closer Challenge',
+        goal: 'Close 3 deals before lunch',
         reward: "Harvey's respect (worth more than any commission)",
-        penalty: "I'm calling your biggest competitor and telling them you're available"
+        penalty: "I'm calling your biggest competitor and telling them you're available",
       },
       {
-        title: "The Research Master",
-        goal: "Use Canvas AI on every call today",
-        reward: "Feature on the Harvey Hall of Fame",
-        penalty: "Mandatory weekend training on 'How to Google'"
+        title: 'The Research Master',
+        goal: 'Use Canvas AI on every call today',
+        reward: 'Feature on the Harvey Hall of Fame',
+        penalty: "Mandatory weekend training on 'How to Google'",
       },
       {
-        title: "The Objection Destroyer", 
+        title: 'The Objection Destroyer',
         goal: "Convert 3 'happy with current supplier' objections",
-        reward: "Your name on the leaderboard in gold",
-        penalty: "Everyone sees your worst call recording"
-      }
+        reward: 'Your name on the leaderboard in gold',
+        penalty: 'Everyone sees your worst call recording',
+      },
     ];
-    
+
     const challenge = challenges[Math.floor(Math.random() * challenges.length)];
-    
+
     await supabase.from('harvey_daily_challenges').insert({
       rep_id: repId,
       challenge: challenge,
       status: 'active',
-      created_at: new Date().toISOString()
+      created_at: new Date().toISOString(),
     });
-    
+
     return challenge;
   }
 
   // Live demo mode - Harvey takes over
   async activateLiveDemoMode(repId, callId) {
     const sessionId = `demo-${callId}`;
-    
+
     await this.deliverCoaching(repId, {
       mode: this.coachingModes.LIVE_DEMO_MASTER,
-      message: "Step aside, rookie. Watch how a closer works. Take notes.",
+      message: 'Step aside, rookie. Watch how a closer works. Take notes.',
       severity: 'immediate',
-      actionRequired: false
+      actionRequired: false,
     });
-    
+
     // In production, this would actually conference into the call
     // For now, we'll provide a script
     const demoScript = this.generateDemoScript();
-    
+
     return {
       mode: 'live_demo',
       script: demoScript,
       tips: [
         "Notice how I didn't ask permission",
-        "I assumed they needed us",
-        "Every objection is an opportunity"
-      ]
+        'I assumed they needed us',
+        'Every objection is an opportunity',
+      ],
     };
   }
 
   // Generate demo script
   generateDemoScript() {
     return {
-      opening: "Dr. Smith? Harvey from MedTech. I'm calling because you're losing $50K a year on inefficient supplies. I've got 5 minutes to show you how to get that back. Ready?",
-      discovery: "Tell me - what frustrates you most about your current supplier? Price? Delivery? Quality? All three? Thought so.",
-      presentation: "Here's what my top performers are doing: [Solution]. They're saving 30% and getting better outcomes. You want the same results, right?",
-      close: "I'm sending the agreement now. We'll have your first delivery upgraded by Friday. My assistant will call in an hour to confirm the details. Welcome to the winning team, Doctor."
+      opening:
+        "Dr. Smith? Harvey from MedTech. I'm calling because you're losing $50K a year on inefficient supplies. I've got 5 minutes to show you how to get that back. Ready?",
+      discovery:
+        'Tell me - what frustrates you most about your current supplier? Price? Delivery? Quality? All three? Thought so.',
+      presentation:
+        "Here's what my top performers are doing: [Solution]. They're saving 30% and getting better outcomes. You want the same results, right?",
+      close:
+        "I'm sending the agreement now. We'll have your first delivery upgraded by Friday. My assistant will call in an hour to confirm the details. Welcome to the winning team, Doctor.",
     };
   }
 
@@ -381,12 +407,14 @@ class HarveyCoach {
       .eq('rep_id', repId)
       .order('metric_date', { ascending: false })
       .limit(1);
-    
-    return data?.[0] || {
-      closeRate: 0,
-      callsPerDay: 0,
-      harveyScore: 50
-    };
+
+    return (
+      data?.[0] || {
+        closeRate: 0,
+        callsPerDay: 0,
+        harveyScore: 50,
+      }
+    );
   }
 
   async recordCoachingSession(repId, coaching) {
@@ -398,71 +426,69 @@ class HarveyCoach {
         trigger_reason: coaching.trigger || 'manual',
         harvey_message: coaching.message,
         outcome: 'delivered',
-        created_at: new Date().toISOString()
+        created_at: new Date().toISOString(),
       })
       .select()
       .single();
-    
+
     return data;
   }
 
   async updateHarveyScore(repId, coaching) {
     const performance = this.repPerformance.get(repId);
     let scoreChange = 0;
-    
+
     // Adjust score based on coaching type and response
     if (coaching.mode === this.coachingModes.POST_CALL_CRITIC) {
       scoreChange = -5; // Lost points for needing correction
     } else if (coaching.mode === this.coachingModes.CLOSER) {
       scoreChange = 10; // Gained points for closing
     }
-    
+
     const newScore = Math.max(0, Math.min(100, (performance.harveyScore || 50) + scoreChange));
-    
-    await supabase
-      .from('rep_performance_metrics')
-      .upsert({
-        rep_id: repId,
-        metric_date: new Date().toISOString().split('T')[0],
-        harvey_score: newScore,
-        updated_at: new Date().toISOString()
-      });
-    
+
+    await supabase.from('rep_performance_metrics').upsert({
+      rep_id: repId,
+      metric_date: new Date().toISOString().split('T')[0],
+      harvey_score: newScore,
+      updated_at: new Date().toISOString(),
+    });
+
     performance.harveyScore = newScore;
     this.repPerformance.set(repId, performance);
   }
 
   async getCallsToday(repId) {
     const today = new Date().toISOString().split('T')[0];
-    
+
     const { data, count } = await supabase
       .from('sales_activities')
       .select('*', { count: 'exact' })
       .eq('rep_id', repId)
       .eq('type', 'call')
       .gte('created_at', today);
-    
+
     return { count: count || 0, calls: data || [] };
   }
 
   async getRepDailyStats(repId) {
     const today = new Date().toISOString().split('T')[0];
-    
+
     const { data: activities } = await supabase
       .from('sales_activities')
       .select('*')
       .eq('rep_id', repId)
       .gte('created_at', today);
-    
-    const calls = activities?.filter(a => a.type === 'call') || [];
-    const opportunities = calls.filter(c => c.outcome === 'follow_up_required');
-    const closed = calls.filter(c => c.outcome === 'successful');
-    
+
+    const calls = activities?.filter((a) => a.type === 'call') || [];
+    const opportunities = calls.filter((c) => c.outcome === 'follow_up_required');
+    const closed = calls.filter((c) => c.outcome === 'successful');
+
     return {
       callsToday: calls.length,
       opportunitiesToday: opportunities.length,
       closedToday: closed.length,
-      closeRate: calls.length > 0 ? closed.length / calls.length : 0
+      closeRate: calls.length > 0 ? closed.length / calls.length : 0,
     };
   }
 
@@ -473,20 +499,20 @@ class HarveyCoach {
       hasStrongOpening: !/is this a good time|sorry to bother/i.test(transcript),
       discoveredPain: /challenge|problem|frustrat|issue/i.test(transcript),
       handledObjections: /but|however|actually/i.test(transcript),
-      attemptedClose: /send.*contract|get.*started|next.*step/i.test(transcript)
+      attemptedClose: /send.*contract|get.*started|next.*step/i.test(transcript),
     };
-    
+
     // Find weakest point
     if (!analysis.hasStrongOpening) analysis.weakestPoint = 'weak_opening';
     else if (!analysis.discoveredPain) analysis.weakestPoint = 'no_pain_discovery';
     else if (!analysis.attemptedClose) analysis.weakestPoint = 'weak_close';
-    
+
     return analysis;
   }
 
   async deliverSMSCoaching(repId, coaching) {
     // Integration with Twilio would go here
-      }
+  }
 
   async deliverInAppCoaching(repId, coaching) {
     // Store in database for the CRM to display
@@ -495,7 +521,7 @@ class HarveyCoach {
       message: coaching.message,
       type: coaching.mode,
       read: false,
-      created_at: new Date().toISOString()
+      created_at: new Date().toISOString(),
     });
   }
 
@@ -506,20 +532,23 @@ class HarveyCoach {
       .select('*')
       .eq('metric_date', new Date().toISOString().split('T')[0])
       .order('harvey_score', { ascending: false });
-    
+
     // Harvey's commentary on rankings
     const commentary = {
       first: "Currently dominating. Don't get comfortable.",
-      last: "Dead last. Either catch up or find a new career.",
-      middle: "Middle of the pack is for the mediocre. Choose a direction."
+      last: 'Dead last. Either catch up or find a new career.',
+      middle: 'Middle of the pack is for the mediocre. Choose a direction.',
     };
-    
+
     return reps?.map((rep, index) => ({
       ...rep,
       rank: index + 1,
-      harveyComment: index === 0 ? commentary.first : 
-                    index === reps.length - 1 ? commentary.last : 
-                    commentary.middle
+      harveyComment:
+        index === 0
+          ? commentary.first
+          : index === reps.length - 1
+            ? commentary.last
+            : commentary.middle,
     }));
   }
 
@@ -528,9 +557,10 @@ class HarveyCoach {
     if (!researchData || researchData.confidence < 0.7) {
       await this.deliverCoaching(repId, {
         mode: this.coachingModes.POST_CALL_CRITIC,
-        message: "You're calling without proper research? That's not confidence, that's stupidity. Use Canvas AI or don't dial.",
+        message:
+          "You're calling without proper research? That's not confidence, that's stupidity. Use Canvas AI or don't dial.",
         severity: 'high',
-        actionRequired: true
+        actionRequired: true,
       });
       return false;
     }
@@ -539,14 +569,13 @@ class HarveyCoach {
 
   // Start voice coaching session (for HarveyVoiceCoach component)
   async startVoiceCoaching(repId, options = {}) {
-        
     const session = {
       repId,
       mode: options.mode || 'real-time',
       intensity: options.intensity || 'balanced',
       context: options.context || {},
       startTime: new Date(),
-      isActive: true
+      isActive: true,
     };
 
     this.activeCoachingSessions.set(repId, session);
@@ -556,7 +585,7 @@ class HarveyCoach {
       mode: this.coachingModes.MORNING_MOTIVATOR,
       message: "Voice coaching is live. I'm listening to every word. Make them count.",
       severity: 'medium',
-      actionRequired: false
+      actionRequired: false,
     });
 
     return session;
@@ -569,8 +598,8 @@ class HarveyCoach {
       session.isActive = false;
       session.endTime = new Date();
       this.activeCoachingSessions.delete(repId);
-      
-            return session;
+
+      return session;
     }
     return null;
   }
@@ -583,7 +612,7 @@ class HarveyCoach {
   // Analyze conversation in real-time
   async analyzeConversation(data) {
     const { transcript, repId, context } = data;
-    
+
     // Real-time analysis
     const analysis = {
       transcript,
@@ -595,16 +624,17 @@ class HarveyCoach {
       recommendations: [],
       metrics: {
         sentiment: this.analyzeSentiment(transcript),
-        objectionCount: this.detectObjections(transcript).detected ? 1 : 0
-      }
+        objectionCount: this.detectObjections(transcript).detected ? 1 : 0,
+      },
     };
 
     // Generate recommendations
     if (analysis.confidence < 0.6) {
       analysis.recommendations.push({
         type: 'confidence',
-        message: "Sound more confident. You're not asking for permission, you're offering a solution.",
-        urgency: 'high'
+        message:
+          "Sound more confident. You're not asking for permission, you're offering a solution.",
+        urgency: 'high',
       });
     }
 
@@ -612,7 +642,7 @@ class HarveyCoach {
       analysis.recommendations.push({
         type: 'objection',
         message: "Address that objection head-on. Don't let it hang in the air.",
-        urgency: 'high'
+        urgency: 'high',
       });
     }
 
@@ -624,7 +654,7 @@ class HarveyCoach {
           mode: this.coachingModes.LIVE_DEMO_MASTER,
           message: analysis.recommendations[0].message,
           severity: analysis.recommendations[0].urgency,
-          actionRequired: true
+          actionRequired: true,
         });
       }
     }
@@ -636,21 +666,21 @@ class HarveyCoach {
   assessConfidence(transcript) {
     const weakWords = ['um', 'uh', 'maybe', 'probably', 'i think', 'possibly'];
     const strongWords = ['will', 'definitely', 'absolutely', 'guarantee', 'proven'];
-    
+
     let confidence = 0.7; // baseline
-    
-    weakWords.forEach(word => {
+
+    weakWords.forEach((word) => {
       if (transcript.toLowerCase().includes(word)) {
         confidence -= 0.15;
       }
     });
-    
-    strongWords.forEach(word => {
+
+    strongWords.forEach((word) => {
       if (transcript.toLowerCase().includes(word)) {
         confidence += 0.1;
       }
     });
-    
+
     return Math.max(0, Math.min(1, confidence));
   }
 
@@ -660,10 +690,10 @@ class HarveyCoach {
       /too expensive|cost too much|can't afford/i,
       /think about it|need to discuss|talk to my/i,
       /not interested|not right now|maybe later/i,
-      /already have|working with someone/i
+      /already have|working with someone/i,
     ];
 
-    const detected = objectionPatterns.some(pattern => pattern.test(transcript));
+    const detected = objectionPatterns.some((pattern) => pattern.test(transcript));
     const handled = detected && /however|but here's|let me explain|actually/i.test(transcript);
 
     return { detected, handled };
@@ -674,25 +704,25 @@ class HarveyCoach {
     const closingPatterns = [
       /ready to move forward|let's get started|sign up today/i,
       /what do you think|does that work|sound good/i,
-      /next steps|move ahead|schedule/i
+      /next steps|move ahead|schedule/i,
     ];
 
-    return closingPatterns.some(pattern => pattern.test(transcript));
+    return closingPatterns.some((pattern) => pattern.test(transcript));
   }
 
   // Analyze sentiment
   analyzeSentiment(transcript) {
     const positiveWords = ['great', 'excellent', 'perfect', 'love', 'excited'];
     const negativeWords = ['no', 'problem', 'issue', 'concern', 'worried'];
-    
+
     let score = 0;
-    positiveWords.forEach(word => {
+    positiveWords.forEach((word) => {
       if (transcript.toLowerCase().includes(word)) score += 1;
     });
-    negativeWords.forEach(word => {
+    negativeWords.forEach((word) => {
       if (transcript.toLowerCase().includes(word)) score -= 1;
     });
-    
+
     if (score > 0) return 'positive';
     if (score < 0) return 'negative';
     return 'neutral';
@@ -701,13 +731,13 @@ class HarveyCoach {
   // Get Harvey's response to customer emotions
   getEmotionResponse(emotion) {
     const emotionResponses = {
-      'frustrated': "Customer's getting frustrated. Stay calm and redirect to value.",
-      'excited': "They're excited! This is your moment. Push for the close.",
-      'confused': "They're lost. Simplify your message and clarify the benefit.",
-      'skeptical': "Skepticism detected. Address concerns directly with proof.",
-      'interested': "Interest is high. Time to present your strongest value proposition.",
-      'bored': "You're losing them. Change your approach immediately.",
-      'angry': "Customer anger detected. Acknowledge and defuse before proceeding."
+      frustrated: "Customer's getting frustrated. Stay calm and redirect to value.",
+      excited: "They're excited! This is your moment. Push for the close.",
+      confused: "They're lost. Simplify your message and clarify the benefit.",
+      skeptical: 'Skepticism detected. Address concerns directly with proof.',
+      interested: 'Interest is high. Time to present your strongest value proposition.',
+      bored: "You're losing them. Change your approach immediately.",
+      angry: 'Customer anger detected. Acknowledge and defuse before proceeding.',
     };
 
     return emotionResponses[emotion] || null;

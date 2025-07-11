@@ -54,16 +54,18 @@ export const CallInterface: React.FC<CallInterfaceProps> = ({ contact, onEndCall
   useEffect(() => {
     const initializeMicrophone = async () => {
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({ 
+        const stream = await navigator.mediaDevices.getUserMedia({
           audio: {
             echoCancellation: true,
             noiseSuppression: true,
             autoGainControl: true,
-          }
+          },
         });
         mediaStreamRef.current = stream;
       } catch (error) {
-                setTranscriptionError('Microphone access denied. Please allow microphone permissions and refresh.');
+        setTranscriptionError(
+          'Microphone access denied. Please allow microphone permissions and refresh.'
+        );
       }
     };
 
@@ -72,7 +74,7 @@ export const CallInterface: React.FC<CallInterfaceProps> = ({ contact, onEndCall
     // Cleanup on unmount
     return () => {
       if (mediaStreamRef.current) {
-        mediaStreamRef.current.getTracks().forEach(track => track.stop());
+        mediaStreamRef.current.getTracks().forEach((track) => track.stop());
       }
     };
   }, []);
@@ -120,20 +122,20 @@ export const CallInterface: React.FC<CallInterfaceProps> = ({ contact, onEndCall
 
     const animate = () => {
       ctx.clearRect(0, 0, width, height);
-      
+
       for (let i = 0; i < bars; i++) {
         const barHeight = Math.random() * height * 0.7 + height * 0.15;
         const x = i * barWidth;
         const y = (height - barHeight) / 2;
-        
+
         const gradient = ctx.createLinearGradient(0, y, 0, y + barHeight);
         gradient.addColorStop(0, '#6366F1');
         gradient.addColorStop(1, '#8B5CF6');
-        
+
         ctx.fillStyle = gradient;
         ctx.fillRect(x + 2, y, barWidth - 4, barHeight);
       }
-      
+
       animationRef.current = requestAnimationFrame(animate);
     };
 
@@ -154,7 +156,7 @@ export const CallInterface: React.FC<CallInterfaceProps> = ({ contact, onEndCall
 
       setIsConnecting(true);
       setIsTranscribing(true);
-      
+
       // Start transcription service
       transcriptionService.startTranscription(
         currentCallSid,
@@ -162,17 +164,17 @@ export const CallInterface: React.FC<CallInterfaceProps> = ({ contact, onEndCall
         async (update) => {
           setIsConnecting(false);
           setTranscript(update.text);
-          
+
           // Add to full transcript if it's a final transcription
           if (update.isFinal) {
-            setFullTranscript(prev => [...prev, update.text]);
-            
+            setFullTranscript((prev) => [...prev, update.text]);
+
             // Send transcription to Harvey for analysis
             if (harveyConnected && harveyWebRTC) {
               harveyWebRTC.sendVoiceCommand(`analyze: ${update.text}`);
             }
           }
-          
+
           // Update sentiment
           if (update.sentiment) {
             setSentiment(update.sentiment);
@@ -184,7 +186,7 @@ export const CallInterface: React.FC<CallInterfaceProps> = ({ contact, onEndCall
         },
         // On error
         (error) => {
-                    setTranscriptionError(error.message);
+          setTranscriptionError(error.message);
           setIsTranscribing(false);
           setIsConnecting(false);
         },
@@ -205,17 +207,19 @@ export const CallInterface: React.FC<CallInterfaceProps> = ({ contact, onEndCall
   const toggleMicrophone = () => {
     if (mediaStreamRef.current) {
       const audioTracks = mediaStreamRef.current.getAudioTracks();
-      audioTracks.forEach(track => {
+      audioTracks.forEach((track) => {
         track.enabled = !track.enabled;
       });
       setIsMuted(!isMuted);
-      
+
       // Notify Harvey of mute status
       if (harveyWebRTC) {
         harveyWebRTC.setMuted(!isMuted);
       }
     } else {
-      setTranscriptionError('Microphone not available. Please refresh and allow microphone access.');
+      setTranscriptionError(
+        'Microphone not available. Please refresh and allow microphone access.'
+      );
     }
   };
 
@@ -249,7 +253,15 @@ export const CallInterface: React.FC<CallInterfaceProps> = ({ contact, onEndCall
         WebkitBackdropFilter: 'blur(16px) saturate(150%)',
       }}
     >
-      <div style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: '500px', padding: '24px' }}>
+      <div
+        style={{
+          position: 'relative',
+          zIndex: 1,
+          width: '100%',
+          maxWidth: '500px',
+          padding: '24px',
+        }}
+      >
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -317,17 +329,17 @@ export const CallInterface: React.FC<CallInterfaceProps> = ({ contact, onEndCall
               {isConnecting ? (
                 <CircularProgress size={16} sx={{ color: 'primary.light' }} />
               ) : isTranscribing ? (
-                <FiberManualRecordIcon 
-                  sx={{ 
-                    color: '#EF4444', 
+                <FiberManualRecordIcon
+                  sx={{
+                    color: '#EF4444',
                     fontSize: 16,
                     animation: 'pulse 1.5s ease-in-out infinite',
                     '@keyframes pulse': {
                       '0%': { opacity: 1 },
                       '50%': { opacity: 0.3 },
                       '100%': { opacity: 1 },
-                    }
-                  }} 
+                    },
+                  }}
                 />
               ) : (
                 <RecordVoiceOverIcon sx={{ color: 'primary.light', fontSize: 16 }} />
@@ -341,14 +353,14 @@ export const CallInterface: React.FC<CallInterfaceProps> = ({ contact, onEndCall
 
         {/* Error Alert */}
         {transcriptionError && (
-          <Alert 
-            severity="error" 
+          <Alert
+            severity="error"
             onClose={() => setTranscriptionError(null)}
-            sx={{ 
+            sx={{
               marginBottom: '16px',
               background: 'rgba(239, 68, 68, 0.1)',
               color: 'white',
-              '& .MuiAlert-icon': { color: '#EF4444' }
+              '& .MuiAlert-icon': { color: '#EF4444' },
             }}
           >
             {transcriptionError}
@@ -368,7 +380,8 @@ export const CallInterface: React.FC<CallInterfaceProps> = ({ contact, onEndCall
               transform: 'translateX(-50%)',
               padding: '12px 24px',
               borderRadius: '24px',
-              background: 'linear-gradient(135deg, rgba(255, 215, 0, 0.15) 0%, rgba(255, 165, 0, 0.15) 100%)',
+              background:
+                'linear-gradient(135deg, rgba(255, 215, 0, 0.15) 0%, rgba(255, 165, 0, 0.15) 100%)',
               backdropFilter: 'blur(20px) saturate(200%)',
               WebkitBackdropFilter: 'blur(20px) saturate(200%)',
               border: '1px solid rgba(255, 215, 0, 0.3)',
@@ -376,14 +389,14 @@ export const CallInterface: React.FC<CallInterfaceProps> = ({ contact, onEndCall
               zIndex: 10,
             }}
           >
-            <Typography 
-              variant="body2" 
-              sx={{ 
+            <Typography
+              variant="body2"
+              sx={{
                 color: '#FFD700',
                 fontWeight: 600,
                 display: 'flex',
                 alignItems: 'center',
-                gap: '8px'
+                gap: '8px',
               }}
             >
               <RecordVoiceOverIcon sx={{ fontSize: 18 }} />
@@ -413,28 +426,28 @@ export const CallInterface: React.FC<CallInterfaceProps> = ({ contact, onEndCall
               <Typography variant="caption" color="text.secondary" gutterBottom>
                 Real-time Transcript
               </Typography>
-              
+
               {/* Show full transcript history */}
               {fullTranscript.map((text, index) => (
                 <Typography key={index} variant="body2" color="white" paragraph>
                   {text}
                 </Typography>
               ))}
-              
+
               {/* Show current transcript being spoken */}
               {transcript && (
-                <Typography 
-                  variant="body2" 
-                  color="white" 
-                  sx={{ 
+                <Typography
+                  variant="body2"
+                  color="white"
+                  sx={{
                     fontStyle: 'italic',
-                    opacity: 0.8 
+                    opacity: 0.8,
                   }}
                 >
                   {transcript}
                 </Typography>
               )}
-              
+
               <Chip
                 label={sentiment}
                 size="small"

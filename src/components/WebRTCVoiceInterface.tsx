@@ -12,7 +12,7 @@ import {
   Fade,
   Stack,
   Tooltip,
-  CircularProgress
+  CircularProgress,
 } from '@mui/material';
 import {
   Mic,
@@ -24,7 +24,7 @@ import {
   SignalCellularAlt,
   Error as ErrorIcon,
   CheckCircle,
-  WifiTethering
+  WifiTethering,
 } from '@mui/icons-material';
 import webRTCVoiceService from '../services/webRTCVoiceService';
 import { webRTCSignalingService } from '../services/webRTCSignalingService';
@@ -49,7 +49,7 @@ export const WebRTCVoiceInterface: React.FC<WebRTCVoiceInterfaceProps> = ({
   onTranscript,
   onError,
   autoConnect = false,
-  showTranscript = true
+  showTranscript = true,
 }) => {
   const [isConnected, setIsConnected] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
@@ -61,7 +61,7 @@ export const WebRTCVoiceInterface: React.FC<WebRTCVoiceInterfaceProps> = ({
   const [connectionQuality, setConnectionQuality] = useState<ConnectionQuality>({
     level: 'good',
     latency: 0,
-    packetLoss: 0
+    packetLoss: 0,
   });
   const [error, setError] = useState<string | null>(null);
   const [audioLevel, setAudioLevel] = useState(0);
@@ -76,7 +76,7 @@ export const WebRTCVoiceInterface: React.FC<WebRTCVoiceInterfaceProps> = ({
     const initialize = async () => {
       try {
         await webRTCVoiceService.initialize();
-        
+
         // Set up event listeners
         webRTCVoiceService.on('session-connected', handleSessionConnected);
         webRTCVoiceService.on('session-disconnected', handleSessionDisconnected);
@@ -93,7 +93,7 @@ export const WebRTCVoiceInterface: React.FC<WebRTCVoiceInterfaceProps> = ({
           await connect();
         }
       } catch (err) {
-                setError('Failed to initialize voice service');
+        setError('Failed to initialize voice service');
       }
     };
 
@@ -111,59 +111,60 @@ export const WebRTCVoiceInterface: React.FC<WebRTCVoiceInterfaceProps> = ({
   }, []);
 
   const handleSessionConnected = useCallback((connectedSessionId: string) => {
-        setIsConnected(true);
+    setIsConnected(true);
     setIsConnecting(false);
     startAudioLevelMonitoring();
   }, []);
 
   const handleSessionDisconnected = useCallback((disconnectedSessionId: string) => {
-        setIsConnected(false);
+    setIsConnected(false);
     stopAudioLevelMonitoring();
   }, []);
 
-  const handleError = useCallback((error: Error) => {
-        setError(error.message);
-    onError?.(error);
-  }, [onError]);
+  const handleError = useCallback(
+    (error: Error) => {
+      setError(error.message);
+      onError?.(error);
+    },
+    [onError]
+  );
 
   const handleRemoteStream = useCallback((data: { sessionId: string; stream: MediaStream }) => {
     if (remoteAudioRef.current) {
       remoteAudioRef.current.srcObject = data.stream;
-      remoteAudioRef.current.play().catch(err => {
-              });
+      remoteAudioRef.current.play().catch((err) => {});
     }
   }, []);
 
-  const handleMoshiTranscript = useCallback((data: {
-    sessionId: string;
-    text: string;
-    isFinal: boolean;
-    confidence: number;
-  }) => {
-    if (data.sessionId !== sessionId) return;
+  const handleMoshiTranscript = useCallback(
+    (data: { sessionId: string; text: string; isFinal: boolean; confidence: number }) => {
+      if (data.sessionId !== sessionId) return;
 
-    if (data.isFinal) {
-      setTranscript(prev => prev + ' ' + data.text);
-      setInterimTranscript('');
-    } else {
-      setInterimTranscript(data.text);
-    }
+      if (data.isFinal) {
+        setTranscript((prev) => prev + ' ' + data.text);
+        setInterimTranscript('');
+      } else {
+        setInterimTranscript(data.text);
+      }
 
-    onTranscript?.(data.text, data.isFinal);
-  }, [sessionId, onTranscript]);
+      onTranscript?.(data.text, data.isFinal);
+    },
+    [sessionId, onTranscript]
+  );
 
-  const handleEmotion = useCallback((data: {
-    sessionId: string;
-    emotion: string;
-    confidence: number;
-  }) => {
-      }, []);
+  const handleEmotion = useCallback(
+    (data: { sessionId: string; emotion: string; confidence: number }) => {},
+    []
+  );
 
-  const handleMoshiError = useCallback((data: { sessionId: string; error: Error }) => {
-    if (data.sessionId === sessionId) {
-      handleError(data.error);
-    }
-  }, [sessionId, handleError]);
+  const handleMoshiError = useCallback(
+    (data: { sessionId: string; error: Error }) => {
+      if (data.sessionId === sessionId) {
+        handleError(data.error);
+      }
+    },
+    [sessionId, handleError]
+  );
 
   const connect = async () => {
     if (isConnected || isConnecting) return;
@@ -177,7 +178,7 @@ export const WebRTCVoiceInterface: React.FC<WebRTCVoiceInterfaceProps> = ({
 
       // Start WebRTC session
       await webRTCVoiceService.startVoiceSession(newSessionId);
-      
+
       // Connect to voice service (Deepgram or Moshi)
       const voiceBridge = voiceBridgeFactory.getBridge();
       if (voiceBridgeFactory.isUsingDeepgram()) {
@@ -189,7 +190,7 @@ export const WebRTCVoiceInterface: React.FC<WebRTCVoiceInterfaceProps> = ({
       // Join signaling room
       webRTCSignalingService.joinSession(newSessionId);
     } catch (err) {
-            setError(err instanceof Error ? err.message : 'Failed to connect');
+      setError(err instanceof Error ? err.message : 'Failed to connect');
       setIsConnecting(false);
     }
   };
@@ -205,7 +206,7 @@ export const WebRTCVoiceInterface: React.FC<WebRTCVoiceInterfaceProps> = ({
         webRTCSignalingService.leaveSession(sessionId);
       }
     } catch (err) {
-          } finally {
+    } finally {
       setIsConnected(false);
       setIsConnecting(false);
       setTranscript('');
@@ -215,7 +216,7 @@ export const WebRTCVoiceInterface: React.FC<WebRTCVoiceInterfaceProps> = ({
 
   const toggleMute = async () => {
     if (!sessionId) return;
-    
+
     const newMuted = !isMuted;
     await webRTCVoiceService.setMuted(sessionId, newMuted);
     setIsMuted(newMuted);
@@ -223,7 +224,7 @@ export const WebRTCVoiceInterface: React.FC<WebRTCVoiceInterfaceProps> = ({
 
   const handleVolumeChange = async (newVolume: number) => {
     if (!sessionId) return;
-    
+
     await webRTCVoiceService.setVolume(sessionId, newVolume);
     setVolume(newVolume);
   };
@@ -243,7 +244,7 @@ export const WebRTCVoiceInterface: React.FC<WebRTCVoiceInterfaceProps> = ({
 
       const dataArray = new Uint8Array(analyserRef.current.frequencyBinCount);
       analyserRef.current.getByteFrequencyData(dataArray);
-      
+
       const average = dataArray.reduce((a, b) => a + b, 0) / dataArray.length;
       setAudioLevel(average / 255);
 
@@ -271,23 +272,22 @@ export const WebRTCVoiceInterface: React.FC<WebRTCVoiceInterfaceProps> = ({
     const interval = setInterval(async () => {
       try {
         const stats = await webRTCVoiceService.getConnectionStats(sessionId);
-        
+
         // Extract relevant stats
         stats.forEach((report) => {
           if (report.type === 'candidate-pair' && report.state === 'succeeded') {
             const latency = report.currentRoundTripTime ? report.currentRoundTripTime * 1000 : 0;
             const packetLoss = report.packetsLost || 0;
-            
+
             let level: ConnectionQuality['level'] = 'excellent';
             if (latency > 300 || packetLoss > 5) level = 'poor';
             else if (latency > 150 || packetLoss > 2) level = 'fair';
             else if (latency > 50 || packetLoss > 0.5) level = 'good';
-            
+
             setConnectionQuality({ level, latency, packetLoss });
           }
         });
-      } catch (err) {
-              }
+      } catch (err) {}
     }, 2000);
 
     return () => clearInterval(interval);
@@ -334,14 +334,12 @@ export const WebRTCVoiceInterface: React.FC<WebRTCVoiceInterfaceProps> = ({
                   onClick={isConnected ? disconnect : connect}
                   disabled={isConnecting}
                   sx={{
-                    background: theme => isConnected 
-                      ? theme.palette.error.light 
-                      : theme.palette.primary.light,
+                    background: (theme) =>
+                      isConnected ? theme.palette.error.light : theme.palette.primary.light,
                     '&:hover': {
-                      background: theme => isConnected 
-                        ? theme.palette.error.main 
-                        : theme.palette.primary.main,
-                    }
+                      background: (theme) =>
+                        isConnected ? theme.palette.error.main : theme.palette.primary.main,
+                    },
                   }}
                 >
                   {isConnecting ? (
@@ -368,10 +366,7 @@ export const WebRTCVoiceInterface: React.FC<WebRTCVoiceInterfaceProps> = ({
                 </Tooltip>
 
                 <Tooltip title={volume === 0 ? 'Unmute speaker' : 'Mute speaker'}>
-                  <IconButton
-                    size="large"
-                    onClick={() => handleVolumeChange(volume === 0 ? 1 : 0)}
-                  >
+                  <IconButton size="large" onClick={() => handleVolumeChange(volume === 0 ? 1 : 0)}>
                     {volume === 0 ? <VolumeOff /> : <VolumeUp />}
                   </IconButton>
                 </Tooltip>
@@ -387,13 +382,15 @@ export const WebRTCVoiceInterface: React.FC<WebRTCVoiceInterfaceProps> = ({
                 sx={{
                   height: 4,
                   borderRadius: 2,
-                  backgroundColor: theme => theme.palette.grey[300],
+                  backgroundColor: (theme) => theme.palette.grey[300],
                   '& .MuiLinearProgress-bar': {
-                    backgroundColor: theme => 
-                      audioLevel > 0.7 ? theme.palette.error.main :
-                      audioLevel > 0.3 ? theme.palette.success.main :
-                      theme.palette.primary.main
-                  }
+                    backgroundColor: (theme) =>
+                      audioLevel > 0.7
+                        ? theme.palette.error.main
+                        : audioLevel > 0.3
+                          ? theme.palette.success.main
+                          : theme.palette.primary.main,
+                  },
                 }}
               />
             </div>
@@ -407,15 +404,13 @@ export const WebRTCVoiceInterface: React.FC<WebRTCVoiceInterfaceProps> = ({
                   backgroundColor: '#f5f5f5',
                   borderRadius: '4px',
                   maxHeight: '200px',
-                  overflowY: 'auto'
+                  overflowY: 'auto',
                 }}
               >
                 <Typography variant="body2">
                   {transcript}
                   {interimTranscript && (
-                    <span style={{ opacity: 0.6, fontStyle: 'italic' }}>
-                      {' '}{interimTranscript}
-                    </span>
+                    <span style={{ opacity: 0.6, fontStyle: 'italic' }}> {interimTranscript}</span>
                   )}
                 </Typography>
               </div>

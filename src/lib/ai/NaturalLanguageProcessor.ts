@@ -18,46 +18,79 @@ interface ParsedQuery {
 
 export class NaturalLanguageProcessor {
   private static readonly NUMBER_WORDS: Record<string, number> = {
-    'one': 1, 'two': 2, 'three': 3, 'four': 4, 'five': 5,
-    'six': 6, 'seven': 7, 'eight': 8, 'nine': 9, 'ten': 10,
-    'twenty': 20, 'thirty': 30, 'forty': 40, 'fifty': 50,
-    'hundred': 100, 'thousand': 1000
+    one: 1,
+    two: 2,
+    three: 3,
+    four: 4,
+    five: 5,
+    six: 6,
+    seven: 7,
+    eight: 8,
+    nine: 9,
+    ten: 10,
+    twenty: 20,
+    thirty: 30,
+    forty: 40,
+    fifty: 50,
+    hundred: 100,
+    thousand: 1000,
   };
 
   private static readonly INTENT_KEYWORDS = {
     sync: ['sync', 'queue', 'prepare', 'load', 'add'],
     filter: ['filter', 'find', 'search', 'show', 'get'],
-    prioritize: ['prioritize', 'rank', 'sort', 'order']
+    prioritize: ['prioritize', 'rank', 'sort', 'order'],
   };
 
   private static readonly SERVICE_KEYWORDS = [
-    'fraxel', 'laser', 'botox', 'filler', 'chemical peel', 'microneedling',
-    'coolsculpting', 'hydrafacial', 'ipl', 'prp', 'dermaplaning',
-    'sculptra', 'kybella', 'ultherapy', 'thermage'
+    'fraxel',
+    'laser',
+    'botox',
+    'filler',
+    'chemical peel',
+    'microneedling',
+    'coolsculpting',
+    'hydrafacial',
+    'ipl',
+    'prp',
+    'dermaplaning',
+    'sculptra',
+    'kybella',
+    'ultherapy',
+    'thermage',
   ];
 
   private static readonly US_STATES: Record<string, string> = {
-    'connecticut': 'CT', 'ct': 'CT', 'new york': 'NY', 'ny': 'NY',
-    'california': 'CA', 'ca': 'CA', 'texas': 'TX', 'tx': 'TX',
-    'florida': 'FL', 'fl': 'FL', 'massachusetts': 'MA', 'ma': 'MA'
+    connecticut: 'CT',
+    ct: 'CT',
+    'new york': 'NY',
+    ny: 'NY',
+    california: 'CA',
+    ca: 'CA',
+    texas: 'TX',
+    tx: 'TX',
+    florida: 'FL',
+    fl: 'FL',
+    massachusetts: 'MA',
+    ma: 'MA',
   };
 
   static parse(query: string): ParsedQuery {
     const normalized = query.toLowerCase().trim();
-    
+
     return {
       intent: this.extractIntent(normalized),
       count: this.extractCount(normalized),
       location: this.extractLocation(normalized),
       services: this.extractServices(normalized),
       criteria: this.extractCriteria(normalized),
-      confidence: this.calculateConfidence(normalized)
+      confidence: this.calculateConfidence(normalized),
     };
   }
 
   private static extractIntent(query: string): 'sync' | 'filter' | 'prioritize' {
     for (const [intent, keywords] of Object.entries(this.INTENT_KEYWORDS)) {
-      if (keywords.some(keyword => query.includes(keyword))) {
+      if (keywords.some((keyword) => query.includes(keyword))) {
         return intent as 'sync' | 'filter' | 'prioritize';
       }
     }
@@ -98,7 +131,7 @@ export class NaturalLanguageProcessor {
     const cityPatterns = [
       /in\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*),?\s*([A-Z]{2}|\w+)/i,
       /from\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)/i,
-      /(?:near|around)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)/i
+      /(?:near|around)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)/i,
     ];
 
     for (const pattern of cityPatterns) {
@@ -123,7 +156,7 @@ export class NaturalLanguageProcessor {
 
   private static extractServices(query: string): string[] {
     const services: string[] = [];
-    
+
     for (const service of this.SERVICE_KEYWORDS) {
       if (query.includes(service)) {
         services.push(service);
@@ -166,7 +199,7 @@ export class NaturalLanguageProcessor {
     // Extract tags
     const tagMatch = query.match(/tagged?\s+(?:as|with)?\s*"?([^"]+)"?/i);
     if (tagMatch) {
-      criteria.tags = tagMatch[1].split(/[,\s]+/).filter(tag => tag.length > 0);
+      criteria.tags = tagMatch[1].split(/[,\s]+/).filter((tag) => tag.length > 0);
     }
 
     return Object.keys(criteria).length > 0 ? criteria : undefined;
@@ -205,7 +238,7 @@ export class NaturalLanguageProcessor {
 
     // Service-based suggestions
     if (normalized.includes('interested in')) {
-      this.SERVICE_KEYWORDS.slice(0, 3).forEach(service => {
+      this.SERVICE_KEYWORDS.slice(0, 3).forEach((service) => {
         suggestions.push(`${normalized} ${service}`);
       });
     }

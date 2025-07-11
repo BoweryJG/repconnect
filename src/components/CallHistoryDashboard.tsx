@@ -155,24 +155,15 @@ export const CallHistoryDashboard: React.FC<CallHistoryDashboardProps> = ({ open
   const [showFilters, setShowFilters] = useState(false);
   const [selectedCalls] = useState<Set<string>>(new Set());
 
-  const {
-    calls,
-    loading,
-    error,
-    hasMore,
-    stats,
-    loadMore,
-    refresh,
-    exportToPDF,
-    exportToCSV,
-  } = useCallHistory({ filters });
+  const { calls, loading, error, hasMore, stats, loadMore, refresh, exportToPDF, exportToCSV } =
+    useCallHistory({ filters });
 
   const handleFilterChange = (newFilters: Partial<CallHistoryFilters>) => {
-    setFilters(prev => ({ ...prev, ...newFilters }));
+    setFilters((prev) => ({ ...prev, ...newFilters }));
   };
 
   const handleCallToggle = (callId: string) => {
-    setExpandedCallId(prev => prev === callId ? null : callId);
+    setExpandedCallId((prev) => (prev === callId ? null : callId));
   };
 
   // const handleSelectCall = (callId: string) => {
@@ -247,7 +238,15 @@ export const CallHistoryDashboard: React.FC<CallHistoryDashboardProps> = ({ open
           }}
         >
           <Container maxWidth="xl">
-            <div style={{ paddingTop: 24, paddingBottom: 24, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div
+              style={{
+                paddingTop: 24,
+                paddingBottom: 24,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}
+            >
               <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
                 {/* Pipeline Logo Link */}
                 <div
@@ -273,20 +272,40 @@ export const CallHistoryDashboard: React.FC<CallHistoryDashboardProps> = ({ open
                   }}
                 >
                   <div style={{ width: 24, height: 24, position: 'relative' }}>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" style={{ width: '100%', height: '100%' }}>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 32 32"
+                      style={{ width: '100%', height: '100%' }}
+                    >
                       <defs>
                         <linearGradient id="pipelineGrad" x1="0%" y1="0%" x2="100%" y2="100%">
                           <stop offset="0%" stopColor="#9f58fa" />
                           <stop offset="100%" stopColor="#4B96DC" />
                         </linearGradient>
                       </defs>
-                      <circle cx="16" cy="16" r="12" fill="none" stroke="url(#pipelineGrad)" strokeWidth="2" opacity="0.8" />
-                      <circle cx="16" cy="16" r="8" fill="none" stroke="url(#pipelineGrad)" strokeWidth="1.5" opacity="0.5" />
+                      <circle
+                        cx="16"
+                        cy="16"
+                        r="12"
+                        fill="none"
+                        stroke="url(#pipelineGrad)"
+                        strokeWidth="2"
+                        opacity="0.8"
+                      />
+                      <circle
+                        cx="16"
+                        cy="16"
+                        r="8"
+                        fill="none"
+                        stroke="url(#pipelineGrad)"
+                        strokeWidth="1.5"
+                        opacity="0.5"
+                      />
                       <circle cx="16" cy="16" r="3" fill="url(#pipelineGrad)" />
                     </svg>
                   </div>
-                  <Typography 
-                    sx={{ 
+                  <Typography
+                    sx={{
                       fontFamily: 'Orbitron, monospace',
                       fontWeight: 600,
                       fontSize: '14px',
@@ -322,35 +341,56 @@ export const CallHistoryDashboard: React.FC<CallHistoryDashboardProps> = ({ open
             <Grid item xs={12} sm={6} md={3}>
               <Card
                 sx={{
-                  background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(99, 102, 241, 0.05) 100%)',
+                  background:
+                    'linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(99, 102, 241, 0.05) 100%)',
                   border: '1px solid rgba(99, 102, 241, 0.2)',
                 }}
               >
                 <CardContent>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}
+                  >
                     <div>
-                      <Typography variant="body2" color="text.secondary">Total Calls</Typography>
-                      <Typography variant="h4" sx={{ fontWeight: 700 } as any}>{stats.totalCalls}</Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        Total Calls
+                      </Typography>
+                      <Typography variant="h4" sx={{ fontWeight: 700 } as any}>
+                        {stats.totalCalls}
+                      </Typography>
                     </div>
                     <PhoneIcon sx={{ fontSize: 40, color: 'primary.main', opacity: 0.5 }} />
                   </div>
                 </CardContent>
               </Card>
             </Grid>
-            
+
             <Grid item xs={12} sm={6} md={3}>
               <Card
                 sx={{
-                  background: 'linear-gradient(135deg, rgba(236, 72, 153, 0.1) 0%, rgba(236, 72, 153, 0.05) 100%)',
+                  background:
+                    'linear-gradient(135deg, rgba(236, 72, 153, 0.1) 0%, rgba(236, 72, 153, 0.05) 100%)',
                   border: '1px solid rgba(236, 72, 153, 0.2)',
                 }}
               >
                 <CardContent>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}
+                  >
                     <div>
-                      <Typography variant="body2" color="text.secondary">Avg Duration</Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        Avg Duration
+                      </Typography>
                       <Typography variant="h4" sx={{ fontWeight: 700 } as any}>
-                        {Math.floor(stats.avgDuration / 60)}:{(Math.floor(stats.avgDuration) % 60).toString().padStart(2, '0')}
+                        {Math.floor(stats.avgDuration / 60)}:
+                        {(Math.floor(stats.avgDuration) % 60).toString().padStart(2, '0')}
                       </Typography>
                     </div>
                     <AccessTimeIcon sx={{ fontSize: 40, color: 'secondary.main', opacity: 0.5 }} />
@@ -362,19 +402,30 @@ export const CallHistoryDashboard: React.FC<CallHistoryDashboardProps> = ({ open
             <Grid item xs={12} sm={6} md={3}>
               <Card
                 sx={{
-                  background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%)',
+                  background:
+                    'linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%)',
                   border: '1px solid rgba(16, 185, 129, 0.2)',
                 }}
               >
                 <CardContent>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}
+                  >
                     <div>
-                      <Typography variant="body2" color="text.secondary">Positive Calls</Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        Positive Calls
+                      </Typography>
                       <Typography variant="h4" sx={{ fontWeight: 700 } as any}>
                         {stats.sentimentCounts.positive || 0}
                       </Typography>
                     </div>
-                    <SentimentSatisfiedIcon sx={{ fontSize: 40, color: 'success.main', opacity: 0.5 }} />
+                    <SentimentSatisfiedIcon
+                      sx={{ fontSize: 40, color: 'success.main', opacity: 0.5 }}
+                    />
                   </div>
                 </CardContent>
               </Card>
@@ -383,19 +434,30 @@ export const CallHistoryDashboard: React.FC<CallHistoryDashboardProps> = ({ open
             <Grid item xs={12} sm={6} md={3}>
               <Card
                 sx={{
-                  background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(239, 68, 68, 0.05) 100%)',
+                  background:
+                    'linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(239, 68, 68, 0.05) 100%)',
                   border: '1px solid rgba(239, 68, 68, 0.2)',
                 }}
               >
                 <CardContent>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}
+                  >
                     <div>
-                      <Typography variant="body2" color="text.secondary">Needs Attention</Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        Needs Attention
+                      </Typography>
                       <Typography variant="h4" sx={{ fontWeight: 700 } as any}>
                         {stats.sentimentCounts.negative || 0}
                       </Typography>
                     </div>
-                    <SentimentDissatisfiedIcon sx={{ fontSize: 40, color: 'error.main', opacity: 0.5 }} />
+                    <SentimentDissatisfiedIcon
+                      sx={{ fontSize: 40, color: 'error.main', opacity: 0.5 }}
+                    />
                   </div>
                 </CardContent>
               </Card>
@@ -425,7 +487,7 @@ export const CallHistoryDashboard: React.FC<CallHistoryDashboardProps> = ({ open
                 }}
                 onChange={(e) => handleFilterChange({ search: e.target.value })}
               />
-              
+
               <Button
                 startIcon={<FilterIcon />}
                 onClick={() => setShowFilters(!showFilters)}
@@ -470,7 +532,13 @@ export const CallHistoryDashboard: React.FC<CallHistoryDashboardProps> = ({ open
 
             {/* Expanded Filters */}
             <Collapse in={showFilters}>
-              <div style={{ marginTop: 16, paddingTop: 16, borderTop: '1px solid rgba(255, 255, 255, 0.1)' }}>
+              <div
+                style={{
+                  marginTop: 16,
+                  paddingTop: 16,
+                  borderTop: '1px solid rgba(255, 255, 255, 0.1)',
+                }}
+              >
                 <Grid container spacing={2}>
                   <Grid item xs={12} sm={6} md={3}>
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -488,7 +556,7 @@ export const CallHistoryDashboard: React.FC<CallHistoryDashboardProps> = ({ open
                           }
                         }}
                         slotProps={{
-                          textField: { fullWidth: true, size: 'small' }
+                          textField: { fullWidth: true, size: 'small' },
                         }}
                       />
                     </LocalizationProvider>
@@ -503,14 +571,16 @@ export const CallHistoryDashboard: React.FC<CallHistoryDashboardProps> = ({ open
                           if (date) {
                             handleFilterChange({
                               dateRange: {
-                                start: filters.dateRange?.start || new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
+                                start:
+                                  filters.dateRange?.start ||
+                                  new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
                                 end: date,
                               },
                             });
                           }
                         }}
                         slotProps={{
-                          textField: { fullWidth: true, size: 'small' }
+                          textField: { fullWidth: true, size: 'small' },
                         }}
                       />
                     </LocalizationProvider>
@@ -554,11 +624,7 @@ export const CallHistoryDashboard: React.FC<CallHistoryDashboardProps> = ({ open
           </Paper>
 
           {/* Tabs */}
-          <Tabs
-            value={selectedTab}
-            onChange={(_, value) => setSelectedTab(value)}
-            sx={{ mb: 3 }}
-          >
+          <Tabs value={selectedTab} onChange={(_, value) => setSelectedTab(value)} sx={{ mb: 3 }}>
             <Tab label="All Calls" />
             <Tab label="With Transcriptions" />
             <Tab label="Analyzed" />
@@ -566,11 +632,20 @@ export const CallHistoryDashboard: React.FC<CallHistoryDashboardProps> = ({ open
 
           {/* Call List */}
           {loading && calls.length === 0 ? (
-            <div style={{ display: 'flex', justifyContent: 'center', paddingTop: 64, paddingBottom: 64 }}>
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                paddingTop: 64,
+                paddingBottom: 64,
+              }}
+            >
               <CircularProgress />
             </div>
           ) : error ? (
-            <Alert severity="error" sx={{ mb: 3 } as any}>{error}</Alert>
+            <Alert severity="error" sx={{ mb: 3 } as any}>
+              {error}
+            </Alert>
           ) : calls.length === 0 ? (
             <Paper
               sx={{
@@ -591,188 +666,222 @@ export const CallHistoryDashboard: React.FC<CallHistoryDashboardProps> = ({ open
           ) : (
             <Stack spacing={2}>
               {calls
-                .filter(call => {
+                .filter((call) => {
                   if (selectedTab === 1) return call.transcription;
                   if (selectedTab === 2) return call.has_analysis;
                   return true;
                 })
                 .map((call) => (
-                <motion.div
-                  key={call.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <Paper
-                    sx={{
-                      overflow: 'hidden',
-                      background: expandedCallId === call.id
-                        ? 'rgba(99, 102, 241, 0.05)'
-                        : 'rgba(255, 255, 255, 0.02)',
-                      border: '1px solid',
-                      borderColor: expandedCallId === call.id
-                        ? 'rgba(99, 102, 241, 0.3)'
-                        : 'rgba(255, 255, 255, 0.1)',
-                      transition: 'all 0.3s ease',
-                      '&:hover': {
-                        borderColor: 'rgba(99, 102, 241, 0.2)',
-                        background: 'rgba(99, 102, 241, 0.03)',
-                      },
-                    }}
+                  <motion.div
+                    key={call.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3 }}
                   >
-                    {/* Call Header */}
-                    <div
-                      style={{
-                        padding: 16,
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 16,
-                        cursor: 'pointer',
+                    <Paper
+                      sx={{
+                        overflow: 'hidden',
+                        background:
+                          expandedCallId === call.id
+                            ? 'rgba(99, 102, 241, 0.05)'
+                            : 'rgba(255, 255, 255, 0.02)',
+                        border: '1px solid',
+                        borderColor:
+                          expandedCallId === call.id
+                            ? 'rgba(99, 102, 241, 0.3)'
+                            : 'rgba(255, 255, 255, 0.1)',
+                        transition: 'all 0.3s ease',
+                        '&:hover': {
+                          borderColor: 'rgba(99, 102, 241, 0.2)',
+                          background: 'rgba(99, 102, 241, 0.03)',
+                        },
                       }}
-                      onClick={() => handleCallToggle(call.id)}
                     >
-                      <Avatar sx={{ bgcolor: 'primary.main' } as any}>
-                        {getCallIcon(call.type, call.status)}
-                      </Avatar>
+                      {/* Call Header */}
+                      <div
+                        style={{
+                          padding: 16,
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 16,
+                          cursor: 'pointer',
+                        }}
+                        onClick={() => handleCallToggle(call.id)}
+                      >
+                        <Avatar sx={{ bgcolor: 'primary.main' } as any}>
+                          {getCallIcon(call.type, call.status)}
+                        </Avatar>
 
-                      <div style={{ flex: 1 }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-                          <Typography variant="subtitle1" sx={{ fontWeight: 600 } as any}>
-                            {call.contact_name || 'Unknown Contact'}
-                          </Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            • {call.phone_number}
-                          </Typography>
-                          {call.analysis && (
-                            <>
-                              <Typography variant="body2" color="text.secondary">•</Typography>
-                              {getSentimentIcon(call.analysis.sentiment_analysis.overall)}
-                            </>
-                          )}
-                        </div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                          <Typography variant="caption" color="text.secondary">
-                            <CalendarIcon sx={{ fontSize: 14, mr: 0.5, verticalAlign: 'middle' }} />
-                            {new Date(call.created_at).toLocaleString()}
-                          </Typography>
-                          {call.duration && (
-                            <Typography variant="caption" color="text.secondary">
-                              <AccessTimeIcon sx={{ fontSize: 14, mr: 0.5, verticalAlign: 'middle' }} />
-                              {Math.floor(call.duration / 60)}:{(call.duration % 60).toString().padStart(2, '0')}
+                        <div style={{ flex: 1 }}>
+                          <div
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 8,
+                              marginBottom: 4,
+                            }}
+                          >
+                            <Typography variant="subtitle1" sx={{ fontWeight: 600 } as any}>
+                              {call.contact_name || 'Unknown Contact'}
                             </Typography>
-                          )}
-                          <Chip
-                            label={call.status}
-                            size="small"
-                            color={call.status === 'completed' ? 'success' : 'default'}
-                            sx={{ height: 20 }}
-                          />
-                          {call.has_analysis && (
+                            <Typography variant="body2" color="text.secondary">
+                              • {call.phone_number}
+                            </Typography>
+                            {call.analysis && (
+                              <>
+                                <Typography variant="body2" color="text.secondary">
+                                  •
+                                </Typography>
+                                {getSentimentIcon(call.analysis.sentiment_analysis.overall)}
+                              </>
+                            )}
+                          </div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                            <Typography variant="caption" color="text.secondary">
+                              <CalendarIcon
+                                sx={{ fontSize: 14, mr: 0.5, verticalAlign: 'middle' }}
+                              />
+                              {new Date(call.created_at).toLocaleString()}
+                            </Typography>
+                            {call.duration && (
+                              <Typography variant="caption" color="text.secondary">
+                                <AccessTimeIcon
+                                  sx={{ fontSize: 14, mr: 0.5, verticalAlign: 'middle' }}
+                                />
+                                {Math.floor(call.duration / 60)}:
+                                {(call.duration % 60).toString().padStart(2, '0')}
+                              </Typography>
+                            )}
                             <Chip
-                              icon={<AutoAwesomeIcon sx={{ fontSize: 14 }} />}
-                              label="AI Analyzed"
+                              label={call.status}
                               size="small"
-                              color="primary"
+                              color={call.status === 'completed' ? 'success' : 'default'}
                               sx={{ height: 20 }}
                             />
+                            {call.has_analysis && (
+                              <Chip
+                                icon={<AutoAwesomeIcon sx={{ fontSize: 14 }} />}
+                                label="AI Analyzed"
+                                size="small"
+                                color="primary"
+                                sx={{ height: 20 }}
+                              />
+                            )}
+                          </div>
+                        </div>
+
+                        <IconButton size="small">
+                          {expandedCallId === call.id ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                        </IconButton>
+                      </div>
+
+                      {/* Expanded Content */}
+                      <Collapse in={expandedCallId === call.id}>
+                        <Divider />
+                        <div style={{ padding: 24 }}>
+                          {/* Recording Player */}
+                          {call.recording_url && (
+                            <div style={{ marginBottom: 24 }}>
+                              <Typography
+                                variant="subtitle2"
+                                gutterBottom
+                                sx={{ fontWeight: 600 } as any}
+                              >
+                                Call Recording
+                              </Typography>
+                              <Paper sx={{ p: 2, background: 'rgba(0, 0, 0, 0.2)' } as any}>
+                                <AudioPlayer url={call.recording_url} />
+                              </Paper>
+                            </div>
+                          )}
+
+                          {/* AI Summary */}
+                          {call.analysis && (
+                            <div style={{ marginBottom: 24 }}>
+                              <Typography
+                                variant="subtitle2"
+                                gutterBottom
+                                sx={{ fontWeight: 600 } as any}
+                              >
+                                AI Summary
+                              </Typography>
+                              <Paper sx={{ p: 2, background: 'rgba(0, 0, 0, 0.2)' } as any}>
+                                <Typography variant="body2" paragraph>
+                                  {call.analysis.executive_summary}
+                                </Typography>
+
+                                {call.analysis.key_points.length > 0 && (
+                                  <>
+                                    <Typography
+                                      variant="caption"
+                                      sx={{ fontWeight: 600, color: 'primary.main' } as any}
+                                    >
+                                      Key Points:
+                                    </Typography>
+                                    <ul style={{ marginTop: 8, marginBottom: 8, paddingLeft: 16 }}>
+                                      {call.analysis.key_points.map((point, idx) => (
+                                        <Typography key={idx} component="li" variant="body2">
+                                          {point}
+                                        </Typography>
+                                      ))}
+                                    </ul>
+                                  </>
+                                )}
+
+                                {call.analysis.action_items.length > 0 && (
+                                  <>
+                                    <Typography
+                                      variant="caption"
+                                      sx={{ fontWeight: 600, color: 'secondary.main' } as any}
+                                    >
+                                      Action Items:
+                                    </Typography>
+                                    <div style={{ marginTop: 8 }}>
+                                      {call.analysis.action_items.map((item, idx) => (
+                                        <Chip
+                                          key={idx}
+                                          label={item.task}
+                                          size="small"
+                                          sx={{ mr: 1, mb: 1 }}
+                                          color={item.priority === 'high' ? 'error' : 'default'}
+                                        />
+                                      ))}
+                                    </div>
+                                  </>
+                                )}
+                              </Paper>
+                            </div>
+                          )}
+
+                          {/* Transcription */}
+                          {call.transcription && (
+                            <div>
+                              <Typography
+                                variant="subtitle2"
+                                gutterBottom
+                                sx={{ fontWeight: 600 } as any}
+                              >
+                                Transcription
+                              </Typography>
+                              <Paper
+                                sx={{
+                                  p: 2,
+                                  background: 'rgba(0, 0, 0, 0.2)',
+                                  maxHeight: 300,
+                                  overflow: 'auto',
+                                }}
+                              >
+                                <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap' } as any}>
+                                  {call.transcription}
+                                </Typography>
+                              </Paper>
+                            </div>
                           )}
                         </div>
-                      </div>
-
-                      <IconButton size="small">
-                        {expandedCallId === call.id ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-                      </IconButton>
-                    </div>
-
-                    {/* Expanded Content */}
-                    <Collapse in={expandedCallId === call.id}>
-                      <Divider />
-                      <div style={{ padding: 24 }}>
-                        {/* Recording Player */}
-                        {call.recording_url && (
-                          <div style={{ marginBottom: 24 }}>
-                            <Typography variant="subtitle2" gutterBottom sx={{ fontWeight: 600 } as any}>
-                              Call Recording
-                            </Typography>
-                            <Paper sx={{ p: 2, background: 'rgba(0, 0, 0, 0.2)' } as any}>
-                              <AudioPlayer url={call.recording_url} />
-                            </Paper>
-                          </div>
-                        )}
-
-                        {/* AI Summary */}
-                        {call.analysis && (
-                          <div style={{ marginBottom: 24 }}>
-                            <Typography variant="subtitle2" gutterBottom sx={{ fontWeight: 600 } as any}>
-                              AI Summary
-                            </Typography>
-                            <Paper sx={{ p: 2, background: 'rgba(0, 0, 0, 0.2)' } as any}>
-                              <Typography variant="body2" paragraph>
-                                {call.analysis.executive_summary}
-                              </Typography>
-                              
-                              {call.analysis.key_points.length > 0 && (
-                                <>
-                                  <Typography variant="caption" sx={{ fontWeight: 600, color: 'primary.main' } as any}>
-                                    Key Points:
-                                  </Typography>
-                                  <ul style={{ marginTop: 8, marginBottom: 8, paddingLeft: 16 }}>
-                                    {call.analysis.key_points.map((point, idx) => (
-                                      <Typography key={idx} component="li" variant="body2">
-                                        {point}
-                                      </Typography>
-                                    ))}
-                                  </ul>
-                                </>
-                              )}
-
-                              {call.analysis.action_items.length > 0 && (
-                                <>
-                                  <Typography variant="caption" sx={{ fontWeight: 600, color: 'secondary.main' } as any}>
-                                    Action Items:
-                                  </Typography>
-                                  <div style={{ marginTop: 8 }}>
-                                    {call.analysis.action_items.map((item, idx) => (
-                                      <Chip
-                                        key={idx}
-                                        label={item.task}
-                                        size="small"
-                                        sx={{ mr: 1, mb: 1 }}
-                                        color={item.priority === 'high' ? 'error' : 'default'}
-                                      />
-                                    ))}
-                                  </div>
-                                </>
-                              )}
-                            </Paper>
-                          </div>
-                        )}
-
-                        {/* Transcription */}
-                        {call.transcription && (
-                          <div>
-                            <Typography variant="subtitle2" gutterBottom sx={{ fontWeight: 600 } as any}>
-                              Transcription
-                            </Typography>
-                            <Paper
-                              sx={{
-                                p: 2,
-                                background: 'rgba(0, 0, 0, 0.2)',
-                                maxHeight: 300,
-                                overflow: 'auto',
-                              }}
-                            >
-                              <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap' } as any}>
-                                {call.transcription}
-                              </Typography>
-                            </Paper>
-                          </div>
-                        )}
-                      </div>
-                    </Collapse>
-                  </Paper>
-                </motion.div>
-              ))}
+                      </Collapse>
+                    </Paper>
+                  </motion.div>
+                ))}
             </Stack>
           )}
 

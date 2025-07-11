@@ -18,10 +18,10 @@ export const reportWebVitalsToMonitor = () => {
     // Log to console in development
     if (process.env.NODE_ENV === 'development') {
     }
-    
+
     // You can send to analytics here
     // Example: sendToAnalytics(metric);
-    
+
     // Store in performance monitor for adaptive rendering
     if (metric.name === 'FCP' && metric.value > 3000) {
     }

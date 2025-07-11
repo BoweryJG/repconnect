@@ -1,0 +1,159 @@
+name: Performance Testing
+
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  lighthouse:
+    name: Lighthouse CI
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18.x'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Build application
+      run: npm run build
+      env:
+        CI: false
+        GENERATE_SOURCEMAP: false
+        
+    - name: Run Lighthouse CI
+      uses: treosh/lighthouse-ci-action@v10
+      with:
+        configPath: './.lighthouserc.json'
+        uploadArtifacts: true
+        temporaryPublicStorage: true
+        
+    - name: Format Lighthouse results
+      uses: actions/github-script@v6
+      if: github.event_name == 'pull_request'
+      with:
+        script: |
+          const results = require('./lighthouse-results.json');
+          const comment = `## Lighthouse Performance Report
+          
+          | Metric | Score |
+          |--------|-------|
+          | Performance | ${results.performance} |
+          | Accessibility | ${results.accessibility} |
+          | Best Practices | ${results.bestPractices} |
+          | SEO | ${results.seo} |
+          `;
+          
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: comment
+          });
+
+  bundle-analysis:
+    name: Bundle Size Analysis
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18.x'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Build and analyze bundle
+      run: |
+        npm run build
+        npx source-map-explorer 'build/static/js/*.js' --json > bundle-analysis.json
+        
+    - name: Upload bundle analysis
+      uses: actions/upload-artifact@v3
+      with:
+        name: bundle-analysis
+        path: bundle-analysis.json
+        
+    - name: Check bundle size limits
+      run: |
+        # Define size limits (in KB)
+        MAX_JS_SIZE=700
+        MAX_CSS_SIZE=100
+        
+        # Check JavaScript bundle size
+        JS_SIZE=$(find build/static/js -name "*.js" -exec du -k {} + | awk '{sum+=$1} END {print sum}')
+        echo "JavaScript bundle size: ${JS_SIZE}KB (limit: ${MAX_JS_SIZE}KB)"
+        
+        if [ "$JS_SIZE" -gt "$MAX_JS_SIZE" ]; then
+          echo "JavaScript bundle size exceeds limit!"
+          exit 1
+        fi
+        
+        # Check CSS bundle size
+        CSS_SIZE=$(find build/static/css -name "*.css" -exec du -k {} + | awk '{sum+=$1} END {print sum}')
+        echo "CSS bundle size: ${CSS_SIZE}KB (limit: ${MAX_CSS_SIZE}KB)"
+        
+        if [ "$CSS_SIZE" -gt "$MAX_CSS_SIZE" ]; then
+          echo "CSS bundle size exceeds limit!"
+          exit 1
+        fi
+
+  load-testing:
+    name: Load Testing
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup k6
+      run: |
+        sudo gpg -k
+        sudo gpg --no-default-keyring --keyring /usr/share/keyrings/k6-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69
+        echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
+        sudo apt-get update
+        sudo apt-get install k6
+        
+    - name: Run load tests
+      run: |
+        # Create basic k6 test script
+        cat > loadtest.js << 'EOF'
+        import http from 'k6/http';
+        import { check, sleep } from 'k6';
+        
+        export let options = {
+          vus: 10,
+          duration: '30s',
+          thresholds: {
+            http_req_duration: ['p(95)<500'],
+            http_req_failed: ['rate<0.1'],
+          },
+        };
+        
+        export default function() {
+          let response = http.get('${{ secrets.PRODUCTION_URL }}');
+          check(response, {
+            'status is 200': (r) => r.status === 200,
+            'response time < 500ms': (r) => r.timings.duration < 500,
+          });
+          sleep(1);
+        }
+        EOF
+        
+        k6 run loadtest.js || true

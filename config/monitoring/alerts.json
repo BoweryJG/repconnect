@@ -1,0 +1,332 @@
+{
+  "version": "1.0.0",
+  "alerts": {
+    "performance": {
+      "slowApiResponse": {
+        "name": "Slow API Response Time",
+        "description": "API endpoint response time exceeds threshold",
+        "enabled": true,
+        "conditions": {
+          "metric": "api.response_time",
+          "operator": "greater_than",
+          "threshold": 2000,
+          "duration": "5m",
+          "aggregation": "avg"
+        },
+        "severity": "warning",
+        "channels": ["sentry", "webhook", "email"],
+        "cooldown": "15m"
+      },
+      "highErrorRate": {
+        "name": "High Error Rate",
+        "description": "Error rate exceeds acceptable threshold",
+        "enabled": true,
+        "conditions": {
+          "metric": "api.error_rate",
+          "operator": "greater_than",
+          "threshold": 5,
+          "duration": "5m",
+          "aggregation": "avg"
+        },
+        "severity": "critical",
+        "channels": ["sentry", "webhook", "email", "sms"],
+        "cooldown": "10m"
+      },
+      "slowDatabaseQuery": {
+        "name": "Slow Database Query",
+        "description": "Database query execution time is too high",
+        "enabled": true,
+        "conditions": {
+          "metric": "database.query_time",
+          "operator": "greater_than",
+          "threshold": 1000,
+          "duration": "3m",
+          "aggregation": "p95"
+        },
+        "severity": "warning",
+        "channels": ["sentry", "webhook"],
+        "cooldown": "30m"
+      }
+    },
+    "infrastructure": {
+      "highCpuUsage": {
+        "name": "High CPU Usage",
+        "description": "Server CPU usage is critically high",
+        "enabled": true,
+        "conditions": {
+          "metric": "system.cpu.usage",
+          "operator": "greater_than",
+          "threshold": 80,
+          "duration": "5m",
+          "aggregation": "avg"
+        },
+        "severity": "warning",
+        "channels": ["sentry", "webhook"],
+        "cooldown": "20m"
+      },
+      "highMemoryUsage": {
+        "name": "High Memory Usage",
+        "description": "Server memory usage is critically high",
+        "enabled": true,
+        "conditions": {
+          "metric": "system.memory.usage",
+          "operator": "greater_than",
+          "threshold": 85,
+          "duration": "5m",
+          "aggregation": "avg"
+        },
+        "severity": "critical",
+        "channels": ["sentry", "webhook", "email"],
+        "cooldown": "20m"
+      },
+      "diskSpaceLow": {
+        "name": "Low Disk Space",
+        "description": "Available disk space is running low",
+        "enabled": true,
+        "conditions": {
+          "metric": "system.disk.usage",
+          "operator": "greater_than",
+          "threshold": 90,
+          "duration": "10m",
+          "aggregation": "last"
+        },
+        "severity": "critical",
+        "channels": ["sentry", "webhook", "email", "sms"],
+        "cooldown": "60m"
+      }
+    },
+    "application": {
+      "serviceDown": {
+        "name": "Service Down",
+        "description": "Critical service is not responding",
+        "enabled": true,
+        "conditions": {
+          "metric": "health.check.status",
+          "operator": "equals",
+          "value": "unhealthy",
+          "duration": "2m",
+          "consecutive": 3
+        },
+        "severity": "critical",
+        "channels": ["sentry", "webhook", "email", "sms", "slack"],
+        "cooldown": "5m"
+      },
+      "databaseConnectionFailure": {
+        "name": "Database Connection Failure",
+        "description": "Unable to connect to database",
+        "enabled": true,
+        "conditions": {
+          "metric": "database.connection.status",
+          "operator": "equals",
+          "value": "failed",
+          "duration": "1m",
+          "consecutive": 2
+        },
+        "severity": "critical",
+        "channels": ["sentry", "webhook", "email", "sms"],
+        "cooldown": "5m"
+      },
+      "twilioServiceFailure": {
+        "name": "Twilio Service Failure",
+        "description": "Twilio API is not responding",
+        "enabled": true,
+        "conditions": {
+          "metric": "twilio.api.status",
+          "operator": "equals",
+          "value": "error",
+          "duration": "3m",
+          "consecutive": 5
+        },
+        "severity": "high",
+        "channels": ["sentry", "webhook", "email"],
+        "cooldown": "15m"
+      },
+      "harveyAiFailure": {
+        "name": "Harvey AI Service Failure",
+        "description": "Harvey AI is not processing requests",
+        "enabled": true,
+        "conditions": {
+          "metric": "harvey.ai.status",
+          "operator": "equals",
+          "value": "offline",
+          "duration": "5m",
+          "consecutive": 3
+        },
+        "severity": "high",
+        "channels": ["sentry", "webhook", "email"],
+        "cooldown": "10m"
+      }
+    },
+    "security": {
+      "suspiciousActivity": {
+        "name": "Suspicious Activity Detected",
+        "description": "Unusual pattern of requests detected",
+        "enabled": true,
+        "conditions": {
+          "metric": "security.suspicious_requests",
+          "operator": "greater_than",
+          "threshold": 100,
+          "duration": "5m",
+          "aggregation": "sum"
+        },
+        "severity": "critical",
+        "channels": ["sentry", "webhook", "email", "sms", "slack"],
+        "cooldown": "30m"
+      },
+      "rateLimitExceeded": {
+        "name": "Rate Limit Violations",
+        "description": "Multiple rate limit violations detected",
+        "enabled": true,
+        "conditions": {
+          "metric": "security.rate_limit.violations",
+          "operator": "greater_than",
+          "threshold": 50,
+          "duration": "5m",
+          "aggregation": "sum"
+        },
+        "severity": "warning",
+        "channels": ["sentry", "webhook"],
+        "cooldown": "15m"
+      },
+      "authenticationFailures": {
+        "name": "Authentication Failures",
+        "description": "High number of authentication failures",
+        "enabled": true,
+        "conditions": {
+          "metric": "auth.failures",
+          "operator": "greater_than",
+          "threshold": 20,
+          "duration": "5m",
+          "aggregation": "sum"
+        },
+        "severity": "high",
+        "channels": ["sentry", "webhook", "email"],
+        "cooldown": "20m"
+      }
+    },
+    "business": {
+      "lowCallCompletionRate": {
+        "name": "Low Call Completion Rate",
+        "description": "Call completion rate is below target",
+        "enabled": true,
+        "conditions": {
+          "metric": "calls.completion_rate",
+          "operator": "less_than",
+          "threshold": 70,
+          "duration": "30m",
+          "aggregation": "avg"
+        },
+        "severity": "warning",
+        "channels": ["webhook", "email"],
+        "cooldown": "60m"
+      },
+      "highCallDropRate": {
+        "name": "High Call Drop Rate",
+        "description": "Calls are dropping at an unusual rate",
+        "enabled": true,
+        "conditions": {
+          "metric": "calls.drop_rate",
+          "operator": "greater_than",
+          "threshold": 15,
+          "duration": "15m",
+          "aggregation": "avg"
+        },
+        "severity": "high",
+        "channels": ["sentry", "webhook", "email"],
+        "cooldown": "30m"
+      }
+    }
+  },
+  "channels": {
+    "sentry": {
+      "enabled": true,
+      "config": {
+        "project": "repconnect",
+        "environment": ["production", "staging"]
+      }
+    },
+    "webhook": {
+      "enabled": true,
+      "config": {
+        "url": "${MONITORING_WEBHOOK_URL}",
+        "method": "POST",
+        "headers": {
+          "Content-Type": "application/json",
+          "X-Alert-Source": "repconnect-monitoring"
+        },
+        "retries": 3,
+        "timeout": 5000
+      }
+    },
+    "email": {
+      "enabled": true,
+      "config": {
+        "recipients": ["${MONITORING_ALERT_EMAIL}"],
+        "from": "alerts@repconnect.app",
+        "replyTo": "noreply@repconnect.app",
+        "templates": {
+          "subject": "[{{severity}}] {{alert.name}} - RepConnect",
+          "body": "Alert: {{alert.description}}\n\nDetails:\n- Metric: {{metric}}\n- Current Value: {{value}}\n- Threshold: {{threshold}}\n- Duration: {{duration}}\n- Time: {{timestamp}}\n\nView dashboard: {{dashboard_url}}"
+        }
+      }
+    },
+    "sms": {
+      "enabled": false,
+      "config": {
+        "recipients": ["${MONITORING_SMS_NUMBERS}"],
+        "provider": "twilio",
+        "from": "${TWILIO_PHONE_NUMBER}",
+        "templates": {
+          "message": "[{{severity}}] {{alert.name}}: {{alert.description}}. Value: {{value}}, Threshold: {{threshold}}"
+        }
+      }
+    },
+    "slack": {
+      "enabled": false,
+      "config": {
+        "webhook_url": "${SLACK_WEBHOOK_URL}",
+        "channel": "#alerts",
+        "username": "RepConnect Monitoring",
+        "icon_emoji": ":warning:",
+        "templates": {
+          "text": "Alert: {{alert.name}}",
+          "attachments": [{
+            "color": "{{severity_color}}",
+            "fields": [
+              {"title": "Description", "value": "{{alert.description}}", "short": false},
+              {"title": "Metric", "value": "{{metric}}", "short": true},
+              {"title": "Value", "value": "{{value}}", "short": true},
+              {"title": "Threshold", "value": "{{threshold}}", "short": true},
+              {"title": "Duration", "value": "{{duration}}", "short": true}
+            ],
+            "footer": "RepConnect Monitoring",
+            "ts": "{{timestamp_unix}}"
+          }]
+        }
+      }
+    }
+  },
+  "severity_levels": {
+    "critical": {
+      "color": "#FF0000",
+      "priority": 1,
+      "auto_escalate": true,
+      "escalation_timeout": "10m"
+    },
+    "high": {
+      "color": "#FF6600",
+      "priority": 2,
+      "auto_escalate": false
+    },
+    "warning": {
+      "color": "#FFCC00",
+      "priority": 3,
+      "auto_escalate": false
+    },
+    "info": {
+      "color": "#0099FF",
+      "priority": 4,
+      "auto_escalate": false
+    }
+  }
+}

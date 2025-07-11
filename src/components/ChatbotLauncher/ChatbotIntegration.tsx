@@ -48,10 +48,10 @@ export const ChatbotIntegration: React.FC<ChatbotIntegrationProps> = ({
     implants: 'dental',
     orthodontics: 'dental',
     cosmetic: 'dental',
-    harvey: 'general'
+    harvey: 'general',
   };
 
-  const agents: Agent[] = getAllAgents().map(config => ({
+  const agents: Agent[] = getAllAgents().map((config) => ({
     ...config,
     category: categoryMap[config.id] || 'general',
     available: true,
@@ -60,15 +60,15 @@ export const ChatbotIntegration: React.FC<ChatbotIntegrationProps> = ({
     color: config.colorScheme.primary,
     voiceConfig: {
       ...config.voiceConfig,
-      useSpeakerBoost: config.voiceConfig.speakerBoost
+      useSpeakerBoost: config.voiceConfig.speakerBoost,
     },
     visualEffects: {
       ...config.visualEffects,
       animation: config.visualEffects.animation,
       glow: config.visualEffects.glowEffect,
       pulse: config.visualEffects.pulseEffect,
-      particleEffect: config.visualEffects.particleEffect || ''
-    }
+      particleEffect: config.visualEffects.particleEffect || '',
+    },
   }));
 
   return (

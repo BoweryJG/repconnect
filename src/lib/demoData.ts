@@ -26,7 +26,7 @@ export const DEMO_CONTACTS: DemoContact[] = [
     notes: 'VP of Sales at TechCorp. Interested in enterprise solution.',
     tags: ['enterprise', 'decision-maker', 'hot-lead'],
     location: { city: 'San Francisco', state: 'CA' },
-    value: 'high'
+    value: 'high',
   },
   {
     id: 'demo-2',
@@ -38,7 +38,7 @@ export const DEMO_CONTACTS: DemoContact[] = [
     notes: 'CTO looking for automation tools. Budget approved for Q1.',
     tags: ['technical', 'qualified', 'Q1-close'],
     location: { city: 'New York', state: 'NY' },
-    value: 'high'
+    value: 'high',
   },
   {
     id: 'demo-3',
@@ -49,7 +49,7 @@ export const DEMO_CONTACTS: DemoContact[] = [
     notes: 'Operations Manager. Evaluating multiple solutions.',
     tags: ['mid-market', 'evaluating'],
     location: { city: 'Los Angeles', state: 'CA' },
-    value: 'standard'
+    value: 'standard',
   },
   {
     id: 'demo-4',
@@ -60,7 +60,7 @@ export const DEMO_CONTACTS: DemoContact[] = [
     notes: 'New lead from webinar. Schedule follow-up.',
     tags: ['new', 'webinar-lead'],
     location: { city: 'Dallas', state: 'TX' },
-    value: 'standard'
+    value: 'standard',
   },
   {
     id: 'demo-5',
@@ -72,8 +72,8 @@ export const DEMO_CONTACTS: DemoContact[] = [
     notes: 'Ready to move forward. Needs contract review.',
     tags: ['closing', 'contract-sent'],
     location: { city: 'Seattle', state: 'WA' },
-    value: 'high'
-  }
+    value: 'high',
+  },
 ];
 
 export const DEMO_CALL_HISTORY = [
@@ -86,7 +86,8 @@ export const DEMO_CALL_HISTORY = [
     type: 'outgoing' as const,
     transcript: 'Discussed enterprise pricing and implementation timeline...',
     sentiment: 'positive' as const,
-    summary: 'Sarah is interested in moving forward with enterprise plan. Needs board approval by end of month.'
+    summary:
+      'Sarah is interested in moving forward with enterprise plan. Needs board approval by end of month.',
   },
   {
     id: 'call-2',
@@ -97,6 +98,6 @@ export const DEMO_CALL_HISTORY = [
     type: 'incoming' as const,
     transcript: 'Contract review questions and technical requirements...',
     sentiment: 'positive' as const,
-    summary: 'Lisa confirmed technical requirements are met. Legal team reviewing contract.'
-  }
+    summary: 'Lisa confirmed technical requirements are met. Legal team reviewing contract.',
+  },
 ];

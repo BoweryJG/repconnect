@@ -48,16 +48,16 @@ export const utilityExample = async () => {
   try {
     // Simulate API call
     const response = await fetch('/api/data');
-    
+
     if (!response.ok) {
       throw new Error('Failed to fetch data');
     }
-    
+
     const data = await response.json();
-    
+
     // Show success notification
     toast.success('Data loaded successfully!');
-    
+
     return data;
   } catch (error) {
     // Show error notification
@@ -73,21 +73,21 @@ export const utilityExample = async () => {
 export const replaceAlertExample = () => {
   // Old way:
   // alert('Welcome to the application!');
-  
+
   // New way:
   toast.info('Welcome to the application!');
-  
+
   // Old way:
   // alert('Error: Invalid phone number');
-  
+
   // New way:
   toast.error('Invalid phone number');
-  
+
   // Old way:
   // if (confirm('Are you sure you want to delete this contact?')) {
   //   deleteContact();
   // }
-  
+
   // New way (for confirmations, you'd still need a modal dialog):
   // For simple notifications:
   toast.warning('Contact deletion requires confirmation');
@@ -101,11 +101,11 @@ export const AsyncOperationExample = () => {
 
   const handleAsyncOperation = async () => {
     showInfo('Processing your request...');
-    
+
     try {
       // Simulate async operation
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
       // Success
       showSuccess('Request processed successfully!');
     } catch (error) {
@@ -118,21 +118,21 @@ export const AsyncOperationExample = () => {
 
 /**
  * Usage Instructions:
- * 
+ *
  * 1. Make sure your app is wrapped with <ToastProvider>:
  *    <ToastProvider>
  *      <App />
  *    </ToastProvider>
- * 
+ *
  * 2. In React components, use the useToast hook:
  *    const { showSuccess, showError, showWarning, showInfo } = useToast();
- * 
+ *
  * 3. Outside React components, import the default toast object:
  *    import toast from './utils/toast';
  *    toast.success('Message');
- * 
+ *
  * 4. All methods accept an optional duration parameter (in milliseconds):
  *    showSuccess('Message', 3000); // Shows for 3 seconds
- * 
+ *
  * 5. Messages stack vertically when multiple toasts are shown
  */

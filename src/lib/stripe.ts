@@ -33,9 +33,7 @@ export async function createCheckoutSession(
   }
 }
 
-export async function createCustomerPortalSession(
-  customerId: string
-): Promise<string | null> {
+export async function createCustomerPortalSession(customerId: string): Promise<string | null> {
   try {
     const response = await fetch(`${API_URL}/api/stripe/create-portal-session`, {
       method: 'POST',
@@ -59,25 +57,23 @@ export async function createCustomerPortalSession(
   }
 }
 
-export async function handleStripeWebhook(
-  event: any
-): Promise<void> {
+export async function handleStripeWebhook(event: any): Promise<void> {
   switch (event.type) {
     case 'checkout.session.completed':
       // Handle successful subscription
       await handleCheckoutComplete(event.data.object);
       break;
-    
+
     case 'customer.subscription.updated':
       // Handle subscription updates
       await handleSubscriptionUpdate(event.data.object);
       break;
-    
+
     case 'customer.subscription.deleted':
       // Handle subscription cancellation
       await handleSubscriptionCancellation(event.data.object);
       break;
-    
+
     default:
   }
 }

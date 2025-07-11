@@ -21,15 +21,17 @@ export default function VoiceModal({
   onClose,
   agentName = 'AI Assistant',
   agentAvatar = '/agent-avatar.jpg',
-  agentRole = 'Your Personal AI Concierge'
+  agentRole = 'Your Personal AI Concierge',
 }: VoiceModalProps) {
   const [isCallActive, setIsCallActive] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [isAgentSpeaking, setIsAgentSpeaking] = useState(false);
   const [isUserSpeaking, setIsUserSpeaking] = useState(false);
   const [transcription, setTranscription] = useState<TranscriptionLine[]>([]);
-  const [connectionStatus, setConnectionStatus] = useState<'idle' | 'connecting' | 'connected' | 'error'>('idle');
-  
+  const [connectionStatus, setConnectionStatus] = useState<
+    'idle' | 'connecting' | 'connected' | 'error'
+  >('idle');
+
   const peerConnectionRef = useRef<RTCPeerConnection | null>(null);
   const localStreamRef = useRef<MediaStream | null>(null);
   const remoteStreamRef = useRef<MediaStream | null>(null);
@@ -41,7 +43,7 @@ export default function VoiceModal({
   const initializeWebRTC = useCallback(async () => {
     try {
       setConnectionStatus('connecting');
-      
+
       // Get user media
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       localStreamRef.current = stream;
@@ -50,13 +52,13 @@ export default function VoiceModal({
       const pc = new RTCPeerConnection({
         iceServers: [
           { urls: 'stun:stun.l.google.com:19302' },
-          { urls: 'stun:stun1.l.google.com:19302' }
-        ]
+          { urls: 'stun:stun1.l.google.com:19302' },
+        ],
       });
       peerConnectionRef.current = pc;
 
       // Add local stream tracks to peer connection
-      stream.getTracks().forEach(track => {
+      stream.getTracks().forEach((track) => {
         pc.addTrack(track, stream);
       });
 
@@ -64,7 +66,7 @@ export default function VoiceModal({
       audioContextRef.current = new AudioContext();
       analyserRef.current = audioContextRef.current.createAnalyser();
       analyserRef.current.fftSize = 256;
-      
+
       const source = audioContextRef.current.createMediaStreamSource(stream);
       source.connect(analyserRef.current);
 
@@ -80,9 +82,8 @@ export default function VoiceModal({
         setIsCallActive(true);
         startVoiceActivityDetection();
       }, 1500);
-
     } catch (error) {
-      console.error('WebRTC initialization error:', error);
+      // WebRTC initialization error
       setConnectionStatus('error');
     }
   }, []);
@@ -99,7 +100,7 @@ export default function VoiceModal({
 
       analyserRef.current!.getByteFrequencyData(dataArray);
       const average = dataArray.reduce((a, b) => a + b) / bufferLength;
-      
+
       // Simple threshold for voice detection
       setIsUserSpeaking(average > 30);
 
@@ -114,7 +115,7 @@ export default function VoiceModal({
     if (!isCallActive) return;
 
     const interval = setInterval(() => {
-      setIsAgentSpeaking(prev => !prev);
+      setIsAgentSpeaking((prev) => !prev);
     }, 3000);
 
     return () => clearInterval(interval);
@@ -127,21 +128,30 @@ export default function VoiceModal({
     const mockTranscriptions = [
       { speaker: 'agent', text: 'Hello! How may I assist you today?' },
       { speaker: 'user', text: 'I need help with my account settings.' },
-      { speaker: 'agent', text: 'I\'d be happy to help you with your account settings. What specific aspect would you like to modify?' },
+      {
+        speaker: 'agent',
+        text: "I'd be happy to help you with your account settings. What specific aspect would you like to modify?",
+      },
       { speaker: 'user', text: 'I want to update my notification preferences.' },
-      { speaker: 'agent', text: 'Certainly! I can guide you through updating your notification preferences. Would you like to adjust email notifications, push notifications, or both?' }
+      {
+        speaker: 'agent',
+        text: 'Certainly! I can guide you through updating your notification preferences. Would you like to adjust email notifications, push notifications, or both?',
+      },
     ];
 
     let index = 0;
     const interval = setInterval(() => {
       if (index < mockTranscriptions.length) {
         const { speaker, text } = mockTranscriptions[index];
-        setTranscription(prev => [...prev, {
-          id: Date.now().toString(),
-          speaker: speaker as 'user' | 'agent',
-          text,
-          timestamp: new Date()
-        }]);
+        setTranscription((prev) => [
+          ...prev,
+          {
+            id: Date.now().toString(),
+            speaker: speaker as 'user' | 'agent',
+            text,
+            timestamp: new Date(),
+          },
+        ]);
         index++;
       }
     }, 4000);
@@ -160,10 +170,10 @@ export default function VoiceModal({
 
   const endCall = () => {
     // Clean up WebRTC
-    localStreamRef.current?.getTracks().forEach(track => track.stop());
+    localStreamRef.current?.getTracks().forEach((track) => track.stop());
     peerConnectionRef.current?.close();
     audioContextRef.current?.close();
-    
+
     setIsCallActive(false);
     setConnectionStatus('idle');
     setTranscription([]);
@@ -194,7 +204,7 @@ export default function VoiceModal({
             >
               <X className="w-5 h-5 text-white" />
             </button>
-            
+
             <div className="text-center">
               <h2 className="text-2xl font-light text-white mb-1">Voice Assistant</h2>
               <p className="text-white/60 text-sm">{agentRole}</p>
@@ -207,9 +217,13 @@ export default function VoiceModal({
             <div className="flex flex-col items-center mb-8">
               <div className="relative">
                 {/* Avatar with speaking animation */}
-                <div className={`relative w-32 h-32 rounded-full overflow-hidden transition-all duration-300 ${
-                  isAgentSpeaking ? 'ring-4 ring-emerald-400/50 ring-offset-4 ring-offset-transparent' : ''
-                }`}>
+                <div
+                  className={`relative w-32 h-32 rounded-full overflow-hidden transition-all duration-300 ${
+                    isAgentSpeaking
+                      ? 'ring-4 ring-emerald-400/50 ring-offset-4 ring-offset-transparent'
+                      : ''
+                  }`}
+                >
                   <img
                     src={agentAvatar}
                     alt={agentName}
@@ -217,7 +231,8 @@ export default function VoiceModal({
                     onError={(e) => {
                       // Fallback gradient avatar
                       e.currentTarget.style.display = 'none';
-                      e.currentTarget.parentElement!.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+                      e.currentTarget.parentElement!.style.background =
+                        'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
                     }}
                   />
                   {/* Voice activity overlay */}
@@ -225,7 +240,7 @@ export default function VoiceModal({
                     <div className="absolute inset-0 bg-gradient-to-t from-emerald-400/20 to-transparent animate-pulse" />
                   )}
                 </div>
-                
+
                 {/* Speaking indicator */}
                 {isCallActive && (
                   <div className="absolute -bottom-2 left-1/2 -translate-x-1/2">
@@ -246,9 +261,9 @@ export default function VoiceModal({
                   </div>
                 )}
               </div>
-              
+
               <h3 className="text-xl text-white mt-4">{agentName}</h3>
-              
+
               {/* Connection Status */}
               <div className="mt-2">
                 {connectionStatus === 'connecting' && (
@@ -284,9 +299,9 @@ export default function VoiceModal({
                         >
                           <p className="text-sm">{line.text}</p>
                           <span className="text-xs opacity-60 mt-1 block">
-                            {line.timestamp.toLocaleTimeString([], { 
-                              hour: '2-digit', 
-                              minute: '2-digit' 
+                            {line.timestamp.toLocaleTimeString([], {
+                              hour: '2-digit',
+                              minute: '2-digit',
                             })}
                           </span>
                         </div>
@@ -321,7 +336,7 @@ export default function VoiceModal({
                   >
                     {isMuted ? <MicOff className="w-6 h-6" /> : <Mic className="w-6 h-6" />}
                   </button>
-                  
+
                   {/* End Call Button */}
                   <button
                     onClick={endCall}

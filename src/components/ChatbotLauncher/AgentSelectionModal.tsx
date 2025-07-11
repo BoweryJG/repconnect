@@ -10,11 +10,7 @@ import {
   Avatar,
   alpha,
 } from '@mui/material';
-import {
-  Close,
-  Chat,
-  Mic,
-} from '@mui/icons-material';
+import { Close, Chat, Mic } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
 import type { Agent } from './types';
 
@@ -117,96 +113,94 @@ export const AgentSelectionModal: React.FC<AgentSelectionModalProps> = ({
         >
           <Close />
         </IconButton>
-          <div
-            style={{
-              width: 80,
-              height: 80,
-              margin: '0 auto 16px',
-              borderRadius: '50%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              position: 'relative',
-              background: agent.colorScheme.gradient,
-              boxShadow: `0 0 40px ${alpha(agent.colorScheme.primary, 0.5)}`,
-            }}
-          >
-            {typeof agent.avatar === 'string' ? (
-              <Avatar
-                src={agent.avatar}
-                alt={agent.name}
-                sx={{
-                  width: 72,
-                  height: 72,
-                  border: '2px solid rgba(255, 255, 255, 0.2)',
-                }}
-              />
-            ) : agent.avatar && typeof agent.avatar === 'object' ? (
-              <div
-                style={{
-                  width: 72,
-                  height: 72,
-                  borderRadius: '50%',
-                  backgroundColor: agent.avatar.backgroundColor,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  border: '2px solid rgba(255, 255, 255, 0.2)',
-                }}
-              >
-                {React.createElement(agent.avatar.icon, {
-                  size: 32,
-                  color: agent.avatar.iconColor,
-                })}
-              </div>
-            ) : (
-              <div style={{ color: 'white', fontSize: 32 }}>
-                {'🤖'}
-              </div>
-            )}
-          </div>
+        <div
+          style={{
+            width: 80,
+            height: 80,
+            margin: '0 auto 16px',
+            borderRadius: '50%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            position: 'relative',
+            background: agent.colorScheme.gradient,
+            boxShadow: `0 0 40px ${alpha(agent.colorScheme.primary, 0.5)}`,
+          }}
+        >
+          {typeof agent.avatar === 'string' ? (
+            <Avatar
+              src={agent.avatar}
+              alt={agent.name}
+              sx={{
+                width: 72,
+                height: 72,
+                border: '2px solid rgba(255, 255, 255, 0.2)',
+              }}
+            />
+          ) : agent.avatar && typeof agent.avatar === 'object' ? (
+            <div
+              style={{
+                width: 72,
+                height: 72,
+                borderRadius: '50%',
+                backgroundColor: agent.avatar.backgroundColor,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                border: '2px solid rgba(255, 255, 255, 0.2)',
+              }}
+            >
+              {React.createElement(agent.avatar.icon, {
+                size: 32,
+                color: agent.avatar.iconColor,
+              })}
+            </div>
+          ) : (
+            <div style={{ color: 'white', fontSize: 32 }}>{'🤖'}</div>
+          )}
+        </div>
 
-          <Typography variant="h5" sx={{ color: 'white', mb: 1, fontWeight: 600 }}>
-            {agent.name}
-          </Typography>
-          
-          <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.7)', mb: 4 }}>
-            {agent.tagline}
-          </Typography>
+        <Typography variant="h5" sx={{ color: 'white', mb: 1, fontWeight: 600 }}>
+          {agent.name}
+        </Typography>
 
-          <div style={{ display: 'flex', gap: 16, justifyContent: 'center' }}>
-            <Tooltip title="Ask anything. Your AI will reply instantly." arrow>
-              <MessageButton
-                onClick={() => handleSelectMode('message')}
-                startIcon={<Chat />}
-                size="large"
-              >
-                Message
-              </MessageButton>
-            </Tooltip>
+        <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.7)', mb: 4 }}>
+          {agent.tagline}
+        </Typography>
 
-            <Tooltip title="Start a real-time voice session with this agent." arrow>
-              <ConverseButton
-                onClick={() => handleSelectMode('converse')}
-                startIcon={<Mic />}
-                size="large"
-              >
-                Converse
-              </ConverseButton>
-            </Tooltip>
-          </div>
+        <div style={{ display: 'flex', gap: 16, justifyContent: 'center' }}>
+          <Tooltip title="Ask anything. Your AI will reply instantly." arrow>
+            <MessageButton
+              onClick={() => handleSelectMode('message')}
+              startIcon={<Chat />}
+              size="large"
+            >
+              Message
+            </MessageButton>
+          </Tooltip>
 
-          <Typography
-            variant="caption"
-            sx={{
-              display: 'block',
-              mt: 3,
-              color: 'rgba(255, 255, 255, 0.5)',
-              fontStyle: 'italic',
-            }}
-          >
-            Choose your preferred communication method
-          </Typography>
+          <Tooltip title="Start a real-time voice session with this agent." arrow>
+            <ConverseButton
+              onClick={() => handleSelectMode('converse')}
+              startIcon={<Mic />}
+              size="large"
+            >
+              Converse
+            </ConverseButton>
+          </Tooltip>
+        </div>
+
+        <Typography
+          variant="caption"
+          sx={{
+            display: 'block',
+            mt: 3,
+            color: 'rgba(255, 255, 255, 0.5)',
+            fontStyle: 'italic',
+          }}
+        >
+          Choose your preferred communication method
+        </Typography>
       </DialogContent>
     </StyledDialog>
   );

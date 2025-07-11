@@ -15,22 +15,22 @@ export class PerformanceMonitor {
     const measure = () => {
       const now = performance.now();
       const delta = now - this.lastFrameTime;
-      
+
       this.frameCount++;
-      
+
       if (delta >= 1000) {
         this.fps = Math.round((this.frameCount * 1000) / delta);
         this.frameCount = 0;
         this.lastFrameTime = now;
-        
+
         this.updateMemory();
         this.updateTemperature();
         this.notifyCallbacks();
       }
-      
+
       this.rafId = requestAnimationFrame(measure);
     };
-    
+
     measure();
   }
 
@@ -56,7 +56,7 @@ export class PerformanceMonitor {
 
   private notifyCallbacks() {
     const metrics = this.getMetrics();
-    this.callbacks.forEach(cb => cb(metrics));
+    this.callbacks.forEach((cb) => cb(metrics));
   }
 
   public getMetrics(): PerformanceMetrics {
@@ -64,7 +64,7 @@ export class PerformanceMonitor {
       fps: this.fps,
       memory: this.memory,
       temperature: this.temperature,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
   }
 

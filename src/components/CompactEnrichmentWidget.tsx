@@ -9,7 +9,7 @@ import {
   Collapse,
   Alert,
   useMediaQuery,
-  useTheme
+  useTheme,
 } from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useDropzone } from 'react-dropzone';
@@ -28,11 +28,14 @@ interface CompactEnrichmentWidgetProps {
   embedded?: boolean; // When true, removes fixed positioning
 }
 
-export const CompactEnrichmentWidget: React.FC<CompactEnrichmentWidgetProps> = ({ onEnrichmentComplete, embedded = false }) => {
+export const CompactEnrichmentWidget: React.FC<CompactEnrichmentWidgetProps> = ({
+  onEnrichmentComplete,
+  embedded = false,
+}) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const isTablet = useMediaQuery(theme.breakpoints.down('md'));
-  
+
   const [expanded, setExpanded] = useState(embedded && (isMobile || isTablet));
   const [file, setFile] = useState<File | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -45,7 +48,8 @@ export const CompactEnrichmentWidget: React.FC<CompactEnrichmentWidgetProps> = (
       setFile(acceptedFiles[0]);
       setError(null);
       // Auto-process small files
-      if (acceptedFiles[0].size < 1024 * 100) { // Less than 100KB
+      if (acceptedFiles[0].size < 1024 * 100) {
+        // Less than 100KB
         processFile(acceptedFiles[0]);
       }
     }
@@ -56,35 +60,35 @@ export const CompactEnrichmentWidget: React.FC<CompactEnrichmentWidgetProps> = (
     accept: {
       'text/csv': ['.csv'],
       'application/vnd.ms-excel': ['.xls'],
-      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx']
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
     },
     maxFiles: 1,
-    multiple: false
+    multiple: false,
   });
 
   const processFile = async (fileToProcess: File) => {
     setIsProcessing(true);
     setProgress(0);
-    
+
     try {
       const data = await parseFile(fileToProcess);
-      
+
       // Process leads with progress updates
-      const leadsToEnrich = data.map(lead => ({
+      const leadsToEnrich = data.map((lead) => ({
         firstName: lead.firstName || lead['First Name'] || '',
         lastName: lead.lastName || lead['Last Name'] || '',
         email: lead.email || lead.Email || '',
         phone: lead.phone || lead.Phone || '',
         company: lead.company || lead.Company || '',
-        title: lead.title || lead.Title || ''
+        title: lead.title || lead.Title || '',
       }));
 
       // Enrich all leads at once
       const enrichedLeads = await EnrichmentEngine.enrichLeads(leadsToEnrich, undefined, true);
-      
+
       // Simulate progress for UX
       for (let i = 0; i < enrichedLeads.length; i++) {
-        await new Promise(resolve => setTimeout(resolve, 100)); // Small delay for progress animation
+        await new Promise((resolve) => setTimeout(resolve, 100)); // Small delay for progress animation
         setProgress(Math.round(((i + 1) / enrichedLeads.length) * 100));
         setEnrichedCount(i + 1);
       }
@@ -96,7 +100,7 @@ export const CompactEnrichmentWidget: React.FC<CompactEnrichmentWidgetProps> = (
         file_name: fileToProcess.name,
         total_leads: data.length,
         enriched_leads: enrichedLeads.length,
-        is_authenticated: false
+        is_authenticated: false,
       });
 
       // Notify parent component
@@ -120,7 +124,7 @@ export const CompactEnrichmentWidget: React.FC<CompactEnrichmentWidgetProps> = (
           complete: (result) => resolve(result.data),
           header: true,
           skipEmptyLines: true,
-          error: reject
+          error: reject,
         });
       } else {
         const reader = new FileReader();
@@ -148,7 +152,7 @@ export const CompactEnrichmentWidget: React.FC<CompactEnrichmentWidgetProps> = (
       borderRadius: '16px',
       overflow: 'hidden',
       transition: 'all 0.3s ease',
-      boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)'
+      boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
     };
 
     // For embedded mode, return simplified styles
@@ -156,17 +160,17 @@ export const CompactEnrichmentWidget: React.FC<CompactEnrichmentWidgetProps> = (
       const widthMap = {
         mobile: { expanded: 240, collapsed: 140 },
         tablet: { expanded: 220, collapsed: 130 },
-        desktop: { expanded: 180, collapsed: 100 }
+        desktop: { expanded: 180, collapsed: 100 },
       };
-      
+
       const currentSize = isMobile ? 'mobile' : isTablet ? 'tablet' : 'desktop';
       const width = widthMap[currentSize];
-      
+
       return {
         ...baseStyles,
         width: expanded ? width.expanded : 'auto',
-        minWidth: expanded ? (width.expanded - 40) : width.collapsed,
-        maxWidth: expanded ? (width.expanded + 40) : (width.collapsed + 20),
+        minWidth: expanded ? width.expanded - 40 : width.collapsed,
+        maxWidth: expanded ? width.expanded + 40 : width.collapsed + 20,
         fontSize: isMobile ? '0.875rem' : isTablet ? '0.8rem' : '0.75rem',
       };
     }
@@ -188,7 +192,7 @@ export const CompactEnrichmentWidget: React.FC<CompactEnrichmentWidgetProps> = (
         width: 'auto',
         maxWidth: expanded ? '100%' : 200,
         transform: expanded ? 'scale(1)' : 'scale(0.8)',
-        transformOrigin: 'bottom right'
+        transformOrigin: 'bottom right',
       };
     } else if (isTablet) {
       return {
@@ -212,20 +216,54 @@ export const CompactEnrichmentWidget: React.FC<CompactEnrichmentWidgetProps> = (
       {/* Header */}
       <div
         style={{
-          padding: embedded ? (isMobile ? '8px 12px' : '6px 10px') : isMobile ? '8px 12px' : '12px 16px',
-          background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%)',
+          padding: embedded
+            ? isMobile
+              ? '8px 12px'
+              : '6px 10px'
+            : isMobile
+              ? '8px 12px'
+              : '12px 16px',
+          background:
+            'linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%)',
           borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
           cursor: 'pointer',
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'space-between'
+          justifyContent: 'space-between',
         }}
         onClick={() => !isProcessing && setExpanded(!expanded)}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: embedded ? (isMobile ? 6 : isTablet ? 5 : 4) : isMobile ? 6 : 8 }}>
-          <AutoFixHighIcon sx={{ color: '#EC4899', fontSize: embedded ? (isMobile ? 16 : isTablet ? 14 : 12) : isMobile ? 16 : 20 }} />
-          <Typography variant="caption" sx={{ fontWeight: 600, fontSize: embedded ? (isMobile ? '0.8rem' : isTablet ? '0.75rem' : '0.65rem') : '0.75rem' }}>
-            {embedded ? (isMobile || isTablet ? 'Lead Enricher' : 'Enricher') : 'Instant Lead Enricher'}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: embedded ? (isMobile ? 6 : isTablet ? 5 : 4) : isMobile ? 6 : 8,
+          }}
+        >
+          <AutoFixHighIcon
+            sx={{
+              color: '#EC4899',
+              fontSize: embedded ? (isMobile ? 16 : isTablet ? 14 : 12) : isMobile ? 16 : 20,
+            }}
+          />
+          <Typography
+            variant="caption"
+            sx={{
+              fontWeight: 600,
+              fontSize: embedded
+                ? isMobile
+                  ? '0.8rem'
+                  : isTablet
+                    ? '0.75rem'
+                    : '0.65rem'
+                : '0.75rem',
+            }}
+          >
+            {embedded
+              ? isMobile || isTablet
+                ? 'Lead Enricher'
+                : 'Enricher'
+              : 'Instant Lead Enricher'}
           </Typography>
           {enrichedCount > 0 && !isProcessing && (
             <Chip
@@ -236,13 +274,25 @@ export const CompactEnrichmentWidget: React.FC<CompactEnrichmentWidgetProps> = (
                 height: 20,
                 fontSize: '0.75rem',
                 background: 'rgba(0, 255, 136, 0.1)',
-                border: '1px solid rgba(0, 255, 136, 0.3)'
+                border: '1px solid rgba(0, 255, 136, 0.3)',
               }}
             />
           )}
         </div>
-        <IconButton size="small" disabled={isProcessing} sx={{ padding: embedded ? (isMobile ? '4px' : isTablet ? '2px' : '1px') : '8px' }}>
-          {expanded ? <ExpandLessIcon sx={{ fontSize: embedded ? (isMobile ? 18 : isTablet ? 16 : 14) : 20 }} /> : <ExpandMoreIcon sx={{ fontSize: embedded ? (isMobile ? 18 : isTablet ? 16 : 14) : 20 }} />}
+        <IconButton
+          size="small"
+          disabled={isProcessing}
+          sx={{ padding: embedded ? (isMobile ? '4px' : isTablet ? '2px' : '1px') : '8px' }}
+        >
+          {expanded ? (
+            <ExpandLessIcon
+              sx={{ fontSize: embedded ? (isMobile ? 18 : isTablet ? 16 : 14) : 20 }}
+            />
+          ) : (
+            <ExpandMoreIcon
+              sx={{ fontSize: embedded ? (isMobile ? 18 : isTablet ? 16 : 14) : 20 }}
+            />
+          )}
         </IconButton>
       </div>
 
@@ -260,15 +310,29 @@ export const CompactEnrichmentWidget: React.FC<CompactEnrichmentWidgetProps> = (
                   textAlign: 'center',
                   cursor: 'pointer',
                   background: isDragActive ? 'rgba(99, 102, 241, 0.1)' : 'transparent',
-                  transition: 'all 0.3s ease'
+                  transition: 'all 0.3s ease',
                 }}
               >
                 <input {...getInputProps()} />
-                <UploadFileIcon sx={{ fontSize: embedded ? (isMobile ? 32 : 24) : 40, color: 'rgba(255, 255, 255, 0.4)', mb: embedded ? 0.5 : 1 }} />
-                <Typography variant="caption" color="text.secondary" sx={{ fontSize: embedded ? (isMobile ? '0.8rem' : '0.65rem') : '0.875rem' }}>
+                <UploadFileIcon
+                  sx={{
+                    fontSize: embedded ? (isMobile ? 32 : 24) : 40,
+                    color: 'rgba(255, 255, 255, 0.4)',
+                    mb: embedded ? 0.5 : 1,
+                  }}
+                />
+                <Typography
+                  variant="caption"
+                  color="text.secondary"
+                  sx={{ fontSize: embedded ? (isMobile ? '0.8rem' : '0.65rem') : '0.875rem' }}
+                >
                   Drop CSV/Excel
                 </Typography>
-                <Typography variant="caption" color="text.secondary" sx={{ fontSize: embedded ? (isMobile ? '0.75rem' : '0.6rem') : '0.75rem' }}>
+                <Typography
+                  variant="caption"
+                  color="text.secondary"
+                  sx={{ fontSize: embedded ? (isMobile ? '0.75rem' : '0.6rem') : '0.75rem' }}
+                >
                   or click to browse
                 </Typography>
               </div>
@@ -281,9 +345,11 @@ export const CompactEnrichmentWidget: React.FC<CompactEnrichmentWidgetProps> = (
                 onClick={() => {
                   // Use sample data
                   const sampleFile = new File(
-                    [`First Name,Last Name,Email,Company
+                    [
+                      `First Name,Last Name,Email,Company
 John,Doe,john@example.com,Acme Corp
-Jane,Smith,jane@example.com,Tech Co`],
+Jane,Smith,jane@example.com,Tech Co`,
+                    ],
                     'sample.csv',
                     { type: 'text/csv' }
                   );
@@ -293,19 +359,19 @@ Jane,Smith,jane@example.com,Tech Co`],
               >
                 Try with sample data
               </Button>
-              
+
               <Button
                 variant="text"
                 size="small"
                 fullWidth
-                sx={{ 
+                sx={{
                   mt: 1,
                   color: 'primary.main',
                   textDecoration: 'underline',
                   '&:hover': {
                     textDecoration: 'underline',
-                    backgroundColor: 'rgba(99, 102, 241, 0.08)'
-                  }
+                    backgroundColor: 'rgba(99, 102, 241, 0.08)',
+                  },
                 }}
                 onClick={() => window.open('/demo', '_blank')}
               >
@@ -317,18 +383,18 @@ Jane,Smith,jane@example.com,Tech Co`],
               <Typography variant="body2" sx={{ mb: 2 }}>
                 Enriching {enrichedCount} of {file?.name}...
               </Typography>
-              <LinearProgress 
-                variant="determinate" 
-                value={progress} 
-                sx={{ 
-                  height: 8, 
+              <LinearProgress
+                variant="determinate"
+                value={progress}
+                sx={{
+                  height: 8,
                   borderRadius: 4,
                   background: 'rgba(255, 255, 255, 0.1)',
                   '& .MuiLinearProgress-bar': {
                     background: 'linear-gradient(90deg, #6366F1 0%, #EC4899 100%)',
-                    borderRadius: 4
-                  }
-                }} 
+                    borderRadius: 4,
+                  },
+                }}
               />
               <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
                 {progress}% complete
@@ -344,7 +410,7 @@ Jane,Smith,jane@example.com,Tech Co`],
                 fullWidth
                 onClick={() => processFile(file)}
                 sx={{
-                  background: 'linear-gradient(135deg, #6366F1 0%, #EC4899 100%)'
+                  background: 'linear-gradient(135deg, #6366F1 0%, #EC4899 100%)',
                 }}
               >
                 Start Enrichment
@@ -375,7 +441,7 @@ Jane,Smith,jane@example.com,Tech Co`],
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                borderRadius: 16
+                borderRadius: 16,
               }}
             >
               <Typography variant="caption">Drop file here</Typography>

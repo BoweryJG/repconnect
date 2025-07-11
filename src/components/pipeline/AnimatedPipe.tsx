@@ -19,30 +19,30 @@ export const AnimatedPipe: React.FC<AnimatedPipeProps> = ({
 }) => {
   const [pathLength, setPathLength] = useState(0);
   const pathRef = useRef<SVGPathElement>(null);
-  
+
   const path = useMemo(() => {
-    return config.segments.map(segment => segmentToPath(segment)).join(' ');
+    return config.segments.map((segment) => segmentToPath(segment)).join(' ');
   }, [config.segments]);
-  
+
   useEffect(() => {
     if (pathRef.current) {
       setPathLength(pathRef.current.getTotalLength());
     }
   }, [path]);
-  
+
   const gradientId = `gradient-${config.id}`;
   const filterId = `glow-${config.id}`;
-  
+
   const strokeWidth = useMemo(() => {
     const baseWidth = config.segments[0]?.width || 3;
     if (isSelected) return baseWidth * 1.3;
     if (isHovered) return baseWidth * 1.15;
     return baseWidth;
   }, [config.segments, isHovered, isSelected]);
-  
+
   const animationDuration = config.animationDuration || 3;
   const flowSpeed = config.flowSpeed || 1;
-  
+
   return (
     <g
       className="animated-pipe"
@@ -53,8 +53,8 @@ export const AnimatedPipe: React.FC<AnimatedPipeProps> = ({
     >
       <defs>
         <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop 
-            offset="0%" 
+          <stop
+            offset="0%"
             stopColor={config.gradientStart || config.color || '#00ffff'}
             stopOpacity={0.8}
           >
@@ -65,8 +65,8 @@ export const AnimatedPipe: React.FC<AnimatedPipeProps> = ({
               repeatCount="indefinite"
             />
           </stop>
-          <stop 
-            offset="100%" 
+          <stop
+            offset="100%"
             stopColor={config.gradientEnd || config.color || '#ff00ff'}
             stopOpacity={0.8}
           >
@@ -78,7 +78,7 @@ export const AnimatedPipe: React.FC<AnimatedPipeProps> = ({
             />
           </stop>
         </linearGradient>
-        
+
         <filter id={filterId}>
           <feGaussianBlur stdDeviation={config.glowIntensity || 2} />
           <feComponentTransfer>
@@ -86,7 +86,7 @@ export const AnimatedPipe: React.FC<AnimatedPipeProps> = ({
           </feComponentTransfer>
         </filter>
       </defs>
-      
+
       {/* Glow layer */}
       <path
         d={path}
@@ -97,7 +97,7 @@ export const AnimatedPipe: React.FC<AnimatedPipeProps> = ({
         filter={`url(#${filterId})`}
         className="pipe-glow"
       />
-      
+
       {/* Main pipe */}
       <path
         ref={pathRef}
@@ -112,11 +112,13 @@ export const AnimatedPipe: React.FC<AnimatedPipeProps> = ({
         style={{
           strokeDasharray: pathLength ? `${pathLength * 0.15} ${pathLength * 0.05}` : undefined,
           strokeDashoffset: 0,
-          animation: pathLength ? `flow ${animationDuration / flowSpeed}s linear infinite` : undefined,
+          animation: pathLength
+            ? `flow ${animationDuration / flowSpeed}s linear infinite`
+            : undefined,
           transition: 'stroke-width 0.3s ease, opacity 0.3s ease',
         }}
       />
-      
+
       {/* Flow particles */}
       {config.segments.map((_, index) => (
         <circle
@@ -149,14 +151,9 @@ export const AnimatedPipe: React.FC<AnimatedPipeProps> = ({
           />
         </circle>
       ))}
-      
+
       {/* Hidden path for particle animation */}
-      <path
-        id={`path-${config.id}`}
-        d={path}
-        fill="none"
-        stroke="none"
-      />
+      <path id={`path-${config.id}`} d={path} fill="none" stroke="none" />
     </g>
   );
 };

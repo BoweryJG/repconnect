@@ -29,7 +29,7 @@ interface AISettingsProps {
 
 export const AISettings: React.FC<AISettingsProps> = ({ open, onClose }) => {
   const { aiEnabled, toggleAI } = useStore();
-  
+
   // AI Settings State
   const [settings, setSettings] = useState({
     autoDialing: true,
@@ -85,20 +85,23 @@ export const AISettings: React.FC<AISettingsProps> = ({ open, onClose }) => {
       fullWidth
       PaperProps={{
         sx: {
-          background: 'linear-gradient(135deg, rgba(26, 26, 26, 0.98) 0%, rgba(40, 40, 40, 0.95) 100%)',
+          background:
+            'linear-gradient(135deg, rgba(26, 26, 26, 0.98) 0%, rgba(40, 40, 40, 0.95) 100%)',
           backdropFilter: 'blur(20px)',
           border: '1px solid rgba(255, 255, 255, 0.1)',
           borderRadius: 3,
         },
       }}
     >
-      <DialogTitle sx={{ 
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        alignItems: 'center',
-        borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
-        pb: 2,
-      }}>
+      <DialogTitle
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+          pb: 2,
+        }}
+      >
         <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
           {/* Pipeline Logo Link */}
           <div
@@ -124,20 +127,40 @@ export const AISettings: React.FC<AISettingsProps> = ({ open, onClose }) => {
             }}
           >
             <div style={{ width: 24, height: 24, position: 'relative' }}>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" style={{ width: '100%', height: '100%' }}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 32 32"
+                style={{ width: '100%', height: '100%' }}
+              >
                 <defs>
                   <linearGradient id="pipelineGradAI" x1="0%" y1="0%" x2="100%" y2="100%">
                     <stop offset="0%" stopColor="#9f58fa" />
                     <stop offset="100%" stopColor="#4B96DC" />
                   </linearGradient>
                 </defs>
-                <circle cx="16" cy="16" r="12" fill="none" stroke="url(#pipelineGradAI)" strokeWidth="2" opacity="0.8" />
-                <circle cx="16" cy="16" r="8" fill="none" stroke="url(#pipelineGradAI)" strokeWidth="1.5" opacity="0.5" />
+                <circle
+                  cx="16"
+                  cy="16"
+                  r="12"
+                  fill="none"
+                  stroke="url(#pipelineGradAI)"
+                  strokeWidth="2"
+                  opacity="0.8"
+                />
+                <circle
+                  cx="16"
+                  cy="16"
+                  r="8"
+                  fill="none"
+                  stroke="url(#pipelineGradAI)"
+                  strokeWidth="1.5"
+                  opacity="0.5"
+                />
                 <circle cx="16" cy="16" r="3" fill="url(#pipelineGradAI)" />
               </svg>
             </div>
-            <Typography 
-              sx={{ 
+            <Typography
+              sx={{
                 fontFamily: 'Orbitron, monospace',
                 fontWeight: 600,
                 fontSize: '14px',
@@ -147,9 +170,9 @@ export const AISettings: React.FC<AISettingsProps> = ({ open, onClose }) => {
               Pipeline
             </Typography>
           </div>
-          <Typography 
-            variant="h5" 
-            sx={{ 
+          <Typography
+            variant="h5"
+            sx={{
               fontWeight: 700,
               background: 'linear-gradient(135deg, #FFFFFF 0%, #6366F1 100%)',
               backgroundClip: 'text',
@@ -180,12 +203,7 @@ export const AISettings: React.FC<AISettingsProps> = ({ open, onClose }) => {
         >
           <FormControlLabel
             control={
-              <Switch
-                checked={aiEnabled}
-                onChange={toggleAI}
-                color="primary"
-                size="medium"
-              />
+              <Switch checked={aiEnabled} onChange={toggleAI} color="primary" size="medium" />
             }
             label={
               <Typography variant="h6" sx={{ fontWeight: 600 }}>
@@ -202,7 +220,7 @@ export const AISettings: React.FC<AISettingsProps> = ({ open, onClose }) => {
         <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
           Call Management
         </Typography>
-        
+
         <FormControlLabel
           control={
             <Switch
@@ -303,7 +321,9 @@ export const AISettings: React.FC<AISettingsProps> = ({ open, onClose }) => {
         <Typography gutterBottom>Confidence Threshold: {settings.confidenceThreshold}%</Typography>
         <Slider
           value={settings.confidenceThreshold}
-          onChange={(_, value) => setSettings({ ...settings, confidenceThreshold: value as number })}
+          onChange={(_, value) =>
+            setSettings({ ...settings, confidenceThreshold: value as number })
+          }
           min={0}
           max={100}
           disabled={!aiEnabled}
@@ -351,7 +371,9 @@ export const AISettings: React.FC<AISettingsProps> = ({ open, onClose }) => {
           control={
             <Switch
               checked={settings.personalityAdaptation}
-              onChange={(e) => setSettings({ ...settings, personalityAdaptation: e.target.checked })}
+              onChange={(e) =>
+                setSettings({ ...settings, personalityAdaptation: e.target.checked })
+              }
               disabled={!aiEnabled}
             />
           }

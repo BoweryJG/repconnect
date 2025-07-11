@@ -16,20 +16,24 @@ export const PipeNode: React.FC<PipeNodeProps> = ({
 }) => {
   const radius = config.radius || 8;
   const pulseRadius = radius * 2;
-  
+
   const getNodeColor = () => {
     if (config.color) return config.color;
     switch (config.type) {
-      case 'source': return '#00ff88';
-      case 'sink': return '#ff0088';
-      case 'junction': return '#88aaff';
-      default: return '#ffffff';
+      case 'source':
+        return '#00ff88';
+      case 'sink':
+        return '#ff0088';
+      case 'junction':
+        return '#88aaff';
+      default:
+        return '#ffffff';
     }
   };
-  
+
   const nodeColor = getNodeColor();
   const filterId = `node-glow-${config.id}`;
-  
+
   return (
     <g
       className="pipe-node"
@@ -44,7 +48,7 @@ export const PipeNode: React.FC<PipeNodeProps> = ({
           <stop offset="70%" stopColor={nodeColor} stopOpacity={0.6} />
           <stop offset="100%" stopColor={nodeColor} stopOpacity={0.2} />
         </radialGradient>
-        
+
         <filter id={filterId}>
           <feGaussianBlur stdDeviation="3" />
           <feComponentTransfer>
@@ -52,7 +56,7 @@ export const PipeNode: React.FC<PipeNodeProps> = ({
           </feComponentTransfer>
         </filter>
       </defs>
-      
+
       {/* Pulse rings */}
       {[0, 1, 2].map((i) => (
         <circle
@@ -89,7 +93,7 @@ export const PipeNode: React.FC<PipeNodeProps> = ({
           />
         </circle>
       ))}
-      
+
       {/* Glow effect */}
       <circle
         cx={config.position.x}
@@ -104,7 +108,7 @@ export const PipeNode: React.FC<PipeNodeProps> = ({
           transition: 'transform 0.3s ease',
         }}
       />
-      
+
       {/* Core node */}
       <circle
         cx={config.position.x}
@@ -119,7 +123,7 @@ export const PipeNode: React.FC<PipeNodeProps> = ({
           transition: 'filter 0.3s ease',
         }}
       />
-      
+
       {/* Inner glow */}
       <circle
         cx={config.position.x}
@@ -129,12 +133,7 @@ export const PipeNode: React.FC<PipeNodeProps> = ({
         opacity={0.8}
         className="node-inner"
       >
-        <animate
-          attributeName="opacity"
-          values="0.8;0.4;0.8"
-          dur="1.5s"
-          repeatCount="indefinite"
-        />
+        <animate attributeName="opacity" values="0.8;0.4;0.8" dur="1.5s" repeatCount="indefinite" />
       </circle>
     </g>
   );

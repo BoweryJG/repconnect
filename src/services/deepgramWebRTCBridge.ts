@@ -28,7 +28,7 @@ export class DeepgramWebRTCBridge extends EventEmitter {
       apiKey: process.env.REACT_APP_DEEPGRAM_API_KEY || '',
       model: 'nova-2',
       language: 'en-US',
-      sampleRate: 16000
+      sampleRate: 16000,
     };
 
     // Initialize Deepgram client
@@ -40,14 +40,12 @@ export class DeepgramWebRTCBridge extends EventEmitter {
 
   private setupWebRTCAudioHandler(): void {
     // Listen for audio data from WebRTC service
-    webRTCVoiceService.on('audio-data', (data: {
-      sessionId: string;
-      audio: Int16Array;
-      sampleRate: number;
-      timestamp: number;
-    }) => {
-      this.handleWebRTCAudio(data);
-    });
+    webRTCVoiceService.on(
+      'audio-data',
+      (data: { sessionId: string; audio: Int16Array; sampleRate: number; timestamp: number }) => {
+        this.handleWebRTCAudio(data);
+      }
+    );
   }
 
   private handleWebRTCAudio(data: {
@@ -58,13 +56,13 @@ export class DeepgramWebRTCBridge extends EventEmitter {
   }): void {
     // Resample if necessary (WebRTC uses 48kHz, Deepgram can handle various rates)
     const resampledAudio = this.resampleAudio(data.audio, data.sampleRate, this.config.sampleRate);
-    
+
     // Buffer audio for batch processing
     if (!this.audioBuffers.has(data.sessionId)) {
       this.audioBuffers.set(data.sessionId, {
         sessionId: data.sessionId,
         buffer: [],
-        lastProcessed: Date.now()
+        lastProcessed: Date.now(),
       });
     }
 
@@ -76,7 +74,7 @@ export class DeepgramWebRTCBridge extends EventEmitter {
     if (!input || input.length === 0) {
       return new Int16Array(0);
     }
-    
+
     if (inputRate === outputRate) {
       return input;
     }
@@ -112,7 +110,7 @@ export class DeepgramWebRTCBridge extends EventEmitter {
       const combinedAudio = new Int16Array(totalLength);
       let offset = 0;
 
-      buffer.buffer.forEach(chunk => {
+      buffer.buffer.forEach((chunk) => {
         if (chunk && chunk.length > 0) {
           combinedAudio.set(chunk, offset);
           offset += chunk.length;
@@ -129,7 +127,8 @@ export class DeepgramWebRTCBridge extends EventEmitter {
 
     // Clean up stale buffers
     this.audioBuffers.forEach((buffer, sessionId) => {
-      if (Date.now() - buffer.lastProcessed > 30000) { // 30 seconds
+      if (Date.now() - buffer.lastProcessed > 30000) {
+        // 30 seconds
         this.audioBuffers.delete(sessionId);
       }
     });
@@ -137,7 +136,7 @@ export class DeepgramWebRTCBridge extends EventEmitter {
 
   async connectToDeepgram(sessionId: string): Promise<void> {
     if (this.liveConnections.has(sessionId)) {
-            return;
+      return;
     }
 
     try {
@@ -154,12 +153,12 @@ export class DeepgramWebRTCBridge extends EventEmitter {
         interim_results: true,
         utterance_end_ms: 1000,
         vad_events: true,
-        diarize: true
+        diarize: true,
       });
 
       // Set up event handlers
       connection.on(LiveTranscriptionEvents.Open, () => {
-                this.emit('connected', sessionId);
+        this.emit('connected', sessionId);
       });
 
       connection.on(LiveTranscriptionEvents.Transcript, (data) => {
@@ -169,7 +168,7 @@ export class DeepgramWebRTCBridge extends EventEmitter {
       connection.on(LiveTranscriptionEvents.UtteranceEnd, (data) => {
         this.emit('utterance-end', {
           sessionId,
-          ...data
+          ...data,
         });
       });
 
@@ -178,20 +177,20 @@ export class DeepgramWebRTCBridge extends EventEmitter {
       });
 
       connection.on(LiveTranscriptionEvents.Error, (error) => {
-                this.emit('error', { sessionId, error });
+        this.emit('error', { sessionId, error });
       });
 
       connection.on(LiveTranscriptionEvents.Close, () => {
-                this.liveConnections.delete(sessionId);
+        this.liveConnections.delete(sessionId);
         this.audioBuffers.delete(sessionId);
         this.emit('disconnected', sessionId);
       });
 
       this.liveConnections.set(sessionId, connection);
-      
+
       // Connection starts automatically when created with deepgram.listen.live()
     } catch (error) {
-            throw error;
+      throw error;
     }
   }
 
@@ -219,7 +218,7 @@ export class DeepgramWebRTCBridge extends EventEmitter {
       language: data.channel?.alternatives?.[0]?.language || this.config.language,
       timestamp: Date.now(),
       speaker,
-      words: transcript.words || []
+      words: transcript.words || [],
     });
 
     // Send transcript to WebRTC data channel
@@ -230,25 +229,28 @@ export class DeepgramWebRTCBridge extends EventEmitter {
         text: transcript.transcript,
         isFinal: data.is_final || false,
         confidence: transcript.confidence,
-        speaker
+        speaker,
       });
     }
   }
 
   // Voice Agent API integration (for full conversational AI)
-  async startVoiceAgent(sessionId: string, config?: {
-    agent?: string;
-    model?: string;
-    voice?: string;
-  }): Promise<void> {
+  async startVoiceAgent(
+    sessionId: string,
+    config?: {
+      agent?: string;
+      model?: string;
+      voice?: string;
+    }
+  ): Promise<void> {
     try {
       // Note: Deepgram Voice Agent API is still in beta
       // This is a placeholder for when it's fully available
-            
+
       // For now, we'll use transcription + separate TTS
       await this.connectToDeepgram(sessionId);
     } catch (error) {
-            throw error;
+      throw error;
     }
   }
 
@@ -257,19 +259,19 @@ export class DeepgramWebRTCBridge extends EventEmitter {
     try {
       // For now, we'll skip TTS implementation since it's not critical for WebRTC voice
       // Deepgram SDK v4 TTS API is different and would need proper implementation
-            
+
       // Return empty audio buffer
       const emptyBuffer = new ArrayBuffer(0);
-      
+
       this.emit('synthesis', {
         sessionId,
         audio: new Uint8Array(emptyBuffer),
-        text
+        text,
       });
 
       return emptyBuffer;
     } catch (error) {
-            throw error;
+      throw error;
     }
   }
 
@@ -279,9 +281,9 @@ export class DeepgramWebRTCBridge extends EventEmitter {
     this.emit('coaching-message', {
       sessionId,
       text,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
-    
+
     // Optionally, we could use Deepgram's TTS here to convert text to speech
     // For now, we'll just emit the text for UI display
   }
@@ -301,7 +303,7 @@ export class DeepgramWebRTCBridge extends EventEmitter {
       this.processingInterval = null;
     }
 
-    const promises = Array.from(this.liveConnections.keys()).map(sessionId => 
+    const promises = Array.from(this.liveConnections.keys()).map((sessionId) =>
       this.disconnect(sessionId)
     );
     await Promise.all(promises);

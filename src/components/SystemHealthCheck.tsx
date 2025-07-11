@@ -9,7 +9,7 @@ export const SystemHealthCheck = () => {
     backend: 'checking',
     database: 'checking',
     harvey: 'checking',
-    config: 'checking'
+    config: 'checking',
   });
 
   useEffect(() => {
@@ -19,36 +19,38 @@ export const SystemHealthCheck = () => {
   const checkHealth = async () => {
     // Check configuration
     const configValidation = validateServiceConfig();
-    setHealth(prev => ({ 
-      ...prev, 
-      config: configValidation.allValid ? 'healthy' : 'error' 
+    setHealth((prev) => ({
+      ...prev,
+      config: configValidation.allValid ? 'healthy' : 'error',
     }));
 
     // Check backend
     try {
       const response = await fetch(`${SERVICE_CONFIG.backend.url}/health`);
       const data = await response.json();
-      setHealth(prev => ({ 
-        ...prev, 
-        backend: data.status === 'healthy' ? 'healthy' : 'error' 
+      setHealth((prev) => ({
+        ...prev,
+        backend: data.status === 'healthy' ? 'healthy' : 'error',
       }));
     } catch {
-      setHealth(prev => ({ ...prev, backend: 'error' }));
+      setHealth((prev) => ({ ...prev, backend: 'error' }));
     }
 
     // Check Harvey
     try {
-      const response = await fetch(`${SERVICE_CONFIG.backend.url}/api/harvey/metrics?userId=health-check`);
-      setHealth(prev => ({ 
-        ...prev, 
-        harvey: response.ok ? 'healthy' : 'error' 
+      const response = await fetch(
+        `${SERVICE_CONFIG.backend.url}/api/harvey/metrics?userId=health-check`
+      );
+      setHealth((prev) => ({
+        ...prev,
+        harvey: response.ok ? 'healthy' : 'error',
       }));
     } catch {
-      setHealth(prev => ({ ...prev, harvey: 'error' }));
+      setHealth((prev) => ({ ...prev, harvey: 'error' }));
     }
 
     // Database check would go here
-    setHealth(prev => ({ ...prev, database: 'healthy' }));
+    setHealth((prev) => ({ ...prev, database: 'healthy' }));
   };
 
   const getStatusIcon = (status: string) => {

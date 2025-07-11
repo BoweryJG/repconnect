@@ -298,11 +298,7 @@ const ChatbotLauncher: React.FC<ChatbotLauncherProps> = ({
     >
       {/* Floating Orb */}
       <Zoom in={!isOpen} unmountOnExit>
-        <FloatingOrb
-          onClick={handleToggle}
-          glowcolor={glowColor}
-          aria-label="Open chat assistant"
-        >
+        <FloatingOrb onClick={handleToggle} glowcolor={glowColor} aria-label="Open chat assistant">
           <ChatBubbleOutline />
         </FloatingOrb>
       </Zoom>

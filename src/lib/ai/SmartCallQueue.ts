@@ -36,22 +36,22 @@ interface SyncQueue {
 
 export class SmartCallQueue {
   private static readonly EARTH_RADIUS_MILES = 3959;
-  
+
   static async createQueue(
-    query: string, 
+    query: string,
     contacts: Contact[],
-    options?: { 
+    options?: {
       maxContacts?: number;
       includeReasons?: boolean;
     }
   ): Promise<SyncQueue> {
     const parsed = NaturalLanguageProcessor.parse(query);
     const maxContacts = options?.maxContacts || parsed.count || 50;
-    
+
     // Score and filter contacts
     const scoredContacts = contacts
-      .map(contact => this.scoreContact(contact, parsed))
-      .filter(scored => scored.score > 0)
+      .map((contact) => this.scoreContact(contact, parsed))
+      .filter((scored) => scored.score > 0)
       .sort((a, b) => b.score - a.score)
       .slice(0, maxContacts);
 
@@ -61,11 +61,14 @@ export class SmartCallQueue {
       contacts: scoredContacts,
       createdAt: new Date(),
       status: 'pending',
-      progress: 0
+      progress: 0,
     };
   }
 
-  private static scoreContact(contact: Contact, query: ReturnType<typeof NaturalLanguageProcessor.parse>): QueuedContact {
+  private static scoreContact(
+    contact: Contact,
+    query: ReturnType<typeof NaturalLanguageProcessor.parse>
+  ): QueuedContact {
     let score = 0;
     const matchReasons: string[] = [];
 
@@ -95,22 +98,20 @@ export class SmartCallQueue {
     if (query.criteria) {
       const criteriaScore = this.calculateCriteriaScore(contact, query.criteria);
       score += criteriaScore * 0.3;
-      
+
       if (query.criteria.recency && contact.lastCall) {
         const daysSinceCall = this.daysSince(contact.lastCall);
         if (query.criteria.recency === 'recent' && daysSinceCall < 7) {
           matchReasons.push('Recently contacted');
         }
       }
-      
+
       if (query.criteria.value === 'high-value' && contact.value === 'high') {
         matchReasons.push('High-value client');
       }
-      
+
       if (query.criteria.tags && contact.tags) {
-        const matchingTags = query.criteria.tags.filter(tag => 
-          contact.tags?.includes(tag)
-        );
+        const matchingTags = query.criteria.tags.filter((tag) => contact.tags?.includes(tag));
         if (matchingTags.length > 0) {
           matchReasons.push(`Tagged: ${matchingTags.join(', ')}`);
         }
@@ -126,7 +127,7 @@ export class SmartCallQueue {
     return {
       ...contact,
       score: Math.min(score, 1.0),
-      matchReasons
+      matchReasons,
     };
   }
 
@@ -164,8 +165,8 @@ export class SmartCallQueue {
     if (services.length === 0) return 0;
 
     const scores = services
-      .map(service => interestScores[service] || 0)
-      .filter(score => score > 0);
+      .map((service) => interestScores[service] || 0)
+      .filter((score) => score > 0);
 
     if (scores.length === 0) return 0;
 
@@ -184,7 +185,7 @@ export class SmartCallQueue {
     if (criteria.recency && contact.lastCall) {
       criteriaCount++;
       const daysSinceCall = this.daysSince(contact.lastCall);
-      
+
       switch (criteria.recency) {
         case 'recent':
           score += daysSinceCall <= 7 ? 1.0 : daysSinceCall <= 14 ? 0.5 : 0;
@@ -209,7 +210,7 @@ export class SmartCallQueue {
     // Tag matching
     if (criteria.tags && contact.tags) {
       criteriaCount++;
-      const matchingTags = criteria.tags.filter(tag => contact.tags?.includes(tag));
+      const matchingTags = criteria.tags.filter((tag) => contact.tags?.includes(tag));
       score += matchingTags.length / criteria.tags.length;
     }
 
@@ -227,17 +228,14 @@ export class SmartCallQueue {
     onProgress?: (progress: number) => void
   ): Promise<SyncQueue> {
     queue.status = 'syncing';
-    
+
     try {
       // Import dynamically to avoid circular dependency
       const { CallQueueService } = await import('../../services/callQueueService');
-      
+
       // Create actual call records in database
-      const calls = await CallQueueService.createCallsFromQueue(
-        queue.id,
-        queue.contacts
-      );
-      
+      const calls = await CallQueueService.createCallsFromQueue(queue.id, queue.contacts);
+
       // Track sync progress
       const totalContacts = queue.contacts.length;
       let synced = 0;
@@ -246,18 +244,18 @@ export class SmartCallQueue {
       for (let i = 0; i < calls.length; i++) {
         synced++;
         queue.progress = (synced / totalContacts) * 100;
-        
+
         if (onProgress) {
           onProgress(queue.progress);
         }
-        
+
         // Small delay to show progress
-        await new Promise(resolve => setTimeout(resolve, 20));
+        await new Promise((resolve) => setTimeout(resolve, 20));
       }
 
       queue.status = 'completed';
       queue.progress = 100;
-      
+
       return queue;
     } catch (error) {
       queue.status = 'error';
@@ -270,28 +268,28 @@ export class SmartCallQueue {
       {
         name: 'High-Value Recent',
         query: 'sync top 25 high-value accounts contacted recently',
-        icon: '💎'
+        icon: '💎',
       },
       {
         name: 'Local Premium',
         query: 'sync premium clients within 25 miles',
-        icon: '📍'
+        icon: '📍',
       },
       {
         name: 'Service Interest',
         query: 'sync accounts interested in botox and fillers',
-        icon: '💉'
+        icon: '💉',
       },
       {
         name: 'Monthly Follow-up',
         query: 'sync contacts from this month tagged follow-up',
-        icon: '📅'
+        icon: '📅',
       },
       {
         name: 'New Prospects',
         query: 'filter accounts with less than 3 calls',
-        icon: '🎯'
-      }
+        icon: '🎯',
+      },
     ];
   }
 }

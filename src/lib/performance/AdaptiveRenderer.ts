@@ -18,7 +18,7 @@ export class AdaptiveRenderer {
     animationFPS: 60,
     enableGlassEffects: true,
     enable3D: true,
-    textureQuality: 'medium'
+    textureQuality: 'medium',
   };
 
   private qualityPresets = {
@@ -29,7 +29,7 @@ export class AdaptiveRenderer {
       animationFPS: 60 as const,
       enableGlassEffects: true,
       enable3D: true,
-      textureQuality: 'high' as const
+      textureQuality: 'high' as const,
     },
     high: {
       particleCount: 2500,
@@ -38,7 +38,7 @@ export class AdaptiveRenderer {
       animationFPS: 60 as const,
       enableGlassEffects: true,
       enable3D: true,
-      textureQuality: 'medium' as const
+      textureQuality: 'medium' as const,
     },
     medium: {
       particleCount: 1000,
@@ -47,7 +47,7 @@ export class AdaptiveRenderer {
       animationFPS: 30 as const,
       enableGlassEffects: true,
       enable3D: true,
-      textureQuality: 'low' as const
+      textureQuality: 'low' as const,
     },
     low: {
       particleCount: 500,
@@ -56,8 +56,8 @@ export class AdaptiveRenderer {
       animationFPS: 30 as const,
       enableGlassEffects: false,
       enable3D: false,
-      textureQuality: 'low' as const
-    }
+      textureQuality: 'low' as const,
+    },
   };
 
   private callbacks: Set<(settings: QualitySettings) => void> = new Set();
@@ -116,7 +116,7 @@ export class AdaptiveRenderer {
   }
 
   private notifyCallbacks() {
-    this.callbacks.forEach(cb => cb(this.currentQuality));
+    this.callbacks.forEach((cb) => cb(this.currentQuality));
   }
 
   public destroy() {

@@ -16,6 +16,10 @@ import { responseTimeMiddleware, requestIdMiddleware, enhancedResponseTimeMiddle
 import { monitoringService } from './src/config/monitoring.js';
 import healthRoutes from './src/routes/healthRoutes.js';
 
+// Import database connection pool
+import { databaseService } from './src/services/databaseService.js';
+import { closeConnectionPool } from './src/config/database.js';
+
 // Import route handlers
 import authRoutes from './backend-routes/authRoutes.js';
 import coachingSessionRoutes from './backend-routes/coachingSessionRoutes.js';
@@ -48,9 +52,117 @@ const io = new Server(server, {
 });
 
 // Security middleware
+// Content Security Policy (CSP) Configuration
+// This policy restricts which resources can be loaded to prevent XSS and data injection attacks
+// Production vs Development: Development allows localhost connections and unsafe-eval for React DevTools
 app.use(helmet({
-  contentSecurityPolicy: false, // Disable for development, configure properly for production
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: [
+        "'self'",
+        "'unsafe-inline'", // Required for React's inline scripts
+        process.env.NODE_ENV !== 'production' ? "'unsafe-eval'" : null, // Only in development
+        "https://cdn.jsdelivr.net",
+        "https://unpkg.com",
+        "https://browser.sentry-cdn.com", // Sentry CDN
+        "https://*.sentry.io" // Sentry scripts
+      ].filter(Boolean),
+      styleSrc: [
+        "'self'",
+        "'unsafe-inline'", // Required for Material-UI and inline styles
+        "https://fonts.googleapis.com"
+      ],
+      fontSrc: [
+        "'self'",
+        "https://fonts.gstatic.com",
+        "data:" // For base64 encoded fonts
+      ],
+      imgSrc: [
+        "'self'",
+        "data:", // For base64 images
+        "blob:", // For blob URLs
+        "https:", // Allow images from any HTTPS source
+        process.env.NODE_ENV !== 'production' ? "http://localhost:*" : null // Development only
+      ].filter(Boolean),
+      connectSrc: [
+        "'self'",
+        "https://cbopynuvhcymbumjnvay.supabase.co", // Supabase
+        "wss://cbopynuvhcymbumjnvay.supabase.co", // Supabase WebSocket
+        "https://api.deepgram.com",
+        "wss://api.deepgram.com", // Deepgram WebSocket
+        "https://api.elevenlabs.io",
+        "wss://api.elevenlabs.io", // ElevenLabs WebSocket
+        "https://api.piapi.ai",
+        "wss://api.piapi.ai", // Moshi WebSocket
+        "https://api.openai.com", // OpenAI
+        "https://osbackend-zl1h.onrender.com", // Backend API
+        "wss://osbackend-zl1h.onrender.com", // Backend WebSocket
+        // Sentry error tracking
+        "https://*.sentry.io",
+        "https://*.ingest.sentry.io",
+        process.env.NODE_ENV !== 'production' ? "http://localhost:3000" : null,
+        process.env.NODE_ENV !== 'production' ? "http://localhost:3001" : null,
+        process.env.NODE_ENV !== 'production' ? "ws://localhost:3000" : null,
+        process.env.NODE_ENV !== 'production' ? "ws://localhost:3001" : null,
+        // TURN servers for WebRTC
+        "turn:*.metered.live:*",
+        "turn:global.turn.twilio.com:*",
+        "stun:stun.l.google.com:19302",
+        "stun:stun1.l.google.com:19302"
+      ].filter(Boolean),
+      mediaSrc: [
+        "'self'",
+        "blob:", // For audio/video blobs
+        "data:", // For data URLs
+        "https://api.elevenlabs.io", // ElevenLabs audio
+        "mediastream:" // For WebRTC media streams
+      ],
+      childSrc: [
+        "'self'",
+        "blob:" // For web workers
+      ],
+      workerSrc: [
+        "'self'",
+        "blob:" // For web workers
+      ],
+      objectSrc: ["'none'"], // Disallow plugins
+      frameAncestors: ["'none'"], // Prevent clickjacking
+      formAction: ["'self'"], // Form submissions only to same origin
+      upgradeInsecureRequests: process.env.NODE_ENV === 'production' ? [] : null, // Upgrade HTTP to HTTPS in production
+      blockAllMixedContent: process.env.NODE_ENV === 'production' ? [] : null // Block mixed content in production
+    }
+  },
+  crossOriginEmbedderPolicy: false, // Allow embedding from allowed origins
+  hsts: {
+    maxAge: 31536000,
+    includeSubDomains: true,
+    preload: true
+  },
+  frameguard: {
+    action: 'deny' // X-Frame-Options: DENY - Prevents clickjacking
+  },
+  noSniff: true, // X-Content-Type-Options: nosniff - Prevents MIME type sniffing
+  referrerPolicy: {
+    policy: 'strict-origin-when-cross-origin' // Referrer-Policy header
+  },
+  permittedCrossDomainPolicies: false, // X-Permitted-Cross-Domain-Policies: none
+  originAgentCluster: true, // Origin-Agent-Cluster: ?1
+  dnsPrefetchControl: {
+    allow: false // X-DNS-Prefetch-Control: off
+  },
+  ieNoOpen: true, // X-Download-Options: noopen (IE8+)
+  xssFilter: true // X-XSS-Protection: 1; mode=block (legacy browsers)
 }));
+
+// Additional Permissions-Policy header
+app.use((req, res, next) => {
+  res.setHeader(
+    'Permissions-Policy',
+    'accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(self), payment=(), usb=(), interest-cohort=()'
+  );
+  next();
+});
 
 // Request tracking middleware
 app.use(requestIdMiddleware);
@@ -210,13 +322,23 @@ app.use((req, res) => {
 });
 
 // Start server
-server.listen(PORT, () => {
+server.listen(PORT, async () => {
   logger.success(`🚀 RepConnect Backend running on port ${PORT}`);
   logger.info(`📡 WebSocket server ready for coaching sessions`);
   logger.info(`🎯 Coaching API available at http://localhost:${PORT}/api/coaching`);
   logger.info(`💚 Health check: http://localhost:${PORT}/health`);
   logger.info(`📊 Detailed health: http://localhost:${PORT}/api/health`);
   logger.info(`📈 Metrics endpoint: http://localhost:${PORT}/health/metrics`);
+  
+  // Initialize database connection pool
+  try {
+    await databaseService.initialize();
+    const stats = databaseService.getStats();
+    logger.info(`🔗 Database connection pool initialized (pool size: ${stats.config.db.poolSize})`);
+  } catch (error) {
+    logger.error('Failed to initialize database connection pool:', error);
+    // Continue running - routes will initialize pool on demand
+  }
   
   // Start monitoring service
   monitoringService.start();
@@ -228,14 +350,43 @@ server.listen(PORT, () => {
 });
 
 // Graceful shutdown
-process.on('SIGINT', () => {
+process.on('SIGINT', async () => {
   logger.warn('\n🔥 Shutting down server...');
   
   // Stop monitoring service
   monitoringService.stop();
   
+  // Close database connection pool
+  try {
+    await closeConnectionPool();
+    logger.info('✅ Database connections closed');
+  } catch (error) {
+    logger.error('Error closing database connections:', error);
+  }
+  
   server.close(() => {
     logger.info('✅ Server closed. Goodbye!');
+    process.exit(0);
+  });
+});
+
+// Handle uncaught errors
+process.on('SIGTERM', async () => {
+  logger.warn('SIGTERM received, shutting down gracefully...');
+  
+  // Stop monitoring service
+  monitoringService.stop();
+  
+  // Close database connection pool
+  try {
+    await closeConnectionPool();
+    logger.info('✅ Database connections closed');
+  } catch (error) {
+    logger.error('Error closing database connections:', error);
+  }
+  
+  server.close(() => {
+    logger.info('✅ Server closed via SIGTERM');
     process.exit(0);
   });
 });

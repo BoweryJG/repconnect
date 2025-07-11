@@ -47,9 +47,8 @@ export class CallQueueService {
 
     try {
       // Store in database with batch insert
-      const { error } = await supabase
-        .from('queued_calls')
-        .insert(calls.map(call => ({
+      const { error } = await supabase.from('queued_calls').insert(
+        calls.map((call) => ({
           id: call.id,
           contact_id: call.contactId,
           contact_name: call.contactName,
@@ -59,10 +58,11 @@ export class CallQueueService {
           status: call.status,
           attempt_count: call.attemptCount,
           created_at: call.createdAt.toISOString(),
-        })));
+        }))
+      );
 
       if (error) {
-                throw new Error(`Failed to create call queue: ${error.message}`);
+        throw new Error(`Failed to create call queue: ${error.message}`);
       }
 
       // Store queue metadata for recovery
@@ -70,7 +70,7 @@ export class CallQueueService {
 
       return calls;
     } catch (error) {
-            // Attempt cleanup on failure
+      // Attempt cleanup on failure
       await this.cleanupFailedQueue(queueId);
       throw error;
     }
@@ -84,10 +84,10 @@ export class CallQueueService {
       // Update status in database
       await supabase
         .from('queued_calls')
-        .update({ 
+        .update({
           status: 'calling',
           last_attempt_at: new Date().toISOString(),
-          attempt_count: queuedCall.attemptCount + 1
+          attempt_count: queuedCall.attemptCount + 1,
         })
         .eq('id', queuedCall.id);
 
@@ -96,7 +96,7 @@ export class CallQueueService {
       for (let attempt = 1; attempt <= this.MAX_RETRY_ATTEMPTS; attempt++) {
         try {
           const response = await twilioService.makeCall(queuedCall.phoneNumber);
-          
+
           if (response.sid) {
             // Update with call SID
             await supabase
@@ -110,20 +110,24 @@ export class CallQueueService {
           }
         } catch (error: any) {
           lastError = error;
-                    
+
           if (attempt < this.MAX_RETRY_ATTEMPTS) {
             // Wait before retrying
-            await new Promise(resolve => setTimeout(resolve, this.RETRY_DELAY_MS));
+            await new Promise((resolve) => setTimeout(resolve, this.RETRY_DELAY_MS));
           }
         }
       }
 
       // All retries failed
-      const errorMessage = lastError?.response?.data?.message || lastError?.message || 'Failed to initiate call';
-      await this.markCallFailed(queuedCall.id, `Failed after ${this.MAX_RETRY_ATTEMPTS} attempts: ${errorMessage}`);
+      const errorMessage =
+        lastError?.response?.data?.message || lastError?.message || 'Failed to initiate call';
+      await this.markCallFailed(
+        queuedCall.id,
+        `Failed after ${this.MAX_RETRY_ATTEMPTS} attempts: ${errorMessage}`
+      );
       throw lastError;
     } catch (error) {
-            if (!this.activeCall || this.activeCall.id !== queuedCall.id) {
+      if (!this.activeCall || this.activeCall.id !== queuedCall.id) {
         await this.markCallFailed(queuedCall.id, 'Failed to initiate call');
       }
       throw error;
@@ -154,7 +158,7 @@ export class CallQueueService {
       this.activeCall = null;
       this.notifyListeners();
     } catch (error) {
-            throw error;
+      throw error;
     }
   }
 
@@ -215,10 +219,13 @@ export class CallQueueService {
       return { total: 0, completed: 0, failed: 0, pending: 0, calling: 0 };
     }
 
-    const counts = data.reduce((acc, call) => {
-      acc[call.status] = (acc[call.status] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
+    const counts = data.reduce(
+      (acc, call) => {
+        acc[call.status] = (acc[call.status] || 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>
+    );
 
     return {
       total: data.length,
@@ -238,19 +245,17 @@ export class CallQueueService {
 
     if (!callData) return;
 
-    await supabase
-      .from('call_history')
-      .insert({
-        contact_id: callData.contact_id,
-        phone_number: callData.phone_number,
-        direction: 'outbound',
-        status: outcome.status,
-        duration: outcome.duration,
-        notes: outcome.notes,
-        recording_url: outcome.recordingUrl,
-        call_sid: callData.call_sid,
-        created_at: new Date().toISOString(),
-      });
+    await supabase.from('call_history').insert({
+      contact_id: callData.contact_id,
+      phone_number: callData.phone_number,
+      direction: 'outbound',
+      status: outcome.status,
+      duration: outcome.duration,
+      notes: outcome.notes,
+      recording_url: outcome.recordingUrl,
+      call_sid: callData.call_sid,
+      created_at: new Date().toISOString(),
+    });
   }
 
   private static async scheduleCallback(callId: string, callbackDate: Date): Promise<void> {
@@ -263,31 +268,29 @@ export class CallQueueService {
     if (!callData) return;
 
     // Create a new queued call for the callback
-    await supabase
-      .from('queued_calls')
-      .insert({
-        contact_id: callData.contact_id,
-        contact_name: callData.contact_name,
-        phone_number: callData.phone_number,
-        queue_id: callData.queue_id,
-        position: 999, // End of queue
-        status: 'pending',
-        attempt_count: 0,
-        scheduled_for: callbackDate.toISOString(),
-        created_at: new Date().toISOString(),
-      });
+    await supabase.from('queued_calls').insert({
+      contact_id: callData.contact_id,
+      contact_name: callData.contact_name,
+      phone_number: callData.phone_number,
+      queue_id: callData.queue_id,
+      position: 999, // End of queue
+      status: 'pending',
+      attempt_count: 0,
+      scheduled_for: callbackDate.toISOString(),
+      created_at: new Date().toISOString(),
+    });
   }
 
   static onCallUpdate(listener: (call: QueuedCall) => void): () => void {
     this.callListeners.push(listener);
     return () => {
-      this.callListeners = this.callListeners.filter(l => l !== listener);
+      this.callListeners = this.callListeners.filter((l) => l !== listener);
     };
   }
 
   private static notifyListeners(): void {
     if (this.activeCall) {
-      this.callListeners.forEach(listener => listener(this.activeCall!));
+      this.callListeners.forEach((listener) => listener(this.activeCall!));
     }
   }
 
@@ -306,20 +309,15 @@ export class CallQueueService {
 
     try {
       localStorage.setItem(`queue_metadata_${queueId}`, JSON.stringify(metadata));
-    } catch (error) {
-          }
+    } catch (error) {}
   }
 
   private static async cleanupFailedQueue(queueId: string): Promise<void> {
     try {
-      await supabase
-        .from('queued_calls')
-        .delete()
-        .eq('queue_id', queueId);
-      
+      await supabase.from('queued_calls').delete().eq('queue_id', queueId);
+
       localStorage.removeItem(`queue_metadata_${queueId}`);
-    } catch (error) {
-          }
+    } catch (error) {}
   }
 
   static async recoverQueue(queueId: string): Promise<boolean> {
@@ -335,23 +333,25 @@ export class CallQueueService {
       }
 
       // Check if queue has pending calls
-      const hasPendingCalls = data.some(call => call.status === 'pending');
+      const hasPendingCalls = data.some((call) => call.status === 'pending');
       if (!hasPendingCalls) {
         return false;
       }
 
       // Update metadata
       await this.saveQueueMetadata(queueId, data.length);
-      
+
       return true;
     } catch (error) {
-            return false;
+      return false;
     }
   }
 
-  static async getRecentQueues(): Promise<Array<{ queueId: string; totalContacts: number; createdAt: string }>> {
+  static async getRecentQueues(): Promise<
+    Array<{ queueId: string; totalContacts: number; createdAt: string }>
+  > {
     const queues: Array<{ queueId: string; totalContacts: number; createdAt: string }> = [];
-    
+
     try {
       // Get from localStorage
       for (let i = 0; i < localStorage.length; i++) {
@@ -364,11 +364,11 @@ export class CallQueueService {
 
       // Sort by most recent
       queues.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-      
+
       // Keep only last 10
       return queues.slice(0, 10);
     } catch (error) {
-            return [];
+      return [];
     }
   }
 }
