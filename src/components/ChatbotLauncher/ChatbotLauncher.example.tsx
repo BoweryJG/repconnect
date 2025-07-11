@@ -1,6 +1,6 @@
 import React from 'react';
 import ChatbotLauncher from './ChatbotLauncher';
-import { Box, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 import {
   SmartToy,
   Psychology,
@@ -79,7 +79,7 @@ const ChatbotLauncherExample: React.FC = () => {
   };
 
   return (
-    <Box sx={{ minHeight: '100vh', p: 4, bgcolor: '#f5f5f5' }}>
+    <div style={{ minHeight: '100vh', padding: 32, backgroundColor: '#f5f5f5' }}>
       <Typography variant="h4" gutterBottom>
         ChatbotLauncher Component Example
       </Typography>
@@ -107,7 +107,7 @@ const ChatbotLauncherExample: React.FC = () => {
         primaryColor="#10B981"
         glowColor="#10B981"
       /> */}
-    </Box>
+    </div>
   );
 };
 
