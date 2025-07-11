@@ -48,13 +48,13 @@ import AgentSelector from './components/AgentSelector';
 import SessionWarning from './components/SessionWarning';
 import ChatbotIntegration from './components/ChatbotLauncher/ChatbotIntegration';
 import { SmartPreloader } from './utils/dynamicImports';
-import { bundlePerformance } from './utils/bundlePerformance';
+// import { bundlePerformance } from './utils/bundlePerformance';
 
 // Lazy load heavy components with optimized loading
 const MissionControlDashboard = React.lazy(() =>
-  import(
-    /* webpackChunkName: "mission-control" */ './components/MissionControlDashboardOptimized'
-  ).then((module) => ({ default: module.MissionControlDashboard }))
+  import(/* webpackChunkName: "mission-control" */ './components/MissionControlDashboard').then(
+    (module) => ({ default: module.MissionControlDashboard })
+  )
 );
 
 function AppContent() {
@@ -188,11 +188,11 @@ function AppContent() {
     }
 
     // Preload likely next routes based on current location
-    const currentRoute = window.location.pathname;
-    const likelyRoutes = bundlePerformance.predictAndPreload(currentRoute);
-    likelyRoutes.forEach((route) => {
-      SmartPreloader.preloadOnRoute(route);
-    });
+    // const currentRoute = window.location.pathname;
+    // const likelyRoutes = bundlePerformance.predictAndPreload(currentRoute);
+    // likelyRoutes.forEach((route) => {
+    //   SmartPreloader.preloadOnRoute(route);
+    // });
 
     return () => {
       unsubscribe();
