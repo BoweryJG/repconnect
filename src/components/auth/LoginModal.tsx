@@ -1,6 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
-import { gsap } from 'gsap';
 import { supabase } from '../../lib/supabase';
 import { CornerScrews } from '../effects/PrecisionScrew';
 import './LoginModal.css';
@@ -12,66 +11,8 @@ interface LoginModalProps {
 }
 
 export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSuccess }) => {
-  const modalRef = useRef<HTMLDivElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [loadingProvider, setLoadingProvider] = useState<string | null>(null);
-  const [isAnimating, setIsAnimating] = useState(false);
-
-  useEffect(() => {
-    if (isOpen && modalRef.current && !isAnimating) {
-      setIsAnimating(true);
-
-      // Kill any existing animations first
-      gsap.killTweensOf([modalRef.current, contentRef.current]);
-
-      // Simpler entrance animation to prevent glitching
-      const tl = gsap.timeline({
-        onComplete: () => setIsAnimating(false),
-      });
-
-      // Modal entrance without 3D transforms
-      tl.fromTo(
-        modalRef.current,
-        {
-          scale: 0.9,
-          opacity: 0,
-        },
-        {
-          scale: 1,
-          opacity: 1,
-          duration: 0.3,
-          ease: 'power2.out',
-        }
-      );
-
-      // Content fade in
-      if (contentRef.current) {
-        tl.fromTo(
-          contentRef.current,
-          {
-            opacity: 0,
-            y: 10,
-          },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.2,
-            ease: 'power2.out',
-          },
-          '-=0.15'
-        );
-      }
-    }
-
-    // Cleanup function
-    return () => {
-      if (modalRef.current) {
-        gsap.killTweensOf([modalRef.current, contentRef.current]);
-      }
-      setIsAnimating(false);
-    };
-  }, [isOpen, isAnimating]);
 
   const handleSignIn = async (provider: 'google' | 'facebook') => {
     try {
@@ -91,34 +32,11 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSucce
 
       if (error) throw error;
 
-      // Simple success feedback
-      if (modalRef.current) {
-        gsap.to(modalRef.current, {
-          scale: 1.02,
-          duration: 0.15,
-          yoyo: true,
-          repeat: 1,
-          ease: 'power2.inOut',
-          onComplete: () => {
-            onSuccess?.();
-          },
-        });
-      }
+      // Success - OAuth will redirect
+      onSuccess?.();
     } catch (error) {
-      // Simplified error animation
-      if (modalRef.current) {
-        // Simple shake without rotation
-        gsap.to(modalRef.current, {
-          x: '+=10',
-          duration: 0.1,
-          ease: 'power2.out',
-          yoyo: true,
-          repeat: 3,
-          onComplete: () => {
-            gsap.set(modalRef.current, { x: 0 });
-          },
-        });
-      }
+      console.error('Sign in error:', error);
+      alert('Failed to sign in. Please try again.');
     } finally {
       setIsLoading(false);
       setLoadingProvider(null);
@@ -133,15 +51,15 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSucce
         <div className="stars"></div>
       </div>
 
-      <div ref={modalRef} className="login-modal" onClick={(e) => e.stopPropagation()}>
+      <div className="login-modal" onClick={(e) => e.stopPropagation()}>
         {/* Premium Corner Screws */}
-        {!isAnimating && <CornerScrews size="small" grooveType="phillips" premium={true} />}
+        <CornerScrews size="small" grooveType="phillips" premium={true} />
 
         {/* Close Button */}
         <button className="close-btn" onClick={onClose} />
 
-        {/* Content Wrapper for animation */}
-        <div ref={contentRef} className="modal-content">
+        {/* Content Wrapper */}
+        <div className="modal-content">
           {/* Logo Section */}
           <div className="logo-section">
             <div className="logo-icon">
