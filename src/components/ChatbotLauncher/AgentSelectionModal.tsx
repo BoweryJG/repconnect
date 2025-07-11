@@ -134,7 +134,7 @@ export const AgentSelectionModal: React.FC<AgentSelectionModalProps> = ({
               boxShadow: `0 0 40px ${alpha(agent.colorScheme.primary, 0.5)}`,
             }}
           >
-            {agent.avatar ? (
+            {typeof agent.avatar === 'string' ? (
               <Avatar
                 src={agent.avatar}
                 alt={agent.name}
@@ -144,9 +144,27 @@ export const AgentSelectionModal: React.FC<AgentSelectionModalProps> = ({
                   border: '2px solid rgba(255, 255, 255, 0.2)',
                 }}
               />
+            ) : agent.avatar && typeof agent.avatar === 'object' ? (
+              <Box
+                sx={{
+                  width: 72,
+                  height: 72,
+                  borderRadius: '50%',
+                  backgroundColor: agent.avatar.backgroundColor,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  border: '2px solid rgba(255, 255, 255, 0.2)',
+                }}
+              >
+                {React.createElement(agent.avatar.icon, {
+                  size: 32,
+                  color: agent.avatar.iconColor,
+                })}
+              </Box>
             ) : (
               <Box sx={{ color: 'white', fontSize: 32 }}>
-                {agent.icon || '🤖'}
+                {'🤖'}
               </Box>
             )}
           </Box>
