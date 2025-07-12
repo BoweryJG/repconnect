@@ -1,12 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
-import { AgentConfig } from './agents/agentConfigs';
 import { Agent } from './types';
 import { LucideIcon } from 'lucide-react';
 
 interface AgentCarouselProps {
   agents: Agent[];
-  onAgentSelect: (agent: Agent) => void;
+  onAgentSelect: (_agent: Agent) => void;
   selectedAgentId?: string;
 }
 
@@ -15,6 +14,13 @@ const AgentCarousel: React.FC<AgentCarouselProps> = ({
   onAgentSelect,
   selectedAgentId,
 }) => {
+  // Sort agents to prioritize Harvey-style sales agents
+  const sortedAgents = React.useMemo(() => {
+    const harveyAgentIds = ['victor', 'maxwell', 'diana', 'marcus', 'sophia'];
+    const harveyAgents = agents.filter((agent) => harveyAgentIds.includes(agent.id));
+    const otherAgents = agents.filter((agent) => !harveyAgentIds.includes(agent.id));
+    return [...harveyAgents, ...otherAgents];
+  }, [agents]);
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: false,
     align: 'start',
@@ -85,11 +91,14 @@ const AgentCarousel: React.FC<AgentCarouselProps> = ({
     <div className="agent-carousel-container">
       <div className="embla" ref={emblaRef}>
         <div className="embla__container">
-          {agents.map((agent, index) => (
+          {sortedAgents.map((agent, index) => (
             <div
               key={agent.id}
-              className={`embla__slide ${selectedAgentId === agent.id ? 'selected' : ''}`}
+              className={`embla__slide ${selectedAgentId === agent.id ? 'selected' : ''} ${['victor', 'maxwell', 'diana', 'marcus', 'sophia'].includes(agent.id) ? 'harvey-style' : ''}`}
             >
+              {['victor', 'maxwell', 'diana', 'marcus', 'sophia'].includes(agent.id) && (
+                <div className="harvey-badge">ELITE CLOSER</div>
+              )}
               <div
                 className={`agent-card ${!agent.available ? 'unavailable' : ''}`}
                 onClick={() => agent.available && handleAgentClick(agent, index)}
@@ -357,6 +366,65 @@ const AgentCarousel: React.FC<AgentCarouselProps> = ({
         .embla__slide {
           backface-visibility: hidden;
           -webkit-font-smoothing: antialiased;
+        }
+
+        /* Harvey-style agent enhancements */
+        .embla__slide.harvey-style {
+          position: relative;
+        }
+
+        .harvey-badge {
+          position: absolute;
+          top: -8px;
+          right: 8px;
+          background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+          color: #1a1a1a;
+          padding: 4px 12px;
+          border-radius: 12px;
+          font-size: 0.625rem;
+          font-weight: 700;
+          letter-spacing: 0.5px;
+          text-transform: uppercase;
+          z-index: 10;
+          box-shadow: 0 2px 8px rgba(255, 215, 0, 0.5);
+          animation: pulse-gold 2s infinite;
+        }
+
+        @keyframes pulse-gold {
+          0% {
+            box-shadow: 0 2px 8px rgba(255, 215, 0, 0.5);
+          }
+          50% {
+            box-shadow: 0 2px 16px rgba(255, 215, 0, 0.8);
+          }
+          100% {
+            box-shadow: 0 2px 8px rgba(255, 215, 0, 0.5);
+          }
+        }
+
+        .harvey-style .agent-card {
+          border: 2px solid transparent;
+          background: linear-gradient(white, white) padding-box,
+                      linear-gradient(135deg, #FFD700 0%, #1a1a1a 100%) border-box;
+        }
+
+        .harvey-style .agent-card:hover {
+          transform: translateY(-6px) scale(1.02);
+          box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .harvey-style .agent-name {
+          background: linear-gradient(135deg, #FFD700 0%, #1a1a1a 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          font-weight: 700;
+        }
+
+        .harvey-style .agent-specialty {
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
         }
       `}</style>
     </div>

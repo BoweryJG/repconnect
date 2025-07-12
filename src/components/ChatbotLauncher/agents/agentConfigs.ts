@@ -10,6 +10,7 @@ import {
   Star,
   Brain,
 } from 'lucide-react';
+import { harveyStyleAgents } from './harveyStyleAgents';
 
 export interface AgentPersonality {
   tone: string;
@@ -54,6 +55,9 @@ export interface AgentConfig {
 }
 
 export const agentConfigs: Record<string, AgentConfig> = {
+  // Harvey-Style Sales Agents (Medical Aesthetics Closers)
+  ...harveyStyleAgents,
+
   // Aesthetic Agents
   botox: {
     id: 'botox',

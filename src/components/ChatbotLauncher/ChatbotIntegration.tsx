@@ -39,7 +39,7 @@ export const ChatbotIntegration: React.FC<ChatbotIntegrationProps> = ({
   }, []);
 
   // Convert AgentConfig to Agent format
-  const categoryMap: Record<string, 'aesthetic' | 'dental' | 'general'> = {
+  const categoryMap: Record<string, 'aesthetic' | 'dental' | 'general' | 'sales'> = {
     botox: 'aesthetic',
     fillers: 'aesthetic',
     skincare: 'aesthetic',
@@ -49,11 +49,16 @@ export const ChatbotIntegration: React.FC<ChatbotIntegrationProps> = ({
     orthodontics: 'dental',
     cosmetic: 'dental',
     harvey: 'general',
+    victor: 'sales',
+    maxwell: 'sales',
+    diana: 'sales',
+    marcus: 'sales',
+    sophia: 'sales',
   };
 
   const agents: Agent[] = getAllAgents().map((config) => ({
     ...config,
-    category: categoryMap[config.id] || 'general',
+    category: categoryMap[config.id] || ('general' as any),
     available: true,
     description: config.tagline,
     specialty: config.knowledgeDomains[0],
