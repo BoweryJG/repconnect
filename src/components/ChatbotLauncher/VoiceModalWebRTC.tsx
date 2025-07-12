@@ -46,7 +46,7 @@ export default function VoiceModalWebRTC({
 
       // Get backend URL
       const backendUrl = process.env.REACT_APP_BACKEND_URL || 'https://osbackend-zl1h.onrender.com';
-      
+
       // Create WebRTC client
       webRTCClientRef.current = new WebRTCClient({
         backendUrl,
@@ -77,21 +77,21 @@ export default function VoiceModalWebRTC({
 
       // Start audio transmission
       await webRTCClientRef.current!.startAudio();
-      
+
       // Set up audio visualization
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
       analyserRef.current = audioContextRef.current.createAnalyser();
       analyserRef.current.fftSize = 256;
-      
+
       const source = audioContextRef.current.createMediaStreamSource(stream);
       source.connect(analyserRef.current);
-      
+
       setIsCallActive(true);
-      
+
       // Start audio level monitoring
       monitorAudioLevels();
-      
+
       // Add initial greeting
       addTranscriptionLine('agent', `Hello! I'm ${agentName}. How can I help you today?`);
     } catch (error) {
@@ -105,15 +105,15 @@ export default function VoiceModalWebRTC({
     if (webRTCClientRef.current) {
       webRTCClientRef.current.stopAudio();
     }
-    
+
     if (animationFrameRef.current) {
       cancelAnimationFrame(animationFrameRef.current);
     }
-    
+
     if (audioContextRef.current) {
       audioContextRef.current.close();
     }
-    
+
     setIsCallActive(false);
     setIsUserSpeaking(false);
     setIsAgentSpeaking(false);
@@ -128,16 +128,16 @@ export default function VoiceModalWebRTC({
   // Monitor audio levels for visual feedback
   const monitorAudioLevels = () => {
     if (!analyserRef.current) return;
-    
+
     const dataArray = new Uint8Array(analyserRef.current.frequencyBinCount);
     analyserRef.current.getByteFrequencyData(dataArray);
-    
+
     // Calculate average volume
     const average = dataArray.reduce((a, b) => a + b) / dataArray.length;
-    
+
     // Update speaking state based on volume threshold
     setIsUserSpeaking(average > 30);
-    
+
     animationFrameRef.current = requestAnimationFrame(monitorAudioLevels);
   };
 
@@ -149,9 +149,9 @@ export default function VoiceModalWebRTC({
       text,
       timestamp: new Date(),
     };
-    
-    setTranscription(prev => [...prev, newLine]);
-    
+
+    setTranscription((prev) => [...prev, newLine]);
+
     // Simulate agent speaking
     if (speaker === 'agent') {
       setIsAgentSpeaking(true);
@@ -235,17 +235,15 @@ export default function VoiceModalWebRTC({
                 {connectionStatus === 'connecting'
                   ? 'Connecting...'
                   : connectionStatus === 'error'
-                  ? 'Connection failed. Please try again.'
-                  : 'Click the phone button to start'}
+                    ? 'Connection failed. Please try again.'
+                    : 'Click the phone button to start'}
               </p>
             ) : (
               <div className="space-y-2">
                 {transcription.map((line) => (
                   <div
                     key={line.id}
-                    className={`flex ${
-                      line.speaker === 'user' ? 'justify-end' : 'justify-start'
-                    }`}
+                    className={`flex ${line.speaker === 'user' ? 'justify-end' : 'justify-start'}`}
                   >
                     <div
                       className={`max-w-[80%] px-3 py-2 rounded-lg ${
@@ -287,8 +285,8 @@ export default function VoiceModalWebRTC({
                   isCallActive
                     ? 'bg-red-500 text-white hover:bg-red-600'
                     : connectionStatus === 'connecting'
-                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                    : 'bg-green-500 text-white hover:bg-green-600'
+                      ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                      : 'bg-green-500 text-white hover:bg-green-600'
                 }`}
               >
                 {isCallActive ? <PhoneOff size={24} /> : <Phone size={24} />}
@@ -303,20 +301,20 @@ export default function VoiceModalWebRTC({
                     connectionStatus === 'connected'
                       ? 'bg-green-500'
                       : connectionStatus === 'connecting'
-                      ? 'bg-yellow-500 animate-pulse'
-                      : connectionStatus === 'error'
-                      ? 'bg-red-500'
-                      : 'bg-gray-400'
+                        ? 'bg-yellow-500 animate-pulse'
+                        : connectionStatus === 'error'
+                          ? 'bg-red-500'
+                          : 'bg-gray-400'
                   }`}
                 />
                 <span className="text-sm text-gray-600">
                   {connectionStatus === 'connected'
                     ? 'Connected'
                     : connectionStatus === 'connecting'
-                    ? 'Connecting...'
-                    : connectionStatus === 'error'
-                    ? 'Connection Error'
-                    : 'Not Connected'}
+                      ? 'Connecting...'
+                      : connectionStatus === 'error'
+                        ? 'Connection Error'
+                        : 'Not Connected'}
                 </span>
               </div>
               {isUserSpeaking && (

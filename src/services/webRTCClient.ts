@@ -27,8 +27,8 @@ export class WebRTCClient {
       transports: ['websocket', 'polling'],
       auth: {
         userId: this.config.userId,
-        agentId: this.config.agentId
-      }
+        agentId: this.config.agentId,
+      },
     });
 
     // Wait for connection
@@ -37,12 +37,12 @@ export class WebRTCClient {
         console.log('WebRTC signaling connected');
         resolve();
       });
-      
+
       this.socket!.on('connect_error', (error) => {
         console.error('WebRTC signaling connection error:', error);
         reject(error);
       });
-      
+
       setTimeout(() => reject(new Error('Connection timeout')), 5000);
     });
 
@@ -52,12 +52,12 @@ export class WebRTCClient {
 
   async joinRoom(roomId: string): Promise<void> {
     this.roomId = roomId;
-    
+
     // Join room
     this.socket!.emit('join-room', {
       roomId,
       agentId: this.config.agentId,
-      userId: this.config.userId
+      userId: this.config.userId,
     });
 
     // Wait for room joined confirmation
@@ -71,7 +71,7 @@ export class WebRTCClient {
 
     // Get router RTP capabilities
     const { rtpCapabilities } = await this.sendRequest('get-router-rtp-capabilities', {});
-    
+
     // Create device
     this.device = new mediasoupClient.Device();
     await this.device.load({ routerRtpCapabilities: rtpCapabilities });
@@ -88,21 +88,21 @@ export class WebRTCClient {
           echoCancellation: true,
           noiseSuppression: true,
           sampleRate: 48000,
-          channelCount: 1
+          channelCount: 1,
         },
-        video: false
+        video: false,
       });
 
       // Create producer
       const audioTrack = this.localStream.getAudioTracks()[0];
-      
+
       if (this.producerTransport && this.device && audioTrack) {
         this.producer = await this.producerTransport.produce({
           track: audioTrack,
           codecOptions: {
             opusStereo: false,
-            opusDtx: true
-          }
+            opusDtx: true,
+          },
         });
 
         console.log('Audio producer created:', this.producer.id);
@@ -120,7 +120,7 @@ export class WebRTCClient {
     }
 
     if (this.localStream) {
-      this.localStream.getTracks().forEach(track => track.stop());
+      this.localStream.getTracks().forEach((track) => track.stop());
       this.localStream = null;
     }
   }
@@ -144,7 +144,7 @@ export class WebRTCClient {
       try {
         await this.sendRequest('connect-transport', {
           transportId: this.producerTransport!.id,
-          dtlsParameters
+          dtlsParameters,
         });
         callback();
       } catch (error) {
@@ -152,26 +152,29 @@ export class WebRTCClient {
       }
     });
 
-    this.producerTransport!.on('produce', async ({ kind, rtpParameters, appData }, callback, errback) => {
-      try {
-        const { id } = await this.sendRequest('produce', {
-          transportId: this.producerTransport!.id,
-          kind,
-          rtpParameters,
-          appData
-        });
-        callback({ id });
-      } catch (error) {
-        errback(error as Error);
+    this.producerTransport!.on(
+      'produce',
+      async ({ kind, rtpParameters, appData }, callback, errback) => {
+        try {
+          const { id } = await this.sendRequest('produce', {
+            transportId: this.producerTransport!.id,
+            kind,
+            rtpParameters,
+            appData,
+          });
+          callback({ id });
+        } catch (error) {
+          errback(error as Error);
+        }
       }
-    });
+    );
 
     // Consumer transport events
     this.consumerTransport!.on('connect', async ({ dtlsParameters }, callback, errback) => {
       try {
         await this.sendRequest('connect-transport', {
           transportId: this.consumerTransport!.id,
-          dtlsParameters
+          dtlsParameters,
         });
         callback();
       } catch (error) {
@@ -203,14 +206,14 @@ export class WebRTCClient {
 
     const consumer = await this.sendRequest('consume', {
       producerId,
-      rtpCapabilities: this.device.rtpCapabilities
+      rtpCapabilities: this.device.rtpCapabilities,
     });
 
     const newConsumer = await this.consumerTransport.consume({
       id: consumer.id,
       producerId: consumer.producerId,
       kind: consumer.kind,
-      rtpParameters: consumer.rtpParameters
+      rtpParameters: consumer.rtpParameters,
     });
 
     this.consumers.set(newConsumer.id, newConsumer);
@@ -249,20 +252,20 @@ export class WebRTCClient {
 
   private cleanup(): void {
     this.stopAudio();
-    
-    this.consumers.forEach(consumer => consumer.close());
+
+    this.consumers.forEach((consumer) => consumer.close());
     this.consumers.clear();
-    
+
     if (this.producerTransport) {
       this.producerTransport.close();
       this.producerTransport = null;
     }
-    
+
     if (this.consumerTransport) {
       this.consumerTransport.close();
       this.consumerTransport = null;
     }
-    
+
     this.device = null;
   }
 }
