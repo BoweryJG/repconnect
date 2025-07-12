@@ -17,16 +17,24 @@ const HarveyAgentShowcase: React.FC<HarveyAgentShowcaseProps> = ({ onSelectAgent
   const [selectedAgentId, setSelectedAgentId] = useState<string>('victor');
   const [showObjectionDemo, setShowObjectionDemo] = useState(false);
 
-  const agents = Object.values(harveyStyleAgents).map((config) => ({
-    id: config.id,
-    name: config.name,
-    tagline: config.tagline,
-    description: config.knowledgeDomains[0],
-    specialty: config.personality.traits[0],
-    avatar: config.avatar,
-    colorScheme: config.colorScheme,
+  const agents: Agent[] = Object.values(harveyStyleAgents).map((config) => ({
+    ...config,
+    category: 'sales' as const,
     available: true,
+    description: config.tagline,
+    specialty: config.knowledgeDomains[0],
     color: config.colorScheme.primary,
+    voiceConfig: {
+      ...config.voiceConfig,
+      useSpeakerBoost: config.voiceConfig.speakerBoost,
+    },
+    visualEffects: {
+      ...config.visualEffects,
+      animation: config.visualEffects.animation,
+      glow: config.visualEffects.glowEffect,
+      pulse: config.visualEffects.pulseEffect,
+      particleEffect: config.visualEffects.particleEffect || '',
+    },
   }));
 
   const selectedAgent = harveyStyleAgents[selectedAgentId];
