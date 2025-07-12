@@ -1,13 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { X, Send, Loader2 } from 'lucide-react';
-import {
-  Dialog,
-  Box,
-  TextField,
-  IconButton,
-  Typography,
-  Avatar,
-} from '@mui/material';
+import { Dialog, Box, TextField, IconButton, Typography, Avatar } from '@mui/material';
 import styled from '@emotion/styled';
 import { keyframes } from '@emotion/react';
 
@@ -122,7 +115,7 @@ const InputContainer = styled(Box)`
 
 const StyledTextField = styled(TextField)`
   flex: 1;
-  
+
   .MuiInputBase-root {
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(12px);
@@ -130,25 +123,25 @@ const StyledTextField = styled(TextField)`
     border: 1px solid rgba(255, 255, 255, 0.2);
     padding: 4px 16px;
     color: white;
-    
+
     &:hover {
       border-color: rgba(255, 255, 255, 0.3);
     }
-    
+
     &.Mui-focused {
       border: 2px solid rgba(168, 85, 247, 0.5);
     }
   }
-  
+
   .MuiInputBase-input {
     padding: 8px 0;
-    
+
     &::placeholder {
       color: rgba(255, 255, 255, 0.4);
       opacity: 1;
     }
   }
-  
+
   .MuiOutlinedInput-notchedOutline {
     border: none;
   }
@@ -159,16 +152,16 @@ const SendButton = styled(IconButton)`
   color: white;
   padding: 12px;
   transition: all 0.2s;
-  
+
   &:hover {
     background: linear-gradient(to right, #9333ea, #db2777);
     transform: scale(1.05);
   }
-  
+
   &:active {
     transform: scale(0.95);
   }
-  
+
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
@@ -274,7 +267,7 @@ export const ChatModal: React.FC<ChatModalProps> = ({
 
     try {
       const backendUrl = process.env.REACT_APP_BACKEND_URL || 'https://osbackend-zl1h.onrender.com';
-      
+
       // Send message to Harvey chat endpoint
       const response = await fetch(`${backendUrl}/api/harvey/chat`, {
         method: 'POST',
@@ -285,10 +278,10 @@ export const ChatModal: React.FC<ChatModalProps> = ({
           message: inputValue,
           agentId: agentName.toLowerCase(),
           sessionId: Date.now().toString(),
-          context: messages.map(m => ({
+          context: messages.map((m) => ({
             role: m.sender === 'user' ? 'user' : 'assistant',
-            content: m.content
-          }))
+            content: m.content,
+          })),
         }),
       });
 
@@ -297,10 +290,13 @@ export const ChatModal: React.FC<ChatModalProps> = ({
       }
 
       const data = await response.json();
-      
+
       const agentMessage: Message = {
         id: (Date.now() + 1).toString(),
-        content: data.response || data.message || 'I apologize, but I encountered an issue. Please try again.',
+        content:
+          data.response ||
+          data.message ||
+          'I apologize, but I encountered an issue. Please try again.',
         sender: 'agent',
         timestamp: new Date(),
       };
@@ -310,7 +306,7 @@ export const ChatModal: React.FC<ChatModalProps> = ({
       console.error('Error sending message:', error);
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
-        content: 'I apologize, but I\'m having trouble connecting. Please try again in a moment.',
+        content: "I apologize, but I'm having trouble connecting. Please try again in a moment.",
         sender: 'agent',
         timestamp: new Date(),
       };
@@ -358,10 +354,7 @@ export const ChatModal: React.FC<ChatModalProps> = ({
           <AgentInfo>
             <StyledAvatar src={agentAvatar} alt={agentName} />
             <Box>
-              <Typography
-                variant="h6"
-                sx={{ color: 'white', fontWeight: 600, fontSize: '16px' }}
-              >
+              <Typography variant="h6" sx={{ color: 'white', fontWeight: 600, fontSize: '16px' }}>
                 {agentName}
               </Typography>
               <Typography
@@ -389,9 +382,7 @@ export const ChatModal: React.FC<ChatModalProps> = ({
         {/* Messages Container */}
         <MessagesContainer>
           {messages.length === 0 && (
-            <EmptyStateText>
-              Start a conversation with {agentName}
-            </EmptyStateText>
+            <EmptyStateText>Start a conversation with {agentName}</EmptyStateText>
           )}
 
           {messages.map((message) => (
@@ -430,15 +421,8 @@ export const ChatModal: React.FC<ChatModalProps> = ({
             disabled={isSending}
             fullWidth
           />
-          <SendButton
-            onClick={sendMessage}
-            disabled={!inputValue.trim() || isSending}
-          >
-            {isSending ? (
-              <SpinningLoader size={20} />
-            ) : (
-              <Send size={20} />
-            )}
+          <SendButton onClick={sendMessage} disabled={!inputValue.trim() || isSending}>
+            {isSending ? <SpinningLoader size={20} /> : <Send size={20} />}
           </SendButton>
         </InputContainer>
       </Box>

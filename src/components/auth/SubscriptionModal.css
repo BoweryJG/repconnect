@@ -22,7 +22,8 @@
   position: relative;
   width: 100%;
   max-width: 1200px;
-  background: linear-gradient(135deg,
+  background: linear-gradient(
+    135deg,
     rgba(26, 26, 26, 0.98) 0%,
     rgba(30, 30, 30, 0.95) 50%,
     rgba(26, 26, 26, 0.98) 100%
@@ -31,7 +32,7 @@
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 24px;
-  box-shadow: 
+  box-shadow:
     0 20px 60px rgba(0, 0, 0, 0.5),
     0 0 40px rgba(0, 212, 255, 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
@@ -85,8 +86,12 @@
   transition: background 0.3s ease;
 }
 
-.subscription-modal .close-btn::before { transform: rotate(45deg); }
-.subscription-modal .close-btn::after { transform: rotate(-45deg); }
+.subscription-modal .close-btn::before {
+  transform: rotate(45deg);
+}
+.subscription-modal .close-btn::after {
+  transform: rotate(-45deg);
+}
 
 /* Header */
 .subscription-header {
@@ -185,7 +190,7 @@
 .tier-card:hover {
   transform: translateY(-4px);
   border-color: var(--tier-color);
-  box-shadow: 
+  box-shadow:
     0 12px 32px rgba(0, 0, 0, 0.3),
     0 0 32px rgba(0, 212, 255, 0.1);
 }
@@ -202,7 +207,7 @@
 .tier-card.popular {
   transform: scale(1.05);
   border-color: var(--cyan-accent);
-  box-shadow: 
+  box-shadow:
     0 12px 40px rgba(0, 0, 0, 0.4),
     0 0 40px rgba(0, 212, 255, 0.2);
 }
@@ -348,7 +353,9 @@
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Footer */

@@ -5,31 +5,31 @@
    =========================== */
 :root {
   /* Primary Luxury Colors */
-  --luxury-gold: #D4AF37;
-  --luxury-gold-light: #F4E5B2;
-  --luxury-gold-dark: #B8941F;
-  --luxury-champagne: #F7E7CE;
-  --luxury-rose-gold: #E8B4B8;
-  --luxury-platinum: #E5E4E2;
-  
+  --luxury-gold: #d4af37;
+  --luxury-gold-light: #f4e5b2;
+  --luxury-gold-dark: #b8941f;
+  --luxury-champagne: #f7e7ce;
+  --luxury-rose-gold: #e8b4b8;
+  --luxury-platinum: #e5e4e2;
+
   /* Deep Accent Colors */
-  --luxury-midnight: #0C1929;
-  --luxury-navy: #1A2332;
-  --luxury-charcoal: #2D3436;
+  --luxury-midnight: #0c1929;
+  --luxury-navy: #1a2332;
+  --luxury-charcoal: #2d3436;
   --luxury-obsidian: #000814;
-  
+
   /* Neutral Tones */
-  --luxury-ivory: #FFFFF0;
-  --luxury-pearl: #FAFAFA;
-  --luxury-silk: #F5F5F5;
-  --luxury-smoke: #E8E8E8;
-  
+  --luxury-ivory: #fffff0;
+  --luxury-pearl: #fafafa;
+  --luxury-silk: #f5f5f5;
+  --luxury-smoke: #e8e8e8;
+
   /* Accent Colors */
-  --luxury-emerald: #50C878;
-  --luxury-sapphire: #0F52BA;
-  --luxury-ruby: #E0115F;
-  --luxury-amethyst: #9966CC;
-  
+  --luxury-emerald: #50c878;
+  --luxury-sapphire: #0f52ba;
+  --luxury-ruby: #e0115f;
+  --luxury-amethyst: #9966cc;
+
   /* Gradient Base Colors */
   --gradient-start: rgba(212, 175, 55, 0.15);
   --gradient-mid: rgba(232, 180, 184, 0.1);
@@ -44,7 +44,7 @@
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 
+  box-shadow:
     0 8px 32px 0 rgba(31, 38, 135, 0.15),
     inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
 }
@@ -54,7 +54,7 @@
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 
+  box-shadow:
     0 4px 24px 0 rgba(255, 255, 255, 0.1),
     inset 0 2px 0 0 rgba(255, 255, 255, 0.2);
 }
@@ -64,21 +64,17 @@
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
   border: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: 
+  box-shadow:
     0 8px 32px 0 rgba(0, 0, 0, 0.3),
     inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
 }
 
 .glassmorphism-gold {
-  background: linear-gradient(
-    135deg,
-    rgba(212, 175, 55, 0.1) 0%,
-    rgba(212, 175, 55, 0.05) 100%
-  );
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(212, 175, 55, 0.05) 100%);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(212, 175, 55, 0.2);
-  box-shadow: 
+  box-shadow:
     0 8px 32px 0 rgba(212, 175, 55, 0.15),
     inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
 }
@@ -89,11 +85,11 @@
 .metallic-gold {
   background: linear-gradient(
     135deg,
-    #B8941F 0%,
-    #D4AF37 25%,
-    #F4E5B2 50%,
-    #D4AF37 75%,
-    #B8941F 100%
+    #b8941f 0%,
+    #d4af37 25%,
+    #f4e5b2 50%,
+    #d4af37 75%,
+    #b8941f 100%
   );
   background-size: 200% 200%;
   animation: metallicShine 3s ease-in-out infinite;
@@ -102,11 +98,11 @@
 .metallic-silver {
   background: linear-gradient(
     135deg,
-    #C0C0C0 0%,
-    #E5E4E2 25%,
-    #FFFFFF 50%,
-    #E5E4E2 75%,
-    #C0C0C0 100%
+    #c0c0c0 0%,
+    #e5e4e2 25%,
+    #ffffff 50%,
+    #e5e4e2 75%,
+    #c0c0c0 100%
   );
   background-size: 200% 200%;
   animation: metallicShine 3s ease-in-out infinite;
@@ -115,18 +111,18 @@
 .metallic-rose-gold {
   background: linear-gradient(
     135deg,
-    #E8B4B8 0%,
-    #ECC5C8 25%,
-    #F4E5E7 50%,
-    #ECC5C8 75%,
-    #E8B4B8 100%
+    #e8b4b8 0%,
+    #ecc5c8 25%,
+    #f4e5e7 50%,
+    #ecc5c8 75%,
+    #e8b4b8 100%
   );
   background-size: 200% 200%;
   animation: metallicShine 3s ease-in-out infinite;
 }
 
 .brushed-metal {
-  background: 
+  background:
     repeating-linear-gradient(
       90deg,
       rgba(255, 255, 255, 0.1) 0px,
@@ -134,25 +130,21 @@
       transparent 2px,
       rgba(255, 255, 255, 0.1) 3px
     ),
-    linear-gradient(
-      180deg,
-      var(--luxury-platinum) 0%,
-      var(--luxury-silver) 100%
-    );
+    linear-gradient(180deg, var(--luxury-platinum) 0%, var(--luxury-silver) 100%);
 }
 
 /* ===========================
    Ambient Glow Animations
    =========================== */
 .glow-soft {
-  box-shadow: 
+  box-shadow:
     0 0 20px rgba(212, 175, 55, 0.3),
     0 0 40px rgba(212, 175, 55, 0.1);
   animation: glowPulse 2s ease-in-out infinite;
 }
 
 .glow-intense {
-  box-shadow: 
+  box-shadow:
     0 0 10px rgba(212, 175, 55, 0.5),
     0 0 20px rgba(212, 175, 55, 0.4),
     0 0 30px rgba(212, 175, 55, 0.3),
@@ -172,11 +164,7 @@
   left: -50%;
   width: 200%;
   height: 200%;
-  background: radial-gradient(
-    circle,
-    rgba(212, 175, 55, 0.2) 0%,
-    transparent 70%
-  );
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.2) 0%, transparent 70%);
   animation: ambientRotate 20s linear infinite;
   pointer-events: none;
 }
@@ -185,25 +173,45 @@
    Animation Keyframes
    =========================== */
 @keyframes metallicShine {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 @keyframes glowPulse {
-  0% { opacity: 0.6; }
-  50% { opacity: 1; }
-  100% { opacity: 0.6; }
+  0% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.6;
+  }
 }
 
 @keyframes ambientRotate {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes shimmer {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
 }
 
 @keyframes fadeInUp {
@@ -229,8 +237,13 @@
 }
 
 @keyframes floatAnimation {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
 }
 
 /* ===========================
@@ -241,7 +254,7 @@
 }
 
 .transition-elegant {
-  transition: all 0.5s cubic-bezier(0.215, 0.610, 0.355, 1);
+  transition: all 0.5s cubic-bezier(0.215, 0.61, 0.355, 1);
 }
 
 .transition-bounce {
@@ -254,7 +267,9 @@
 
 /* Hover State Transitions */
 .hover-lift {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .hover-lift:hover {
@@ -267,7 +282,7 @@
 }
 
 .hover-glow:hover {
-  box-shadow: 
+  box-shadow:
     0 0 20px rgba(212, 175, 55, 0.4),
     0 5px 15px rgba(0, 0, 0, 0.1);
 }
@@ -314,16 +329,16 @@
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
   }
-  
+
   .metallic-gold,
   .metallic-silver,
   .metallic-rose-gold {
     animation-duration: 4s;
   }
-  
+
   .glow-soft,
   .glow-intense {
-    box-shadow: 
+    box-shadow:
       0 0 15px rgba(212, 175, 55, 0.25),
       0 0 25px rgba(212, 175, 55, 0.1);
   }
@@ -337,7 +352,7 @@
     backdrop-filter: blur(5px);
     -webkit-backdrop-filter: blur(5px);
   }
-  
+
   .transition-smooth,
   .transition-elegant,
   .transition-bounce,
@@ -361,12 +376,7 @@
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.3),
-    transparent
-  );
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
   animation: shimmer 2s infinite;
 }
 
@@ -380,15 +390,16 @@
 .border-luxury {
   border: 1px solid;
   border-image: linear-gradient(
-    135deg,
-    var(--luxury-gold) 0%,
-    var(--luxury-gold-light) 50%,
-    var(--luxury-gold) 100%
-  ) 1;
+      135deg,
+      var(--luxury-gold) 0%,
+      var(--luxury-gold-light) 50%,
+      var(--luxury-gold) 100%
+    )
+    1;
 }
 
 .shadow-luxury {
-  box-shadow: 
+  box-shadow:
     0 4px 6px -1px rgba(212, 175, 55, 0.1),
     0 2px 4px -1px rgba(212, 175, 55, 0.06),
     0 20px 25px -5px rgba(0, 0, 0, 0.1),
@@ -411,11 +422,21 @@
 }
 
 /* Stagger Animation Delays */
-.stagger-1 { animation-delay: 0.1s; }
-.stagger-2 { animation-delay: 0.2s; }
-.stagger-3 { animation-delay: 0.3s; }
-.stagger-4 { animation-delay: 0.4s; }
-.stagger-5 { animation-delay: 0.5s; }
+.stagger-1 {
+  animation-delay: 0.1s;
+}
+.stagger-2 {
+  animation-delay: 0.2s;
+}
+.stagger-3 {
+  animation-delay: 0.3s;
+}
+.stagger-4 {
+  animation-delay: 0.4s;
+}
+.stagger-5 {
+  animation-delay: 0.5s;
+}
 
 /* ===========================
    Responsive Grid Utilities
@@ -471,7 +492,8 @@
 }
 
 @keyframes sparkle {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0;
     transform: scale(0);
   }
@@ -482,7 +504,8 @@
 }
 
 @keyframes gentle-sway {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateX(0) rotate(0deg);
   }
   25% {
@@ -494,7 +517,8 @@
 }
 
 @keyframes beam-pulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0.4;
     transform: scaleY(1);
   }
@@ -517,7 +541,8 @@
 }
 
 @keyframes align-shift {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateX(0);
   }
   33% {

@@ -60,15 +60,15 @@ export default function VoiceModal({
       // Initialize TTS with agent voice
       await ttsServiceRef.current.initialize();
       const agentVoiceConfig = ttsServiceRef.current.getAgentVoiceConfig(agentName.toLowerCase());
-      
+
       // Connect to backend via Socket.IO
       const backendUrl = process.env.REACT_APP_BACKEND_URL || 'https://osbackend-zl1h.onrender.com';
       socketRef.current = io(`${backendUrl}/harvey-ws`, {
         transports: ['websocket', 'polling'],
         auth: {
           agentId: agentName.toLowerCase(),
-          agentRole: agentRole
-        }
+          agentRole: agentRole,
+        },
       });
 
       socketRef.current.on('connect', () => {
@@ -77,22 +77,22 @@ export default function VoiceModal({
 
       // Initialize WebRTC voice service
       await webRTCServiceRef.current.initialize();
-      
+
       // Start voice session
       const sessionId = Date.now().toString();
       await webRTCServiceRef.current.startVoiceSession(sessionId);
-      
+
       // Get user media
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       localStreamRef.current = stream;
-      
+
       // Initialize Deepgram for transcription
       deepgramRef.current.initialize({
         apiKey: process.env.REACT_APP_DEEPGRAM_API_KEY || '',
         language: 'en-US',
         model: 'nova-2',
         punctuate: true,
-        interim_results: true
+        interim_results: true,
       });
 
       // Connect Deepgram to handle transcriptions
@@ -102,15 +102,15 @@ export default function VoiceModal({
             id: Date.now().toString(),
             speaker: 'user',
             text: data.channel.alternatives[0].transcript,
-            timestamp: new Date()
+            timestamp: new Date(),
           };
-          setTranscription(prev => [...prev, transcriptionData]);
-          
+          setTranscription((prev) => [...prev, transcriptionData]);
+
           // Send to backend for AI response
           socketRef.current?.emit('user-message', {
             text: data.channel.alternatives[0].transcript,
             sessionId,
-            agentId: agentName.toLowerCase()
+            agentId: agentName.toLowerCase(),
           });
         }
       });
@@ -121,10 +121,10 @@ export default function VoiceModal({
           id: Date.now().toString(),
           speaker: 'agent',
           text: data.text,
-          timestamp: new Date()
+          timestamp: new Date(),
         };
-        setTranscription(prev => [...prev, agentTranscription]);
-        
+        setTranscription((prev) => [...prev, agentTranscription]);
+
         // Convert text to speech using ElevenLabs
         if (agentVoiceConfig && ttsServiceRef.current) {
           await ttsServiceRef.current.streamTextToSpeech(data.text, agentVoiceConfig);
@@ -133,11 +133,10 @@ export default function VoiceModal({
 
       // Start audio streaming to Deepgram
       await deepgramRef.current.startStreaming(stream);
-      
+
       setConnectionStatus('connected');
       setIsCallActive(true);
       startVoiceActivityDetection();
-      
     } catch (error) {
       // WebRTC initialization error
       setConnectionStatus('error');
@@ -197,15 +196,15 @@ export default function VoiceModal({
       await deepgramRef.current?.stopStreaming();
       await ttsServiceRef.current?.disconnect();
       await webRTCServiceRef.current?.endAllSessions();
-      
+
       // Clean up WebRTC
       localStreamRef.current?.getTracks().forEach((track) => track.stop());
       peerConnectionRef.current?.close();
       audioContextRef.current?.close();
-      
+
       // Disconnect socket
       socketRef.current?.disconnect();
-      
+
       setIsCallActive(false);
       setConnectionStatus('idle');
       setTranscription([]);

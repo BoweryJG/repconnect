@@ -6,7 +6,7 @@ const router = express.Router();
 
 // Initialize OpenAI for chat functionality
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
+  apiKey: process.env.OPENAI_API_KEY,
 });
 
 // Initialize Harvey for a sales rep
@@ -136,8 +136,10 @@ router.post('/harvey/chat', async (req, res) => {
     }
 
     // Get agent personality from harveyPersonality service
-    const agentConfig = await import('../services/harveyPersonality.js').then(m => m.default.personalities[agentId]);
-    
+    const agentConfig = await import('../services/harveyPersonality.js').then(
+      (m) => m.default.personalities[agentId]
+    );
+
     if (!agentConfig) {
       return res.status(400).json({ error: 'Invalid agentId' });
     }
@@ -154,7 +156,7 @@ router.post('/harvey/chat', async (req, res) => {
     const messages = [
       { role: 'system', content: systemPrompt },
       ...context,
-      { role: 'user', content: message }
+      { role: 'user', content: message },
     ];
 
     // Get response from OpenAI
@@ -162,18 +164,17 @@ router.post('/harvey/chat', async (req, res) => {
       model: 'gpt-4-turbo-preview',
       messages,
       temperature: 0.8,
-      max_tokens: 300
+      max_tokens: 300,
     });
 
     const response = completion.choices[0].message.content;
 
-    res.json({ 
+    res.json({
       response,
       agentId,
       sessionId,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
-
   } catch (error) {
     console.error('Harvey chat error:', error);
     res.status(500).json({ error: 'Failed to process chat message' });

@@ -19,12 +19,9 @@ function App() {
   return (
     <div>
       {/* Your app content */}
-      
+
       {/* Add the chatbot launcher */}
-      <ChatbotIntegration 
-        position="bottom-right"
-        glowColor="#3B82F6"
-      />
+      <ChatbotIntegration position="bottom-right" glowColor="#3B82F6" />
     </div>
   );
 }
@@ -33,6 +30,7 @@ function App() {
 ## Agents
 
 ### Aesthetic Specialists
+
 1. **Dr. Bella** - Injectable Virtuoso (Botox/Dysport)
 2. **Dr. Sophia** - The Sculptor (Dermal Fillers)
 3. **Dr. Luna** - The Skin Alchemist (Chemical Peels)
@@ -40,20 +38,23 @@ function App() {
 5. **Dr. Sculpt** - The Body Artist (Body Contouring)
 
 ### Dental Specialists
+
 6. **Dr. Anchor** - The Robotic Surgeon (Yomi/Implants)
 7. **Dr. Align** - The Alignment Expert (Invisalign)
 8. **Dr. Bright** - The Smile Designer (Cosmetic Dentistry)
 
 ### AI Assistant
+
 9. **Harvey AI** - Master Sales Coach & Medical Assistant
 
 ## Components
 
 ### ChatbotIntegration
+
 The main integration component that manages all modals and state.
 
 ```tsx
-<ChatbotIntegration 
+<ChatbotIntegration
   position="bottom-right" // or "bottom-left"
   primaryColor="#6366F1"
   glowColor="#3B82F6"
@@ -101,6 +102,7 @@ export const customAgent: Agent = {
 ## Styling
 
 The component uses:
+
 - Material-UI for base components
 - CSS Modules for luxury effects
 - Framer Motion for animations
@@ -113,14 +115,13 @@ Import luxury utilities:
 ```tsx
 import styles from '@/components/ChatbotLauncher/styles/luxury.module.css';
 
-<div className={styles.glassmorphism}>
-  Luxury content
-</div>
+<div className={styles.glassmorphism}>Luxury content</div>;
 ```
 
 ## Voice Integration
 
 Voice calls use:
+
 - WebRTC for real-time communication
 - ElevenLabs for text-to-speech
 - Each agent has a unique voice configuration
@@ -146,16 +147,19 @@ Text chat requires OpenRouter API key for GPT-4 access. Update the `sendMessage`
 ## Troubleshooting
 
 ### Chatbot not appearing
+
 - Check console for errors
 - Ensure all dependencies are installed
 - Verify environment variables are set
 
 ### Voice not working
+
 - Check microphone permissions
 - Ensure ElevenLabs API key is valid
 - Verify WebRTC is supported in browser
 
 ### Performance issues
+
 - Reduce animation complexity on older devices
 - Check for console warnings
 - Ensure GPU acceleration is enabled
