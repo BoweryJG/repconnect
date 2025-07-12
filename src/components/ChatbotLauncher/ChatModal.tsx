@@ -342,7 +342,7 @@ export const ChatModal: React.FC<ChatModalProps> = ({
         },
       }}
     >
-      <Box
+      <div
         style={{
           display: 'flex',
           flexDirection: 'column',
@@ -353,7 +353,7 @@ export const ChatModal: React.FC<ChatModalProps> = ({
         <HeaderContainer>
           <AgentInfo>
             <StyledAvatar src={agentAvatar} alt={agentName} />
-            <Box>
+            <div>
               <Typography variant="h6" sx={{ color: 'white', fontWeight: 600, fontSize: '16px' }}>
                 {agentName}
               </Typography>
@@ -363,7 +363,7 @@ export const ChatModal: React.FC<ChatModalProps> = ({
               >
                 {agentRole}
               </Typography>
-            </Box>
+            </div>
           </AgentInfo>
           <IconButton
             onClick={onClose}
@@ -425,7 +425,7 @@ export const ChatModal: React.FC<ChatModalProps> = ({
             {isSending ? <SpinningLoader size={20} /> : <Send size={20} />}
           </SendButton>
         </InputContainer>
-      </Box>
+      </div>
     </StyledDialog>
   );
 };
