@@ -1,9 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { X, Mic, MicOff, Phone, PhoneOff, Volume2 } from 'lucide-react';
-import { WebRTCVoiceService } from '../../services/webRTCVoiceService';
-import { ElevenLabsTTSService } from '../../services/elevenLabsTTS';
-import { DeepgramBridge } from '../../services/deepgramBridge';
-import { io, Socket } from 'socket.io-client';
+import { WebRTCClient } from '../../services/webRTCClient';
 
 interface VoiceModalProps {
   isOpen: boolean;
@@ -36,16 +33,10 @@ export default function VoiceModal({
     'idle' | 'connecting' | 'connected' | 'error'
   >('idle');
 
-  const peerConnectionRef = useRef<RTCPeerConnection | null>(null);
-  const localStreamRef = useRef<MediaStream | null>(null);
-  // const remoteStreamRef = useRef<MediaStream | null>(null); // Not used with current implementation
+  const webRTCClientRef = useRef<WebRTCClient | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
   const transcriptionEndRef = useRef<HTMLDivElement>(null);
-  const socketRef = useRef<Socket | null>(null);
-  const webRTCServiceRef = useRef<WebRTCVoiceService | null>(null);
-  const ttsServiceRef = useRef<ElevenLabsTTSService | null>(null);
-  const deepgramRef = useRef<DeepgramBridge | null>(null);
 
   // Initialize WebRTC with real services
   const initializeWebRTC = useCallback(async () => {

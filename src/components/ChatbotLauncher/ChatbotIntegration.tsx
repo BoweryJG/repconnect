@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import ChatbotLauncher from './ChatbotLauncher';
 import { ChatModal } from './ChatModal';
-import VoiceModal from './VoiceModal';
+import VoiceModalWebRTC from './VoiceModalWebRTC';
 import AgentSelectionModal from './AgentSelectionModal';
 import { getAllAgents } from './agents/agentConfigs';
 import type { Agent } from './types';
@@ -98,7 +98,7 @@ export const ChatbotIntegration: React.FC<ChatbotIntegrationProps> = ({
             agentRole={selectedAgent.tagline}
           />
 
-          <VoiceModal
+          <VoiceModalWebRTC
             isOpen={activeModal === 'voice'}
             onClose={handleCloseModal}
             agentName={selectedAgent.name}

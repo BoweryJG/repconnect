@@ -44,6 +44,7 @@
     "helmet": "^8.0.0",
     "lottie-react": "^2.4.1",
     "lucide-react": "^0.525.0",
+    "mediasoup-client": "^3.12.5",
     "node-fetch": "^3.3.2",
     "openai": "^5.9.0",
     "papaparse": "^5.5.3",
