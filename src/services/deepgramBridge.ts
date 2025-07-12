@@ -172,7 +172,7 @@ export class DeepgramBridge extends EventEmitter {
     });
   }
 
-  private sendAudioToDeepgram(sessionId: string, audio: Int16Array): void {
+  sendAudioToDeepgram(sessionId: string, audio: Int16Array): void {
     const connection = this.deepgramConnections.get(sessionId);
     if (!connection || connection.readyState !== WebSocket.OPEN) return;
 
@@ -235,7 +235,7 @@ export class DeepgramBridge extends EventEmitter {
   }
 
   // Simplified emotion detection based on speech patterns
-  private detectEmotionFromSpeech(transcript: string, confidence: number): void {
+  private detectEmotionFromSpeech(_transcript: string, _confidence: number): void {
     // This is a placeholder - in production you'd use more sophisticated analysis
     // For now, we can analyze speech patterns, pace, etc.
     // Deepgram doesn't provide emotion detection out of the box

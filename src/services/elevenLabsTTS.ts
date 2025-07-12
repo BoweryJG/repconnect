@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events';
-import { agentConfigs, AgentConfig } from '../components/ChatbotLauncher/agents/agentConfigs';
+import { agentConfigs } from '../components/ChatbotLauncher/agents/agentConfigs';
 
 interface ElevenLabsConfig {
   apiKey: string;
@@ -186,6 +186,7 @@ export class ElevenLabsTTSService extends EventEmitter {
                   await this.processAudioBuffer(true);
                 }
                 this.emit('stream-complete');
+                this.emit('speaking-end');
                 resolve();
               }
             } catch (e) {
@@ -214,7 +215,7 @@ export class ElevenLabsTTSService extends EventEmitter {
   /**
    * Process buffered audio data
    */
-  private async processAudioBuffer(flush: boolean = false): Promise<void> {
+  private async processAudioBuffer(_flush: boolean = false): Promise<void> {
     if (!this.audioContext || this.streamBuffer.length === 0) return;
 
     // Concatenate buffers
@@ -320,6 +321,7 @@ export class ElevenLabsTTSService extends EventEmitter {
     this.isPlaying = true;
     this.nextPlayTime = this.audioContext?.currentTime || 0;
     this.emit('playback-started');
+    this.emit('speaking-start');
   }
 
   /**
@@ -519,7 +521,8 @@ export class ElevenLabsTTSService extends EventEmitter {
 }
 
 // Export singleton instance
-export default new ElevenLabsTTSService();
+const elevenLabsTTSInstance = new ElevenLabsTTSService();
+export default elevenLabsTTSInstance;
 
 // Export class for testing
 export { ElevenLabsTTSService as ElevenLabsTTS };

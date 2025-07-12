@@ -59,7 +59,6 @@ export default function VoiceModal({
 
       // Initialize TTS with agent voice
       await ttsServiceRef.current.initialize();
-      const agentVoiceConfig = ttsServiceRef.current.getAgentVoiceConfig(agentName.toLowerCase());
 
       // Connect to backend via Socket.IO
       const backendUrl = process.env.REACT_APP_BACKEND_URL || 'https://osbackend-zl1h.onrender.com';
@@ -86,29 +85,40 @@ export default function VoiceModal({
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       localStreamRef.current = stream;
 
-      // Initialize Deepgram for transcription
-      deepgramRef.current.initialize({
-        apiKey: process.env.REACT_APP_DEEPGRAM_API_KEY || '',
-        language: 'en-US',
-        model: 'nova-2',
-        punctuate: true,
-        interim_results: true,
+      // Connect to Deepgram WebSocket and stream audio
+      await deepgramRef.current.connectToDeepgram(sessionId);
+
+      // Set up audio streaming from microphone to Deepgram
+      const mediaRecorder = new MediaRecorder(stream, {
+        mimeType: 'audio/webm;codecs=opus',
       });
 
-      // Connect Deepgram to handle transcriptions
-      deepgramRef.current.on('transcription', (data: any) => {
-        if (data.is_final && data.speech_final) {
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0 && deepgramRef.current?.isConnected(sessionId)) {
+          // Convert blob to array buffer and send to Deepgram
+          event.data.arrayBuffer().then((buffer) => {
+            const int16Array = new Int16Array(buffer);
+            deepgramRef.current?.sendAudioToDeepgram(sessionId, int16Array);
+          });
+        }
+      };
+
+      mediaRecorder.start(100); // Capture audio in 100ms chunks
+
+      // Handle transcriptions from Deepgram
+      deepgramRef.current.on('transcript', (data: any) => {
+        if (data.text && data.isFinal) {
           const transcriptionData: TranscriptionLine = {
             id: Date.now().toString(),
             speaker: 'user',
-            text: data.channel.alternatives[0].transcript,
+            text: data.text,
             timestamp: new Date(),
           };
           setTranscription((prev) => [...prev, transcriptionData]);
 
           // Send to backend for AI response
           socketRef.current?.emit('user-message', {
-            text: data.channel.alternatives[0].transcript,
+            text: data.text,
             sessionId,
             agentId: agentName.toLowerCase(),
           });
@@ -126,13 +136,22 @@ export default function VoiceModal({
         setTranscription((prev) => [...prev, agentTranscription]);
 
         // Convert text to speech using ElevenLabs
-        if (agentVoiceConfig && ttsServiceRef.current) {
-          await ttsServiceRef.current.streamTextToSpeech(data.text, agentVoiceConfig);
+        if (ttsServiceRef.current) {
+          setIsAgentSpeaking(true);
+          await ttsServiceRef.current.streamTextToSpeech(data.text, agentName.toLowerCase());
+          setIsAgentSpeaking(false);
         }
       });
 
-      // Start audio streaming to Deepgram
-      await deepgramRef.current.startStreaming(stream);
+      // Audio from WebRTC is automatically handled by DeepgramBridge
+      // Set up voice activity detection
+      if (localStreamRef.current && !audioContextRef.current) {
+        audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+        const source = audioContextRef.current.createMediaStreamSource(localStreamRef.current);
+        analyserRef.current = audioContextRef.current.createAnalyser();
+        analyserRef.current.fftSize = 256;
+        source.connect(analyserRef.current);
+      }
 
       setConnectionStatus('connected');
       setIsCallActive(true);
@@ -193,8 +212,8 @@ export default function VoiceModal({
   const endCall = async () => {
     try {
       // Stop all services
-      await deepgramRef.current?.stopStreaming();
-      await ttsServiceRef.current?.disconnect();
+      deepgramRef.current?.disconnectAll();
+      ttsServiceRef.current?.stopPlayback();
       await webRTCServiceRef.current?.endAllSessions();
 
       // Clean up WebRTC
