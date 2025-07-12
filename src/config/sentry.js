@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/node';
-import { ProfilingIntegration } from '@sentry/profiling-node';
+import { nodeProfilingIntegration } from '@sentry/profiling-node';
 import logger from '../../utils/logger.js';
 
 /**
@@ -21,7 +21,7 @@ export function initializeSentry(app) {
         // Automatically instrument Node.js libraries and frameworks
         ...Sentry.autoDiscoverNodePerformanceMonitoringIntegrations(),
         // Enable profiling
-        new ProfilingIntegration(),
+        nodeProfilingIntegration(),
       ],
       // Performance Monitoring
       tracesSampleRate: process.env.NODE_ENV === 'production' ? 0.1 : 1.0,
@@ -107,7 +107,7 @@ export function initializeSentry(app) {
  * Sentry error handler middleware
  * This should be added after all other middleware and routes
  */
-export const sentryErrorHandler = Sentry.Handlers.errorHandler({
+export const sentryErrorHandler = Sentry.expressErrorHandler({
   shouldHandleError(error) {
     // Capture 4xx and 5xx errors
     if (error.status >= 400) {
@@ -170,7 +170,7 @@ export const captureMessage = (message, level = 'info') => {
   Sentry.captureMessage(message, level);
 };
 
-export default {
+const sentryConfig = {
   initializeSentry,
   sentryErrorHandler,
   captureMetric,
@@ -180,3 +180,5 @@ export default {
   captureException,
   captureMessage,
 };
+
+export default sentryConfig;
