@@ -1,4 +1,5 @@
-import * as mediasoupClient from 'mediasoup-client';
+import { Device } from 'mediasoup-client';
+import { Transport, Producer, Consumer } from 'mediasoup-client/lib/types';
 import { io, Socket } from 'socket.io-client';
 
 export interface WebRTCConfig {
@@ -9,11 +10,11 @@ export interface WebRTCConfig {
 
 export class WebRTCClient {
   private socket: Socket | null = null;
-  private device: mediasoupClient.Device | null = null;
-  private producerTransport: mediasoupClient.Transport | null = null;
-  private consumerTransport: mediasoupClient.Transport | null = null;
-  private producer: mediasoupClient.Producer | null = null;
-  private consumers: Map<string, mediasoupClient.Consumer> = new Map();
+  private device: Device | null = null;
+  private producerTransport: Transport | null = null;
+  private consumerTransport: Transport | null = null;
+  private producer: Producer | null = null;
+  private consumers: Map<string, Consumer> = new Map();
   private localStream: MediaStream | null = null;
   private roomId: string | null = null;
   private sessionId: string | null = null;
@@ -73,7 +74,7 @@ export class WebRTCClient {
     const { rtpCapabilities } = await this.sendRequest('get-router-rtp-capabilities', {});
 
     // Create device
-    this.device = new mediasoupClient.Device();
+    this.device = new Device();
     await this.device.load({ routerRtpCapabilities: rtpCapabilities });
 
     // Create transports
