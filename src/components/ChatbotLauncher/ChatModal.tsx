@@ -343,7 +343,7 @@ export const ChatModal: React.FC<ChatModalProps> = ({
       }}
     >
       <Box
-        sx={{
+        style={{
           display: 'flex',
           flexDirection: 'column',
           height: '100%',
