@@ -50,10 +50,23 @@ const HarveyAgentShowcase: React.FC<HarveyAgentShowcaseProps> = ({ onSelectAgent
     }
   };
 
+  const containerStyle = {
+    width: '100%',
+    backgroundColor: '#0a0a0a',
+    color: 'white',
+    padding: 4,
+    borderRadius: 2,
+  };
+
+  const headerStyle = {
+    textAlign: 'center' as const,
+    marginBottom: 6,
+  };
+
   return (
-    <Box sx={{ width: '100%', bgcolor: '#0a0a0a', color: 'white', p: 4, borderRadius: 2 }}>
+    <Box sx={containerStyle}>
       {/* Header */}
-      <Box sx={{ textAlign: 'center', mb: 6 }}>
+      <Box sx={headerStyle}>
         <Typography
           variant="h3"
           sx={{
@@ -61,7 +74,7 @@ const HarveyAgentShowcase: React.FC<HarveyAgentShowcaseProps> = ({ onSelectAgent
             background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
-            mb: 2,
+            marginBottom: 2,
           }}
         >
           ELITE CLOSERS DIVISION
@@ -72,14 +85,14 @@ const HarveyAgentShowcase: React.FC<HarveyAgentShowcaseProps> = ({ onSelectAgent
       </Box>
 
       {/* Agent Selection */}
-      <Grid container spacing={2} sx={{ mb: 4 }}>
+      <Grid container spacing={2} sx={{ marginBottom: 4 }}>
         {agents.map((agent) => (
           <Grid item xs={12} sm={6} md={2.4} key={agent.id}>
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Card
                 onClick={() => handleSelectAgent(agent.id)}
-                sx={{
-                  bgcolor:
+                style={{
+                  backgroundColor:
                     selectedAgentId === agent.id
                       ? alpha(agent.color, 0.2)
                       : 'rgba(255, 255, 255, 0.05)',
@@ -89,24 +102,19 @@ const HarveyAgentShowcase: React.FC<HarveyAgentShowcaseProps> = ({ onSelectAgent
                       : '2px solid transparent',
                   cursor: 'pointer',
                   transition: 'all 0.3s ease',
-                  '&:hover': {
-                    bgcolor: alpha(agent.color, 0.1),
-                    borderColor: agent.color,
-                  },
                 }}
               >
-                <CardContent sx={{ textAlign: 'center', p: 2 }}>
+                <CardContent sx={{ textAlign: 'center', padding: 2 }}>
                   <Box
                     sx={{
                       width: 60,
                       height: 60,
                       borderRadius: '50%',
-                      bgcolor: agent.avatar.backgroundColor,
+                      backgroundColor: agent.avatar.backgroundColor,
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      mx: 'auto',
-                      mb: 2,
+                      margin: '0 auto 16px auto',
                     }}
                   >
                     {React.createElement(agent.avatar.icon, {
@@ -141,7 +149,7 @@ const HarveyAgentShowcase: React.FC<HarveyAgentShowcaseProps> = ({ onSelectAgent
               <Grid item xs={12} md={8}>
                 <Box
                   sx={{
-                    p: 4,
+                    padding: 4,
                     borderRadius: 2,
                     background: selectedAgent.colorScheme.gradient,
                     position: 'relative',
@@ -149,22 +157,22 @@ const HarveyAgentShowcase: React.FC<HarveyAgentShowcaseProps> = ({ onSelectAgent
                   }}
                 >
                   <Box sx={{ position: 'relative', zIndex: 1 }}>
-                    <Typography variant="h4" sx={{ fontWeight: 900, mb: 2 }}>
+                    <Typography variant="h4" sx={{ fontWeight: 900, marginBottom: 2 }}>
                       {selectedAgent.name}
                     </Typography>
-                    <Typography variant="h6" sx={{ mb: 3, fontStyle: 'italic' }}>
+                    <Typography variant="h6" sx={{ marginBottom: 3, fontStyle: 'italic' }}>
                       {selectedAgent.tagline}
                     </Typography>
 
                     {/* Key Traits */}
-                    <Box sx={{ mb: 3 }}>
+                    <Box sx={{ marginBottom: 3 }}>
                       {selectedAgent.personality.traits.map((trait) => (
                         <Chip
                           key={trait}
                           label={trait}
                           sx={{
-                            mr: 1,
-                            mb: 1,
+                            marginRight: 1,
+                            marginBottom: 1,
                             bgcolor: 'rgba(0, 0, 0, 0.3)',
                             color: 'white',
                             fontWeight: 600,
@@ -174,12 +182,12 @@ const HarveyAgentShowcase: React.FC<HarveyAgentShowcaseProps> = ({ onSelectAgent
                     </Box>
 
                     {/* Conversation Starters */}
-                    <Typography variant="h6" sx={{ mb: 2 }}>
+                    <Typography variant="h6" sx={{ marginBottom: 2 }}>
                       Opening Lines:
                     </Typography>
-                    <Box sx={{ mb: 3 }}>
+                    <Box sx={{ marginBottom: 3 }}>
                       {selectedAgent.conversationStarters.slice(0, 2).map((starter, idx) => (
-                        <Typography key={idx} sx={{ mb: 1, fontStyle: 'italic' }}>
+                        <Typography key={idx} sx={{ marginBottom: 1, fontStyle: 'italic' }}>
                           "{starter}"
                         </Typography>
                       ))}
@@ -192,11 +200,11 @@ const HarveyAgentShowcase: React.FC<HarveyAgentShowcaseProps> = ({ onSelectAgent
                         size="large"
                         onClick={handleStartConversation}
                         sx={{
-                          bgcolor: 'black',
+                          backgroundColor: 'black',
                           color: selectedAgent.colorScheme.primary,
                           fontWeight: 700,
                           '&:hover': {
-                            bgcolor: 'rgba(0, 0, 0, 0.8)',
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
                           },
                         }}
                       >
@@ -212,7 +220,7 @@ const HarveyAgentShowcase: React.FC<HarveyAgentShowcaseProps> = ({ onSelectAgent
                           fontWeight: 700,
                           '&:hover': {
                             borderColor: 'black',
-                            bgcolor: 'rgba(0, 0, 0, 0.1)',
+                            backgroundColor: 'rgba(0, 0, 0, 0.1)',
                           },
                         }}
                       >
@@ -224,28 +232,30 @@ const HarveyAgentShowcase: React.FC<HarveyAgentShowcaseProps> = ({ onSelectAgent
               </Grid>
 
               <Grid item xs={12} md={4}>
-                <Box sx={{ p: 3, bgcolor: 'rgba(255, 255, 255, 0.05)', borderRadius: 2 }}>
-                  <Typography variant="h6" sx={{ mb: 3, fontWeight: 700 }}>
+                <Box
+                  sx={{ padding: 3, backgroundColor: 'rgba(255, 255, 255, 0.05)', borderRadius: 2 }}
+                >
+                  <Typography variant="h6" sx={{ marginBottom: 3, fontWeight: 700 }}>
                     PROVEN RESULTS
                   </Typography>
 
-                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                    <TrendingUp sx={{ mr: 2, color: '#00FF00' }} />
+                  <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 2 }}>
+                    <TrendingUp sx={{ marginRight: 2, color: '#00FF00' }} />
                     <Typography>347% Average Revenue Increase</Typography>
                   </Box>
 
-                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                    <AttachMoney sx={{ mr: 2, color: '#FFD700' }} />
+                  <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 2 }}>
+                    <AttachMoney sx={{ marginRight: 2, color: '#FFD700' }} />
                     <Typography>$2.4M in New Bookings (90 days)</Typography>
                   </Box>
 
-                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                    <Timer sx={{ mr: 2, color: '#FF6B6B' }} />
+                  <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 2 }}>
+                    <Timer sx={{ marginRight: 2, color: '#FF6B6B' }} />
                     <Typography>15 Min Average Close Time</Typography>
                   </Box>
 
-                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                    <CheckCircle sx={{ mr: 2, color: '#4ECDC4' }} />
+                  <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 2 }}>
+                    <CheckCircle sx={{ marginRight: 2, color: '#4ECDC4' }} />
                     <Typography>94% Close Rate on Qualified Leads</Typography>
                   </Box>
                 </Box>
@@ -261,15 +271,31 @@ const HarveyAgentShowcase: React.FC<HarveyAgentShowcaseProps> = ({ onSelectAgent
                   exit={{ opacity: 0, height: 0 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <Box sx={{ mt: 4, p: 3, bgcolor: 'rgba(255, 255, 255, 0.05)', borderRadius: 2 }}>
-                    <Typography variant="h6" sx={{ mb: 3 }}>
+                  <Box
+                    sx={{
+                      marginTop: 4,
+                      padding: 3,
+                      backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                      borderRadius: 2,
+                    }}
+                  >
+                    <Typography variant="h6" sx={{ marginBottom: 3 }}>
                       Objection Handling Examples:
                     </Typography>
 
                     <Grid container spacing={2}>
                       <Grid item xs={12} md={4}>
-                        <Box sx={{ p: 2, bgcolor: 'rgba(255, 0, 0, 0.1)', borderRadius: 1 }}>
-                          <Typography variant="subtitle2" sx={{ color: '#FF6B6B', mb: 1 }}>
+                        <Box
+                          sx={{
+                            padding: 2,
+                            backgroundColor: 'rgba(255, 0, 0, 0.1)',
+                            borderRadius: 1,
+                          }}
+                        >
+                          <Typography
+                            variant="subtitle2"
+                            sx={{ color: '#FF6B6B', marginBottom: 1 }}
+                          >
                             "It's too expensive..."
                           </Typography>
                           <Typography variant="body2" sx={{ fontStyle: 'italic' }}>
@@ -279,8 +305,17 @@ const HarveyAgentShowcase: React.FC<HarveyAgentShowcaseProps> = ({ onSelectAgent
                       </Grid>
 
                       <Grid item xs={12} md={4}>
-                        <Box sx={{ p: 2, bgcolor: 'rgba(255, 165, 0, 0.1)', borderRadius: 1 }}>
-                          <Typography variant="subtitle2" sx={{ color: '#FFA500', mb: 1 }}>
+                        <Box
+                          sx={{
+                            padding: 2,
+                            backgroundColor: 'rgba(255, 165, 0, 0.1)',
+                            borderRadius: 1,
+                          }}
+                        >
+                          <Typography
+                            variant="subtitle2"
+                            sx={{ color: '#FFA500', marginBottom: 1 }}
+                          >
                             "I need to think about it..."
                           </Typography>
                           <Typography variant="body2" sx={{ fontStyle: 'italic' }}>
@@ -290,8 +325,17 @@ const HarveyAgentShowcase: React.FC<HarveyAgentShowcaseProps> = ({ onSelectAgent
                       </Grid>
 
                       <Grid item xs={12} md={4}>
-                        <Box sx={{ p: 2, bgcolor: 'rgba(147, 112, 219, 0.1)', borderRadius: 1 }}>
-                          <Typography variant="subtitle2" sx={{ color: '#9370DB', mb: 1 }}>
+                        <Box
+                          sx={{
+                            padding: 2,
+                            backgroundColor: 'rgba(147, 112, 219, 0.1)',
+                            borderRadius: 1,
+                          }}
+                        >
+                          <Typography
+                            variant="subtitle2"
+                            sx={{ color: '#9370DB', marginBottom: 1 }}
+                          >
                             "How do I know this works?"
                           </Typography>
                           <Typography variant="body2" sx={{ fontStyle: 'italic' }}>
@@ -301,8 +345,15 @@ const HarveyAgentShowcase: React.FC<HarveyAgentShowcaseProps> = ({ onSelectAgent
                       </Grid>
                     </Grid>
 
-                    <Box sx={{ mt: 3, p: 2, bgcolor: 'rgba(255, 215, 0, 0.1)', borderRadius: 1 }}>
-                      <Typography variant="subtitle2" sx={{ color: '#FFD700', mb: 1 }}>
+                    <Box
+                      sx={{
+                        marginTop: 3,
+                        padding: 2,
+                        backgroundColor: 'rgba(255, 215, 0, 0.1)',
+                        borderRadius: 1,
+                      }}
+                    >
+                      <Typography variant="subtitle2" sx={{ color: '#FFD700', marginBottom: 1 }}>
                         CLOSING LINE:
                       </Typography>
                       <Typography variant="body1" sx={{ fontWeight: 700 }}>
