@@ -1,4 +1,3 @@
-import { ReactElement } from 'react';
 import { LucideIcon } from 'lucide-react';
 
 export interface AgentPersonality {
@@ -34,7 +33,7 @@ export interface Agent {
     style: number;
     useSpeakerBoost: boolean;
   };
-  category: 'aesthetic' | 'dental' | 'general';
+  category: 'aesthetic' | 'dental' | 'general' | 'sales';
   knowledgeDomains: string[];
   conversationStarters: string[];
   visualEffects: {
@@ -51,7 +50,7 @@ export interface Agent {
 
 export interface ChatbotLauncherProps {
   agents?: Agent[];
-  onAgentSelect?: (agent: Agent) => void;
+  onAgentSelect?: (_agent: Agent) => void;
   position?: 'bottom-right' | 'bottom-left';
   primaryColor?: string;
   glowColor?: string;
