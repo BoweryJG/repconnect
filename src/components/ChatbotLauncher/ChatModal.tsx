@@ -1,5 +1,15 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { X, Send, Loader2 } from 'lucide-react';
+import {
+  Dialog,
+  Box,
+  TextField,
+  IconButton,
+  Typography,
+  Avatar,
+} from '@mui/material';
+import styled from '@emotion/styled';
+import { keyframes } from '@emotion/react';
 
 interface Message {
   id: string;
@@ -15,6 +25,204 @@ interface ChatModalProps {
   agentAvatar: string;
   agentRole: string;
 }
+
+// Styled components for custom styling
+const StyledDialog = styled(Dialog)`
+  .MuiDialog-paper {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(48px);
+    -webkit-backdrop-filter: blur(48px);
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    width: 100%;
+    max-width: 500px;
+    height: 600px;
+    max-height: 90vh;
+    margin: 16px;
+    overflow: hidden;
+  }
+`;
+
+const HeaderContainer = styled(Box)`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+`;
+
+const AgentInfo = styled(Box)`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+`;
+
+const StyledAvatar = styled(Avatar)`
+  width: 40px;
+  height: 40px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+`;
+
+const MessagesContainer = styled(Box)`
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 3px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+  }
+`;
+
+const MessageBubble = styled(Box)<{ isUser: boolean }>`
+  max-width: 80%;
+  padding: 12px 16px;
+  border-radius: 16px;
+  background: ${(props) =>
+    props.isUser
+      ? 'linear-gradient(to right, rgba(168, 85, 247, 0.2), rgba(236, 72, 153, 0.2))'
+      : 'rgba(255, 255, 255, 0.1)'};
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  align-self: ${(props) => (props.isUser ? 'flex-end' : 'flex-start')};
+`;
+
+const MessageText = styled(Typography)`
+  color: white;
+  font-size: 14px;
+  white-space: pre-wrap;
+`;
+
+const MessageTime = styled(Typography)`
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 12px;
+  margin-top: 4px;
+`;
+
+const InputContainer = styled(Box)`
+  padding: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+`;
+
+const StyledTextField = styled(TextField)`
+  flex: 1;
+  
+  .MuiInputBase-root {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 4px 16px;
+    color: white;
+    
+    &:hover {
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+    
+    &.Mui-focused {
+      border: 2px solid rgba(168, 85, 247, 0.5);
+    }
+  }
+  
+  .MuiInputBase-input {
+    padding: 8px 0;
+    
+    &::placeholder {
+      color: rgba(255, 255, 255, 0.4);
+      opacity: 1;
+    }
+  }
+  
+  .MuiOutlinedInput-notchedOutline {
+    border: none;
+  }
+`;
+
+const SendButton = styled(IconButton)`
+  background: linear-gradient(to right, #a855f7, #ec4899);
+  color: white;
+  padding: 12px;
+  transition: all 0.2s;
+  
+  &:hover {
+    background: linear-gradient(to right, #9333ea, #db2777);
+    transform: scale(1.05);
+  }
+  
+  &:active {
+    transform: scale(0.95);
+  }
+  
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+`;
+
+const EmptyStateText = styled(Typography)`
+  color: rgba(255, 255, 255, 0.5);
+  text-align: center;
+  margin-top: 32px;
+`;
+
+const bounce = keyframes`
+  0%, 80%, 100% {
+    transform: scale(0);
+  }
+  40% {
+    transform: scale(1);
+  }
+`;
+
+const spin = keyframes`
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+`;
+
+const SpinningLoader = styled(Loader2)`
+  animation: ${spin} 1s linear infinite;
+`;
+
+const TypingDot = styled.div<{ delay: number }>`
+  width: 8px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 50%;
+  animation: ${bounce} 1.4s infinite ease-in-out;
+  animation-delay: ${(props) => props.delay}ms;
+`;
+
+const TypingIndicator = styled(Box)`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 16px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  width: fit-content;
+`;
 
 export const ChatModal: React.FC<ChatModalProps> = ({
   isOpen,
@@ -42,11 +250,13 @@ export const ChatModal: React.FC<ChatModalProps> = ({
   // Focus input when modal opens
   useEffect(() => {
     if (isOpen) {
-      inputRef.current?.focus();
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 100);
     }
   }, [isOpen]);
 
-  // Send message to OpenRouter GPT-4
+  // Send message to Harvey backend
   const sendMessage = async () => {
     if (!inputValue.trim() || isSending) return;
 
@@ -63,20 +273,48 @@ export const ChatModal: React.FC<ChatModalProps> = ({
     setIsTyping(true);
 
     try {
-      // TODO: Integrate with OpenRouter GPT-4 API
-      // For now, simulate a response
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      const backendUrl = process.env.REACT_APP_BACKEND_URL || 'https://osbackend-zl1h.onrender.com';
+      
+      // Send message to Harvey chat endpoint
+      const response = await fetch(`${backendUrl}/api/harvey/chat`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message: inputValue,
+          agentId: agentName.toLowerCase(),
+          sessionId: Date.now().toString(),
+          context: messages.map(m => ({
+            role: m.sender === 'user' ? 'user' : 'assistant',
+            content: m.content
+          }))
+        }),
+      });
 
+      if (!response.ok) {
+        throw new Error('Failed to send message');
+      }
+
+      const data = await response.json();
+      
       const agentMessage: Message = {
         id: (Date.now() + 1).toString(),
-        content: `Thank you for your message. I'm ${agentName}, your ${agentRole}. How can I assist you today?`,
+        content: data.response || data.message || 'I apologize, but I encountered an issue. Please try again.',
         sender: 'agent',
         timestamp: new Date(),
       };
 
       setMessages((prev) => [...prev, agentMessage]);
     } catch (error) {
-      // Error sending message - handle silently in production
+      console.error('Error sending message:', error);
+      const errorMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        content: 'I apologize, but I\'m having trouble connecting. Please try again in a moment.',
+        sender: 'agent',
+        timestamp: new Date(),
+      };
+      setMessages((prev) => [...prev, errorMessage]);
     } finally {
       setIsTyping(false);
       setIsSending(false);
@@ -90,132 +328,120 @@ export const ChatModal: React.FC<ChatModalProps> = ({
     }
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
-
-      {/* Modal */}
-      <div
-        className="relative w-full max-w-md h-[600px] max-h-[90vh] flex flex-col
-                      bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20
-                      shadow-[0_8px_32px_rgba(0,0,0,0.3)]"
+    <StyledDialog
+      open={isOpen}
+      onClose={onClose}
+      maxWidth={false}
+      PaperProps={{
+        sx: {
+          backgroundColor: 'transparent',
+          backgroundImage: 'none',
+        },
+      }}
+      BackdropProps={{
+        sx: {
+          backgroundColor: 'rgba(0, 0, 0, 0.6)',
+          backdropFilter: 'blur(8px)',
+        },
+      }}
+    >
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          height: '100%',
+        }}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-white/10">
-          <div className="flex items-center space-x-3">
-            <img
-              src={agentAvatar}
-              alt={agentName}
-              className="w-10 h-10 rounded-full object-cover ring-2 ring-white/20"
-            />
-            <div>
-              <h3 className="text-white font-semibold">{agentName}</h3>
-              <p className="text-white/60 text-sm">{agentRole}</p>
-            </div>
-          </div>
-          <button
+        <HeaderContainer>
+          <AgentInfo>
+            <StyledAvatar src={agentAvatar} alt={agentName} />
+            <Box>
+              <Typography
+                variant="h6"
+                sx={{ color: 'white', fontWeight: 600, fontSize: '16px' }}
+              >
+                {agentName}
+              </Typography>
+              <Typography
+                variant="body2"
+                sx={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '14px' }}
+              >
+                {agentRole}
+              </Typography>
+            </Box>
+          </AgentInfo>
+          <IconButton
             onClick={onClose}
-            className="p-2 rounded-full hover:bg-white/10 transition-colors"
+            sx={{
+              color: 'rgba(255, 255, 255, 0.7)',
+              padding: '8px',
+              '&:hover': {
+                backgroundColor: 'rgba(255, 255, 255, 0.1)',
+              },
+            }}
           >
-            <X className="w-5 h-5 text-white/70" />
-          </button>
-        </div>
+            <X size={20} />
+          </IconButton>
+        </HeaderContainer>
 
         {/* Messages Container */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-4">
+        <MessagesContainer>
           {messages.length === 0 && (
-            <div className="text-center text-white/50 mt-8">
-              <p>Start a conversation with {agentName}</p>
-            </div>
+            <EmptyStateText>
+              Start a conversation with {agentName}
+            </EmptyStateText>
           )}
 
           {messages.map((message) => (
-            <div
-              key={message.id}
-              className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
-            >
-              <div
-                className={`max-w-[80%] px-4 py-3 rounded-2xl ${
-                  message.sender === 'user'
-                    ? 'bg-gradient-to-r from-purple-500/20 to-pink-500/20 backdrop-blur-sm border border-white/10 text-white'
-                    : 'bg-white/10 backdrop-blur-sm border border-white/10 text-white'
-                }`}
-              >
-                <p className="text-sm whitespace-pre-wrap">{message.content}</p>
-                <p className="text-xs text-white/40 mt-1">
-                  {message.timestamp.toLocaleTimeString([], {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                  })}
-                </p>
-              </div>
-            </div>
+            <MessageBubble key={message.id} isUser={message.sender === 'user'}>
+              <MessageText>{message.content}</MessageText>
+              <MessageTime>
+                {message.timestamp.toLocaleTimeString([], {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })}
+              </MessageTime>
+            </MessageBubble>
           ))}
 
           {/* Typing Indicator */}
           {isTyping && (
-            <div className="flex justify-start">
-              <div
-                className="flex items-center space-x-2 px-4 py-3 rounded-2xl
-                            bg-white/10 backdrop-blur-sm border border-white/10"
-              >
-                <div className="flex space-x-1">
-                  <div
-                    className="w-2 h-2 bg-white/60 rounded-full animate-bounce"
-                    style={{ animationDelay: '0ms' }}
-                  />
-                  <div
-                    className="w-2 h-2 bg-white/60 rounded-full animate-bounce"
-                    style={{ animationDelay: '150ms' }}
-                  />
-                  <div
-                    className="w-2 h-2 bg-white/60 rounded-full animate-bounce"
-                    style={{ animationDelay: '300ms' }}
-                  />
-                </div>
-              </div>
-            </div>
+            <TypingIndicator>
+              <TypingDot delay={0} />
+              <TypingDot delay={150} />
+              <TypingDot delay={300} />
+            </TypingIndicator>
           )}
 
           <div ref={messagesEndRef} />
-        </div>
+        </MessagesContainer>
 
         {/* Input Container */}
-        <div className="p-6 border-t border-white/10">
-          <div className="flex items-center space-x-3">
-            <input
-              ref={inputRef}
-              type="text"
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              onKeyPress={handleKeyPress}
-              placeholder="Type your message..."
-              className="flex-1 px-4 py-3 rounded-full bg-white/10 backdrop-blur-sm
-                       border border-white/20 text-white placeholder-white/40
-                       focus:outline-none focus:ring-2 focus:ring-purple-500/50
-                       focus:border-transparent transition-all"
-              disabled={isSending}
-            />
-            <button
-              onClick={sendMessage}
-              disabled={!inputValue.trim() || isSending}
-              className="p-3 rounded-full bg-gradient-to-r from-purple-500 to-pink-500
-                       hover:from-purple-600 hover:to-pink-600 transition-all
-                       disabled:opacity-50 disabled:cursor-not-allowed
-                       transform hover:scale-105 active:scale-95"
-            >
-              {isSending ? (
-                <Loader2 className="w-5 h-5 text-white animate-spin" />
-              ) : (
-                <Send className="w-5 h-5 text-white" />
-              )}
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+        <InputContainer>
+          <StyledTextField
+            inputRef={inputRef}
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            onKeyPress={handleKeyPress}
+            placeholder="Type your message..."
+            variant="outlined"
+            disabled={isSending}
+            fullWidth
+          />
+          <SendButton
+            onClick={sendMessage}
+            disabled={!inputValue.trim() || isSending}
+          >
+            {isSending ? (
+              <SpinningLoader size={20} />
+            ) : (
+              <Send size={20} />
+            )}
+          </SendButton>
+        </InputContainer>
+      </Box>
+    </StyledDialog>
   );
 };

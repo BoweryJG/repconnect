@@ -1,5 +1,9 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { X, Mic, MicOff, Phone, PhoneOff, Volume2 } from 'lucide-react';
+import { WebRTCVoiceService } from '../../services/webRTCVoiceService';
+import { ElevenLabsTTSService } from '../../services/elevenLabsTTS';
+import { DeepgramBridge } from '../../services/deepgramBridge';
+import { io, Socket } from 'socket.io-client';
 
 interface VoiceModalProps {
   isOpen: boolean;
@@ -34,59 +38,111 @@ export default function VoiceModal({
 
   const peerConnectionRef = useRef<RTCPeerConnection | null>(null);
   const localStreamRef = useRef<MediaStream | null>(null);
-  const remoteStreamRef = useRef<MediaStream | null>(null);
+  // const remoteStreamRef = useRef<MediaStream | null>(null); // Not used with current implementation
   const audioContextRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
   const transcriptionEndRef = useRef<HTMLDivElement>(null);
+  const socketRef = useRef<Socket | null>(null);
+  const webRTCServiceRef = useRef<WebRTCVoiceService | null>(null);
+  const ttsServiceRef = useRef<ElevenLabsTTSService | null>(null);
+  const deepgramRef = useRef<DeepgramBridge | null>(null);
 
-  // Initialize WebRTC
+  // Initialize WebRTC with real services
   const initializeWebRTC = useCallback(async () => {
     try {
       setConnectionStatus('connecting');
 
+      // Initialize services
+      webRTCServiceRef.current = new WebRTCVoiceService();
+      ttsServiceRef.current = new ElevenLabsTTSService();
+      deepgramRef.current = new DeepgramBridge();
+
+      // Initialize TTS with agent voice
+      await ttsServiceRef.current.initialize();
+      const agentVoiceConfig = ttsServiceRef.current.getAgentVoiceConfig(agentName.toLowerCase());
+      
+      // Connect to backend via Socket.IO
+      const backendUrl = process.env.REACT_APP_BACKEND_URL || 'https://osbackend-zl1h.onrender.com';
+      socketRef.current = io(`${backendUrl}/harvey-ws`, {
+        transports: ['websocket', 'polling'],
+        auth: {
+          agentId: agentName.toLowerCase(),
+          agentRole: agentRole
+        }
+      });
+
+      socketRef.current.on('connect', () => {
+        // Connected to Harvey WebSocket
+      });
+
+      // Initialize WebRTC voice service
+      await webRTCServiceRef.current.initialize();
+      
+      // Start voice session
+      const sessionId = Date.now().toString();
+      await webRTCServiceRef.current.startVoiceSession(sessionId);
+      
       // Get user media
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       localStreamRef.current = stream;
-
-      // Create peer connection
-      const pc = new RTCPeerConnection({
-        iceServers: [
-          { urls: 'stun:stun.l.google.com:19302' },
-          { urls: 'stun:stun1.l.google.com:19302' },
-        ],
-      });
-      peerConnectionRef.current = pc;
-
-      // Add local stream tracks to peer connection
-      stream.getTracks().forEach((track) => {
-        pc.addTrack(track, stream);
+      
+      // Initialize Deepgram for transcription
+      deepgramRef.current.initialize({
+        apiKey: process.env.REACT_APP_DEEPGRAM_API_KEY || '',
+        language: 'en-US',
+        model: 'nova-2',
+        punctuate: true,
+        interim_results: true
       });
 
-      // Set up audio analysis for voice activity detection
-      audioContextRef.current = new AudioContext();
-      analyserRef.current = audioContextRef.current.createAnalyser();
-      analyserRef.current.fftSize = 256;
+      // Connect Deepgram to handle transcriptions
+      deepgramRef.current.on('transcription', (data: any) => {
+        if (data.is_final && data.speech_final) {
+          const transcriptionData: TranscriptionLine = {
+            id: Date.now().toString(),
+            speaker: 'user',
+            text: data.channel.alternatives[0].transcript,
+            timestamp: new Date()
+          };
+          setTranscription(prev => [...prev, transcriptionData]);
+          
+          // Send to backend for AI response
+          socketRef.current?.emit('user-message', {
+            text: data.channel.alternatives[0].transcript,
+            sessionId,
+            agentId: agentName.toLowerCase()
+          });
+        }
+      });
 
-      const source = audioContextRef.current.createMediaStreamSource(stream);
-      source.connect(analyserRef.current);
+      // Handle AI responses
+      socketRef.current.on('agent-response', async (data: any) => {
+        const agentTranscription: TranscriptionLine = {
+          id: Date.now().toString(),
+          speaker: 'agent',
+          text: data.text,
+          timestamp: new Date()
+        };
+        setTranscription(prev => [...prev, agentTranscription]);
+        
+        // Convert text to speech using ElevenLabs
+        if (agentVoiceConfig && ttsServiceRef.current) {
+          await ttsServiceRef.current.streamTextToSpeech(data.text, agentVoiceConfig);
+        }
+      });
 
-      // Handle remote stream
-      pc.ontrack = (event) => {
-        remoteStreamRef.current = event.streams[0];
-        setConnectionStatus('connected');
-      };
-
-      // Mock connection for demo
-      setTimeout(() => {
-        setConnectionStatus('connected');
-        setIsCallActive(true);
-        startVoiceActivityDetection();
-      }, 1500);
+      // Start audio streaming to Deepgram
+      await deepgramRef.current.startStreaming(stream);
+      
+      setConnectionStatus('connected');
+      setIsCallActive(true);
+      startVoiceActivityDetection();
+      
     } catch (error) {
       // WebRTC initialization error
       setConnectionStatus('error');
     }
-  }, []);
+  }, [agentName, agentRole]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Voice Activity Detection
   const startVoiceActivityDetection = useCallback(() => {
@@ -110,53 +166,20 @@ export default function VoiceModal({
     checkAudioLevel();
   }, [isCallActive]);
 
-  // Mock agent speaking animation
+  // Handle agent speaking state from TTS service
   useEffect(() => {
-    if (!isCallActive) return;
+    if (!ttsServiceRef.current) return;
 
-    const interval = setInterval(() => {
-      setIsAgentSpeaking((prev) => !prev);
-    }, 3000);
+    const handleSpeakingStart = () => setIsAgentSpeaking(true);
+    const handleSpeakingEnd = () => setIsAgentSpeaking(false);
 
-    return () => clearInterval(interval);
-  }, [isCallActive]);
+    ttsServiceRef.current.on('speaking-start', handleSpeakingStart);
+    ttsServiceRef.current.on('speaking-end', handleSpeakingEnd);
 
-  // Mock transcription
-  useEffect(() => {
-    if (!isCallActive) return;
-
-    const mockTranscriptions = [
-      { speaker: 'agent', text: 'Hello! How may I assist you today?' },
-      { speaker: 'user', text: 'I need help with my account settings.' },
-      {
-        speaker: 'agent',
-        text: "I'd be happy to help you with your account settings. What specific aspect would you like to modify?",
-      },
-      { speaker: 'user', text: 'I want to update my notification preferences.' },
-      {
-        speaker: 'agent',
-        text: 'Certainly! I can guide you through updating your notification preferences. Would you like to adjust email notifications, push notifications, or both?',
-      },
-    ];
-
-    let index = 0;
-    const interval = setInterval(() => {
-      if (index < mockTranscriptions.length) {
-        const { speaker, text } = mockTranscriptions[index];
-        setTranscription((prev) => [
-          ...prev,
-          {
-            id: Date.now().toString(),
-            speaker: speaker as 'user' | 'agent',
-            text,
-            timestamp: new Date(),
-          },
-        ]);
-        index++;
-      }
-    }, 4000);
-
-    return () => clearInterval(interval);
+    return () => {
+      ttsServiceRef.current?.off('speaking-start', handleSpeakingStart);
+      ttsServiceRef.current?.off('speaking-end', handleSpeakingEnd);
+    };
   }, [isCallActive]);
 
   // Auto-scroll transcription
@@ -164,19 +187,31 @@ export default function VoiceModal({
     transcriptionEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [transcription]);
 
-  const startCall = () => {
-    initializeWebRTC();
+  const startCall = async () => {
+    await initializeWebRTC();
   };
 
-  const endCall = () => {
-    // Clean up WebRTC
-    localStreamRef.current?.getTracks().forEach((track) => track.stop());
-    peerConnectionRef.current?.close();
-    audioContextRef.current?.close();
-
-    setIsCallActive(false);
-    setConnectionStatus('idle');
-    setTranscription([]);
+  const endCall = async () => {
+    try {
+      // Stop all services
+      await deepgramRef.current?.stopStreaming();
+      await ttsServiceRef.current?.disconnect();
+      await webRTCServiceRef.current?.endAllSessions();
+      
+      // Clean up WebRTC
+      localStreamRef.current?.getTracks().forEach((track) => track.stop());
+      peerConnectionRef.current?.close();
+      audioContextRef.current?.close();
+      
+      // Disconnect socket
+      socketRef.current?.disconnect();
+      
+      setIsCallActive(false);
+      setConnectionStatus('idle');
+      setTranscription([]);
+    } catch (error) {
+      console.error('Error ending call:', error);
+    }
   };
 
   const toggleMute = () => {

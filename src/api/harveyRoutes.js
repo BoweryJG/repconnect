@@ -1,7 +1,13 @@
 import express from 'express';
 import harveyCoach from '../services/harveyCoach.js';
+import OpenAI from 'openai';
 
 const router = express.Router();
+
+// Initialize OpenAI for chat functionality
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY
+});
 
 // Initialize Harvey for a sales rep
 router.post('/harvey/initialize', async (req, res) => {
@@ -117,6 +123,60 @@ router.post('/harvey/check-research', async (req, res) => {
     res.json({ qualityApproved: isQuality });
   } catch (error) {
     res.status(500).json({ error: 'Failed to check research quality' });
+  }
+});
+
+// Harvey chat endpoint for agent conversations
+router.post('/harvey/chat', async (req, res) => {
+  try {
+    const { message, agentId, sessionId, context = [] } = req.body;
+
+    if (!message || !agentId) {
+      return res.status(400).json({ error: 'Missing message or agentId' });
+    }
+
+    // Get agent personality from harveyPersonality service
+    const agentConfig = await import('../services/harveyPersonality.js').then(m => m.default.personalities[agentId]);
+    
+    if (!agentConfig) {
+      return res.status(400).json({ error: 'Invalid agentId' });
+    }
+
+    // Build conversation context with agent personality
+    const systemPrompt = `You are ${agentConfig.name}, ${agentConfig.description}. 
+    Your communication style: ${agentConfig.style}
+    Your expertise: ${agentConfig.expertise.join(', ')}
+    Your catchphrases: ${agentConfig.catchphrases.join(', ')}
+    
+    Stay in character and provide helpful, concise responses focused on your area of expertise.`;
+
+    // Create messages array for OpenAI
+    const messages = [
+      { role: 'system', content: systemPrompt },
+      ...context,
+      { role: 'user', content: message }
+    ];
+
+    // Get response from OpenAI
+    const completion = await openai.chat.completions.create({
+      model: 'gpt-4-turbo-preview',
+      messages,
+      temperature: 0.8,
+      max_tokens: 300
+    });
+
+    const response = completion.choices[0].message.content;
+
+    res.json({ 
+      response,
+      agentId,
+      sessionId,
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    console.error('Harvey chat error:', error);
+    res.status(500).json({ error: 'Failed to process chat message' });
   }
 });
 
