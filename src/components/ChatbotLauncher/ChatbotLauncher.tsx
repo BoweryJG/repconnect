@@ -12,14 +12,7 @@ import {
   Chip,
   Tooltip,
 } from '@mui/material';
-import {
-  ChatBubbleOutline,
-  Close,
-  SmartToy,
-  Psychology,
-  Support,
-  AutoAwesome,
-} from '@mui/icons-material';
+import { ChatBubbleOutline, Close } from '@mui/icons-material';
 import { styled, keyframes } from '@mui/material/styles';
 import { Agent, ChatbotLauncherProps } from './types';
 
@@ -61,7 +54,7 @@ const float = keyframes`
 `;
 
 // Styled components
-const LauncherContainer = styled(Box)(({ theme }) => ({
+const LauncherContainer = styled(Box)(() => ({
   position: 'fixed',
   zIndex: 1300,
   transition: 'all 0.3s ease',
@@ -237,7 +230,6 @@ const ChatbotLauncher: React.FC<ChatbotLauncherProps> = ({
   agents = [],
   onAgentSelect,
   position = 'bottom-right',
-  primaryColor = '#3B82F6',
   glowColor = '#3B82F6',
 }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -284,18 +276,20 @@ const ChatbotLauncher: React.FC<ChatbotLauncherProps> = ({
     },
   };
 
-  return (
-    <LauncherContainer
-      ref={containerRef}
-      sx={{
-        ...positionStyles[position],
-        ...(isMobile && {
+  // Compute styles separately to avoid complex union type
+  const containerStyles = {
+    ...positionStyles[position],
+    ...(isMobile
+      ? {
           bottom: 16,
           right: position === 'bottom-right' ? 16 : undefined,
           left: position === 'bottom-left' ? 16 : undefined,
-        }),
-      }}
-    >
+        }
+      : {}),
+  };
+
+  return (
+    <LauncherContainer ref={containerRef} sx={containerStyles}>
       {/* Floating Orb */}
       <Zoom in={!isOpen} unmountOnExit>
         <FloatingOrb onClick={handleToggle} glowcolor={glowColor} aria-label="Open chat assistant">
