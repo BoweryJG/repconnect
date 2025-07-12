@@ -45,6 +45,7 @@
     "lottie-react": "^2.4.1",
     "lucide-react": "^0.525.0",
     "node-fetch": "^3.3.2",
+    "openai": "^5.9.0",
     "papaparse": "^5.5.3",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
@@ -111,6 +112,8 @@
     "@types/react-window-infinite-loader": "^1.0.9",
     "ajv": "^8.17.1",
     "chalk": "^5.4.1",
+    "compression-webpack-plugin": "^10.0.0",
+    "customize-cra": "^1.0.0",
     "eslint-config-prettier": "^10.1.5",
     "eslint-plugin-prettier": "^5.5.1",
     "husky": "^9.1.7",
@@ -118,9 +121,7 @@
     "prettier": "^3.6.2",
     "react-app-rewired": "^2.2.1",
     "socket.io-client": "^4.8.1",
-    "ws": "^8.18.3",
     "webpack-bundle-analyzer": "^4.10.1",
-    "compression-webpack-plugin": "^10.0.0",
-    "customize-cra": "^1.0.0"
+    "ws": "^8.18.3"
   }
 }
