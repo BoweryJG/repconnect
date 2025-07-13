@@ -273,7 +273,7 @@ export const ChatModal: React.FC<ChatModalProps> = ({
     try {
       // Use agentId if provided, otherwise fallback to agentName
       const currentAgentId = agentId || agentName.toLowerCase().replace(/\s+/g, '_');
-      
+
       // Send message to agent backend
       const response = await agentChatAPI.sendMessage({
         message: messageText,
@@ -301,10 +301,11 @@ export const ChatModal: React.FC<ChatModalProps> = ({
       }
     } catch (error) {
       console.error('Error sending message:', error);
-      
+
       // Try fallback to old backend if agentbackend fails
       try {
-        const backendUrl = process.env.REACT_APP_BACKEND_URL || 'https://osbackend-zl1h.onrender.com';
+        const backendUrl =
+          process.env.REACT_APP_BACKEND_URL || 'https://osbackend-zl1h.onrender.com';
         const fallbackResponse = await fetch(`${backendUrl}/api/harvey/chat`, {
           method: 'POST',
           headers: {

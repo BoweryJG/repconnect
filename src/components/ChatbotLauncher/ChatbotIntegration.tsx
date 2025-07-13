@@ -32,10 +32,10 @@ export const ChatbotIntegration: React.FC<ChatbotIntegrationProps> = ({
       try {
         // Initialize agents from remote backend
         await initializeAgents(['sales', 'coaching']);
-        
+
         // Get all agents
         const agentConfigs = await getAllAgents();
-        
+
         // Convert to Agent format
         const convertedAgents = agentConfigs.map((config) => ({
           ...config,
@@ -56,7 +56,7 @@ export const ChatbotIntegration: React.FC<ChatbotIntegrationProps> = ({
             particleEffect: config.visualEffects.particleEffect || '',
           },
         }));
-        
+
         setAgents(convertedAgents);
       } catch (error) {
         console.error('Error loading agents:', error);
@@ -101,7 +101,7 @@ export const ChatbotIntegration: React.FC<ChatbotIntegrationProps> = ({
       marcus: 'sales',
       sophia: 'sales',
     };
-    
+
     return categoryMap[agentId] || 'general';
   };
 

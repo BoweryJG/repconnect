@@ -1,7 +1,8 @@
 // Agent Backend API Integration
 // This service connects to the remote agentbackend API to fetch agent configurations
 
-const AGENT_BACKEND_URL = process.env.REACT_APP_AGENT_BACKEND_URL || 'https://agentbackend-2932.onrender.com';
+const AGENT_BACKEND_URL =
+  process.env.REACT_APP_AGENT_BACKEND_URL || 'https://agentbackend-2932.onrender.com';
 
 class AgentBackendAPI {
   constructor() {
@@ -21,7 +22,7 @@ class AgentBackendAPI {
     }
 
     try {
-      const url = category 
+      const url = category
         ? `${this.baseURL}/api/agents?category=${category}`
         : `${this.baseURL}/api/agents`;
 
@@ -130,8 +131,8 @@ class AgentBackendAPI {
         particleEffect: 'sparkle',
       },
       specialCapabilities: Object.keys(backendAgent.capabilities || {})
-        .filter(cap => backendAgent.capabilities[cap])
-        .map(cap => this.formatCapability(cap)),
+        .filter((cap) => backendAgent.capabilities[cap])
+        .map((cap) => this.formatCapability(cap)),
       // Additional fields for compatibility
       category: this.determineCategory(backendAgent),
       available: backendAgent.active || true,
@@ -185,14 +186,14 @@ class AgentBackendAPI {
     // Convert capability key to human-readable format
     return capability
       .split(/(?=[A-Z])|_/)
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(' ');
   }
 
   determineCategory(agent) {
     const role = agent.role.toLowerCase();
     const specialties = agent.personality.specialties?.join(' ').toLowerCase() || '';
-    
+
     if (role.includes('sales') || role.includes('closer')) return 'sales';
     if (role.includes('coach') || role.includes('motivator')) return 'coaching';
     if (specialties.includes('aesthetic') || specialties.includes('botox')) return 'aesthetic';
@@ -212,9 +213,4 @@ const agentBackendAPI = new AgentBackendAPI();
 export default agentBackendAPI;
 
 // Export convenience methods
-export const {
-  fetchAgents,
-  getAgent,
-  convertToRepConnectFormat,
-  clearCache,
-} = agentBackendAPI;
+export const { fetchAgents, getAgent, convertToRepConnectFormat, clearCache } = agentBackendAPI;

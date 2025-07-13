@@ -3,9 +3,22 @@
 
 import agentBackendAPI from '../../../services/agentBackendAPI';
 import { AgentConfig } from './agentConfigs';
-import { 
-  User, Heart, Sparkles, Star, Brain, Zap, Network, 
-  Eye, DollarSign, Trophy, Flower2, Sun, Gem, Crown, Smile 
+import {
+  User,
+  Heart,
+  Sparkles,
+  Star,
+  Brain,
+  Zap,
+  Network,
+  Eye,
+  DollarSign,
+  Trophy,
+  Flower2,
+  Sun,
+  Gem,
+  Crown,
+  Smile,
 } from 'lucide-react';
 
 // Icon mapping from emoji/role to Lucide icons
@@ -26,12 +39,12 @@ const iconMap: Record<string, any> = {
   '👑': Crown,
   '😊': Smile,
   // Role-based mappings
-  'advisor': User,
-  'specialist': Sparkles,
-  'expert': Brain,
-  'coach': Trophy,
-  'sales': DollarSign,
-  'motivator': Zap,
+  advisor: User,
+  specialist: Sparkles,
+  expert: Brain,
+  coach: Trophy,
+  sales: DollarSign,
+  motivator: Zap,
 };
 
 // Get icon from emoji or role
@@ -62,8 +75,12 @@ export async function loadRemoteAgents(category?: string): Promise<Record<string
 // Convert a single backend agent to local format
 function convertBackendAgent(backendAgent: any): AgentConfig | null {
   try {
-    const { gradient = '', accentColor = '#7C3AED', shadowColor = 'rgba(124, 58, 237, 0.3)' } = backendAgent;
-    
+    const {
+      gradient = '',
+      accentColor = '#7C3AED',
+      shadowColor = 'rgba(124, 58, 237, 0.3)',
+    } = backendAgent;
+
     // Extract colors from gradient
     const colors = gradient.match(/#[0-9a-fA-F]{6}/g) || ['#7C3AED', '#A78BFA', '#DDD6FE'];
     const primaryColor = colors[0] || accentColor;
@@ -87,17 +104,17 @@ function convertBackendAgent(backendAgent: any): AgentConfig | null {
         shadowColor: shadowColor,
       },
       personality: {
-        tone: backendAgent.personality?.tone || 
-              backendAgent.personality?.communication_style || 
-              'Professional and friendly',
+        tone:
+          backendAgent.personality?.tone ||
+          backendAgent.personality?.communication_style ||
+          'Professional and friendly',
         traits: backendAgent.personality?.traits || [],
         approachStyle: backendAgent.personality?.approach || 'Consultative',
         communicationPreferences: backendAgent.personality?.specialties || [],
       },
       voiceConfig: {
-        voiceId: backendAgent.voice_config?.voice_id || 
-                 backendAgent.voiceId || 
-                 'EXAVITQu4vr4xnSDxMaL',
+        voiceId:
+          backendAgent.voice_config?.voice_id || backendAgent.voiceId || 'EXAVITQu4vr4xnSDxMaL',
         stability: backendAgent.voice_config?.settings?.stability || 0.7,
         similarityBoost: backendAgent.voice_config?.settings?.similarityBoost || 0.8,
         style: backendAgent.voice_config?.settings?.style || 0.5,
@@ -189,7 +206,7 @@ function formatCapabilities(capabilities: Record<string, boolean>): string[] {
     .map(([capability]) => {
       return capability
         .split(/(?=[A-Z])|_/)
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
         .join(' ');
     });
 }
@@ -199,14 +216,16 @@ let cachedAgents: Record<string, AgentConfig> | null = null;
 let cacheTimestamp = 0;
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
-export async function getCachedRemoteAgents(category?: string): Promise<Record<string, AgentConfig>> {
+export async function getCachedRemoteAgents(
+  category?: string
+): Promise<Record<string, AgentConfig>> {
   const now = Date.now();
-  
+
   if (!cachedAgents || now - cacheTimestamp > CACHE_DURATION) {
     cachedAgents = await loadRemoteAgents(category);
     cacheTimestamp = now;
   }
-  
+
   return cachedAgents;
 }
 

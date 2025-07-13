@@ -38,7 +38,10 @@ export async function loadAgentConfig(agentId) {
       id: agentConfig.id,
       name: agentConfig.name,
       description: agentConfig.tagline,
-      style: agentConfig.personality?.communication_style || agentConfig.personality?.tone || 'professional',
+      style:
+        agentConfig.personality?.communication_style ||
+        agentConfig.personality?.tone ||
+        'professional',
       expertise: agentConfig.personality?.specialties || [],
       catchphrases: generateCatchphrases(agentConfig),
       voiceId: agentConfig.voice_config?.voice_id || agentConfig.voiceId,
@@ -62,45 +65,47 @@ export async function loadAgentConfig(agentId) {
 function generateCatchphrases(agent) {
   const catchphrases = [];
   const role = agent.role?.toLowerCase() || '';
-  
+
   if (role.includes('advisor')) {
     catchphrases.push(
-      "Let me guide you through this.",
+      'Let me guide you through this.',
       "I'm here to help you make the best decision.",
-      "Your concerns are my priority."
+      'Your concerns are my priority.'
     );
   }
-  
+
   if (role.includes('sales') || role.includes('closer')) {
     catchphrases.push(
       "Let's make this happen.",
-      "Success is just a decision away.",
+      'Success is just a decision away.',
       "I don't believe in maybes, only results."
     );
   }
-  
+
   if (role.includes('coach')) {
     catchphrases.push(
-      "Excellence is a habit, not an act.",
+      'Excellence is a habit, not an act.',
       "Let's take your performance to the next level.",
-      "Winners focus on winning, losers focus on winners."
+      'Winners focus on winning, losers focus on winners.'
     );
   }
-  
+
   // Add personality-based catchphrases
   if (agent.personality?.traits?.includes('Confident')) {
-    catchphrases.push("Trust the process, trust the results.");
+    catchphrases.push('Trust the process, trust the results.');
   }
-  
+
   if (agent.personality?.traits?.includes('Empathetic')) {
-    catchphrases.push("I understand your concerns completely.");
+    catchphrases.push('I understand your concerns completely.');
   }
-  
-  return catchphrases.length > 0 ? catchphrases : [
-    "How can I assist you today?",
-    "Let's work together on this.",
-    "Your success is my mission."
-  ];
+
+  return catchphrases.length > 0
+    ? catchphrases
+    : [
+        'How can I assist you today?',
+        "Let's work together on this.",
+        'Your success is my mission.',
+      ];
 }
 
 // Load all agents for initialization

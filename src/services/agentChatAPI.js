@@ -1,7 +1,8 @@
 // Agent Chat API Service
 // Handles chat interactions with the agentbackend API
 
-const AGENT_BACKEND_URL = process.env.REACT_APP_AGENT_BACKEND_URL || 'https://agentbackend-2932.onrender.com';
+const AGENT_BACKEND_URL =
+  process.env.REACT_APP_AGENT_BACKEND_URL || 'https://agentbackend-2932.onrender.com';
 
 class AgentChatAPI {
   constructor() {
@@ -22,7 +23,7 @@ class AgentChatAPI {
   async sendMessage({ message, agentId, userId = 'anonymous', sessionId = null }) {
     try {
       const session = sessionId || this.getSessionId(userId, agentId);
-      
+
       const response = await fetch(`${this.baseURL}/api/chat`, {
         method: 'POST',
         headers: {
@@ -62,7 +63,7 @@ class AgentChatAPI {
   async streamMessage({ message, agentId, userId = 'anonymous', sessionId = null, onChunk }) {
     try {
       const session = sessionId || this.getSessionId(userId, agentId);
-      
+
       const response = await fetch(`${this.baseURL}/api/chat/stream`, {
         method: 'POST',
         headers: {
@@ -92,7 +93,7 @@ class AgentChatAPI {
 
         const chunk = decoder.decode(value);
         fullMessage += chunk;
-        
+
         if (onChunk) {
           onChunk(chunk);
         }
@@ -159,10 +160,5 @@ const agentChatAPI = new AgentChatAPI();
 export default agentChatAPI;
 
 // Export convenience methods
-export const {
-  sendMessage,
-  streamMessage,
-  getChatHistory,
-  clearSession,
-  clearAllSessions,
-} = agentChatAPI;
+export const { sendMessage, streamMessage, getChatHistory, clearSession, clearAllSessions } =
+  agentChatAPI;

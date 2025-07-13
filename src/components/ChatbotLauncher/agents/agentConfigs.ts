@@ -639,7 +639,7 @@ export async function initializeAgents(categories?: string[]): Promise<void> {
   try {
     // Fetch remote agents
     const remoteAgents = await getCachedRemoteAgents(categories?.join(','));
-    
+
     // Merge remote agents with local agents (remote takes precedence)
     agentConfigs = {
       ...localAgentConfigs,
