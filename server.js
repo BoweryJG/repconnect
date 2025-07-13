@@ -356,6 +356,151 @@ harveyNamespace.on('connection', (socket) => {
   });
 });
 
+// Voice Agents WebSocket namespace for WebRTC signaling
+const voiceAgentsNamespace = io.of('/voice-agents');
+
+voiceAgentsNamespace.on('connection', (socket) => {
+  logger.info('Voice agent client connected:', socket.id);
+
+  // Store room and peer information
+  let currentRoom = null;
+  let peerInfo = null;
+
+  // Join a voice room
+  socket.on('join-room', async (data) => {
+    try {
+      const { roomId, userId, agentId, userType } = data;
+
+      // Leave current room if any
+      if (currentRoom) {
+        socket.leave(currentRoom);
+      }
+
+      // Join new room
+      currentRoom = roomId;
+      peerInfo = { userId, agentId, userType, socketId: socket.id };
+      socket.join(roomId);
+
+      logger.info('Voice agent joined room:', { roomId, userId, agentId, userType });
+
+      // Notify others in room
+      socket.to(roomId).emit('peer-joined', {
+        peerId: socket.id,
+        userId,
+        agentId,
+        userType,
+      });
+
+      // Send room info back
+      socket.emit('joined-room', {
+        roomId,
+        socketId: socket.id,
+        peers: await getRoomPeers(voiceAgentsNamespace, roomId, socket.id),
+      });
+    } catch (error) {
+      logger.error('Error joining voice room:', error);
+      socket.emit('error', { message: 'Failed to join room', error: error.message });
+    }
+  });
+
+  // WebRTC signaling
+  socket.on('offer', (data) => {
+    const { targetId, offer } = data;
+    logger.info('Relaying offer:', { from: socket.id, to: targetId });
+
+    voiceAgentsNamespace.to(targetId).emit('offer', {
+      offer,
+      senderId: socket.id,
+      senderInfo: peerInfo,
+    });
+  });
+
+  socket.on('answer', (data) => {
+    const { targetId, answer } = data;
+    logger.info('Relaying answer:', { from: socket.id, to: targetId });
+
+    voiceAgentsNamespace.to(targetId).emit('answer', {
+      answer,
+      senderId: socket.id,
+    });
+  });
+
+  socket.on('ice-candidate', (data) => {
+    const { targetId, candidate } = data;
+    logger.info('Relaying ICE candidate:', { from: socket.id, to: targetId });
+
+    voiceAgentsNamespace.to(targetId).emit('ice-candidate', {
+      candidate,
+      senderId: socket.id,
+    });
+  });
+
+  // Audio state management
+  socket.on('audio-state-change', (data) => {
+    const { muted } = data;
+
+    if (currentRoom) {
+      socket.to(currentRoom).emit('peer-audio-state', {
+        peerId: socket.id,
+        muted,
+        userInfo: peerInfo,
+      });
+    }
+  });
+
+  // Transcription events
+  socket.on('transcription', (data) => {
+    const { text, isFinal } = data;
+
+    if (currentRoom) {
+      socket.to(currentRoom).emit('peer-transcription', {
+        peerId: socket.id,
+        text,
+        isFinal,
+        userInfo: peerInfo,
+      });
+    }
+  });
+
+  // Leave room
+  socket.on('leave-room', () => {
+    if (currentRoom) {
+      socket.to(currentRoom).emit('peer-left', {
+        peerId: socket.id,
+        userInfo: peerInfo,
+      });
+      socket.leave(currentRoom);
+      currentRoom = null;
+      peerInfo = null;
+      logger.info('Voice agent left room:', socket.id);
+    }
+  });
+
+  // Handle disconnect
+  socket.on('disconnect', () => {
+    logger.info('Voice agent client disconnected:', socket.id);
+
+    if (currentRoom) {
+      socket.to(currentRoom).emit('peer-disconnected', {
+        peerId: socket.id,
+        userInfo: peerInfo,
+      });
+    }
+  });
+});
+
+// Helper function to get peers in a room
+async function getRoomPeers(namespace, roomId, excludeSocketId) {
+  const sockets = await namespace.in(roomId).fetchSockets();
+  return sockets
+    .filter((s) => s.id !== excludeSocketId)
+    .map((s) => ({
+      socketId: s.id,
+      // Note: You'd need to store peer info in a Map or database
+      // This is a simplified version
+    }));
+}
+
 // Serve static files in production
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, 'build')));
