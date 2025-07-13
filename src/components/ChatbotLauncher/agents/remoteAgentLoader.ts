@@ -55,7 +55,7 @@ function getIcon(emoji: string, role: string): any {
 // Load agents from the backend API
 export async function loadRemoteAgents(category?: string): Promise<Record<string, AgentConfig>> {
   try {
-    const backendAgents = await agentBackendAPI.fetchAgents(category || null);
+    const backendAgents = await agentBackendAPI.fetchAgents(category as any);
     const agents: Record<string, AgentConfig> = {};
 
     for (const backendAgent of backendAgents) {
