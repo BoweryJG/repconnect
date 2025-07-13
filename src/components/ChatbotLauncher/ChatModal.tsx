@@ -279,7 +279,7 @@ export const ChatModal: React.FC<ChatModalProps> = ({
         message: messageText,
         agentId: currentAgentId,
         userId: 'user', // You can use actual user ID if available
-        sessionId: sessionId,
+        sessionId: sessionId as any,
       });
 
       if (response.success) {

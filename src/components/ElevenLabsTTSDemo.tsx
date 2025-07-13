@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import elevenLabsTTS from '../services/elevenLabsTTS';
-import { agentConfigs } from './ChatbotLauncher/agents/agentConfigs';
+// @ts-ignore
+import { getAgentList } from './ChatbotLauncher/agents/agentConfigs';
 import { Mic, MicOff, Play, Pause, Volume2 } from 'lucide-react';
 
 export const ElevenLabsTTSDemo: React.FC = () => {
@@ -8,11 +9,26 @@ export const ElevenLabsTTSDemo: React.FC = () => {
   const [text, setText] = useState('Hello! I am ready to help you with your questions.');
   const [isStreaming, setIsStreaming] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [agentConfigs, setAgentConfigs] = useState<any>({});
   const [volume, setVolume] = useState(1);
   const [status, setStatus] = useState('Ready');
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    // Load agent configs
+    const loadAgents = async () => {
+      try {
+        const agents = await getAgentList();
+        setAgentConfigs(agents.reduce((acc: any, agent: any) => {
+          acc[agent.id] = agent;
+          return acc;
+        }, {}));
+      } catch (err) {
+        console.error('Failed to load agents:', err);
+      }
+    };
+    loadAgents();
+
     // Initialize TTS service
     elevenLabsTTS.initialize().catch((err) => {
       setError('Failed to initialize TTS service: ' + err.message);

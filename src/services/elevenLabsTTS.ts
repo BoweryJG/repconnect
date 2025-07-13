@@ -1,5 +1,6 @@
 import { EventEmitter } from 'events';
-import { agentConfigs } from '../components/ChatbotLauncher/agents/agentConfigs';
+// @ts-ignore
+import { getAgentList } from '../components/ChatbotLauncher/agents/agentConfigs';
 
 interface ElevenLabsConfig {
   apiKey: string;
