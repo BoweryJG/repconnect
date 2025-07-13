@@ -1,9 +1,9 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import ChatbotLauncher from './ChatbotLauncher';
 import { ChatModal } from './ChatModal';
 import VoiceModalWebRTC from './VoiceModalWebRTC';
 import AgentSelectionModal from './AgentSelectionModal';
-import { getAllAgents } from './agents/agentConfigs';
+import { getAllAgents, initializeAgents } from './agents/agentConfigs';
 import type { Agent } from './types';
 
 interface ChatbotIntegrationProps {
@@ -22,6 +22,51 @@ export const ChatbotIntegration: React.FC<ChatbotIntegrationProps> = ({
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const [showSelectionModal, setShowSelectionModal] = useState(false);
+  const [agents, setAgents] = useState<Agent[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Initialize agents on component mount
+  useEffect(() => {
+    const loadAgents = async () => {
+      setIsLoading(true);
+      try {
+        // Initialize agents from remote backend
+        await initializeAgents(['sales', 'coaching']);
+        
+        // Get all agents
+        const agentConfigs = await getAllAgents();
+        
+        // Convert to Agent format
+        const convertedAgents = agentConfigs.map((config) => ({
+          ...config,
+          category: getCategoryForAgent(config.id),
+          available: true,
+          description: config.tagline,
+          specialty: config.knowledgeDomains[0],
+          color: config.colorScheme.primary,
+          voiceConfig: {
+            ...config.voiceConfig,
+            useSpeakerBoost: config.voiceConfig.speakerBoost,
+          },
+          visualEffects: {
+            ...config.visualEffects,
+            animation: config.visualEffects.animation,
+            glow: config.visualEffects.glowEffect,
+            pulse: config.visualEffects.pulseEffect,
+            particleEffect: config.visualEffects.particleEffect || '',
+          },
+        }));
+        
+        setAgents(convertedAgents);
+      } catch (error) {
+        console.error('Error loading agents:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadAgents();
+  }, []);
 
   const handleAgentSelect = useCallback((agent: Agent) => {
     setSelectedAgent(agent);
@@ -38,43 +83,32 @@ export const ChatbotIntegration: React.FC<ChatbotIntegrationProps> = ({
     // Keep selected agent for potential re-opening
   }, []);
 
-  // Convert AgentConfig to Agent format
-  const categoryMap: Record<string, Agent['category']> = {
-    botox: 'aesthetic',
-    fillers: 'aesthetic',
-    skincare: 'aesthetic',
-    laser: 'aesthetic',
-    bodycontouring: 'aesthetic',
-    implants: 'dental',
-    orthodontics: 'dental',
-    cosmetic: 'dental',
-    harvey: 'general',
-    victor: 'sales',
-    maxwell: 'sales',
-    diana: 'sales',
-    marcus: 'sales',
-    sophia: 'sales',
+  // Helper function to determine category
+  const getCategoryForAgent = (agentId: string): Agent['category'] => {
+    const categoryMap: Record<string, Agent['category']> = {
+      botox: 'aesthetic',
+      fillers: 'aesthetic',
+      skincare: 'aesthetic',
+      laser: 'aesthetic',
+      bodycontouring: 'aesthetic',
+      implants: 'dental',
+      orthodontics: 'dental',
+      cosmetic: 'dental',
+      harvey: 'general',
+      victor: 'sales',
+      maxwell: 'sales',
+      diana: 'sales',
+      marcus: 'sales',
+      sophia: 'sales',
+    };
+    
+    return categoryMap[agentId] || 'general';
   };
 
-  const agents: Agent[] = getAllAgents().map((config) => ({
-    ...config,
-    category: categoryMap[config.id] || 'general',
-    available: true,
-    description: config.tagline,
-    specialty: config.knowledgeDomains[0],
-    color: config.colorScheme.primary,
-    voiceConfig: {
-      ...config.voiceConfig,
-      useSpeakerBoost: config.voiceConfig.speakerBoost,
-    },
-    visualEffects: {
-      ...config.visualEffects,
-      animation: config.visualEffects.animation,
-      glow: config.visualEffects.glowEffect,
-      pulse: config.visualEffects.pulseEffect,
-      particleEffect: config.visualEffects.particleEffect || '',
-    },
-  }));
+  // Show loading state
+  if (isLoading) {
+    return null; // Or a loading spinner
+  }
 
   return (
     <>

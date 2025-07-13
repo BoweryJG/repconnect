@@ -11,6 +11,7 @@ import {
   Brain,
 } from 'lucide-react';
 import { harveyStyleAgents } from './harveyStyleAgents';
+import { getCachedRemoteAgents } from './remoteAgentLoader';
 
 export interface AgentPersonality {
   tone: string;
@@ -54,7 +55,8 @@ export interface AgentConfig {
   specialCapabilities: string[];
 }
 
-export const agentConfigs: Record<string, AgentConfig> = {
+// Local agent configs as fallback
+export const localAgentConfigs: Record<string, AgentConfig> = {
   // Harvey-Style Sales Agents (Medical Aesthetics Closers)
   ...harveyStyleAgents,
 
@@ -629,21 +631,54 @@ export const agentConfigs: Record<string, AgentConfig> = {
   },
 };
 
+// Dynamic agent configs that merge remote and local
+let agentConfigs: Record<string, AgentConfig> = { ...localAgentConfigs };
+
+// Initialize agents from remote backend
+export async function initializeAgents(categories?: string[]): Promise<void> {
+  try {
+    // Fetch remote agents
+    const remoteAgents = await getCachedRemoteAgents(categories?.join(','));
+    
+    // Merge remote agents with local agents (remote takes precedence)
+    agentConfigs = {
+      ...localAgentConfigs,
+      ...remoteAgents,
+    };
+  } catch (error) {
+    console.error('Failed to load remote agents, using local fallback:', error);
+    agentConfigs = { ...localAgentConfigs };
+  }
+}
+
 // Helper function to get agent by ID
-export const getAgentConfig = (agentId: string): AgentConfig | undefined => {
+export const getAgentConfig = async (agentId: string): Promise<AgentConfig | undefined> => {
+  // Ensure agents are initialized
+  if (Object.keys(agentConfigs).length === 0) {
+    await initializeAgents();
+  }
   return agentConfigs[agentId];
 };
 
 // Helper function to get all agents
-export const getAllAgents = (): AgentConfig[] => {
+export const getAllAgents = async (): Promise<AgentConfig[]> => {
+  // Ensure agents are initialized
+  if (Object.keys(agentConfigs).length === 0) {
+    await initializeAgents();
+  }
   return Object.values(agentConfigs);
 };
 
 // Helper function to get agents by category
-export const getAgentsByCategory = (
-  category: 'aesthetic' | 'dental' | 'general'
-): AgentConfig[] => {
-  const categoryMap: Record<string, 'aesthetic' | 'dental' | 'general'> = {
+export const getAgentsByCategory = async (
+  category: 'aesthetic' | 'dental' | 'general' | 'sales' | 'coaching'
+): Promise<AgentConfig[]> => {
+  // Ensure agents are initialized
+  if (Object.keys(agentConfigs).length === 0) {
+    await initializeAgents();
+  }
+
+  const categoryMap: Record<string, 'aesthetic' | 'dental' | 'general' | 'sales' | 'coaching'> = {
     botox: 'aesthetic',
     fillers: 'aesthetic',
     skincare: 'aesthetic',
@@ -653,6 +688,12 @@ export const getAgentsByCategory = (
     orthodontics: 'dental',
     cosmetic: 'dental',
     harvey: 'general',
+    // Harvey-style agents
+    victor: 'sales',
+    maxwell: 'sales',
+    diana: 'sales',
+    marcus: 'sales',
+    sophia: 'sales',
   };
 
   return Object.entries(agentConfigs)
@@ -661,4 +702,9 @@ export const getAgentsByCategory = (
 };
 
 // Export default agent (Harvey) for backward compatibility
-export const defaultAgent = agentConfigs.harvey;
+export const defaultAgent = localAgentConfigs.harvey;
+
+// Function to refresh agents from remote
+export async function refreshAgents(): Promise<void> {
+  await initializeAgents();
+}

@@ -302,7 +302,8 @@ harveyNamespace.on('connection', (socket) => {
       const { text, sessionId, agentId } = data;
       logger.info('User message:', { agentId, sessionId, text });
 
-      // Import Harvey personality and OpenAI
+      // Import agent loader, Harvey personality and OpenAI
+      const { loadAgentConfig, getCachedAgent } = await import('./src/services/serverAgentLoader.js');
       const { default: harveyPersonality } = await import('./src/services/harveyPersonality.js');
       const OpenAI = (await import('openai')).default;
 
@@ -310,8 +311,14 @@ harveyNamespace.on('connection', (socket) => {
         apiKey: process.env.OPENAI_API_KEY,
       });
 
-      // Get agent personality
-      const agentConfig = harveyPersonality.personalities[agentId];
+      // Try to get agent from backend first
+      let agentConfig = getCachedAgent(agentId) || await loadAgentConfig(agentId);
+      
+      // Fallback to local Harvey personality if not found
+      if (!agentConfig) {
+        agentConfig = harveyPersonality.personalities?.[agentId];
+      }
+      
       if (!agentConfig) {
         socket.emit('error', { message: 'Invalid agent ID' });
         return;

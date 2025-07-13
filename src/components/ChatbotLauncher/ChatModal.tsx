@@ -3,6 +3,7 @@ import { X, Send, Loader2 } from 'lucide-react';
 import { Dialog, Box, TextField, IconButton, Typography, Avatar } from '@mui/material';
 import styled from '@emotion/styled';
 import { keyframes } from '@emotion/react';
+import agentChatAPI from '../../services/agentChatAPI';
 
 interface Message {
   id: string;
@@ -17,6 +18,7 @@ interface ChatModalProps {
   agentName: string;
   agentAvatar: string;
   agentRole: string;
+  agentId?: string;
 }
 
 // Styled components for custom styling
@@ -223,11 +225,13 @@ export const ChatModal: React.FC<ChatModalProps> = ({
   agentName,
   agentAvatar,
   agentRole,
+  agentId,
 }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [isSending, setIsSending] = useState(false);
+  const [sessionId, setSessionId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -249,7 +253,7 @@ export const ChatModal: React.FC<ChatModalProps> = ({
     }
   }, [isOpen]);
 
-  // Send message to Harvey backend
+  // Send message to agent backend
   const sendMessage = async () => {
     if (!inputValue.trim() || isSending) return;
 
@@ -261,56 +265,83 @@ export const ChatModal: React.FC<ChatModalProps> = ({
     };
 
     setMessages((prev) => [...prev, userMessage]);
+    const messageText = inputValue;
     setInputValue('');
     setIsSending(true);
     setIsTyping(true);
 
     try {
-      const backendUrl = process.env.REACT_APP_BACKEND_URL || 'https://osbackend-zl1h.onrender.com';
-
-      // Send message to Harvey chat endpoint
-      const response = await fetch(`${backendUrl}/api/harvey/chat`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          message: inputValue,
-          agentId: agentName.toLowerCase(),
-          sessionId: Date.now().toString(),
-          context: messages.map((m) => ({
-            role: m.sender === 'user' ? 'user' : 'assistant',
-            content: m.content,
-          })),
-        }),
+      // Use agentId if provided, otherwise fallback to agentName
+      const currentAgentId = agentId || agentName.toLowerCase().replace(/\s+/g, '_');
+      
+      // Send message to agent backend
+      const response = await agentChatAPI.sendMessage({
+        message: messageText,
+        agentId: currentAgentId,
+        userId: 'user', // You can use actual user ID if available
+        sessionId: sessionId,
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to send message');
+      if (response.success) {
+        // Update session ID if it's the first message
+        if (!sessionId && response.sessionId) {
+          setSessionId(response.sessionId);
+        }
+
+        const agentMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          content: response.message,
+          sender: 'agent',
+          timestamp: new Date(),
+        };
+
+        setMessages((prev) => [...prev, agentMessage]);
+      } else {
+        throw new Error(response.error || 'Failed to send message');
       }
-
-      const data = await response.json();
-
-      const agentMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        content:
-          data.response ||
-          data.message ||
-          'I apologize, but I encountered an issue. Please try again.',
-        sender: 'agent',
-        timestamp: new Date(),
-      };
-
-      setMessages((prev) => [...prev, agentMessage]);
     } catch (error) {
       console.error('Error sending message:', error);
-      const errorMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        content: "I apologize, but I'm having trouble connecting. Please try again in a moment.",
-        sender: 'agent',
-        timestamp: new Date(),
-      };
-      setMessages((prev) => [...prev, errorMessage]);
+      
+      // Try fallback to old backend if agentbackend fails
+      try {
+        const backendUrl = process.env.REACT_APP_BACKEND_URL || 'https://osbackend-zl1h.onrender.com';
+        const fallbackResponse = await fetch(`${backendUrl}/api/harvey/chat`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            message: messageText,
+            agentId: agentName.toLowerCase(),
+            sessionId: sessionId || Date.now().toString(),
+            context: messages.map((m) => ({
+              role: m.sender === 'user' ? 'user' : 'assistant',
+              content: m.content,
+            })),
+          }),
+        });
+
+        if (fallbackResponse.ok) {
+          const data = await fallbackResponse.json();
+          const agentMessage: Message = {
+            id: (Date.now() + 1).toString(),
+            content: data.response || data.message || 'I apologize, but I encountered an issue.',
+            sender: 'agent',
+            timestamp: new Date(),
+          };
+          setMessages((prev) => [...prev, agentMessage]);
+        } else {
+          throw new Error('Fallback also failed');
+        }
+      } catch (fallbackError) {
+        const errorMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          content: "I apologize, but I'm having trouble connecting. Please try again in a moment.",
+          sender: 'agent',
+          timestamp: new Date(),
+        };
+        setMessages((prev) => [...prev, errorMessage]);
+      }
     } finally {
       setIsTyping(false);
       setIsSending(false);
