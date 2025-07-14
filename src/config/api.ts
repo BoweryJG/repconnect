@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // API base URL
-export const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001';
+export const API_BASE_URL = process.env.REACT_APP_BACKEND_URL || 'https://osbackend-zl1h.onrender.com';
 
 // Create axios instance with default config
 export const api = axios.create({

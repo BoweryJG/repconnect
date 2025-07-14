@@ -12,7 +12,7 @@ interface VoiceModalProps {
 
 interface TranscriptionLine {
   id: string;
-  speaker: 'user' | 'agent';
+  speaker: 'user' | 'agent' | 'system';
   text: string;
   timestamp: Date;
 }
@@ -120,17 +120,17 @@ export default function VoiceModalWebRTC({
       // Provide user-friendly error messages
       if (error.name === 'NotAllowedError') {
         addTranscriptionLine(
-          'system',
+          'agent',
           'Microphone permission denied. Please allow microphone access and try again.'
         );
       } else if (error.name === 'NotFoundError') {
         addTranscriptionLine(
-          'system',
+          'agent',
           'No microphone found. Please connect a microphone and try again.'
         );
       } else {
         addTranscriptionLine(
-          'system',
+          'agent',
           'Failed to start voice call. Please check your connection and try again.'
         );
       }
@@ -181,7 +181,7 @@ export default function VoiceModalWebRTC({
   };
 
   // Add a transcription line
-  const addTranscriptionLine = (speaker: 'user' | 'agent', text: string) => {
+  const addTranscriptionLine = (speaker: 'user' | 'agent' | 'system', text: string) => {
     const newLine: TranscriptionLine = {
       id: Date.now().toString(),
       speaker,

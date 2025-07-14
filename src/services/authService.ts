@@ -5,7 +5,7 @@ import logger from '../utils/logger';
 // Configure axios defaults
 axios.defaults.withCredentials = true;
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
+const API_BASE_URL = process.env.REACT_APP_BACKEND_URL ? `${process.env.REACT_APP_BACKEND_URL}/api` : 'https://osbackend-zl1h.onrender.com/api';
 
 // Get CSRF token from cookie
 const getCSRFToken = (): string | null => {

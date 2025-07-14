@@ -27,7 +27,7 @@ class WebRTCSignalingService {
       const {
         data: { session },
       } = await supabase.auth.getSession();
-      const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:3001';
+      const backendUrl = process.env.REACT_APP_BACKEND_URL || 'https://osbackend-zl1h.onrender.com';
 
       // Connect to WebRTC signaling namespace
       this.socket = io(`${backendUrl}/webrtc-signaling`, {

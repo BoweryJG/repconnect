@@ -1,6 +1,6 @@
 import { SUBSCRIPTION_TIERS } from './subscriptionTiers';
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001';
+const API_URL = process.env.REACT_APP_BACKEND_URL || 'https://osbackend-zl1h.onrender.com';
 
 export async function createCheckoutSession(
   tier: keyof typeof SUBSCRIPTION_TIERS,
