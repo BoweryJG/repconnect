@@ -130,11 +130,11 @@ export default function AudioTestComponent() {
 
       {error && (
         <Box
-          sx={{
-            padding: 2,
-            marginBottom: 2,
-            backgroundColor: (theme) => theme.palette.error.light,
-            borderRadius: 1,
+          style={{
+            padding: '16px',
+            marginBottom: '16px',
+            backgroundColor: '#ffcdd2',
+            borderRadius: '4px',
           }}
         >
           <Typography color="error">{error}</Typography>
