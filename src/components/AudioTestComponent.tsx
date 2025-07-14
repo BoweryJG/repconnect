@@ -123,13 +123,20 @@ export default function AudioTestComponent() {
   };
 
   return (
-    <Paper sx={{ p: 3, m: 2, maxWidth: 500 }}>
+    <Paper sx={{ padding: 3, margin: 2, maxWidth: 500 }}>
       <Typography variant="h5" gutterBottom>
         Audio Connection Test
       </Typography>
 
       {error && (
-        <Box sx={{ p: 2, mb: 2, bgcolor: 'error.light', borderRadius: 1 }}>
+        <Box
+          sx={{
+            padding: 2,
+            marginBottom: 2,
+            backgroundColor: (theme) => theme.palette.error.light,
+            borderRadius: 1,
+          }}
+        >
           <Typography color="error">{error}</Typography>
         </Box>
       )}
@@ -158,7 +165,7 @@ export default function AudioTestComponent() {
         </Button>
       </Box>
 
-      <Box sx={{ mt: 3 }}>
+      <Box sx={{ marginTop: 3 }}>
         <Typography variant="body2" color="text.secondary">
           Status:
         </Typography>
