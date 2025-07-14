@@ -20,10 +20,12 @@ export const ElevenLabsTTSDemo: React.FC = () => {
     const loadAgents = async () => {
       try {
         const agents = await getAgentList();
-        setAgentConfigs(agents.reduce((acc: any, agent: any) => {
-          acc[agent.id] = agent;
-          return acc;
-        }, {}));
+        setAgentConfigs(
+          agents.reduce((acc: any, agent: any) => {
+            acc[agent.id] = agent;
+            return acc;
+          }, {})
+        );
       } catch (err) {
         console.error('Failed to load agents:', err);
       }

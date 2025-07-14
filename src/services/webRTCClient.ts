@@ -19,18 +19,18 @@ export class WebRTCClient {
   private roomId: string | null = null;
   private sessionId: string | null = null;
 
-  constructor(private config: WebRTCConfig) {
+  constructor(private _config: WebRTCConfig) {
     // Config stored for WebRTC connection
   }
 
   async connect(): Promise<void> {
     // Connect to Socket.IO for signaling
-    this.socket = io(`${this.config.backendUrl}/voice-agents`, {
+    this.socket = io(`${this._config.backendUrl}/voice-agents`, {
       path: '/agents-ws',
       transports: ['websocket', 'polling'],
       auth: {
-        userId: this.config.userId,
-        agentId: this.config.agentId,
+        userId: this._config.userId,
+        agentId: this._config.agentId,
       },
     });
 
@@ -59,8 +59,8 @@ export class WebRTCClient {
     // Join room
     this.socket!.emit('join-room', {
       roomId,
-      agentId: this.config.agentId,
-      userId: this.config.userId,
+      agentId: this._config.agentId,
+      userId: this._config.userId,
     });
 
     // Wait for room joined confirmation
@@ -231,10 +231,10 @@ export class WebRTCClient {
     audio.autoplay = true;
     const stream = new MediaStream([newConsumer.track]);
     audio.srcObject = stream;
-    
+
     // Store audio element for cleanup
     (newConsumer as any).audioElement = audio;
-    
+
     // Handle autoplay policy
     audio.play().catch((error) => {
       console.error('Error playing audio:', error);
@@ -242,12 +242,16 @@ export class WebRTCClient {
       if (error.name === 'NotAllowedError') {
         // Audio playback requires user interaction. Click to enable audio.
         // Try again on next user interaction
-        document.addEventListener('click', () => {
-          audio.play().catch(e => console.error('Still cannot play audio:', e));
-        }, { once: true });
+        document.addEventListener(
+          'click',
+          () => {
+            audio.play().catch((e) => console.error('Still cannot play audio:', e));
+          },
+          { once: true }
+        );
       }
     });
-    
+
     // Audio consumer created and playing
   }
 

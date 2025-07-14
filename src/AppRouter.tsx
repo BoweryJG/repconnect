@@ -42,7 +42,7 @@ export const AppRouter: React.FC = () => {
 
             {/* Auth callback route */}
             <Route path="/auth/callback" element={<AuthCallback />} />
-            
+
             {/* Audio test route for debugging */}
             <Route path="/test/audio" element={<AudioTestComponent />} />
 

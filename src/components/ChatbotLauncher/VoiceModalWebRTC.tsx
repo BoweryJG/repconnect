@@ -45,7 +45,8 @@ export default function VoiceModalWebRTC({
       setConnectionStatus('connecting');
 
       // Get backend URL - use agent backend for voice agents
-      const backendUrl = process.env.REACT_APP_AGENT_BACKEND_URL || 'https://agentbackend-2932.onrender.com';
+      const backendUrl =
+        process.env.REACT_APP_AGENT_BACKEND_URL || 'https://agentbackend-2932.onrender.com';
 
       // Create WebRTC client
       webRTCClientRef.current = new WebRTCClient({
@@ -79,21 +80,21 @@ export default function VoiceModalWebRTC({
       await webRTCClientRef.current!.startAudio();
 
       // Set up audio visualization
-      const stream = await navigator.mediaDevices.getUserMedia({ 
+      const stream = await navigator.mediaDevices.getUserMedia({
         audio: {
           echoCancellation: true,
           noiseSuppression: true,
-          autoGainControl: true
-        } 
+          autoGainControl: true,
+        },
       });
-      
+
       audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
-      
+
       // Resume audio context if suspended (browser autoplay policy)
       if (audioContextRef.current.state === 'suspended') {
         await audioContextRef.current.resume();
       }
-      
+
       analyserRef.current = audioContextRef.current.createAnalyser();
       analyserRef.current.fftSize = 256;
 
@@ -107,7 +108,7 @@ export default function VoiceModalWebRTC({
 
       // Add initial greeting
       addTranscriptionLine('agent', `Hello! I'm ${agentName}. How can I help you today?`);
-      
+
       // Listen for agent audio responses
       if (webRTCClientRef.current) {
         // Subscribe to agent's audio stream
@@ -115,16 +116,25 @@ export default function VoiceModalWebRTC({
       }
     } catch (error: any) {
       console.error('Failed to start call:', error);
-      
+
       // Provide user-friendly error messages
       if (error.name === 'NotAllowedError') {
-        addTranscriptionLine('system', 'Microphone permission denied. Please allow microphone access and try again.');
+        addTranscriptionLine(
+          'system',
+          'Microphone permission denied. Please allow microphone access and try again.'
+        );
       } else if (error.name === 'NotFoundError') {
-        addTranscriptionLine('system', 'No microphone found. Please connect a microphone and try again.');
+        addTranscriptionLine(
+          'system',
+          'No microphone found. Please connect a microphone and try again.'
+        );
       } else {
-        addTranscriptionLine('system', 'Failed to start voice call. Please check your connection and try again.');
+        addTranscriptionLine(
+          'system',
+          'Failed to start voice call. Please check your connection and try again.'
+        );
       }
-      
+
       setConnectionStatus('error');
     }
   };
