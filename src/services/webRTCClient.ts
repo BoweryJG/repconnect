@@ -19,7 +19,9 @@ export class WebRTCClient {
   private roomId: string | null = null;
   private sessionId: string | null = null;
 
-  constructor(private config: WebRTCConfig) {}
+  constructor(private config: WebRTCConfig) {
+    // Config stored for WebRTC connection
+  }
 
   async connect(): Promise<void> {
     // Connect to Socket.IO for signaling
@@ -35,7 +37,7 @@ export class WebRTCClient {
     // Wait for connection
     await new Promise<void>((resolve, reject) => {
       this.socket!.on('connect', () => {
-        console.log('WebRTC signaling connected');
+        // WebRTC signaling connected
         resolve();
       });
 
@@ -65,7 +67,7 @@ export class WebRTCClient {
     await new Promise<void>((resolve) => {
       this.socket!.once('room-joined', (data) => {
         this.sessionId = data.sessionId;
-        console.log('Joined room:', data);
+        // Joined room successfully
         resolve();
       });
     });
@@ -106,7 +108,7 @@ export class WebRTCClient {
           },
         });
 
-        console.log('Audio producer created:', this.producer.id);
+        // Audio producer created successfully
       }
     } catch (error) {
       console.error('Error starting audio:', error);
@@ -188,7 +190,7 @@ export class WebRTCClient {
     if (!this.socket) return;
 
     this.socket.on('disconnect', () => {
-      console.log('WebRTC signaling disconnected');
+      // WebRTC signaling disconnected
       this.cleanup();
     });
 
@@ -197,13 +199,15 @@ export class WebRTCClient {
     });
 
     // Handle new consumer (when agent sends audio back)
-    this.socket.on('new-consumer', async ({ producerId, producerPeerId }) => {
+    this.socket.on('new-consumer', async ({ producerId }) => {
       await this.consume(producerId);
     });
   }
 
   private async consume(producerId: string): Promise<void> {
     if (!this.device || !this.consumerTransport) return;
+
+    // Consuming audio from producer
 
     const consumer = await this.sendRequest('consume', {
       producerId,
@@ -219,11 +223,32 @@ export class WebRTCClient {
 
     this.consumers.set(newConsumer.id, newConsumer);
 
-    // Play the audio
+    // Resume consumer if paused
+    await this.sendRequest('resume-consumer', { consumerId: consumer.id });
+
+    // Play the audio with proper error handling
     const audio = new Audio();
+    audio.autoplay = true;
     const stream = new MediaStream([newConsumer.track]);
     audio.srcObject = stream;
-    audio.play();
+    
+    // Store audio element for cleanup
+    (newConsumer as any).audioElement = audio;
+    
+    // Handle autoplay policy
+    audio.play().catch((error) => {
+      console.error('Error playing audio:', error);
+      // Retry with user interaction if needed
+      if (error.name === 'NotAllowedError') {
+        // Audio playback requires user interaction. Click to enable audio.
+        // Try again on next user interaction
+        document.addEventListener('click', () => {
+          audio.play().catch(e => console.error('Still cannot play audio:', e));
+        }, { once: true });
+      }
+    });
+    
+    // Audio consumer created and playing
   }
 
   private async sendRequest(method: string, data: any): Promise<any> {

@@ -16,6 +16,7 @@ import {
   LazyHarveyMetricsDashboard,
 } from './components/lazy/LazyHarveyComponents';
 import { AuthCallback } from './pages/AuthCallback';
+import AudioTestComponent from './components/AudioTestComponent';
 
 export const AppRouter: React.FC = () => {
   return (
@@ -41,6 +42,9 @@ export const AppRouter: React.FC = () => {
 
             {/* Auth callback route */}
             <Route path="/auth/callback" element={<AuthCallback />} />
+            
+            {/* Audio test route for debugging */}
+            <Route path="/test/audio" element={<AudioTestComponent />} />
 
             {/* Redirect any unknown routes to home */}
             <Route path="*" element={<Navigate to="/" replace />} />
