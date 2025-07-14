@@ -63,7 +63,7 @@ export const localAgentConfigs: Record<string, AgentConfig> = {
   // Aesthetic Agents
   botox: {
     id: 'botox',
-    name: 'Dr. Bella',
+    name: 'Toxi',
     tagline: 'Your Botox & Neurotoxin Specialist',
     avatar: {
       icon: Sparkles,
@@ -126,7 +126,7 @@ export const localAgentConfigs: Record<string, AgentConfig> = {
 
   fillers: {
     id: 'fillers',
-    name: 'Dr. Sophia',
+    name: 'Fillmore',
     tagline: 'Dermal Filler & Volume Expert',
     avatar: {
       icon: Heart,
@@ -189,7 +189,7 @@ export const localAgentConfigs: Record<string, AgentConfig> = {
 
   skincare: {
     id: 'skincare',
-    name: 'Dr. Luna',
+    name: 'Dewey',
     tagline: 'Advanced Skincare & Treatment Specialist',
     avatar: {
       icon: Flower2,
@@ -252,7 +252,7 @@ export const localAgentConfigs: Record<string, AgentConfig> = {
 
   laser: {
     id: 'laser',
-    name: 'Dr. Ray',
+    name: 'Blazer',
     tagline: 'Laser Treatment & Technology Expert',
     avatar: {
       icon: Sun,
@@ -315,7 +315,7 @@ export const localAgentConfigs: Record<string, AgentConfig> = {
 
   bodycontouring: {
     id: 'bodycontouring',
-    name: 'Dr. Sculpt',
+    name: 'Chilly',
     tagline: 'Body Contouring & Transformation Specialist',
     avatar: {
       icon: Gem,
@@ -379,7 +379,7 @@ export const localAgentConfigs: Record<string, AgentConfig> = {
   // Dental Agents
   implants: {
     id: 'implants',
-    name: 'Dr. Anchor',
+    name: 'Steely',
     tagline: 'Dental Implant & Restoration Expert',
     avatar: {
       icon: Crown,
@@ -442,7 +442,7 @@ export const localAgentConfigs: Record<string, AgentConfig> = {
 
   orthodontics: {
     id: 'orthodontics',
-    name: 'Dr. Align',
+    name: 'Straightz',
     tagline: 'Invisalign & Orthodontic Specialist',
     avatar: {
       icon: Smile,
@@ -505,7 +505,7 @@ export const localAgentConfigs: Record<string, AgentConfig> = {
 
   cosmetic: {
     id: 'cosmetic',
-    name: 'Dr. Bright',
+    name: 'Shimmer',
     tagline: 'Cosmetic Dentistry & Smile Design Expert',
     avatar: {
       icon: Star,
