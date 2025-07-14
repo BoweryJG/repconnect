@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Paper, Typography, Box } from '@mui/material';
+import { Button, Paper, Typography } from '@mui/material';
 import { Mic, MicOff, Volume2, VolumeX } from 'lucide-react';
 
 export default function AudioTestComponent() {
@@ -129,7 +129,7 @@ export default function AudioTestComponent() {
       </Typography>
 
       {error && (
-        <Box
+        <div
           style={{
             padding: '16px',
             marginBottom: '16px',
@@ -138,10 +138,10 @@ export default function AudioTestComponent() {
           }}
         >
           <Typography color="error">{error}</Typography>
-        </Box>
+        </div>
       )}
 
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
         <Button
           variant="contained"
           onClick={isMicrophoneEnabled ? stopMicrophone : testMicrophone}
@@ -163,9 +163,9 @@ export default function AudioTestComponent() {
         <Button variant="contained" onClick={testAgentConnection} color="success">
           Test Agent Backend Connection
         </Button>
-      </Box>
+      </div>
 
-      <Box sx={{ marginTop: 3 }}>
+      <div style={{ marginTop: '24px' }}>
         <Typography variant="body2" color="text.secondary">
           Status:
         </Typography>
@@ -178,7 +178,7 @@ export default function AudioTestComponent() {
         <Typography variant="body2">
           • Audio Context: {audioContext?.state || 'Not initialized'}
         </Typography>
-      </Box>
+      </div>
     </Paper>
   );
 }
