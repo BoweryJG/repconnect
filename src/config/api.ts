@@ -61,8 +61,8 @@ api.interceptors.response.use(
         await api.post('/api/auth/refresh');
         return api(originalRequest);
       } catch (refreshError) {
-        // Refresh failed, redirect to login
-        window.location.href = '/login';
+        // Don't redirect - let the app handle showing login modal
+        // window.location.href = '/login';
         return Promise.reject(refreshError);
       }
     }

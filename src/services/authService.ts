@@ -61,8 +61,8 @@ axios.interceptors.response.use(
         }
         throw new Error('Refresh failed');
       } catch (refreshError) {
-        // Redirect to login
-        window.location.href = '/login';
+        // Don't redirect - let the app handle showing login modal
+        // window.location.href = '/login';
         return Promise.reject(refreshError);
       }
     }
