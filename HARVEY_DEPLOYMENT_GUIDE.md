@@ -2,11 +2,11 @@
 
 ## 🚀 Overview
 
-Harvey AI is now fully integrated into RepConnect1. This guide covers the final deployment steps to get Harvey working in production.
+Harvey AI is now fully integrated into RepConnect. This guide covers the final deployment steps to get Harvey working in production.
 
 ## ✅ What Has Been Completed
 
-### Frontend Integration (RepConnect1)
+### Frontend Integration (RepConnect)
 1. **Harvey Core Connection** - WebRTC connection to backend (MOCK_MODE disabled)
 2. **Call Integration** - Harvey connects before calls, provides coaching during calls
 3. **UI Components** - All Harvey screens implemented:
@@ -64,7 +64,7 @@ SUPABASE_URL=https://your-project.supabase.co
 SUPABASE_KEY=your_supabase_service_key
 
 # CORS Configuration
-FRONTEND_URL=https://repconnect1.netlify.app
+FRONTEND_URL=https://repconnect.netlify.app
 ```
 
 ## 📋 Deployment Steps
@@ -81,7 +81,7 @@ FRONTEND_URL=https://repconnect1.netlify.app
 
 1. **Build the production version:**
    ```bash
-   cd /home/jgolden/repconnect1
+   cd /home/jgolden/repconnect
    npm run build
    ```
 

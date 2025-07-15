@@ -50,7 +50,7 @@ FORWARD_TO_PHONE=+1234567890  # Your personal phone
 BACKEND_URL=https://osbackend-zl1h.onrender.com
 
 # CORS
-ALLOWED_ORIGINS=https://repconnect1.netlify.app,http://localhost:3000
+ALLOWED_ORIGINS=https://repconnect.netlify.app,http://localhost:3000
 ```
 
 ## Harvey Service (Render - Background Worker)

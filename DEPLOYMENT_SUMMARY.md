@@ -1,4 +1,4 @@
-# 🚀 RepConnect1 - Ready for Deployment
+# 🚀 RepConnect - Ready for Deployment
 
 ## Build Status: ✅ SUCCESS
 

@@ -1,24 +1,24 @@
-# RepConnect1 - Ultimate Sales CRM with Harvey AI Syndicate
+# RepConnect - Ultimate Sales CRM with Harvey AI Syndicate
 
 <div align="center">
   <img src="public/logo192.png" alt="RepConnect Logo" width="120" />
   
-  [![Deployed on Netlify](https://img.shields.io/badge/Deployed%20on-Netlify-00C7B7?style=flat-square&logo=netlify)](https://repconnect1.netlify.app)
+  [![Deployed on Netlify](https://img.shields.io/badge/Deployed%20on-Netlify-00C7B7?style=flat-square&logo=netlify)](https://repconnect.netlify.app)
   [![Built with React](https://img.shields.io/badge/Built%20with-React-61DAFB?style=flat-square&logo=react)](https://reactjs.org/)
   [![Powered by Supabase](https://img.shields.io/badge/Powered%20by-Supabase-3ECF8E?style=flat-square&logo=supabase)](https://supabase.com)
   [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-3178C6?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
-  [![Harvey AI](https://img.shields.io/badge/Harvey%20AI-Powered-FFD700?style=flat-square&logo=openai)](https://repconnect1.netlify.app/harvey)
+  [![Harvey AI](https://img.shields.io/badge/Harvey%20AI-Powered-FFD700?style=flat-square&logo=openai)](https://repconnect.netlify.app/harvey)
 </div>
 
 ## 🚀 Live Demo
 
-**🌐 [https://repconnect1.netlify.app](https://repconnect1.netlify.app)**
+**🌐 [https://repconnect.netlify.app](https://repconnect.netlify.app)**
 
-**🎭 [Harvey Syndicate](https://repconnect1.netlify.app/harvey) - AI Sales Performance Theater**
+**🎭 [Harvey Syndicate](https://repconnect.netlify.app/harvey) - AI Sales Performance Theater**
 
-**⚔️ [Harvey War Room](https://repconnect1.netlify.app/harvey/warroom) - Live Call Monitoring**
+**⚔️ [Harvey War Room](https://repconnect.netlify.app/harvey/warroom) - Live Call Monitoring**
 
-**🔬 [Lead Enrichment](https://repconnect1.netlify.app/enrich) - AI-Powered Lead Intelligence**
+**🔬 [Lead Enrichment](https://repconnect.netlify.app/enrich) - AI-Powered Lead Intelligence**
 
 ---
 
@@ -131,8 +131,8 @@ RepConnect1 is the ultimate AI-powered sales CRM that revolutionizes how sales p
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/BoweryJG/repconnect1.git
-cd repconnect1
+git clone https://github.com/BoweryJG/repconnect.git
+cd repconnect
 ```
 
 ### 2. Install Dependencies
@@ -257,7 +257,7 @@ Visit [http://localhost:3000](http://localhost:3000)
 ## 🏗️ Project Architecture
 
 ```
-repconnect1/
+repconnect/
 ├── public/                     # Static assets and _redirects
 ├── src/
 │   ├── components/            # React components
@@ -312,7 +312,7 @@ repconnect1/
 ### Backend Deployment (Render)
 
 The backend is already deployed at `https://osbackend-zl1h.onrender.com` with:
-- ✅ CORS configured for `https://repconnect1.netlify.app`
+- ✅ CORS configured for `https://repconnect.netlify.app`
 - ✅ Harvey AI endpoints
 - ✅ WebRTC signaling server
 - ✅ Real-time transcription service
@@ -485,7 +485,7 @@ localStorage.setItem('debug', 'true');
 
 Or add to URL:
 ```
-https://repconnect1.netlify.app?debug=true
+https://repconnect.netlify.app?debug=true
 ```
 
 ---
@@ -533,7 +533,7 @@ https://repconnect1.netlify.app?debug=true
 
 1. **Fork the Repository**
    ```bash
-   git fork https://github.com/BoweryJG/repconnect1.git
+   git fork https://github.com/BoweryJG/repconnect.git
    ```
 
 2. **Create Feature Branch**
@@ -620,7 +620,7 @@ https://repconnect1.netlify.app?debug=true
 ## 📞 Support & Contact
 
 ### Technical Support
-- **GitHub Issues** - [Report bugs and feature requests](https://github.com/BoweryJG/repconnect1/issues)
+- **GitHub Issues** - [Report bugs and feature requests](https://github.com/BoweryJG/repconnect/issues)
 - **Documentation** - This README and inline code comments
 - **Email Support** - support@repconnect.ai
 
@@ -675,12 +675,12 @@ This project is proprietary software. All rights reserved.
 
 ### 🎯 Ready to Close Like Harvey?
 
-**[Start Your Journey](https://repconnect1.netlify.app) | [Enter the Syndicate](https://repconnect1.netlify.app/harvey) | [Join the War Room](https://repconnect1.netlify.app/harvey/warroom)**
+**[Start Your Journey](https://repconnect.netlify.app) | [Enter the Syndicate](https://repconnect.netlify.app/harvey) | [Join the War Room](https://repconnect.netlify.app/harvey/warroom)**
 
 *"Success is not just about what you accomplish in your life, it's about what you inspire others to do."*
 
 **Made with ❤️ for sales professionals who demand excellence**
 
-[![Deployed on Netlify](https://img.shields.io/badge/Live%20Demo-repconnect1.netlify.app-00C7B7?style=for-the-badge&logo=netlify)](https://repconnect1.netlify.app)
+[![Deployed on Netlify](https://img.shields.io/badge/Live%20Demo-repconnect.netlify.app-00C7B7?style=for-the-badge&logo=netlify)](https://repconnect.netlify.app)
 
 </div>

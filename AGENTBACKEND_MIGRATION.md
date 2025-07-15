@@ -1,10 +1,10 @@
 # Agent Backend Migration Guide
 
-This document outlines the changes made to integrate the remote agentbackend API into repconnect1.
+This document outlines the changes made to integrate the remote agentbackend API into repconnect.
 
 ## Overview
 
-The repconnect1 application has been updated to load agent configurations from the remote agentbackend API (`https://agentbackend-2932.onrender.com`) instead of relying solely on local files.
+The repconnect application has been updated to load agent configurations from the remote agentbackend API (`https://agentbackend-2932.onrender.com`) instead of relying solely on local files.
 
 ## Changes Made
 
@@ -82,7 +82,7 @@ The system maps agents to categories:
 ## Benefits
 
 1. **Centralized Management**: All agent configurations can be managed from the agentbackend
-2. **Dynamic Updates**: Changes to agents don't require redeploying repconnect1
+2. **Dynamic Updates**: Changes to agents don't require redeploying repconnect
 3. **Scalability**: Easy to add new agents without modifying code
 4. **Consistency**: Same agent configurations across all applications
 5. **Fallback Support**: Local agents still work if the backend is unavailable

@@ -5,7 +5,7 @@ After=network.target
 [Service]
 Type=simple
 User=jgolden
-WorkingDirectory=/home/jgolden/repconnect1
+WorkingDirectory=/home/jgolden/repconnect
 ExecStart=/usr/bin/node startHarvey.js
 Restart=always
 RestartSec=10

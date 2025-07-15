@@ -27,19 +27,19 @@ A production-ready logger has been implemented to replace console.log statements
 ## Files Updated
 
 ### 1. Created Logger Utility
-- `/home/jgolden/repconnect1/utils/logger.js`
+- `/home/jgolden/repconnect/utils/logger.js`
 
 ### 2. Updated Backend Files
-- `/home/jgolden/repconnect1/server.js`
+- `/home/jgolden/repconnect/server.js`
   - Replaced 7 console.log/console.error calls
   
-- `/home/jgolden/repconnect1/backend-routes/callSummaryRoutes.js`
+- `/home/jgolden/repconnect/backend-routes/callSummaryRoutes.js`
   - Replaced 5 console.error calls
   
-- `/home/jgolden/repconnect1/backend-routes/coachingSessionRoutes.js`
+- `/home/jgolden/repconnect/backend-routes/coachingSessionRoutes.js`
   - Replaced 12 console.error calls
   
-- `/home/jgolden/repconnect1/backend-routes/twilioWebhookRoutes.js`
+- `/home/jgolden/repconnect/backend-routes/twilioWebhookRoutes.js`
   - Replaced 7 console.log/console.error calls
 
 ## Usage Examples

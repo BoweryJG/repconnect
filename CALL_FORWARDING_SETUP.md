@@ -9,7 +9,7 @@ This guide will help you set up call forwarding so that calls to your Twilio num
 ## Step 1: Add Your Phone Number to Netlify
 
 1. Go to your Netlify dashboard: https://app.netlify.com
-2. Select your `repconnect1` site
+2. Select your `repconnect` site
 3. Go to **Site configuration** → **Environment variables**
 4. Add a new variable:
    - **Key**: `FORWARD_TO_PHONE`
@@ -24,7 +24,7 @@ This guide will help you set up call forwarding so that calls to your Twilio num
 4. In the **Voice Configuration** section:
    - **Configure with**: Webhooks, TwiML Bins, Functions, Studio, or Proxy
    - **A call comes in**: Webhook
-   - **URL**: `https://repconnect1.netlify.app/.netlify/functions/incoming-call`
+   - **URL**: `https://repconnect.netlify.app/.netlify/functions/incoming-call`
    - **HTTP Method**: POST
 5. Click **Save Configuration**
 

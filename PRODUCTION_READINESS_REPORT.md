@@ -5,14 +5,14 @@
 ### 1. Hardcoded Credentials and API Keys
 
 #### High Priority - Security Risk
-- **File**: `/home/jgolden/repconnect1/src/lib/supabase.ts`
+- **File**: `/home/jgolden/repconnect/src/lib/supabase.ts`
   - Hardcoded Supabase URL and anonymous key as fallback values
   - Should never have default API keys in code
   ```typescript
   const supabaseAnonKey = process.env.REACT_APP_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...';
   ```
 
-- **File**: `/home/jgolden/repconnect1/createTestUsers.js`
+- **File**: `/home/jgolden/repconnect/createTestUsers.js`
   - Hardcoded Supabase credentials directly in the file
   - Test user creation script with hardcoded IDs and credentials
   ```javascript
@@ -23,18 +23,18 @@
 ### 2. Test/Demo Data in Production Code
 
 #### Medium Priority - Data Integrity Risk
-- **File**: `/home/jgolden/repconnect1/src/lib/demoData.ts`
+- **File**: `/home/jgolden/repconnect/src/lib/demoData.ts`
   - Contains hardcoded demo contacts with fake phone numbers and emails
   - Demo data mixed with production code
 
-- **File**: `/home/jgolden/repconnect1/src/App.tsx`
+- **File**: `/home/jgolden/repconnect/src/App.tsx`
   - Uses demo mode flag and imports DEMO_CONTACTS
   - Line 58: `const [isDemoMode, setIsDemoMode] = useState(true);`
 
 ### 3. Authentication Token Handling
 
 #### High Priority - Security Risk
-- **File**: `/home/jgolden/repconnect1/src/services/harveyService.ts`
+- **File**: `/home/jgolden/repconnect/src/services/harveyService.ts`
   - Stores authentication tokens in localStorage without encryption
   - Line 73: `this.userId = localStorage.getItem('harvey_user_id') || 'demo-user';`
   - Line 133: `'Authorization': \`Bearer \${localStorage.getItem('harvey_token')}\`,`
@@ -45,14 +45,14 @@
 Multiple files contain console.log statements that could expose sensitive information:
 - 46 files found with console.log statements
 - Examples include:
-  - `/home/jgolden/repconnect1/src/services/harveyService.ts`
-  - `/home/jgolden/repconnect1/backend-routes/twilioWebhookRoutes.js`
-  - `/home/jgolden/repconnect1/src/services/transcriptionService.ts`
+  - `/home/jgolden/repconnect/src/services/harveyService.ts`
+  - `/home/jgolden/repconnect/backend-routes/twilioWebhookRoutes.js`
+  - `/home/jgolden/repconnect/src/services/transcriptionService.ts`
 
 ### 5. Error Handling Issues
 
 #### Medium Priority - Reliability Risk
-- **File**: `/home/jgolden/repconnect1/src/services/callSummaryService.ts`
+- **File**: `/home/jgolden/repconnect/src/services/callSummaryService.ts`
   - Generic error handling that doesn't properly categorize errors
   - Line 96-98: Catches all errors and throws generic message
   ```typescript
@@ -62,7 +62,7 @@ Multiple files contain console.log statements that could expose sensitive inform
   }
   ```
 
-- **File**: `/home/jgolden/repconnect1/src/services/instantCoachingService.ts`
+- **File**: `/home/jgolden/repconnect/src/services/instantCoachingService.ts`
   - Missing error handling for authentication token retrieval
   - Line 60: Direct token access without null check
 
@@ -70,10 +70,10 @@ Multiple files contain console.log statements that could expose sensitive inform
 
 #### Low Priority - Technical Debt
 Found in 4 files:
-- `/home/jgolden/repconnect1/src/App.tsx`
-- `/home/jgolden/repconnect1/backend-routes/twilioWebhookRoutes.js`
-- `/home/jgolden/repconnect1/src/hooks/useCallHistory.ts`
-- `/home/jgolden/repconnect1/src/lib/enrichment/EnrichmentEngine.ts`
+- `/home/jgolden/repconnect/src/App.tsx`
+- `/home/jgolden/repconnect/backend-routes/twilioWebhookRoutes.js`
+- `/home/jgolden/repconnect/src/hooks/useCallHistory.ts`
+- `/home/jgolden/repconnect/src/lib/enrichment/EnrichmentEngine.ts`
 
 ### 7. Test Files in Production
 
@@ -146,8 +146,8 @@ Multiple test files found that should not be deployed:
 
 ## Critical Files to Review:
 
-1. `/home/jgolden/repconnect1/src/lib/supabase.ts` - Remove hardcoded credentials
-2. `/home/jgolden/repconnect1/createTestUsers.js` - Should not be in production
-3. `/home/jgolden/repconnect1/src/services/harveyService.ts` - Fix token storage
-4. `/home/jgolden/repconnect1/src/App.tsx` - Remove demo mode default
+1. `/home/jgolden/repconnect/src/lib/supabase.ts` - Remove hardcoded credentials
+2. `/home/jgolden/repconnect/createTestUsers.js` - Should not be in production
+3. `/home/jgolden/repconnect/src/services/harveyService.ts` - Fix token storage
+4. `/home/jgolden/repconnect/src/App.tsx` - Remove demo mode default
 5. All test files (`test*.js`) - Remove from production build
