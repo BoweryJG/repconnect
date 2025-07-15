@@ -14,22 +14,22 @@ class AgentChatAPI {
 
   // Helper method to get current auth headers
   async getAuthHeaders() {
+    const headers = {
+      'Content-Type': 'application/json',
+    };
+    
     try {
       const {
         data: { session },
       } = await supabase.auth.getSession();
       if (session?.access_token) {
-        return {
-          Authorization: `Bearer ${session.access_token}`,
-          'Content-Type': 'application/json',
-        };
+        headers['Authorization'] = `Bearer ${session.access_token}`;
       }
     } catch (error) {
       console.error('Failed to get auth session:', error);
     }
-    return {
-      'Content-Type': 'application/json',
-    };
+    
+    return headers;
   }
 
   // Create or get a chat session

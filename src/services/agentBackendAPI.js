@@ -15,23 +15,23 @@ class AgentBackendAPI {
 
   // Helper method to get current auth headers
   async getAuthHeaders() {
+    const headers = {
+      'Content-Type': 'application/json',
+    };
+    
     try {
       const {
         data: { session },
       } = await supabase.auth.getSession();
       if (session?.access_token) {
-        return {
-          Authorization: `Bearer ${session.access_token}`,
-          'Content-Type': 'application/json',
-          'X-Supabase-Auth': 'true', // Additional header to indicate Supabase auth
-        };
+        headers['Authorization'] = `Bearer ${session.access_token}`;
+        headers['X-Supabase-Auth'] = 'true'; // Additional header to indicate Supabase auth
       }
     } catch (error) {
       console.error('Failed to get auth session:', error);
     }
-    return {
-      'Content-Type': 'application/json',
-    };
+    
+    return headers;
   }
 
   // Fetch agents from backend with optional category filter
