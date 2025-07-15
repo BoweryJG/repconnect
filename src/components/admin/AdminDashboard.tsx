@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAdminAuth } from '../../contexts/AdminAuthContext';
 import agentBackendAPI from '../../services/agentBackendAPI';
-import { 
-  Users, 
-  LogOut, 
-  RefreshCw, 
-  Search, 
+import {
+  Users,
+  LogOut,
+  RefreshCw,
+  Search,
   Filter,
   Plus,
   Edit,
@@ -34,7 +34,7 @@ interface Agent {
 const AdminDashboard: React.FC = () => {
   const { user, isAdmin, signOut } = useAdminAuth();
   const navigate = useNavigate();
-  
+
   const [agents, setAgents] = useState<Agent[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
@@ -58,7 +58,7 @@ const AdminDashboard: React.FC = () => {
   const loadAgents = async () => {
     setIsLoading(true);
     setError('');
-    
+
     try {
       const fetchedAgents = await agentBackendAPI.fetchAgents();
       setAgents(fetchedAgents);
@@ -99,10 +99,10 @@ const AdminDashboard: React.FC = () => {
       if (!response.ok) throw new Error('Failed to update agent status');
 
       // Update local state
-      setAgents(agents.map(agent => 
-        agent.id === agentId ? { ...agent, active: !currentStatus } : agent
-      ));
-      
+      setAgents(
+        agents.map((agent) => (agent.id === agentId ? { ...agent, active: !currentStatus } : agent))
+      );
+
       setSuccessMessage('Agent status updated successfully!');
       setTimeout(() => setSuccessMessage(''), 3000);
     } catch (err) {
@@ -123,8 +123,8 @@ const AdminDashboard: React.FC = () => {
       if (!response.ok) throw new Error('Failed to delete agent');
 
       // Update local state
-      setAgents(agents.filter(agent => agent.id !== agentId));
-      
+      setAgents(agents.filter((agent) => agent.id !== agentId));
+
       setSuccessMessage('Agent deleted successfully!');
       setTimeout(() => setSuccessMessage(''), 3000);
     } catch (err) {
@@ -134,16 +134,17 @@ const AdminDashboard: React.FC = () => {
   };
 
   // Filter agents based on search and category
-  const filteredAgents = agents.filter(agent => {
-    const matchesSearch = agent.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         agent.role.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         agent.tagline?.toLowerCase().includes(searchTerm.toLowerCase());
+  const filteredAgents = agents.filter((agent) => {
+    const matchesSearch =
+      agent.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      agent.role.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      agent.tagline?.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = filterCategory === 'all' || agent.category === filterCategory;
-    
+
     return matchesSearch && matchesCategory;
   });
 
-  const categories = ['all', ...new Set(agents.map(agent => agent.category).filter(Boolean))];
+  const categories = ['all', ...new Set(agents.map((agent) => agent.category).filter(Boolean))];
 
   if (isLoading) {
     return (
@@ -200,7 +201,7 @@ const AdminDashboard: React.FC = () => {
             {error}
           </div>
         )}
-        
+
         {successMessage && (
           <div className="mb-6 flex items-center gap-2 text-green-400 bg-green-900/20 p-4 rounded-lg">
             <CheckCircle className="w-5 h-5" />
@@ -227,7 +228,7 @@ const AdminDashboard: React.FC = () => {
               onChange={(e) => setFilterCategory(e.target.value)}
               className="px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
             >
-              {categories.map(category => (
+              {categories.map((category) => (
                 <option key={category} value={category}>
                   {category.charAt(0).toUpperCase() + category.slice(1)}
                 </option>
@@ -238,14 +239,14 @@ const AdminDashboard: React.FC = () => {
 
         {/* Agents Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredAgents.map(agent => (
+          {filteredAgents.map((agent) => (
             <div
               key={agent.id}
               className="bg-gray-800 rounded-lg p-6 border border-gray-700 hover:border-purple-500 transition duration-200"
             >
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3">
-                  <div 
+                  <div
                     className="w-12 h-12 rounded-full flex items-center justify-center text-2xl"
                     style={{ backgroundColor: agent.accentColor || '#8B5CF6' }}
                   >
@@ -259,8 +260,8 @@ const AdminDashboard: React.FC = () => {
                 <button
                   onClick={() => toggleAgentStatus(agent.id, agent.active)}
                   className={`p-2 rounded-lg transition duration-200 ${
-                    agent.active 
-                      ? 'bg-green-600/20 text-green-400 hover:bg-green-600/30' 
+                    agent.active
+                      ? 'bg-green-600/20 text-green-400 hover:bg-green-600/30'
                       : 'bg-gray-700 text-gray-400 hover:bg-gray-600'
                   }`}
                   title={agent.active ? 'Active' : 'Inactive'}

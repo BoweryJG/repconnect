@@ -48,21 +48,30 @@ export const AppRouter: React.FC = () => {
 
               {/* Admin routes */}
               <Route path="/admin/login" element={<AdminLogin />} />
-              <Route path="/admin/dashboard" element={
-                <AdminRoute>
-                  <AdminDashboard />
-                </AdminRoute>
-              } />
-              <Route path="/admin/agents/new" element={
-                <AdminRoute>
-                  <AgentEditor />
-                </AdminRoute>
-              } />
-              <Route path="/admin/agents/:id/edit" element={
-                <AdminRoute>
-                  <AgentEditor />
-                </AdminRoute>
-              } />
+              <Route
+                path="/admin/dashboard"
+                element={
+                  <AdminRoute>
+                    <AdminDashboard />
+                  </AdminRoute>
+                }
+              />
+              <Route
+                path="/admin/agents/new"
+                element={
+                  <AdminRoute>
+                    <AgentEditor />
+                  </AdminRoute>
+                }
+              />
+              <Route
+                path="/admin/agents/:id/edit"
+                element={
+                  <AdminRoute>
+                    <AgentEditor />
+                  </AdminRoute>
+                }
+              />
               <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
 
               {/* Auth callback route */}

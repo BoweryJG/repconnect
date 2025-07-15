@@ -1,10 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 
-const ADMIN_EMAILS = [
-  'jasonwilliamgolden@gmail.com',
-  'jgolden@bowerycreativeagency.com',
-];
+const ADMIN_EMAILS = ['jasonwilliamgolden@gmail.com', 'jgolden@bowerycreativeagency.com'];
 
 export const useIsAdmin = () => {
   const [isAdmin, setIsAdmin] = useState(false);
@@ -13,7 +10,9 @@ export const useIsAdmin = () => {
   useEffect(() => {
     const checkAdminStatus = async () => {
       try {
-        const { data: { user } } = await supabase.auth.getUser();
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
         if (user?.email) {
           setIsAdmin(ADMIN_EMAILS.includes(user.email.toLowerCase()));
         }
@@ -27,7 +26,9 @@ export const useIsAdmin = () => {
     checkAdminStatus();
 
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (session?.user?.email) {
         setIsAdmin(ADMIN_EMAILS.includes(session.user.email.toLowerCase()));
       } else {

@@ -23,10 +23,7 @@ const AdminAuthContext = createContext<AdminAuthContextType>({
 });
 
 // Admin email addresses
-const ADMIN_EMAILS = [
-  'jasonwilliamgolden@gmail.com',
-  'jgolden@bowerycreativeagency.com',
-];
+const ADMIN_EMAILS = ['jasonwilliamgolden@gmail.com', 'jgolden@bowerycreativeagency.com'];
 
 export const useAdminAuth = () => {
   const context = useContext(AdminAuthContext);
@@ -43,9 +40,11 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [isLoading, setIsLoading] = useState(true);
 
   const checkAdminStatus = async (): Promise<boolean> => {
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     if (!user || !user.email) return false;
-    
+
     const adminStatus = ADMIN_EMAILS.includes(user.email.toLowerCase());
     setIsAdmin(adminStatus);
     return adminStatus;
@@ -63,16 +62,18 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     });
 
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
       setSession(session);
       setUser(session?.user ?? null);
-      
+
       if (session?.user) {
         await checkAdminStatus();
       } else {
         setIsAdmin(false);
       }
-      
+
       setIsLoading(false);
     });
 
@@ -97,7 +98,7 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const signOut = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
-    
+
     setSession(null);
     setUser(null);
     setIsAdmin(false);

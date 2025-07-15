@@ -2,14 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAdminAuth } from '../../contexts/AdminAuthContext';
 import agentBackendAPI from '../../services/agentBackendAPI';
-import { 
-  Save, 
-  X, 
-  Loader2, 
-  AlertCircle,
-  ArrowLeft,
-  Plus,
-} from 'lucide-react';
+import { Save, X, Loader2, AlertCircle, ArrowLeft, Plus } from 'lucide-react';
 
 interface AgentFormData {
   name: string;
@@ -51,9 +44,9 @@ const AgentEditor: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { isAdmin } = useAdminAuth();
-  
+
   const isEditMode = !!id;
-  
+
   const [formData, setFormData] = useState<AgentFormData>({
     name: '',
     role: '',
@@ -89,7 +82,7 @@ const AgentEditor: React.FC = () => {
       },
     },
   });
-  
+
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState('');
@@ -108,7 +101,7 @@ const AgentEditor: React.FC = () => {
     const loadAgent = async (agentId: string) => {
       setIsLoading(true);
       setError('');
-      
+
       try {
         const agent = await agentBackendAPI.getAgent(agentId);
         if (agent) {
@@ -139,12 +132,12 @@ const AgentEditor: React.FC = () => {
     setError('');
 
     try {
-      const url = isEditMode 
+      const url = isEditMode
         ? `${agentBackendAPI.baseURL}/api/agents/${id}`
         : `${agentBackendAPI.baseURL}/api/agents`;
-        
+
       const method = isEditMode ? 'PUT' : 'POST';
-      
+
       const response = await fetch(url, {
         method,
         headers: await agentBackendAPI.getAuthHeaders(),
@@ -254,9 +247,7 @@ const AgentEditor: React.FC = () => {
             <h2 className="text-xl font-semibold mb-4">Basic Information</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Agent Name *
-                </label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Agent Name *</label>
                 <input
                   type="text"
                   value={formData.name}
@@ -265,11 +256,9 @@ const AgentEditor: React.FC = () => {
                   required
                 />
               </div>
-              
+
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Role *
-                </label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Role *</label>
                 <input
                   type="text"
                   value={formData.role}
@@ -280,9 +269,7 @@ const AgentEditor: React.FC = () => {
               </div>
 
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Tagline
-                </label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Tagline</label>
                 <input
                   type="text"
                   value={formData.tagline}
@@ -293,9 +280,7 @@ const AgentEditor: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Avatar Emoji
-                </label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Avatar Emoji</label>
                 <input
                   type="text"
                   value={formData.avatar}
@@ -305,9 +290,7 @@ const AgentEditor: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Category
-                </label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Category</label>
                 <select
                   value={formData.category}
                   onChange={(e) => setFormData({ ...formData, category: e.target.value })}
@@ -322,9 +305,7 @@ const AgentEditor: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Accent Color
-                </label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Accent Color</label>
                 <div className="flex gap-2">
                   <input
                     type="color"
@@ -366,18 +347,18 @@ const AgentEditor: React.FC = () => {
                 <input
                   type="text"
                   value={formData.personality.tone}
-                  onChange={(e) => setFormData({
-                    ...formData,
-                    personality: { ...formData.personality, tone: e.target.value }
-                  })}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      personality: { ...formData.personality, tone: e.target.value },
+                    })
+                  }
                   className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Traits
-                </label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Traits</label>
                 <div className="space-y-2">
                   <div className="flex gap-2">
                     <input
@@ -417,9 +398,7 @@ const AgentEditor: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Specialties
-                </label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Specialties</label>
                 <div className="space-y-2">
                   <div className="flex gap-2">
                     <input
@@ -465,16 +444,16 @@ const AgentEditor: React.FC = () => {
             <h2 className="text-xl font-semibold mb-4">Voice Configuration</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Voice ID
-                </label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Voice ID</label>
                 <input
                   type="text"
                   value={formData.voice_config.voice_id}
-                  onChange={(e) => setFormData({
-                    ...formData,
-                    voice_config: { ...formData.voice_config, voice_id: e.target.value }
-                  })}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      voice_config: { ...formData.voice_config, voice_id: e.target.value },
+                    })
+                  }
                   className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
                   placeholder="ElevenLabs Voice ID"
                 />
@@ -490,16 +469,18 @@ const AgentEditor: React.FC = () => {
                   max="1"
                   step="0.1"
                   value={formData.voice_config.settings.stability}
-                  onChange={(e) => setFormData({
-                    ...formData,
-                    voice_config: {
-                      ...formData.voice_config,
-                      settings: {
-                        ...formData.voice_config.settings,
-                        stability: parseFloat(e.target.value)
-                      }
-                    }
-                  })}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      voice_config: {
+                        ...formData.voice_config,
+                        settings: {
+                          ...formData.voice_config.settings,
+                          stability: parseFloat(e.target.value),
+                        },
+                      },
+                    })
+                  }
                   className="w-full"
                 />
               </div>
@@ -514,16 +495,18 @@ const AgentEditor: React.FC = () => {
                   max="1"
                   step="0.1"
                   value={formData.voice_config.settings.similarityBoost}
-                  onChange={(e) => setFormData({
-                    ...formData,
-                    voice_config: {
-                      ...formData.voice_config,
-                      settings: {
-                        ...formData.voice_config.settings,
-                        similarityBoost: parseFloat(e.target.value)
-                      }
-                    }
-                  })}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      voice_config: {
+                        ...formData.voice_config,
+                        settings: {
+                          ...formData.voice_config.settings,
+                          similarityBoost: parseFloat(e.target.value),
+                        },
+                      },
+                    })
+                  }
                   className="w-full"
                 />
               </div>
@@ -538,16 +521,18 @@ const AgentEditor: React.FC = () => {
                   max="1"
                   step="0.1"
                   value={formData.voice_config.settings.style}
-                  onChange={(e) => setFormData({
-                    ...formData,
-                    voice_config: {
-                      ...formData.voice_config,
-                      settings: {
-                        ...formData.voice_config.settings,
-                        style: parseFloat(e.target.value)
-                      }
-                    }
-                  })}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      voice_config: {
+                        ...formData.voice_config,
+                        settings: {
+                          ...formData.voice_config.settings,
+                          style: parseFloat(e.target.value),
+                        },
+                      },
+                    })
+                  }
                   className="w-full"
                 />
               </div>
@@ -563,13 +548,15 @@ const AgentEditor: React.FC = () => {
                   <input
                     type="checkbox"
                     checked={value}
-                    onChange={(e) => setFormData({
-                      ...formData,
-                      capabilities: {
-                        ...formData.capabilities,
-                        [key]: e.target.checked
-                      }
-                    })}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        capabilities: {
+                          ...formData.capabilities,
+                          [key]: e.target.checked,
+                        },
+                      })
+                    }
                     className="w-4 h-4 text-purple-600 bg-gray-700 border-gray-600 rounded focus:ring-purple-500"
                   />
                   <span className="text-sm font-medium text-gray-300">
@@ -599,7 +586,7 @@ const AgentEditor: React.FC = () => {
                 </>
               )}
             </button>
-            
+
             <button
               type="button"
               onClick={() => navigate('/admin/dashboard')}

@@ -30,7 +30,9 @@ export class WebRTCClient {
     let authToken = this._config.authToken;
     if (!authToken) {
       try {
-        const { data: { session } } = await supabase.auth.getSession();
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
         authToken = session?.access_token;
       } catch (error) {
         console.error('Failed to get auth session for WebRTC:', error);

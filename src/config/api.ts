@@ -2,7 +2,8 @@ import axios from 'axios';
 import { supabase } from '../lib/supabase';
 
 // API base URL
-export const API_BASE_URL = process.env.REACT_APP_BACKEND_URL || 'https://osbackend-zl1h.onrender.com';
+export const API_BASE_URL =
+  process.env.REACT_APP_BACKEND_URL || 'https://osbackend-zl1h.onrender.com';
 
 // Create axios instance with default config
 export const api = axios.create({
@@ -30,17 +31,19 @@ api.interceptors.request.use(
     //     config.headers['X-CSRF-Token'] = csrfToken;
     //   }
     // }
-    
+
     // Add Authorization header with Supabase token
     try {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       if (session?.access_token) {
         config.headers['Authorization'] = `Bearer ${session.access_token}`;
       }
     } catch (error) {
       console.error('Failed to get auth session:', error);
     }
-    
+
     return config;
   },
   (error) => {
@@ -60,12 +63,15 @@ api.interceptors.response.use(
 
       try {
         // Try to refresh Supabase session
-        const { data: { session }, error: refreshError } = await supabase.auth.refreshSession();
-        
+        const {
+          data: { session },
+          error: refreshError,
+        } = await supabase.auth.refreshSession();
+
         if (refreshError || !session) {
           throw new Error('Session refresh failed');
         }
-        
+
         // Retry the original request with new token
         originalRequest.headers['Authorization'] = `Bearer ${session.access_token}`;
         return api(originalRequest);
