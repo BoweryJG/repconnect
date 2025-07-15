@@ -5,9 +5,7 @@ import logger from '../utils/logger';
 // Configure axios defaults
 axios.defaults.withCredentials = true;
 
-const API_BASE_URL = process.env.REACT_APP_BACKEND_URL
-  ? `${process.env.REACT_APP_BACKEND_URL}/api`
-  : 'https://osbackend-zl1h.onrender.com/api';
+const API_BASE_URL = process.env.REACT_APP_BACKEND_URL || 'https://osbackend-zl1h.onrender.com';
 
 // Get CSRF token from cookie
 const getCSRFToken = (): string | null => {
@@ -19,10 +17,11 @@ const getCSRFToken = (): string | null => {
 axios.interceptors.request.use(
   async (config) => {
     // Add CSRF token for non-GET requests
-    const csrfToken = getCSRFToken();
-    if (csrfToken && config.method !== 'get') {
-      config.headers['X-CSRF-Token'] = csrfToken;
-    }
+    // Commented out since backend doesn't implement CSRF yet
+    // const csrfToken = getCSRFToken();
+    // if (csrfToken && config.method !== 'get') {
+    //   config.headers['X-CSRF-Token'] = csrfToken;
+    // }
 
     // Add Authorization header with Supabase token
     try {
@@ -51,18 +50,19 @@ axios.interceptors.response.use(
       error.config._retry = true;
 
       try {
-        const response = await axios.post(
-          `${API_BASE_URL}/api/auth/refresh`,
-          {},
-          { withCredentials: true }
-        );
-        if (response.data.success) {
-          return axios(error.config);
+        // Try to refresh Supabase session
+        const { data: { session }, error: refreshError } = await supabase.auth.refreshSession();
+        
+        if (refreshError || !session) {
+          throw new Error('Session refresh failed');
         }
-        throw new Error('Refresh failed');
+        
+        // Retry the original request with new token
+        error.config.headers['Authorization'] = `Bearer ${session.access_token}`;
+        return axios(error.config);
       } catch (refreshError) {
         // Don't redirect - let the app handle showing login modal
-        // window.location.href = '/login';
+        logger.error('Session refresh failed:', refreshError);
         return Promise.reject(refreshError);
       }
     }
@@ -74,7 +74,7 @@ export const authService = {
   // Login and exchange Supabase session for httpOnly cookies
   async loginWithCookies(session: any) {
     try {
-      const response = await axios.post(`${API_BASE_URL}/auth/login`, {
+      const response = await axios.post(`${API_BASE_URL}/api/auth/login`, {
         access_token: session.access_token,
         refresh_token: session.refresh_token,
       });
@@ -89,7 +89,7 @@ export const authService = {
   // Logout and clear cookies
   async logout() {
     try {
-      await axios.post(`${API_BASE_URL}/auth/logout`);
+      await axios.post(`${API_BASE_URL}/api/auth/logout`);
       await supabase.auth.signOut();
     } catch (error) {
       logger.error('Logout error:', error);
@@ -100,7 +100,7 @@ export const authService = {
   // Get current user from cookie session
   async getCurrentUser() {
     try {
-      const response = await axios.get(`${API_BASE_URL}/auth/me`);
+      const response = await axios.get(`${API_BASE_URL}/api/auth/me`);
       return response.data.user;
     } catch (error) {
       logger.error('Get current user error:', error);
@@ -111,7 +111,7 @@ export const authService = {
   // Refresh session
   async refreshSession() {
     try {
-      const response = await axios.post(`${API_BASE_URL}/auth/refresh`);
+      const response = await axios.post(`${API_BASE_URL}/api/auth/refresh`);
       return response.data;
     } catch (error) {
       logger.error('Refresh session error:', error);
@@ -122,7 +122,7 @@ export const authService = {
   // Get new CSRF token
   async getNewCSRFToken() {
     try {
-      const response = await axios.get(`${API_BASE_URL}/auth/csrf`);
+      const response = await axios.get(`${API_BASE_URL}/api/auth/csrf`);
       return response.data.csrfToken;
     } catch (error) {
       logger.error('Get CSRF token error:', error);

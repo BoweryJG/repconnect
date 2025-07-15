@@ -23,12 +23,13 @@ const getCSRFToken = (): string | null => {
 api.interceptors.request.use(
   async (config) => {
     // Add CSRF token for non-GET requests
-    if (config.method && ['post', 'put', 'patch', 'delete'].includes(config.method.toLowerCase())) {
-      const csrfToken = getCSRFToken();
-      if (csrfToken) {
-        config.headers['X-CSRF-Token'] = csrfToken;
-      }
-    }
+    // Commented out since backend doesn't implement CSRF yet
+    // if (config.method && ['post', 'put', 'patch', 'delete'].includes(config.method.toLowerCase())) {
+    //   const csrfToken = getCSRFToken();
+    //   if (csrfToken) {
+    //     config.headers['X-CSRF-Token'] = csrfToken;
+    //   }
+    // }
     
     // Add Authorization header with Supabase token
     try {
@@ -58,26 +59,35 @@ api.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        await api.post('/api/auth/refresh');
+        // Try to refresh Supabase session
+        const { data: { session }, error: refreshError } = await supabase.auth.refreshSession();
+        
+        if (refreshError || !session) {
+          throw new Error('Session refresh failed');
+        }
+        
+        // Retry the original request with new token
+        originalRequest.headers['Authorization'] = `Bearer ${session.access_token}`;
         return api(originalRequest);
       } catch (refreshError) {
         // Don't redirect - let the app handle showing login modal
-        // window.location.href = '/login';
+        console.error('Session refresh failed:', refreshError);
         return Promise.reject(refreshError);
       }
     }
 
     // Handle 403 (Forbidden) - CSRF token issue
-    if (error.response?.status === 403 && error.response?.data?.error?.includes('CSRF')) {
-      try {
-        // Get new CSRF token
-        await api.get('/api/auth/csrf');
-        // Retry original request
-        return api(originalRequest);
-      } catch (csrfError) {
-        return Promise.reject(csrfError);
-      }
-    }
+    // Commented out since backend doesn't implement CSRF yet
+    // if (error.response?.status === 403 && error.response?.data?.error?.includes('CSRF')) {
+    //   try {
+    //     // Get new CSRF token
+    //     await api.get('/auth/csrf');
+    //     // Retry original request
+    //     return api(originalRequest);
+    //   } catch (csrfError) {
+    //     return Promise.reject(csrfError);
+    //   }
+    // }
 
     return Promise.reject(error);
   }
