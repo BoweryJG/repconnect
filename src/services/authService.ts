@@ -23,17 +23,19 @@ axios.interceptors.request.use(
     if (csrfToken && config.method !== 'get') {
       config.headers['X-CSRF-Token'] = csrfToken;
     }
-    
+
     // Add Authorization header with Supabase token
     try {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       if (session?.access_token) {
         config.headers['Authorization'] = `Bearer ${session.access_token}`;
       }
     } catch (error) {
       logger.error('Failed to get auth session:', error);
     }
-    
+
     return config;
   },
   (error) => {
