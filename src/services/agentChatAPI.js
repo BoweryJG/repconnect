@@ -17,7 +17,7 @@ class AgentChatAPI {
     const headers = {
       'Content-Type': 'application/json',
     };
-    
+
     try {
       const {
         data: { session },
@@ -28,7 +28,7 @@ class AgentChatAPI {
     } catch (error) {
       console.error('Failed to get auth session:', error);
     }
-    
+
     return headers;
   }
 
