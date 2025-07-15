@@ -144,7 +144,7 @@ const AdminDashboard: React.FC = () => {
     return matchesSearch && matchesCategory;
   });
 
-  const categories = ['all', ...new Set(agents.map((agent) => agent.category).filter(Boolean))];
+  const categories = ['all', ...new Set(agents.map((agent) => agent.category).filter((cat): cat is string => !!cat))];
 
   if (isLoading) {
     return (
@@ -230,7 +230,7 @@ const AdminDashboard: React.FC = () => {
             >
               {categories.map((category) => (
                 <option key={category} value={category}>
-                  {category.charAt(0).toUpperCase() + category.slice(1)}
+                  {category ? category.charAt(0).toUpperCase() + category.slice(1) : ''}
                 </option>
               ))}
             </select>
