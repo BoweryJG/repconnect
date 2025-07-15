@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { X, Mic, MicOff, Phone, PhoneOff, Volume2 } from 'lucide-react';
 import { WebRTCClient } from '../../services/webRTCClient';
+import { useAuth } from '../../auth/useAuth';
 
 interface VoiceModalProps {
   isOpen: boolean;
@@ -24,6 +25,7 @@ export default function VoiceModalWebRTC({
   agentAvatar = '/agent-avatar.jpg',
   agentRole = 'Your Personal AI Concierge',
 }: VoiceModalProps) {
+  const { user, session } = useAuth();
   const [isCallActive, setIsCallActive] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [isAgentSpeaking, setIsAgentSpeaking] = useState(false);
@@ -52,7 +54,8 @@ export default function VoiceModalWebRTC({
       webRTCClientRef.current = new WebRTCClient({
         backendUrl,
         agentId: agentName.toLowerCase().replace(/\s+/g, '-'),
-        userId: 'user-' + Date.now(), // In production, use actual user ID
+        userId: user?.id || 'guest-' + Date.now(),
+        authToken: session?.access_token,
       });
 
       // Connect to signaling server
@@ -67,7 +70,7 @@ export default function VoiceModalWebRTC({
       console.error('Failed to initialize WebRTC:', error);
       setConnectionStatus('error');
     }
-  }, [agentName]);
+  }, [agentName, user, session]);
 
   // Start the call
   const startCall = async () => {

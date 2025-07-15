@@ -4,6 +4,7 @@ This document lists all environment variables that need to be configured for the
 
 ## Backend Configuration
 - `REACT_APP_BACKEND_URL` - Backend API URL (e.g., https://your-backend-url.com)
+- `REACT_APP_AGENT_BACKEND_URL` - Agent Backend API URL (default: https://agentbackend-2932.onrender.com)
 
 ## Twilio Configuration
 - `REACT_APP_TWILIO_PHONE_NUMBER` - Your Twilio phone number (e.g., +1234567890)
@@ -26,8 +27,10 @@ This document lists all environment variables that need to be configured for the
 - `OPENAI_API_KEY` - Your OpenAI API key
 
 ## Supabase Configuration
-- `SUPABASE_URL` - Your Supabase project URL
-- `SUPABASE_SERVICE_KEY` - Your Supabase service key
+- `REACT_APP_SUPABASE_URL` - Your Supabase project URL (default: https://fiozmyoedptukpkzuhqm.supabase.co for bowerycreativeagency)
+- `REACT_APP_SUPABASE_ANON_KEY` - Your Supabase anonymous key (required)
+- `SUPABASE_URL` - Your Supabase project URL (for server-side usage)
+- `SUPABASE_SERVICE_KEY` - Your Supabase service key (for server-side usage)
 
 ## WebRTC TURN Server Configuration (Optional)
 ### Generic TURN Server

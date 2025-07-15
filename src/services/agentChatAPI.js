@@ -1,6 +1,8 @@
 // Agent Chat API Service
 // Handles chat interactions with the agentbackend API
 
+import { supabase } from '../lib/supabase';
+
 const AGENT_BACKEND_URL =
   process.env.REACT_APP_AGENT_BACKEND_URL || 'https://agentbackend-2932.onrender.com';
 
@@ -8,6 +10,24 @@ class AgentChatAPI {
   constructor() {
     this.baseURL = AGENT_BACKEND_URL;
     this.sessions = new Map();
+  }
+
+  // Helper method to get current auth headers
+  async getAuthHeaders() {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.access_token) {
+        return {
+          'Authorization': `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json',
+        };
+      }
+    } catch (error) {
+      console.error('Failed to get auth session:', error);
+    }
+    return {
+      'Content-Type': 'application/json',
+    };
   }
 
   // Create or get a chat session
@@ -23,12 +43,11 @@ class AgentChatAPI {
   async sendMessage({ message, agentId, userId = 'anonymous', sessionId = null }) {
     try {
       const session = sessionId || this.getSessionId(userId, agentId);
+      const headers = await this.getAuthHeaders();
 
       const response = await fetch(`${this.baseURL}/api/chat`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers,
         body: JSON.stringify({
           message,
           agentId,
@@ -63,12 +82,11 @@ class AgentChatAPI {
   async streamMessage({ message, agentId, userId = 'anonymous', sessionId = null, onChunk }) {
     try {
       const session = sessionId || this.getSessionId(userId, agentId);
+      const headers = await this.getAuthHeaders();
 
       const response = await fetch(`${this.baseURL}/api/chat/stream`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers,
         body: JSON.stringify({
           message,
           agentId,
@@ -116,11 +134,11 @@ class AgentChatAPI {
   // Get chat history
   async getChatHistory(sessionId) {
     try {
+      const headers = await this.getAuthHeaders();
+
       const response = await fetch(`${this.baseURL}/api/chat/history/${sessionId}`, {
         method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers,
       });
 
       if (!response.ok) {

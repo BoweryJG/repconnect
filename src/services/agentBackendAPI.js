@@ -1,6 +1,8 @@
 // Agent Backend API Integration
 // This service connects to the remote agentbackend API to fetch agent configurations
 
+import { supabase } from '../lib/supabase';
+
 const AGENT_BACKEND_URL =
   process.env.REACT_APP_AGENT_BACKEND_URL || 'https://agentbackend-2932.onrender.com';
 
@@ -9,6 +11,25 @@ class AgentBackendAPI {
     this.baseURL = AGENT_BACKEND_URL;
     this.cache = new Map();
     this.cacheTimeout = 5 * 60 * 1000; // 5 minutes cache
+  }
+
+  // Helper method to get current auth headers
+  async getAuthHeaders() {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.access_token) {
+        return {
+          'Authorization': `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json',
+          'X-Supabase-Auth': 'true', // Additional header to indicate Supabase auth
+        };
+      }
+    } catch (error) {
+      console.error('Failed to get auth session:', error);
+    }
+    return {
+      'Content-Type': 'application/json',
+    };
   }
 
   // Fetch agents from backend with optional category filter
@@ -26,11 +47,11 @@ class AgentBackendAPI {
         ? `${this.baseURL}/api/agents?category=${category}`
         : `${this.baseURL}/api/agents`;
 
+      const headers = await this.getAuthHeaders();
+
       const response = await fetch(url, {
         method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers,
       });
 
       if (!response.ok) {
@@ -63,11 +84,11 @@ class AgentBackendAPI {
     }
 
     try {
+      const headers = await this.getAuthHeaders();
+
       const response = await fetch(`${this.baseURL}/api/agents/${agentId}`, {
         method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers,
       });
 
       if (!response.ok) {
@@ -142,7 +163,7 @@ class AgentBackendAPI {
   }
 
   // Helper methods for conversion
-  getIconFromEmoji(emoji) {
+  getIconFromEmoji(_emoji) {
     // This would need to map emojis to Lucide icons
     // For now, return a default icon reference
     return 'User';

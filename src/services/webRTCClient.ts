@@ -1,11 +1,13 @@
 import { Device } from 'mediasoup-client';
 import { Transport, Producer, Consumer } from 'mediasoup-client/lib/types';
 import { io, Socket } from 'socket.io-client';
+import { supabase } from '../lib/supabase';
 
 export interface WebRTCConfig {
   backendUrl: string;
   agentId: string;
   userId: string;
+  authToken?: string; // Optional auth token
 }
 
 export class WebRTCClient {
@@ -24,6 +26,17 @@ export class WebRTCClient {
   }
 
   async connect(): Promise<void> {
+    // Get current auth token if not provided
+    let authToken = this._config.authToken;
+    if (!authToken) {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        authToken = session?.access_token;
+      } catch (error) {
+        console.error('Failed to get auth session for WebRTC:', error);
+      }
+    }
+
     // Connect to Socket.IO for signaling
     this.socket = io(`${this._config.backendUrl}/voice-agents`, {
       path: '/agents-ws',
@@ -31,6 +44,7 @@ export class WebRTCClient {
       auth: {
         userId: this._config.userId,
         agentId: this._config.agentId,
+        token: authToken, // Include auth token
       },
     });
 
