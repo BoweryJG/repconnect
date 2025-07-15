@@ -144,7 +144,10 @@ const AdminDashboard: React.FC = () => {
     return matchesSearch && matchesCategory;
   });
 
-  const categories = ['all', ...new Set(agents.map((agent) => agent.category).filter((cat): cat is string => !!cat))];
+  const categories = [
+    'all',
+    ...new Set(agents.map((agent) => agent.category).filter((cat): cat is string => !!cat)),
+  ];
 
   if (isLoading) {
     return (
