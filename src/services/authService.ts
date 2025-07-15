@@ -5,7 +5,9 @@ import logger from '../utils/logger';
 // Configure axios defaults
 axios.defaults.withCredentials = true;
 
-const API_BASE_URL = process.env.REACT_APP_BACKEND_URL ? `${process.env.REACT_APP_BACKEND_URL}/api` : 'https://osbackend-zl1h.onrender.com/api';
+const API_BASE_URL = process.env.REACT_APP_BACKEND_URL
+  ? `${process.env.REACT_APP_BACKEND_URL}/api`
+  : 'https://osbackend-zl1h.onrender.com/api';
 
 // Get CSRF token from cookie
 const getCSRFToken = (): string | null => {
@@ -13,13 +15,25 @@ const getCSRFToken = (): string | null => {
   return matches ? matches[1] : null;
 };
 
-// Add CSRF token to axios requests
+// Add CSRF token and Authorization header to axios requests
 axios.interceptors.request.use(
-  (config) => {
+  async (config) => {
+    // Add CSRF token for non-GET requests
     const csrfToken = getCSRFToken();
     if (csrfToken && config.method !== 'get') {
       config.headers['X-CSRF-Token'] = csrfToken;
     }
+    
+    // Add Authorization header with Supabase token
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.access_token) {
+        config.headers['Authorization'] = `Bearer ${session.access_token}`;
+      }
+    } catch (error) {
+      logger.error('Failed to get auth session:', error);
+    }
+    
     return config;
   },
   (error) => {

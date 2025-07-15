@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { supabase } from '../lib/supabase';
 
 // API base URL
 export const API_BASE_URL = process.env.REACT_APP_BACKEND_URL || 'https://osbackend-zl1h.onrender.com';
@@ -18,9 +19,9 @@ const getCSRFToken = (): string | null => {
   return matches ? matches[1] : null;
 };
 
-// Request interceptor to add CSRF token
+// Request interceptor to add CSRF token and Authorization header
 api.interceptors.request.use(
-  (config) => {
+  async (config) => {
     // Add CSRF token for non-GET requests
     if (config.method && ['post', 'put', 'patch', 'delete'].includes(config.method.toLowerCase())) {
       const csrfToken = getCSRFToken();
@@ -28,6 +29,17 @@ api.interceptors.request.use(
         config.headers['X-CSRF-Token'] = csrfToken;
       }
     }
+    
+    // Add Authorization header with Supabase token
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.access_token) {
+        config.headers['Authorization'] = `Bearer ${session.access_token}`;
+      }
+    } catch (error) {
+      console.error('Failed to get auth session:', error);
+    }
+    
     return config;
   },
   (error) => {
