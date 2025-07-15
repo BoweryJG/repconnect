@@ -51,12 +51,15 @@ axios.interceptors.response.use(
 
       try {
         // Try to refresh Supabase session
-        const { data: { session }, error: refreshError } = await supabase.auth.refreshSession();
-        
+        const {
+          data: { session },
+          error: refreshError,
+        } = await supabase.auth.refreshSession();
+
         if (refreshError || !session) {
           throw new Error('Session refresh failed');
         }
-        
+
         // Retry the original request with new token
         error.config.headers['Authorization'] = `Bearer ${session.access_token}`;
         return axios(error.config);
