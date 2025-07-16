@@ -27,7 +27,7 @@ interface AuthContextType {
   session: Session | null;
   profile: UserProfile | null;
   loading: boolean;
-  signInWithProvider: (provider: AuthProviderType) => Promise<void>;
+  signInWithProvider: (_provider: AuthProviderType) => Promise<void>;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
   showSessionWarning: boolean;

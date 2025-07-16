@@ -19,6 +19,7 @@ declare -a secrets=(
     "4beb44e547c8ef520a575d343315b9d0dae38549"
     "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"
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNib3B5bnV2aGN5bWJ1bWpudmF5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM5OTUxNzMsImV4cCI6MjA1OTU3MTE3M30.UZElMkoHugIt984RtYWyfrRuv2rB67opQdCrFVPCfzU"
+    "sk_178e9e2ea1aea0c7787cd5f3bbe21bc6c293912af43137a4"
 )
 
 # Install BFG if not available
@@ -86,6 +87,7 @@ echo "5. IMMEDIATELY rotate all the exposed API keys:"
 echo "   - Deepgram API key"
 echo "   - OpenAI API key"
 echo "   - Supabase service key"
+echo "   - ElevenLabs API key"
 echo ""
 echo "📝 Remember to update your .env file with the new keys!"
 

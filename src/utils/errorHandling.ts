@@ -144,7 +144,7 @@ export const retry = async <T>(
 ): Promise<T> => {
   const { retries = 3, delay = 1000, backoff = true, onRetry } = options;
 
-  let lastError: Error;
+  let lastError: Error | undefined;
 
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
@@ -164,7 +164,7 @@ export const retry = async <T>(
     }
   }
 
-  throw lastError!;
+  throw lastError || new Error('Operation failed after retries');
 };
 
 // Circuit breaker pattern for external service calls

@@ -17,7 +17,7 @@ jest.mock('@react-three/fiber', () => ({
   useThree: () => ({
     camera: new mockTHREE.PerspectiveCamera(),
     scene: new mockTHREE.Scene(),
-    gl: { domElement: document.createElement('canvas') },
+    gl: { domElement: { tagName: 'CANVAS' } },
   }),
 }));
 
@@ -80,6 +80,8 @@ describe('HarveyWarRoom', () => {
 
       await waitFor(() => {
         expect(screen.getByText(/Harvey War Room/i)).toBeInTheDocument();
+      });
+      await waitFor(() => {
         expect(screen.getByTestId('three-canvas')).toBeInTheDocument();
       });
     });
@@ -89,6 +91,8 @@ describe('HarveyWarRoom', () => {
 
       await waitFor(() => {
         expect(harveyService.connect).toHaveBeenCalled();
+      });
+      await waitFor(() => {
         expect(harveyService.getWarRoomData).toHaveBeenCalled();
       });
     });
@@ -110,47 +114,62 @@ describe('HarveyWarRoom', () => {
 
       await waitFor(() => {
         expect(screen.getByText(/Failed to connect/i)).toBeInTheDocument();
+      });
+      await waitFor(() => {
         expect(screen.getByRole('button', { name: /retry/i })).toBeInTheDocument();
       });
     });
   });
 
   describe('Representative Display', () => {
-    beforeEach(async () => {
-      await act(async () => {
-        render(<HarveyWarRoom />);
-      });
-    });
+    const renderWarRoom = () => {
+      return render(<HarveyWarRoom />);
+    };
 
     it('should display all representatives', async () => {
+      renderWarRoom();
       await waitFor(() => {
         expect(screen.getByText('John Doe')).toBeInTheDocument();
+      });
+      await waitFor(() => {
         expect(screen.getByText('Jane Smith')).toBeInTheDocument();
       });
     });
 
     it('should show rep status indicators', async () => {
+      renderWarRoom();
       await waitFor(() => {
         const johnCard = screen.getByTestId('rep-card-rep-1');
         expect(johnCard).toHaveClass('status-active');
-
+      });
+      await waitFor(() => {
         const janeCard = screen.getByTestId('rep-card-rep-2');
         expect(janeCard).toHaveClass('status-idle');
       });
     });
 
     it('should display current call information', async () => {
+      renderWarRoom();
       await waitFor(() => {
         expect(screen.getByText('ACME Corp')).toBeInTheDocument();
+      });
+      await waitFor(() => {
         expect(screen.getByText(/2:00/)).toBeInTheDocument(); // Duration
+      });
+      await waitFor(() => {
         expect(screen.getByText(/Energy: 8/i)).toBeInTheDocument();
       });
     });
 
     it('should show rep metrics', async () => {
+      renderWarRoom();
       await waitFor(() => {
         expect(screen.getByText('1500 RP')).toBeInTheDocument();
+      });
+      await waitFor(() => {
         expect(screen.getByText('closer')).toBeInTheDocument();
+      });
+      await waitFor(() => {
         expect(screen.getByText('25%')).toBeInTheDocument(); // Closing rate
       });
     });
@@ -186,6 +205,8 @@ describe('HarveyWarRoom', () => {
 
       await waitFor(() => {
         expect(screen.getByTestId('rep-card-rep-2')).toHaveClass('status-active');
+      });
+      await waitFor(() => {
         expect(screen.getByText('New Client')).toBeInTheDocument();
       });
     });
@@ -217,6 +238,8 @@ describe('HarveyWarRoom', () => {
 
       await waitFor(() => {
         expect(screen.getByText('1600 RP')).toBeInTheDocument();
+      });
+      await waitFor(() => {
         expect(screen.getByText('30%')).toBeInTheDocument();
       });
     });
@@ -251,6 +274,8 @@ describe('HarveyWarRoom', () => {
 
       await waitFor(() => {
         expect(harveyService.startBattle).toHaveBeenCalledWith('rep-1', 'rep-2');
+      });
+      await waitFor(() => {
         expect(screen.getByText(/Battle Started!/i)).toBeInTheDocument();
       });
     });
@@ -276,8 +301,14 @@ describe('HarveyWarRoom', () => {
 
       await waitFor(() => {
         expect(screen.getByText(/Battle in Progress/i)).toBeInTheDocument();
+      });
+      await waitFor(() => {
         expect(screen.getByText('85')).toBeInTheDocument(); // Rep 1 score
+      });
+      await waitFor(() => {
         expect(screen.getByText('78')).toBeInTheDocument(); // Rep 2 score
+      });
+      await waitFor(() => {
         expect(screen.getByText(/3:00/)).toBeInTheDocument(); // Time remaining
       });
     });
@@ -306,7 +337,11 @@ describe('HarveyWarRoom', () => {
 
       await waitFor(() => {
         expect(screen.getByText('90')).toBeInTheDocument();
+      });
+      await waitFor(() => {
         expect(screen.getByText('88')).toBeInTheDocument();
+      });
+      await waitFor(() => {
         expect(screen.getByText(/John Doe closed a deal!/i)).toBeInTheDocument();
       });
     });
@@ -339,7 +374,11 @@ describe('HarveyWarRoom', () => {
 
       await waitFor(() => {
         expect(screen.getByText(/Battle Complete!/i)).toBeInTheDocument();
+      });
+      await waitFor(() => {
         expect(screen.getByText(/John Doe Wins!/i)).toBeInTheDocument();
+      });
+      await waitFor(() => {
         expect(screen.getByText(/\+500 RP/i)).toBeInTheDocument();
       });
     });
@@ -399,6 +438,8 @@ describe('HarveyWarRoom', () => {
 
       await waitFor(() => {
         expect(screen.getByText(/Spectating/i)).toBeInTheDocument();
+      });
+      await waitFor(() => {
         expect(screen.getByTestId('spectator-overlay')).toBeInTheDocument();
       });
     });
@@ -418,6 +459,8 @@ describe('HarveyWarRoom', () => {
 
       await waitFor(() => {
         expect(screen.getByText(/Spectating: John Doe/i)).toBeInTheDocument();
+      });
+      await waitFor(() => {
         expect(screen.getByTestId('spectator-stats')).toBeInTheDocument();
       });
     });
@@ -471,7 +514,11 @@ describe('HarveyWarRoom', () => {
 
       await waitFor(() => {
         expect(screen.getByText(/War Room Leaderboard/i)).toBeInTheDocument();
+      });
+      await waitFor(() => {
         expect(screen.getByText('#1 Jane Smith')).toBeInTheDocument();
+      });
+      await waitFor(() => {
         expect(screen.getByText('#2 John Doe')).toBeInTheDocument();
       });
     });
@@ -501,6 +548,8 @@ describe('HarveyWarRoom', () => {
 
       await waitFor(() => {
         expect(screen.getByText('#1 John Doe')).toBeInTheDocument();
+      });
+      await waitFor(() => {
         expect(screen.getByText('2100 RP')).toBeInTheDocument();
       });
     });
@@ -598,7 +647,11 @@ describe('HarveyWarRoom', () => {
 
       await waitFor(() => {
         expect(screen.getByRole('main', { name: /war room/i })).toBeInTheDocument();
+      });
+      await waitFor(() => {
         expect(screen.getByRole('region', { name: /3d visualization/i })).toBeInTheDocument();
+      });
+      await waitFor(() => {
         expect(screen.getByRole('region', { name: /representatives/i })).toBeInTheDocument();
       });
     });
@@ -608,11 +661,13 @@ describe('HarveyWarRoom', () => {
 
       render(<HarveyWarRoom />);
 
-      await waitFor(async () => {
-        await user.tab();
+      await user.tab();
+      await waitFor(() => {
         expect(screen.getByTestId('rep-card-rep-1')).toHaveFocus();
+      });
 
-        await user.keyboard('{Enter}');
+      await user.keyboard('{Enter}');
+      await waitFor(() => {
         expect(screen.getByTestId('rep-card-rep-1')).toHaveClass('selected');
       });
     });

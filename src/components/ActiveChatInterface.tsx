@@ -8,30 +8,25 @@ import {
   Stack,
   Paper,
   LinearProgress,
-  Fab,
   Fade,
   IconButton,
   Tooltip,
   Divider,
-  Badge,
 } from '@mui/material';
 import {
   Mic,
   MicOff,
-  Phone,
   PhoneDisabled,
   VolumeUp,
   Speed,
   Psychology,
   TipsAndUpdates,
-  ChatBubbleOutline,
   ExpandLess,
   ExpandMore,
   AccessTime,
   SentimentSatisfied,
   SentimentNeutral,
   SentimentDissatisfied,
-  RecordVoiceOver,
   Analytics,
 } from '@mui/icons-material';
 
@@ -70,7 +65,7 @@ interface ActiveChatInterfaceProps {
 }
 
 export const ActiveChatInterface: React.FC<ActiveChatInterfaceProps> = ({
-  sessionId,
+  sessionId: _sessionId,
   agentName,
   agentAvatar,
   customerName = 'Customer',
@@ -89,10 +84,10 @@ export const ActiveChatInterface: React.FC<ActiveChatInterfaceProps> = ({
   },
   coachingInsights = [],
 }) => {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [currentTranscript, setCurrentTranscript] = useState('');
+  const [messages, _setMessages] = useState<Message[]>([]);
+  const [_currentTranscript, _setCurrentTranscript] = useState('');
   const [isMinimized, setIsMinimized] = useState(false);
-  const [showMetrics, setShowMetrics] = useState(true);
+  const [showMetrics, _setShowMetrics] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

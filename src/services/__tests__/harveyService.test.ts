@@ -1,7 +1,7 @@
 import { io } from 'socket.io-client';
 import { HarveyService } from '../harveyService';
 import { supabase } from '../../lib/supabase';
-import { mockSocket, mockSupabaseClient, waitForAsync } from '../../test-utils/testUtils';
+import { mockSocket, waitForAsync } from '../../test-utils/testUtils';
 
 // Mock socket.io-client
 jest.mock('socket.io-client');
@@ -9,7 +9,22 @@ const mockedIo = io as jest.MockedFunction<typeof io>;
 
 // Mock supabase
 jest.mock('../../lib/supabase', () => ({
-  supabase: mockSupabaseClient,
+  supabase: {
+    auth: {
+      getSession: jest.fn().mockResolvedValue({ data: { session: null }, error: null }),
+      onAuthStateChange: jest.fn().mockReturnValue({
+        data: { subscription: { unsubscribe: jest.fn() } },
+      }),
+    },
+    from: jest.fn().mockReturnValue({
+      select: jest.fn().mockReturnThis(),
+      insert: jest.fn().mockReturnThis(),
+      update: jest.fn().mockReturnThis(),
+      delete: jest.fn().mockReturnThis(),
+      eq: jest.fn().mockReturnThis(),
+      single: jest.fn().mockResolvedValue({ data: null, error: null }),
+    }),
+  },
 }));
 
 describe('HarveyService', () => {

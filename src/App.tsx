@@ -32,7 +32,7 @@ import { SubtlePipelineBackground } from './components/effects/SubtlePipelineBac
 import { PremiumNavbar } from './components/PremiumNavbar';
 import { CornerScrews } from './components/effects/PrecisionScrew';
 import { LoadingFallback } from './components/LoadingFallback';
-import { lazyWithPreload, preloadWhenIdle } from './utils/lazyWithPreload';
+import { lazyWithPreload } from './utils/lazyWithPreload';
 
 // Lazy load heavy components with optimized loading and preload capability
 const DigitalRolodex = lazyWithPreload(() =>
@@ -331,7 +331,7 @@ function AppContent() {
             setHarveyLoading(false);
           }
         },
-        onAudioReceived: (audioData) => {
+        onAudioReceived: (_audioData) => {
           logger.debug('Harvey audio received');
         },
       });
@@ -430,7 +430,7 @@ function AppContent() {
             setHarveyLoading(false);
           }
         },
-        onAudioReceived: (audioData) => {
+        onAudioReceived: (_audioData) => {
           logger.debug('Harvey audio received');
         },
       });

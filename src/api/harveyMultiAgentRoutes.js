@@ -47,7 +47,7 @@ router.get('/harvey/metrics', async (req, res) => {
 // Daily verdict endpoint
 router.get('/harvey/verdict', async (req, res) => {
   try {
-    const { userId } = req.query;
+    const { userId: _userId } = req.query;
 
     const verdicts = [
       {
@@ -85,7 +85,7 @@ router.get('/harvey/verdict', async (req, res) => {
 // Voice command endpoint
 router.post('/harvey/voice-command', async (req, res) => {
   try {
-    const { command, userId } = req.body;
+    const { command, userId: _userId } = req.body;
 
     // Simple command processing
     const responses = {
@@ -150,8 +150,8 @@ router.get('/harvey/leads/hot', async (req, res) => {
 // Claim lead endpoint
 router.post('/harvey/leads/:leadId/claim', async (req, res) => {
   try {
-    const { leadId } = req.params;
-    const userId = req.headers.authorization?.split(' ')[1]; // Simple auth
+    const { leadId: _leadId } = req.params;
+    const _userId = req.headers.authorization?.split(' ')[1]; // Simple auth
 
     res.json({
       success: true,
@@ -192,7 +192,7 @@ router.get('/harvey/trials/active', async (req, res) => {
 // Join trial endpoint
 router.post('/harvey/trials/:trialId/join', async (req, res) => {
   try {
-    const { trialId } = req.params;
+    const { trialId: _trialId } = req.params;
 
     res.json({
       success: true,
@@ -222,7 +222,7 @@ router.put('/harvey/coaching/mode', async (req, res) => {
 // Harvey modes endpoint
 router.put('/harvey/modes', async (req, res) => {
   try {
-    const modes = req.body;
+    const _modes = req.body;
 
     res.json({
       success: true,
@@ -266,7 +266,12 @@ router.get('/harvey/coaching/history', async (req, res) => {
 // Call analysis endpoint
 router.post('/harvey/calls/analyze', async (req, res) => {
   try {
-    const { callId, duration, outcome, voiceMetrics } = req.body;
+    const {
+      callId: _callId,
+      duration: _duration,
+      outcome: _outcome,
+      voiceMetrics: _voiceMetrics,
+    } = req.body;
 
     // In production, analyze the call and update metrics
     res.json({
@@ -285,7 +290,7 @@ router.post('/harvey/calls/analyze', async (req, res) => {
 // Intervention endpoint
 router.post('/harvey/intervention', async (req, res) => {
   try {
-    const { reason } = req.body;
+    const { reason: _reason } = req.body;
 
     res.json({
       success: true,
@@ -300,7 +305,7 @@ router.post('/harvey/intervention', async (req, res) => {
 // Challenge Harvey endpoint
 router.post('/harvey/challenge', async (req, res) => {
   try {
-    const { type } = req.body;
+    const { type: _type } = req.body;
 
     res.json({
       accepted: true,

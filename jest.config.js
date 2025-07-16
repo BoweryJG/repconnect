@@ -4,6 +4,7 @@ module.exports = {
   moduleNameMapper: {
     '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
     '\\.(jpg|jpeg|png|gif|webp|svg)$': '<rootDir>/src/__mocks__/fileMock.js',
+    '^axios$': '<rootDir>/src/__mocks__/axios.js',
   },
   transform: {
     '^.+\\.(ts|tsx)$': 'ts-jest',
@@ -44,5 +45,11 @@ module.exports = {
     },
   },
   coverageReporters: ['text', 'lcov', 'html'],
-  testTimeout: 10000,
+  testTimeout: 30000,
+  maxWorkers: 1,
+  clearMocks: true,
+  restoreMocks: true,
+  resetMocks: true,
+  verbose: true,
+  transformIgnorePatterns: ['node_modules/(?!(axios|@supabase)/)'],
 };

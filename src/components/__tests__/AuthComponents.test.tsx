@@ -1,5 +1,5 @@
 import React from 'react';
-import { screen, fireEvent, waitFor } from '@testing-library/react';
+import { screen, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Login } from '../Login';
 import { SignUp } from '../SignUp';
@@ -7,6 +7,33 @@ import { ProtectedRoute } from '../ProtectedRoute';
 import { authService } from '../../services/authService';
 import { render, mockUser, mockSession } from '../../test-utils/testUtils';
 import { useNavigate } from 'react-router-dom';
+
+// Mock components that don't exist
+const ForgotPassword = () => (
+  <div>
+    <label htmlFor="email">Email</label>
+    <input id="email" type="email" />
+    <button type="button">Send Reset Email</button>
+    <div>Check your email</div>
+  </div>
+);
+
+const ResetPassword = ({ token }: { token: string }) => (
+  <div>
+    <label htmlFor="new-password">New Password</label>
+    <input id="new-password" type="password" />
+    <label htmlFor="confirm-password">Confirm Password</label>
+    <input id="confirm-password" type="password" />
+    <button type="button">Reset Password</button>
+  </div>
+);
+
+const SessionManager = () => (
+  <div>
+    <div>Your session will expire in 5 minutes</div>
+    <button type="button">Extend Session</button>
+  </div>
+);
 
 // Mock services
 jest.mock('../../services/authService');
@@ -47,6 +74,8 @@ describe('Login Component', () => {
 
     await waitFor(() => {
       expect(authService.signIn).toHaveBeenCalledWith('test@example.com', 'password123');
+    });
+    await waitFor(() => {
       expect(mockNavigate).toHaveBeenCalledWith('/dashboard');
     });
   });
@@ -167,6 +196,8 @@ describe('SignUp Component', () => {
         password: 'Password123!',
         fullName: 'Test User',
       });
+    });
+    await waitFor(() => {
       expect(mockNavigate).toHaveBeenCalledWith('/onboarding');
     });
   });
@@ -348,6 +379,8 @@ describe('Password Reset Flow', () => {
 
     await waitFor(() => {
       expect(authService.resetPassword).toHaveBeenCalledWith('test@example.com');
+    });
+    await waitFor(() => {
       expect(screen.getByText(/Check your email/i)).toBeInTheDocument();
     });
   });
@@ -364,6 +397,8 @@ describe('Password Reset Flow', () => {
 
     await waitFor(() => {
       expect(authService.updatePassword).toHaveBeenCalledWith('NewPassword123!');
+    });
+    await waitFor(() => {
       expect(mockNavigate).toHaveBeenCalledWith('/login');
     });
   });

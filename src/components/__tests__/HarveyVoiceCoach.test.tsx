@@ -47,6 +47,8 @@ describe('HarveyVoiceCoach', () => {
 
       await waitFor(() => {
         expect(harveyService.connect).toHaveBeenCalled();
+      });
+      await waitFor(() => {
         expect(harveyService.startCoachingSession).toHaveBeenCalledWith(mockUserId, {
           contactId: mockContactId,
         });
@@ -77,22 +79,24 @@ describe('HarveyVoiceCoach', () => {
   });
 
   describe('Active Call Interface', () => {
-    beforeEach(async () => {
-      await act(async () => {
-        render(
-          <HarveyVoiceCoach userId={mockUserId} contactId={mockContactId} onEnd={mockOnEnd} />
-        );
-      });
-    });
+    const renderActiveCall = () => {
+      return render(
+        <HarveyVoiceCoach userId={mockUserId} contactId={mockContactId} onEnd={mockOnEnd} />
+      );
+    };
 
     it('should display call controls', async () => {
+      renderActiveCall();
       await waitFor(() => {
         expect(screen.getByRole('button', { name: /mute/i })).toBeInTheDocument();
+      });
+      await waitFor(() => {
         expect(screen.getByRole('button', { name: /end call/i })).toBeInTheDocument();
       });
     });
 
     it('should toggle mute state', async () => {
+      renderActiveCall();
       const muteButton = await screen.findByRole('button', { name: /mute/i });
 
       fireEvent.click(muteButton);
@@ -103,6 +107,7 @@ describe('HarveyVoiceCoach', () => {
     });
 
     it('should display call timer', async () => {
+      renderActiveCall();
       await waitFor(() => {
         expect(screen.getByText(/00:00/)).toBeInTheDocument();
       });
@@ -118,19 +123,22 @@ describe('HarveyVoiceCoach', () => {
     });
 
     it('should end call when end button clicked', async () => {
+      renderActiveCall();
       const endButton = await screen.findByRole('button', { name: /end call/i });
 
       fireEvent.click(endButton);
 
       await waitFor(() => {
         expect(harveyWebRTC.endCall).toHaveBeenCalled();
+      });
+      await waitFor(() => {
         expect(mockOnEnd).toHaveBeenCalled();
       });
     });
   });
 
   describe('Harvey Coaching Features', () => {
-    beforeEach(async () => {
+    const renderWithCoaching = () => {
       (harveyService as any).on = jest.fn((event, callback) => {
         if (event === 'coachingAdvice') {
           setTimeout(
@@ -145,20 +153,20 @@ describe('HarveyVoiceCoach', () => {
         }
       });
 
-      await act(async () => {
-        render(
-          <HarveyVoiceCoach userId={mockUserId} contactId={mockContactId} onEnd={mockOnEnd} />
-        );
-      });
-    });
+      return render(
+        <HarveyVoiceCoach userId={mockUserId} contactId={mockContactId} onEnd={mockOnEnd} />
+      );
+    };
 
     it('should display coaching advice', async () => {
+      renderWithCoaching();
       await waitFor(() => {
         expect(screen.getByText(/Ask about their budget/i)).toBeInTheDocument();
       });
     });
 
     it('should update coaching metrics', async () => {
+      renderWithCoaching();
       (harveyService as any).on.mockImplementation((event, callback) => {
         if (event === 'metricsUpdate') {
           callback({
@@ -172,11 +180,14 @@ describe('HarveyVoiceCoach', () => {
 
       await waitFor(() => {
         expect(screen.getByText(/Energy: 8/i)).toBeInTheDocument();
+      });
+      await waitFor(() => {
         expect(screen.getByText(/Clarity: 9/i)).toBeInTheDocument();
       });
     });
 
     it('should show real-time feedback', async () => {
+      renderWithCoaching();
       (harveyService as any).on.mockImplementation((event, callback) => {
         if (event === 'feedback') {
           callback({
@@ -193,7 +204,7 @@ describe('HarveyVoiceCoach', () => {
   });
 
   describe('Voice Transcription', () => {
-    beforeEach(async () => {
+    const renderWithTranscription = () => {
       (harveyWebRTC as any).on = jest.fn((event, callback) => {
         if (event === 'transcription') {
           setTimeout(
@@ -208,20 +219,20 @@ describe('HarveyVoiceCoach', () => {
         }
       });
 
-      await act(async () => {
-        render(
-          <HarveyVoiceCoach userId={mockUserId} contactId={mockContactId} onEnd={mockOnEnd} />
-        );
-      });
-    });
+      return render(
+        <HarveyVoiceCoach userId={mockUserId} contactId={mockContactId} onEnd={mockOnEnd} />
+      );
+    };
 
     it('should display live transcription', async () => {
+      renderWithTranscription();
       await waitFor(() => {
         expect(screen.getByText(/Hello, how can I help you today?/i)).toBeInTheDocument();
       });
     });
 
     it('should differentiate speakers', async () => {
+      renderWithTranscription();
       (harveyWebRTC as any).on.mockImplementation((event, callback) => {
         if (event === 'transcription') {
           callback({
@@ -234,23 +245,21 @@ describe('HarveyVoiceCoach', () => {
 
       await waitFor(() => {
         const customerText = screen.getByText(/I need information about your product/i);
-        expect(customerText.closest('[data-speaker="customer"]')).toBeInTheDocument();
+        expect(customerText).toHaveAttribute('data-speaker', 'customer');
       });
     });
   });
 
   describe('Performance Visualization', () => {
     it('should show performance graph', async () => {
-      await act(async () => {
-        render(
-          <HarveyVoiceCoach
-            userId={mockUserId}
-            contactId={mockContactId}
-            onEnd={mockOnEnd}
-            showPerformanceGraph={true}
-          />
-        );
-      });
+      render(
+        <HarveyVoiceCoach
+          userId={mockUserId}
+          contactId={mockContactId}
+          onEnd={mockOnEnd}
+          showPerformanceGraph={true}
+        />
+      );
 
       await waitFor(() => {
         expect(screen.getByTestId('performance-graph')).toBeInTheDocument();
@@ -265,16 +274,14 @@ describe('HarveyVoiceCoach', () => {
         }
       });
 
-      await act(async () => {
-        render(
-          <HarveyVoiceCoach
-            userId={mockUserId}
-            contactId={mockContactId}
-            onEnd={mockOnEnd}
-            showPerformanceGraph={true}
-          />
-        );
-      });
+      render(
+        <HarveyVoiceCoach
+          userId={mockUserId}
+          contactId={mockContactId}
+          onEnd={mockOnEnd}
+          showPerformanceGraph={true}
+        />
+      );
 
       // Simulate metrics updates
       act(() => {
@@ -288,6 +295,9 @@ describe('HarveyVoiceCoach', () => {
       await waitFor(() => {
         const graph = screen.getByTestId('performance-graph');
         expect(graph).toHaveAttribute('data-energy', '5');
+      });
+      await waitFor(() => {
+        const graph = screen.getByTestId('performance-graph');
         expect(graph).toHaveAttribute('data-clarity', '6');
       });
     });
@@ -336,11 +346,7 @@ describe('HarveyVoiceCoach', () => {
 
   describe('Settings and Configuration', () => {
     it('should open settings modal', async () => {
-      await act(async () => {
-        render(
-          <HarveyVoiceCoach userId={mockUserId} contactId={mockContactId} onEnd={mockOnEnd} />
-        );
-      });
+      render(<HarveyVoiceCoach userId={mockUserId} contactId={mockContactId} onEnd={mockOnEnd} />);
 
       const settingsButton = await screen.findByRole('button', { name: /settings/i });
       fireEvent.click(settingsButton);
@@ -351,11 +357,7 @@ describe('HarveyVoiceCoach', () => {
     });
 
     it('should save settings changes', async () => {
-      await act(async () => {
-        render(
-          <HarveyVoiceCoach userId={mockUserId} contactId={mockContactId} onEnd={mockOnEnd} />
-        );
-      });
+      render(<HarveyVoiceCoach userId={mockUserId} contactId={mockContactId} onEnd={mockOnEnd} />);
 
       const settingsButton = await screen.findByRole('button', { name: /settings/i });
       fireEvent.click(settingsButton);
@@ -376,14 +378,12 @@ describe('HarveyVoiceCoach', () => {
 
   describe('Accessibility', () => {
     it('should have proper ARIA labels', async () => {
-      await act(async () => {
-        render(
-          <HarveyVoiceCoach userId={mockUserId} contactId={mockContactId} onEnd={mockOnEnd} />
-        );
-      });
+      render(<HarveyVoiceCoach userId={mockUserId} contactId={mockContactId} onEnd={mockOnEnd} />);
 
       await waitFor(() => {
         expect(screen.getByRole('region', { name: /call interface/i })).toBeInTheDocument();
+      });
+      await waitFor(() => {
         expect(screen.getByRole('timer', { name: /call duration/i })).toBeInTheDocument();
       });
     });
@@ -391,17 +391,15 @@ describe('HarveyVoiceCoach', () => {
     it('should be keyboard navigable', async () => {
       const user = userEvent.setup();
 
-      await act(async () => {
-        render(
-          <HarveyVoiceCoach userId={mockUserId} contactId={mockContactId} onEnd={mockOnEnd} />
-        );
+      render(<HarveyVoiceCoach userId={mockUserId} contactId={mockContactId} onEnd={mockOnEnd} />);
+
+      await user.tab();
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: /mute/i })).toHaveFocus();
       });
 
-      await waitFor(async () => {
-        await user.tab();
-        expect(screen.getByRole('button', { name: /mute/i })).toHaveFocus();
-
-        await user.tab();
+      await user.tab();
+      await waitFor(() => {
         expect(screen.getByRole('button', { name: /end call/i })).toHaveFocus();
       });
     });

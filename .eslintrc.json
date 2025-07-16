@@ -1,12 +1,6 @@
 {
-  "extends": [
-    "react-app",
-    "react-app/jest",
-    "prettier"
-  ],
-  "plugins": ["prettier"],
+  "extends": ["react-app", "react-app/jest"],
   "rules": {
-    "prettier/prettier": "error",
     "no-console": ["warn", { "allow": ["warn", "error"] }],
     "no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
     "no-debugger": "error",

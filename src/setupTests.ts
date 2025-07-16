@@ -21,10 +21,10 @@ Object.defineProperty(window, 'matchMedia', {
 
 // Mock IntersectionObserver
 global.IntersectionObserver = class IntersectionObserver {
-  constructor() {}
+  constructor(_callback: IntersectionObserverCallback, _options?: IntersectionObserverInit) {}
   disconnect() {}
-  observe() {}
-  unobserve() {}
+  observe(_target: Element) {}
+  unobserve(_target: Element) {}
   takeRecords() {
     return [];
   }
@@ -32,10 +32,10 @@ global.IntersectionObserver = class IntersectionObserver {
 
 // Mock ResizeObserver
 global.ResizeObserver = class ResizeObserver {
-  constructor() {}
+  constructor(_callback: ResizeObserverCallback) {}
   disconnect() {}
-  observe() {}
-  unobserve() {}
+  observe(_target: Element) {}
+  unobserve(_target: Element) {}
 };
 
 // Suppress console errors in tests
@@ -52,3 +52,8 @@ beforeAll(() => {
 afterAll(() => {
   console.error = originalError;
 });
+
+// Mock environment variables
+process.env.REACT_APP_SUPABASE_URL = 'https://test.supabase.co';
+process.env.REACT_APP_SUPABASE_ANON_KEY = 'test-key';
+process.env.REACT_APP_BACKEND_URL = 'https://test-backend.com';

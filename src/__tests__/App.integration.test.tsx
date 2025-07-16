@@ -1,5 +1,5 @@
 import React from 'react';
-import { screen, waitFor, within } from '@testing-library/react';
+import { screen, waitFor, within, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import App from '../App';
 import { render, mockSession, mockUser } from '../test-utils/testUtils';
@@ -105,6 +105,9 @@ describe('App Integration Tests', () => {
 
       await waitFor(() => {
         expect(authService.signIn).toHaveBeenCalledWith('test@example.com', 'password123');
+      });
+
+      await waitFor(() => {
         expect(screen.getByText(/Dashboard/i)).toBeInTheDocument();
       });
     });
@@ -214,11 +217,9 @@ describe('App Integration Tests', () => {
       await user.click(contactsLink);
 
       // Find contact and click call button
-      const contactCard = await screen.findByText('John Doe');
-      const callButton = within(contactCard.closest('[data-testid="contact-card"]')!).getByRole(
-        'button',
-        { name: /call/i }
-      );
+      await screen.findByText('John Doe');
+      const contactContainer = screen.getByTestId('contact-card');
+      const callButton = within(contactContainer).getByRole('button', { name: /call/i });
 
       await user.click(callButton);
 
@@ -255,7 +256,13 @@ describe('App Integration Tests', () => {
 
       await waitFor(() => {
         expect(screen.getByText('1500 RP')).toBeInTheDocument();
+      });
+
+      await waitFor(() => {
         expect(screen.getByText('closer')).toBeInTheDocument();
+      });
+
+      await waitFor(() => {
         expect(screen.getByText('5 day streak')).toBeInTheDocument();
       });
     });
@@ -284,6 +291,9 @@ describe('App Integration Tests', () => {
 
       await waitFor(() => {
         expect(harveyService.startCoachingSession).toHaveBeenCalled();
+      });
+
+      await waitFor(() => {
         expect(screen.getByText(/Harvey Coaching Active/i)).toBeInTheDocument();
       });
     });
@@ -308,6 +318,9 @@ describe('App Integration Tests', () => {
 
       await waitFor(() => {
         expect(screen.getByText('Rep 1')).toBeInTheDocument();
+      });
+
+      await waitFor(() => {
         expect(screen.getByText('Rep 2')).toBeInTheDocument();
       });
     });
@@ -350,6 +363,9 @@ describe('App Integration Tests', () => {
 
       await waitFor(() => {
         expect(screen.getByText(/Failed to load contacts/i)).toBeInTheDocument();
+      });
+
+      await waitFor(() => {
         expect(screen.getByRole('button', { name: /retry/i })).toBeInTheDocument();
       });
     });
@@ -421,7 +437,7 @@ describe('App Integration Tests', () => {
       await user.keyboard('{Enter}');
 
       await waitFor(() => {
-        expect(document.activeElement?.tagName).toBe('MAIN');
+        expect(screen.getByRole('main')).toHaveFocus();
       });
     });
 
