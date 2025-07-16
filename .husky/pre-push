@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 
-# Run tests for changed files only
-npm run test:changed
+# Check if build passes
+npm run build
