@@ -153,14 +153,16 @@ export default function InstantCoachConnect() {
       }
 
       // End session in backend
-      await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/coaching/end-session`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          sessionId: activeSession.sessionId,
-          notes: `Session duration: ${Math.floor(sessionTime / 60)}:${(sessionTime % 60).toString().padStart(2, '0')}`,
-        }),
-      });
+      await fetch(
+        `${process.env.REACT_APP_BACKEND_URL}/api/coaching/end-session/${activeSession.sessionId}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            notes: `Session duration: ${Math.floor(sessionTime / 60)}:${(sessionTime % 60).toString().padStart(2, '0')}`,
+          }),
+        }
+      );
 
       // Clear session state
       setActiveSession(null);
