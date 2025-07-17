@@ -5,6 +5,22 @@ import fetch from 'node-fetch';
 
 const AGENT_BACKEND_URL = process.env.AGENT_BACKEND_URL || 'https://agentbackend-2932.onrender.com';
 
+// Helper function to get auth headers (server-side implementation)
+async function getAuthHeaders() {
+  const headers = {
+    'Content-Type': 'application/json',
+  };
+
+  // For server-side, we need to use service key or pass token from request
+  const serviceKey = process.env.SUPABASE_SERVICE_KEY;
+  if (serviceKey) {
+    headers['Authorization'] = `Bearer ${serviceKey}`;
+    headers['X-Supabase-Auth'] = 'true';
+  }
+
+  return headers;
+}
+
 // Cache for agent configurations
 const agentCache = new Map();
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
@@ -18,11 +34,11 @@ export async function loadAgentConfig(agentId) {
   }
 
   try {
+    const headers = await getAuthHeaders();
+
     const response = await fetch(`${AGENT_BACKEND_URL}/api/agents/${agentId}`, {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers,
     });
 
     if (!response.ok) {
@@ -111,11 +127,11 @@ function generateCatchphrases(agent) {
 // Load all agents for initialization
 export async function loadAllAgents() {
   try {
+    const headers = await getAuthHeaders();
+
     const response = await fetch(`${AGENT_BACKEND_URL}/api/agents`, {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers,
     });
 
     if (!response.ok) {
