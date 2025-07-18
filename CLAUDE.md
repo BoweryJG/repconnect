@@ -5,6 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Development Commands
 
 ### Core Development
+
 ```bash
 # Install dependencies
 npm install
@@ -26,6 +27,7 @@ npm test -- --coverage
 ```
 
 ### Harvey AI Service
+
 ```bash
 # Deploy Harvey service to production
 npm run harvey:deploy
@@ -44,6 +46,7 @@ npm run harvey:test
 ```
 
 ### Backend Server
+
 ```bash
 # Start backend server (runs on PORT env var, default 3001)
 node server.js
@@ -58,13 +61,16 @@ node server.js
 ## Architecture Overview
 
 ### Application Structure
+
 This is a **multi-application CRM platform** with distinct frontends:
+
 - **Main CRM** (`/`) - Contact management and pipeline
 - **Harvey Syndicate** (`/harvey`) - AI performance coaching theater
 - **Harvey War Room** (`/harvey/warroom`) - Live call monitoring and battles
 - **Lead Enrichment** (`/enrich`) - AI-powered lead intelligence
 
 ### Frontend Stack
+
 - **React 18** with TypeScript, configured with Create React App
 - **Material-UI v5** as the primary component library
 - **Zustand** for state management (stores in `src/store/`)
@@ -73,7 +79,9 @@ This is a **multi-application CRM platform** with distinct frontends:
 - **Framer Motion** for animations throughout the app
 
 ### Backend Architecture
+
 The backend (`server.js`) is an Express.js server with:
+
 - **Sentry** integration for error tracking and performance monitoring
 - **Rate limiting** with different tiers (default: 100/min, API: 300/min, auth: 5/min)
 - **Health monitoring** endpoints at `/health`, `/api/health`, `/health/metrics`
@@ -81,6 +89,7 @@ The backend (`server.js`) is an Express.js server with:
 - **Cookie-based authentication** with httpOnly cookies and CSRF protection
 
 ### External Services Integration
+
 - **Supabase**: PostgreSQL database with RLS policies, authentication
 - **Twilio**: Voice calling, phone number management, call forwarding
 - **Deepgram**: Real-time voice transcription via WebRTC
@@ -89,6 +98,7 @@ The backend (`server.js`) is an Express.js server with:
 - **Moshi**: Alternative voice service integration
 
 ### Real-time Communication Flow
+
 ```
 User Browser <-> WebRTC <-> Backend <-> Twilio/Deepgram
                    |
@@ -96,7 +106,9 @@ User Browser <-> WebRTC <-> Backend <-> Twilio/Deepgram
 ```
 
 ### Database Schema
+
 All tables in Supabase have Row Level Security (RLS) enabled:
+
 - `representatives` - Sales rep profiles with Harvey configuration
 - `contacts` - Lead/customer data with enrichment fields
 - `calls` - Call history, recordings, transcripts
@@ -108,6 +120,7 @@ All tables in Supabase have Row Level Security (RLS) enabled:
 ## Critical Implementation Details
 
 ### Authentication Flow
+
 1. User logs in via Supabase Auth
 2. JWT stored in httpOnly cookie (not localStorage)
 3. CSRF token required for state-changing requests
@@ -115,7 +128,9 @@ All tables in Supabase have Row Level Security (RLS) enabled:
 5. Automatic refresh every 15 minutes
 
 ### Harvey AI Integration
+
 Harvey components follow a specific pattern:
+
 - Frontend components: `src/components/Harvey*.tsx`
 - Service layer: `src/services/harvey*.{js,ts}`
 - API routes: `src/api/harveyRoutes.js`, `harveyMultiAgentRoutes.js`
@@ -123,12 +138,15 @@ Harvey components follow a specific pattern:
 - Voice metrics: `src/services/voiceMetricsService.ts`
 
 ### Multi-Rep Support
+
 Each sales rep has dedicated configuration:
+
 - Environment vars: `TWILIO_REP{N}_NUMBER`, `REP{N}_FORWARD_TO`
 - Harvey instances: One per rep with unique personality
 - Call routing: Based on rep's assigned Twilio number
 
 ### Performance Optimizations
+
 - Lazy loading for heavy components (3D visualizations)
 - Virtualized lists for large contact grids
 - Adaptive rendering based on device capabilities
@@ -138,6 +156,7 @@ Each sales rep has dedicated configuration:
 ## Environment Variables
 
 ### Required Frontend Variables
+
 ```
 REACT_APP_SUPABASE_URL
 REACT_APP_SUPABASE_ANON_KEY
@@ -153,6 +172,7 @@ REACT_APP_METERED_TURN_CREDENTIAL
 ```
 
 ### Required Backend Variables
+
 ```
 NODE_ENV=production
 PORT
@@ -165,27 +185,32 @@ DEEPGRAM_API_KEY
 SENTRY_DSN
 BACKEND_URL
 FORWARD_TO_PHONE
+HARVEY_PHONE_NUMBER
 ```
 
 ## Deployment Configuration
 
 ### Frontend (Netlify)
+
 - Build command: `CI=false GENERATE_SOURCEMAP=false npm run build`
 - Publish directory: `build`
 - Redirects configured in `netlify.toml` for SPA routing
 
 ### Backend (Render)
+
 - Start command: `node server.js`
 - Health check URL: `/health`
 - Environment: All backend variables must be set
 
 ### Post-Deployment Verification
+
 1. Check `/health` endpoint returns 200
 2. Verify `/api/harvey/status` shows all reps initialized
 3. Test WebRTC connection at `/harvey/warroom`
 4. Confirm Twilio webhooks reach `/api/twilio/voice`
 
 ## Known Issues and Workarounds
+
 - ESLint warnings about unused variables (non-critical)
 - Bundle size warning (613KB gzipped) - consider code splitting
 - Mediapipe source map warning - ignore in production
