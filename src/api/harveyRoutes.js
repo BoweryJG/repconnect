@@ -1,6 +1,7 @@
 import express from 'express';
 import harveyCoach from '../services/harveyCoach.js';
 import OpenAI from 'openai';
+import { requireAuth } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
@@ -10,7 +11,7 @@ const openai = new OpenAI({
 });
 
 // Initialize Harvey for a sales rep
-router.post('/harvey/initialize', async (req, res) => {
+router.post('/harvey/initialize', requireAuth, async (req, res) => {
   try {
     const { repId, repName } = req.body;
 
@@ -26,7 +27,7 @@ router.post('/harvey/initialize', async (req, res) => {
 });
 
 // Trigger coaching intervention
-router.post('/harvey/intervention', async (req, res) => {
+router.post('/harvey/intervention', requireAuth, async (req, res) => {
   try {
     const { repId, trigger, context } = req.body;
 
@@ -44,7 +45,7 @@ router.post('/harvey/intervention', async (req, res) => {
 });
 
 // Get rep performance data
-router.get('/harvey/performance/:repId', async (req, res) => {
+router.get('/harvey/performance/:repId', requireAuth, async (req, res) => {
   try {
     const { repId } = req.params;
 
@@ -62,7 +63,7 @@ router.get('/harvey/performance/:repId', async (req, res) => {
 });
 
 // Create daily challenge
-router.post('/harvey/challenge', async (req, res) => {
+router.post('/harvey/challenge', requireAuth, async (req, res) => {
   try {
     const { repId } = req.body;
 
@@ -74,7 +75,7 @@ router.post('/harvey/challenge', async (req, res) => {
 });
 
 // Get leaderboard
-router.get('/harvey/leaderboard', async (req, res) => {
+router.get('/harvey/leaderboard', requireAuth, async (req, res) => {
   try {
     const leaderboard = await harveyCoach.updateLeaderboard();
     res.json(leaderboard);
@@ -84,7 +85,7 @@ router.get('/harvey/leaderboard', async (req, res) => {
 });
 
 // Analyze call (webhook from call system)
-router.post('/harvey/analyze-call', async (req, res) => {
+router.post('/harvey/analyze-call', requireAuth, async (req, res) => {
   try {
     const { repId, callId, duration, outcome, transcript } = req.body;
 
@@ -103,7 +104,7 @@ router.post('/harvey/analyze-call', async (req, res) => {
 });
 
 // Activate live demo mode
-router.post('/harvey/demo-mode', async (req, res) => {
+router.post('/harvey/demo-mode', requireAuth, async (req, res) => {
   try {
     const { repId, callId } = req.body;
 
@@ -115,7 +116,7 @@ router.post('/harvey/demo-mode', async (req, res) => {
 });
 
 // Check research quality (integration with Canvas)
-router.post('/harvey/check-research', async (req, res) => {
+router.post('/harvey/check-research', requireAuth, async (req, res) => {
   try {
     const { repId, researchData } = req.body;
 
@@ -127,7 +128,7 @@ router.post('/harvey/check-research', async (req, res) => {
 });
 
 // Harvey chat endpoint for agent conversations
-router.post('/harvey/chat', async (req, res) => {
+router.post('/harvey/chat', requireAuth, async (req, res) => {
   try {
     const { message, agentId, sessionId, context = [] } = req.body;
 

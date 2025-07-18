@@ -24,6 +24,15 @@ import healthRoutes from './src/routes/healthRoutes.js';
 import { databaseService } from './src/services/databaseService.js';
 import { closeConnectionPool } from './src/config/database.js';
 
+// Import WebSocket authentication middleware
+import {
+  socketAuthMiddleware,
+  getSocketUserId,
+  getSocketUserEmail,
+  isSocketAuthenticated,
+  requireSocketAuth,
+} from './src/middleware/socketAuthMiddleware.js';
+
 // Import route handlers
 import authRoutes from './backend-routes/authRoutes.js';
 import coachingSessionRoutes from './backend-routes/coachingSessionRoutes.js';
@@ -219,147 +228,259 @@ app.get('/api/harvey/status', (req, res) => {
   });
 });
 
-// Socket.io for WebRTC signaling
-io.on('connection', (socket) => {
-  logger.info('Client connected:', socket.id);
+// Add authentication middleware to main Socket.IO namespace
+io.use(socketAuthMiddleware);
 
-  // Join coaching room
-  socket.on('join-coaching-room', (data) => {
-    const { roomId, sessionId, repId, userType } = data;
-    socket.join(roomId);
-    logger.info(`${userType} ${repId} joined coaching room ${roomId} for session ${sessionId}`);
-
-    // Notify other participants
-    socket.to(roomId).emit('participant-joined', {
-      userId: repId,
-      userType,
-      sessionId,
-    });
-  });
-
-  // Leave coaching room
-  socket.on('leave-coaching-room', (data) => {
-    const { roomId, sessionId } = data;
-    socket.leave(roomId);
-    logger.info(`User left coaching room ${roomId}`);
-
-    // Notify other participants
-    socket.to(roomId).emit('participant-left', { sessionId });
-  });
-
-  // WebRTC signaling
-  socket.on('offer', (data) => {
-    socket.to(data.roomId).emit('offer', data);
-  });
-
-  socket.on('answer', (data) => {
-    socket.to(data.roomId).emit('answer', data);
-  });
-
-  socket.on('ice-candidate', (data) => {
-    socket.to(data.roomId).emit('ice-candidate', data);
-  });
-
-  // Coaching-specific events
-  socket.on('coaching-feedback', (data) => {
-    socket.to(data.roomId).emit('coaching-feedback', data);
-  });
-
-  socket.on('scenario-update', (data) => {
-    socket.to(data.roomId).emit('scenario-update', data);
-  });
-
-  // Handle disconnection
-  socket.on('disconnect', () => {
-    logger.info('Client disconnected:', socket.id);
+// Handle authentication errors
+io.engine.on('connection_error', (err) => {
+  logger.error('Socket.IO connection error:', {
+    message: err.message,
+    description: err.description,
+    context: err.context,
+    type: err.type,
   });
 });
 
-// Harvey WebSocket namespace
-const harveyNamespace = io.of('/harvey-ws');
+// Socket.io for WebRTC signaling
+io.on('connection', (socket) => {
+  const userId = getSocketUserId(socket);
+  const userEmail = getSocketUserEmail(socket);
 
-harveyNamespace.on('connection', (socket) => {
-  logger.info('Harvey client connected:', socket.id);
-
-  // Get userId from auth
-  const userId = socket.handshake.auth.userId || socket.handshake.query.userId;
-
-  if (userId) {
-    // Join user-specific room for targeted updates
-    socket.join(`harvey-${userId}`);
-    logger.info(`User ${userId} joined Harvey room`);
-  }
-
-  // Send initial connection success
-  socket.emit('harvey-update', {
-    type: 'connection',
-    data: { status: 'connected', message: 'Harvey is watching.' },
+  logger.info('Authenticated client connected:', {
+    socketId: socket.id,
+    userId,
+    userEmail,
   });
 
-  // Handle user messages for AI chat
-  socket.on('user-message', async (data) => {
-    try {
-      const { text, sessionId, agentId } = data;
-      logger.info('User message:', { agentId, sessionId, text });
+  // Send authentication confirmation
+  socket.emit('authenticated', {
+    userId,
+    userEmail,
+    message: 'Successfully authenticated',
+  });
 
-      // Import agent loader, Harvey personality and OpenAI
-      const { loadAgentConfig, getCachedAgent } = await import('./src/services/serverAgentLoader.js');
-      const { default: harveyPersonality } = await import('./src/services/harveyPersonality.js');
-      const OpenAI = (await import('openai')).default;
+  // Join coaching room (requires authentication)
+  socket.on(
+    'join-coaching-room',
+    requireSocketAuth((socket, data) => {
+      const { roomId, sessionId, repId, userType } = data;
+      const authenticatedUserId = getSocketUserId(socket);
 
-      const openai = new OpenAI({
-        apiKey: process.env.OPENAI_API_KEY,
-      });
-
-      // Try to get agent from backend first
-      let agentConfig = getCachedAgent(agentId) || await loadAgentConfig(agentId);
-      
-      // Fallback to local Harvey personality if not found
-      if (!agentConfig) {
-        agentConfig = harveyPersonality.personalities?.[agentId];
-      }
-      
-      if (!agentConfig) {
-        socket.emit('error', { message: 'Invalid agent ID' });
+      // Validate that the user is joining their own session or is authorized
+      if (repId !== authenticatedUserId) {
+        logger.warn('Unauthorized coaching room join attempt', {
+          socketId: socket.id,
+          authenticatedUserId,
+          requestedRepId: repId,
+          roomId,
+        });
+        socket.emit('error', {
+          message: 'Not authorized to join this coaching room',
+          code: 'UNAUTHORIZED_ROOM_ACCESS',
+        });
         return;
       }
 
-      // Build system prompt
-      const systemPrompt = `You are ${agentConfig.name}, ${agentConfig.description}. 
+      socket.join(roomId);
+      logger.info(`${userType} ${repId} joined coaching room ${roomId} for session ${sessionId}`);
+
+      // Notify other participants
+      socket.to(roomId).emit('participant-joined', {
+        userId: repId,
+        userType,
+        sessionId,
+      });
+    })
+  );
+
+  // Leave coaching room (requires authentication)
+  socket.on(
+    'leave-coaching-room',
+    requireSocketAuth((socket, data) => {
+      const { roomId, sessionId } = data;
+      socket.leave(roomId);
+      logger.info(`User left coaching room ${roomId}`);
+
+      // Notify other participants
+      socket.to(roomId).emit('participant-left', { sessionId });
+    })
+  );
+
+  // WebRTC signaling (requires authentication)
+  socket.on(
+    'offer',
+    requireSocketAuth((socket, data) => {
+      socket.to(data.roomId).emit('offer', data);
+    })
+  );
+
+  socket.on(
+    'answer',
+    requireSocketAuth((socket, data) => {
+      socket.to(data.roomId).emit('answer', data);
+    })
+  );
+
+  socket.on(
+    'ice-candidate',
+    requireSocketAuth((socket, data) => {
+      socket.to(data.roomId).emit('ice-candidate', data);
+    })
+  );
+
+  // Coaching-specific events (requires authentication)
+  socket.on(
+    'coaching-feedback',
+    requireSocketAuth((socket, data) => {
+      socket.to(data.roomId).emit('coaching-feedback', data);
+    })
+  );
+
+  socket.on(
+    'scenario-update',
+    requireSocketAuth((socket, data) => {
+      socket.to(data.roomId).emit('scenario-update', data);
+    })
+  );
+
+  // Handle disconnection
+  socket.on('disconnect', () => {
+    logger.info('Authenticated client disconnected:', {
+      socketId: socket.id,
+      userId,
+      userEmail,
+    });
+  });
+});
+
+// Harvey WebSocket namespace with authentication
+const harveyNamespace = io.of('/harvey-ws');
+
+// Add authentication middleware to Harvey namespace
+harveyNamespace.use(socketAuthMiddleware);
+
+// Handle authentication errors for Harvey namespace
+harveyNamespace.on('connect_error', (err) => {
+  logger.error('Harvey Socket.IO connection error:', {
+    message: err.message,
+    description: err.description,
+    context: err.context,
+    type: err.type,
+  });
+});
+
+harveyNamespace.on('connection', (socket) => {
+  const userId = getSocketUserId(socket);
+  const userEmail = getSocketUserEmail(socket);
+
+  logger.info('Authenticated Harvey client connected:', {
+    socketId: socket.id,
+    userId,
+    userEmail,
+  });
+
+  // Join user-specific room for targeted updates
+  socket.join(`harvey-${userId}`);
+  logger.info(`User ${userId} joined Harvey room`);
+
+  // Send initial connection success with user info
+  socket.emit('harvey-update', {
+    type: 'connection',
+    data: {
+      status: 'connected',
+      message: 'Harvey is watching.',
+      userId,
+      userEmail,
+    },
+  });
+
+  // Handle user messages for AI chat (requires authentication)
+  socket.on(
+    'user-message',
+    requireSocketAuth(async (socket, data) => {
+      try {
+        const { text, sessionId, agentId } = data;
+        const authenticatedUserId = getSocketUserId(socket);
+
+        logger.info('User message:', {
+          agentId,
+          sessionId,
+          text,
+          userId: authenticatedUserId,
+        });
+
+        // Import agent loader, Harvey personality and OpenAI
+        const { loadAgentConfig, getCachedAgent } = await import(
+          './src/services/serverAgentLoader.js'
+        );
+        const { default: harveyPersonality } = await import('./src/services/harveyPersonality.js');
+        const OpenAI = (await import('openai')).default;
+
+        const openai = new OpenAI({
+          apiKey: process.env.OPENAI_API_KEY,
+        });
+
+        // Try to get agent from backend first
+        let agentConfig = getCachedAgent(agentId) || (await loadAgentConfig(agentId));
+
+        // Fallback to local Harvey personality if not found
+        if (!agentConfig) {
+          agentConfig = harveyPersonality.personalities?.[agentId];
+        }
+
+        if (!agentConfig) {
+          socket.emit('error', {
+            message: 'Invalid agent ID',
+            code: 'INVALID_AGENT_ID',
+          });
+          return;
+        }
+
+        // Build system prompt
+        const systemPrompt = `You are ${agentConfig.name}, ${agentConfig.description}. 
       Your communication style: ${agentConfig.style}
       Your expertise: ${agentConfig.expertise.join(', ')}
       Your catchphrases: ${agentConfig.catchphrases.join(', ')}
       
       Stay in character and provide helpful, concise responses focused on your area of expertise.`;
 
-      // Get AI response
-      const completion = await openai.chat.completions.create({
-        model: 'gpt-4-turbo-preview',
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: text },
-        ],
-        temperature: 0.8,
-        max_tokens: 300,
-      });
+        // Get AI response
+        const completion = await openai.chat.completions.create({
+          model: 'gpt-4-turbo-preview',
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: text },
+          ],
+          temperature: 0.8,
+          max_tokens: 300,
+        });
 
-      const response = completion.choices[0].message.content;
+        const response = completion.choices[0].message.content;
 
-      // Send response back to client
-      socket.emit('agent-response', {
-        text: response,
-        agentId,
-        sessionId,
-        timestamp: new Date().toISOString(),
-      });
-    } catch (error) {
-      logger.error('Error handling user message:', error);
-      socket.emit('error', { message: 'Failed to process message' });
-    }
-  });
+        // Send response back to client
+        socket.emit('agent-response', {
+          text: response,
+          agentId,
+          sessionId,
+          userId: authenticatedUserId,
+          timestamp: new Date().toISOString(),
+        });
+      } catch (error) {
+        logger.error('Error handling user message:', error);
+        socket.emit('error', {
+          message: 'Failed to process message',
+          code: 'MESSAGE_PROCESSING_ERROR',
+        });
+      }
+    })
+  );
 
   socket.on('disconnect', () => {
-    logger.info('Harvey client disconnected:', socket.id);
+    logger.info('Authenticated Harvey client disconnected:', {
+      socketId: socket.id,
+      userId,
+      userEmail,
+    });
   });
 });
 

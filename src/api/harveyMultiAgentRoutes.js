@@ -1,4 +1,5 @@
 import express from 'express';
+import { requireAuth } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
@@ -21,9 +22,9 @@ const mockLeaderboard = [
 ];
 
 // Harvey metrics endpoint
-router.get('/harvey/metrics', async (req, res) => {
+router.get('/harvey/metrics', requireAuth, async (req, res) => {
   try {
-    const { userId } = req.query;
+    const userId = req.user.id; // Use authenticated user from middleware
 
     // In production, fetch from database
     const metrics = { ...mockMetrics };
@@ -45,9 +46,9 @@ router.get('/harvey/metrics', async (req, res) => {
 });
 
 // Daily verdict endpoint
-router.get('/harvey/verdict', async (req, res) => {
+router.get('/harvey/verdict', requireAuth, async (req, res) => {
   try {
-    const { userId: _userId } = req.query;
+    const _userId = req.user.id; // Use authenticated user from middleware
 
     const verdicts = [
       {
@@ -83,9 +84,10 @@ router.get('/harvey/verdict', async (req, res) => {
 });
 
 // Voice command endpoint
-router.post('/harvey/voice-command', async (req, res) => {
+router.post('/harvey/voice-command', requireAuth, async (req, res) => {
   try {
-    const { command, userId: _userId } = req.body;
+    const { command } = req.body;
+    const _userId = req.user.id; // Use authenticated user from middleware
 
     // Simple command processing
     const responses = {
@@ -117,7 +119,7 @@ router.post('/harvey/voice-command', async (req, res) => {
 });
 
 // Hot leads endpoint
-router.get('/harvey/leads/hot', async (req, res) => {
+router.get('/harvey/leads/hot', requireAuth, async (req, res) => {
   try {
     const hotLeads = [
       {
@@ -148,10 +150,10 @@ router.get('/harvey/leads/hot', async (req, res) => {
 });
 
 // Claim lead endpoint
-router.post('/harvey/leads/:leadId/claim', async (req, res) => {
+router.post('/harvey/leads/:leadId/claim', requireAuth, async (req, res) => {
   try {
     const { leadId: _leadId } = req.params;
-    const _userId = req.headers.authorization?.split(' ')[1]; // Simple auth
+    const _userId = req.user.id; // Use authenticated user from middleware
 
     res.json({
       success: true,
@@ -164,7 +166,7 @@ router.post('/harvey/leads/:leadId/claim', async (req, res) => {
 });
 
 // Active trials endpoint
-router.get('/harvey/trials/active', async (req, res) => {
+router.get('/harvey/trials/active', requireAuth, async (req, res) => {
   try {
     const trials = [
       {
@@ -190,7 +192,7 @@ router.get('/harvey/trials/active', async (req, res) => {
 });
 
 // Join trial endpoint
-router.post('/harvey/trials/:trialId/join', async (req, res) => {
+router.post('/harvey/trials/:trialId/join', requireAuth, async (req, res) => {
   try {
     const { trialId: _trialId } = req.params;
 
@@ -205,7 +207,7 @@ router.post('/harvey/trials/:trialId/join', async (req, res) => {
 });
 
 // Coaching mode endpoint
-router.put('/harvey/coaching/mode', async (req, res) => {
+router.put('/harvey/coaching/mode', requireAuth, async (req, res) => {
   try {
     const { mode } = req.body;
 
@@ -220,7 +222,7 @@ router.put('/harvey/coaching/mode', async (req, res) => {
 });
 
 // Harvey modes endpoint
-router.put('/harvey/modes', async (req, res) => {
+router.put('/harvey/modes', requireAuth, async (req, res) => {
   try {
     const _modes = req.body;
 
@@ -235,7 +237,7 @@ router.put('/harvey/modes', async (req, res) => {
 });
 
 // Coaching history endpoint
-router.get('/harvey/coaching/history', async (req, res) => {
+router.get('/harvey/coaching/history', requireAuth, async (req, res) => {
   try {
     const { limit = 10 } = req.query;
 
@@ -264,7 +266,7 @@ router.get('/harvey/coaching/history', async (req, res) => {
 });
 
 // Call analysis endpoint
-router.post('/harvey/calls/analyze', async (req, res) => {
+router.post('/harvey/calls/analyze', requireAuth, async (req, res) => {
   try {
     const {
       callId: _callId,
@@ -288,7 +290,7 @@ router.post('/harvey/calls/analyze', async (req, res) => {
 });
 
 // Intervention endpoint
-router.post('/harvey/intervention', async (req, res) => {
+router.post('/harvey/intervention', requireAuth, async (req, res) => {
   try {
     const { reason: _reason } = req.body;
 
@@ -303,7 +305,7 @@ router.post('/harvey/intervention', async (req, res) => {
 });
 
 // Challenge Harvey endpoint
-router.post('/harvey/challenge', async (req, res) => {
+router.post('/harvey/challenge', requireAuth, async (req, res) => {
   try {
     const { type: _type } = req.body;
 

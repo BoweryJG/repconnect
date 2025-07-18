@@ -91,7 +91,9 @@ filesToCheck.forEach((filePath) => {
               match.includes('dummy') ||
               match.includes('DUMMY') ||
               match.includes('xxx') ||
-              match.includes('XXX')
+              match.includes('XXX') ||
+              match.includes('sessionData.') ||
+              match.includes('data.session.')
           );
 
           if (!isFalsePositive) {
