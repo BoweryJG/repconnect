@@ -8,7 +8,9 @@ axios.defaults.withCredentials = true;
 const API_BASE_URL = process.env.REACT_APP_BACKEND_URL || 'https://osbackend-zl1h.onrender.com';
 
 // Get CSRF token from cookie
-const getCSRFToken = (): string | null => {
+// Commented out - not currently used but kept for future CSRF implementation
+// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+const _getCSRFToken = (): string | null => {
   const matches = document.cookie.match(/csrf_token=([^;]+)/);
   return matches ? matches[1] : null;
 };
@@ -78,7 +80,9 @@ export const authService = {
   async loginWithCookies(session: any) {
     try {
       const response = await axios.post(`${API_BASE_URL}/api/auth/login`, {
+        // eslint-disable-next-line camelcase
         access_token: session.access_token,
+        // eslint-disable-next-line camelcase
         refresh_token: session.refresh_token,
       });
 

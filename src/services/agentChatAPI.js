@@ -4,7 +4,7 @@
 import { supabase } from '../lib/supabase';
 
 const AGENT_BACKEND_URL =
-  process.env.REACT_APP_AGENT_BACKEND_URL || 'https://agentbackend-2932.onrender.com';
+  process.env.REACT_APP_AGENT_BACKEND_URL || 'https://osbackend-zl1h.onrender.com';
 
 class AgentChatAPI {
   constructor() {

@@ -24,7 +24,7 @@ import { EnrichmentEngine } from '../lib/enrichment/EnrichmentEngine';
 import { supabase } from '../lib/supabase';
 
 interface CompactEnrichmentWidgetProps {
-  onEnrichmentComplete?: (leads: any[]) => void;
+  onEnrichmentComplete?: (_leads: any[]) => void;
   embedded?: boolean; // When true, removes fixed positioning
 }
 

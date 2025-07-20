@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <!-- Ultra high-res gradients -->
+    <linearGradient id="outer512" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stopColor="#9f58fa" stopOpacity="0.95"/>
+      <stop offset="100%" stopColor="#6366f1" stopOpacity="0.8"/>
+    </linearGradient>
+    
+    <linearGradient id="middle512" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stopColor="#4B96DC" stopOpacity="0.9"/>
+      <stop offset="100%" stopColor="#6366f1" stopOpacity="0.7"/>
+    </linearGradient>
+    
+    <linearGradient id="inner512" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stopColor="#00d4ff" stopOpacity="0.95"/>
+      <stop offset="100%" stopColor="#4B96DC" stopOpacity="0.8"/>
+    </linearGradient>
+    
+    <radialGradient id="core512" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stopColor="#ffffff" stopOpacity="1"/>
+      <stop offset="20%" stopColor="#00ffff" stopOpacity="0.98"/>
+      <stop offset="40%" stopColor="#00d4ff" stopOpacity="0.9"/>
+      <stop offset="70%" stopColor="#4B96DC" stopOpacity="0.6"/>
+      <stop offset="100%" stopColor="#6366f1" stopOpacity="0.3"/>
+    </radialGradient>
+    
+    <filter id="glow512" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="5" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="512" height="512" fill="#0A0A0B"/>
+  
+  <!-- Outer orbital ring -->
+  <ellipse cx="256" cy="256" rx="190" ry="78" 
+           transform="rotate(30 256 256)" 
+           fill="none" 
+           stroke="url(#outer512)" 
+           strokeWidth="12"
+           filter="url(#glow512)"/>
+  
+  <!-- Middle orbital ring -->
+  <ellipse cx="256" cy="256" rx="145" ry="60" 
+           transform="rotate(-45 256 256)" 
+           fill="none" 
+           stroke="url(#middle512)" 
+           strokeWidth="10"
+           filter="url(#glow512)"/>
+  
+  <!-- Inner orbital ring -->
+  <ellipse cx="256" cy="256" rx="100" ry="40" 
+           transform="rotate(75 256 256)" 
+           fill="none" 
+           stroke="url(#inner512)" 
+           strokeWidth="8"
+           filter="url(#glow512)"/>
+  
+  <!-- Central core -->
+  <circle cx="256" cy="256" r="45" 
+          fill="url(#core512)"
+          filter="url(#glow512)"/>
+  
+  <circle cx="256" cy="256" r="25" 
+          fill="#ffffff"
+          opacity="0.95"/>
+  
+  <circle cx="256" cy="256" r="12" 
+          fill="#00ffff"/>
+  
+  <circle cx="256" cy="256" r="6" 
+          fill="#ffffff"/>
+</svg>

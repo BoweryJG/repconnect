@@ -4,7 +4,7 @@ export class PerformanceMonitor {
   private frameCount: number = 0;
   private memory: number = 0;
   private temperature: 'cool' | 'warm' | 'hot' | 'critical' = 'cool';
-  private callbacks: Set<(metrics: PerformanceMetrics) => void> = new Set();
+  private callbacks: Set<(_metrics: PerformanceMetrics) => void> = new Set();
   private rafId: number | null = null;
 
   constructor() {
@@ -68,7 +68,7 @@ export class PerformanceMonitor {
     };
   }
 
-  public subscribe(callback: (metrics: PerformanceMetrics) => void) {
+  public subscribe(callback: (_metrics: PerformanceMetrics) => void) {
     this.callbacks.add(callback);
     return () => {
       this.callbacks.delete(callback);

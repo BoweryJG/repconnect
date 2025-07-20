@@ -54,6 +54,7 @@ export default function InstantCoachConnect() {
     if (selectedCategory) {
       loadAvailableCoaches();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCategory]);
 
   // Timer for active session
@@ -73,18 +74,18 @@ export default function InstantCoachConnect() {
     setLoading(true);
     try {
       const response = await fetch(
-        `${process.env.REACT_APP_BACKEND_URL}/api/coaching/available-coaches/${selectedCategory}`
+        `https://osbackend-zl1h.onrender.com/api/agents`
       );
       if (!response.ok) throw new Error('Failed to fetch coaches');
 
       const data = await response.json();
       setAvailableCoaches(data.coaches || []);
-    } catch (error) {
+    } catch (_error) {
       toast.error('Failed to load available coaches');
     } finally {
       setLoading(false);
     }
-  }, [selectedCategory]);
+  }, []);
 
   const connectToCoach = async (coachId: string, coachName: string) => {
     setConnecting(coachId);
@@ -131,12 +132,12 @@ export default function InstantCoachConnect() {
 
         // Store globally for other components
         (window as any).currentCoachingSession = sessionData;
-      } catch (micError) {
+      } catch (_micError) {
         toast.error(
           'Session created but microphone access was denied. Please enable microphone permissions and try again.'
         );
       }
-    } catch (error) {
+    } catch (_error) {
       toast.error('Failed to connect to coach');
     } finally {
       setConnecting(null);
@@ -168,7 +169,7 @@ export default function InstantCoachConnect() {
       setActiveSession(null);
       setSessionTime(0);
       (window as any).currentCoachingSession = null;
-    } catch (error) {
+    } catch (_error) {
       toast.error('Failed to end session properly');
     }
   };

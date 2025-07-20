@@ -28,7 +28,7 @@ export async function createCheckoutSession(
 
     const { sessionUrl } = await response.json();
     return sessionUrl;
-  } catch (error) {
+  } catch (_error) {
     return null;
   }
 }
@@ -52,7 +52,7 @@ export async function createCustomerPortalSession(customerId: string): Promise<s
 
     const { url } = await response.json();
     return url;
-  } catch (error) {
+  } catch (_error) {
     return null;
   }
 }
@@ -78,17 +78,17 @@ export async function handleStripeWebhook(event: any): Promise<void> {
   }
 }
 
-async function handleCheckoutComplete(session: any) {
+async function handleCheckoutComplete(_session: any) {
   // Update user's subscription in database
   // Implementation would update Supabase
 }
 
-async function handleSubscriptionUpdate(subscription: any) {
+async function handleSubscriptionUpdate(_subscription: any) {
   // Update subscription status in database
   // Implementation would update Supabase
 }
 
-async function handleSubscriptionCancellation(subscription: any) {
+async function handleSubscriptionCancellation(_subscription: any) {
   // Handle subscription cancellation
   // Implementation would update Supabase
 }

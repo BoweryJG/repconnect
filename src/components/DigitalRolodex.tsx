@@ -30,9 +30,9 @@ interface Contact {
 
 interface DigitalRolodexProps {
   contacts: Contact[];
-  onCall: (contact: Contact) => void;
-  onSendSMS?: (contact: Contact) => void;
-  onToggleFavorite?: (contact: Contact) => void;
+  onCall: (_contact: Contact) => void;
+  onSendSMS?: (_contact: Contact) => void;
+  onToggleFavorite?: (_contact: Contact) => void;
 }
 
 const ITEM_HEIGHT = 80;

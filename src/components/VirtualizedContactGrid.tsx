@@ -4,7 +4,7 @@ import { PremiumContactCard } from './PremiumContactCard';
 
 interface VirtualizedContactGridProps {
   contacts: any[];
-  onContactClick: (contact: any) => void;
+  onContactClick: (_contact: any) => void;
   selectedContactId?: string;
   width: number;
   height: number;
@@ -17,7 +17,7 @@ const CARD_GAP = 24;
 export const VirtualizedContactGrid: React.FC<VirtualizedContactGridProps> = ({
   contacts,
   onContactClick,
-  selectedContactId,
+  selectedContactId: _selectedContactId,
   width,
   height,
 }) => {

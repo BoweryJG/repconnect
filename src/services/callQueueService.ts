@@ -28,7 +28,7 @@ export interface QueuedCall {
 
 export class CallQueueService {
   private static activeCall: QueuedCall | null = null;
-  private static callListeners: ((call: QueuedCall) => void)[] = [];
+  private static callListeners: ((_call: QueuedCall) => void)[] = [];
   private static MAX_RETRY_ATTEMPTS = 3;
   private static RETRY_DELAY_MS = 5000;
 
@@ -281,10 +281,10 @@ export class CallQueueService {
     });
   }
 
-  static onCallUpdate(listener: (call: QueuedCall) => void): () => void {
+  static onCallUpdate(listener: (_call: QueuedCall) => void): () => void {
     this.callListeners.push(listener);
     return () => {
-      this.callListeners = this.callListeners.filter((l) => l !== listener);
+      this.callListeners = this.callListeners.filter((existingListener) => existingListener !== listener);
     };
   }
 
@@ -309,7 +309,9 @@ export class CallQueueService {
 
     try {
       localStorage.setItem(`queue_metadata_${queueId}`, JSON.stringify(metadata));
-    } catch (error) {}
+    } catch {
+      // Ignore localStorage errors
+    }
   }
 
   private static async cleanupFailedQueue(queueId: string): Promise<void> {
@@ -317,7 +319,9 @@ export class CallQueueService {
       await supabase.from('queued_calls').delete().eq('queue_id', queueId);
 
       localStorage.removeItem(`queue_metadata_${queueId}`);
-    } catch (error) {}
+    } catch {
+      // Ignore cleanup errors
+    }
   }
 
   static async recoverQueue(queueId: string): Promise<boolean> {
@@ -342,7 +346,7 @@ export class CallQueueService {
       await this.saveQueueMetadata(queueId, data.length);
 
       return true;
-    } catch (error) {
+    } catch {
       return false;
     }
   }
@@ -367,7 +371,7 @@ export class CallQueueService {
 
       // Keep only last 10
       return queues.slice(0, 10);
-    } catch (error) {
+    } catch {
       return [];
     }
   }

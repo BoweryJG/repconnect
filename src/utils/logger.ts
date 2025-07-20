@@ -21,33 +21,33 @@ class Logger {
     return this.isDevelopment;
   }
 
-  private formatMessage(level: LogLevel, ...args: any[]): any[] {
+  private formatMessage(level: LogLevel, ..._args: any[]): any[] {
     const timestamp = new Date().toISOString();
     const prefix = `[${timestamp}] [${level.toUpperCase()}]`;
-    return [prefix, ...args];
+    return [prefix, ..._args];
   }
 
-  log(...args: any[]): void {
+  log(..._args: any[]): void {
     if (this.shouldLog()) {
     }
   }
 
-  error(...args: any[]): void {
+  error(..._args: any[]): void {
     if (this.shouldLog()) {
     }
   }
 
-  warn(...args: any[]): void {
+  warn(..._args: any[]): void {
     if (this.shouldLog()) {
     }
   }
 
-  info(...args: any[]): void {
+  info(..._args: any[]): void {
     if (this.shouldLog()) {
     }
   }
 
-  debug(...args: any[]): void {
+  debug(..._args: any[]): void {
     if (this.shouldLog()) {
     }
   }
@@ -56,7 +56,7 @@ class Logger {
    * Utility method to log only in development without formatting
    * Useful for quick debugging
    */
-  dev(...args: any[]): void {
+  dev(..._args: any[]): void {
     if (this.shouldLog()) {
     }
   }
@@ -64,7 +64,7 @@ class Logger {
   /**
    * Group related log messages
    */
-  group(label: string): void {
+  group(_label: string): void {
     if (this.shouldLog()) {
       // Group logging disabled in production
     }
@@ -79,7 +79,7 @@ class Logger {
   /**
    * Log tabular data
    */
-  table(data: any): void {
+  table(_data: any): void {
     if (this.shouldLog()) {
       // Table logging disabled in production
     }
@@ -88,13 +88,13 @@ class Logger {
   /**
    * Measure time between operations
    */
-  time(label: string): void {
+  time(_label: string): void {
     if (this.shouldLog()) {
       // Time logging disabled in production
     }
   }
 
-  timeEnd(label: string): void {
+  timeEnd(_label: string): void {
     if (this.shouldLog()) {
       // Time end logging disabled in production
     }

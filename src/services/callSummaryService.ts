@@ -39,7 +39,7 @@ export interface SentimentAnalysis {
   }[];
 }
 
-interface OpenRouterResponse {
+interface OpenAIResponse {
   choices: Array<{
     message: {
       content: string;
@@ -54,7 +54,6 @@ interface OpenRouterResponse {
 export class CallSummaryService {
   private supabase;
   private openAIApiKey: string;
-  private openAIBaseUrl = 'https://api.openai.com/v1';
 
   constructor() {
     const supabaseUrl = process.env.REACT_APP_SUPABASE_URL || process.env.SUPABASE_URL || '';
@@ -72,6 +71,10 @@ export class CallSummaryService {
       // Generate summary using OpenAI
       const prompt = this.buildPrompt(request.transcription, request.format || 'detailed');
       const aiResponse = await this.callOpenAI(prompt);
+
+      if (!aiResponse || !aiResponse.choices || aiResponse.choices.length === 0) {
+        throw new Error('Invalid AI response: no choices returned');
+      }
 
       const summary = this.parseAIResponse(aiResponse.choices[0].message.content);
 
@@ -154,8 +157,8 @@ Important guidelines:
 5. For ${format} format, adjust the level of detail accordingly`;
   }
 
-  private async callOpenAI(prompt: string): Promise<OpenRouterResponse> {
-    const response = await fetch(`${this.openAIBaseUrl}/chat/completions`, {
+  private async callOpenAI(prompt: string): Promise<OpenAIResponse> {
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${this.openAIApiKey}`,
@@ -255,7 +258,7 @@ Important guidelines:
       next_steps: summary.nextSteps,
       summary_format: format,
       ai_model: aiModel,
-      ai_provider: 'openrouter',
+      ai_provider: 'openai',
       processing_time_ms: processingTimeMs,
       token_count: tokenCount,
       regenerated_at: regenerate ? new Date().toISOString() : null,

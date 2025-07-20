@@ -20,7 +20,6 @@ import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import { useStore } from '../store/useStore';
 import { transcriptionService } from '../services/transcriptionService';
 import { harveyWebRTC } from '../services/harveyWebRTC';
-// import { supabase } from '../lib/supabase';
 
 interface CallInterfaceProps {
   contact: {
@@ -28,7 +27,7 @@ interface CallInterfaceProps {
     phoneNumber: string;
     avatar?: string;
   };
-  onEndCall: (duration?: number) => void;
+  onEndCall: (_duration?: number) => void;
   callSid?: string;
 }
 
@@ -42,7 +41,7 @@ export const CallInterface: React.FC<CallInterfaceProps> = ({ contact, onEndCall
   const [transcriptionError, setTranscriptionError] = useState<string | null>(null);
   const [isConnecting, setIsConnecting] = useState(true);
   const [fullTranscript, setFullTranscript] = useState<string[]>([]);
-  const [harveyConnected, setHarveyConnected] = useState(false);
+  const [harveyConnected] = useState(false);
   const [harveyCoachingText, setHarveyCoachingText] = useState<string>('');
   const waveformRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<number | null>(null);

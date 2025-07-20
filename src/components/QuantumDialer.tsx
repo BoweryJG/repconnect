@@ -43,7 +43,7 @@ const scanlineAnimation = keyframes`
 interface QuantumDialerProps {
   isOpen: boolean;
   onClose: () => void;
-  onDial: (number: string) => void;
+  onDial: (_number: string) => void;
 }
 
 export const QuantumDialer: React.FC<QuantumDialerProps> = ({ isOpen, onClose, onDial }) => {

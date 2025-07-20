@@ -48,7 +48,7 @@ export default function VoiceModalWebRTC({
 
       // Get backend URL - use agent backend for voice agents
       const backendUrl =
-        process.env.REACT_APP_AGENT_BACKEND_URL || 'https://agentbackend-2932.onrender.com';
+        process.env.REACT_APP_AGENT_BACKEND_URL || 'https://osbackend-zl1h.onrender.com';
 
       // Create WebRTC client
       webRTCClientRef.current = new WebRTCClient({

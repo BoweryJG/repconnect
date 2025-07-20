@@ -60,7 +60,7 @@ export class AdaptiveRenderer {
     },
   };
 
-  private callbacks: Set<(settings: QualitySettings) => void> = new Set();
+  private callbacks: Set<(_settings: QualitySettings) => void> = new Set();
   private unsubscribe: (() => void) | null = null;
 
   constructor() {
@@ -107,7 +107,7 @@ export class AdaptiveRenderer {
     return { ...this.currentQuality };
   }
 
-  public subscribe(callback: (settings: QualitySettings) => void) {
+  public subscribe(callback: (_settings: QualitySettings) => void) {
     this.callbacks.add(callback);
     callback(this.currentQuality); // Initial state
     return () => {

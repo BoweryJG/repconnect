@@ -14,8 +14,8 @@ interface TranscriptionUpdate {
 
 interface TranscriptionSession {
   callSid: string;
-  onUpdate: (update: TranscriptionUpdate) => void;
-  onError: (error: Error) => void;
+  onUpdate: (_update: TranscriptionUpdate) => void;
+  onError: (_error: Error) => void;
   onComplete: () => void;
 }
 
@@ -54,7 +54,7 @@ class TranscriptionService {
       });
 
       this.setupEventListeners();
-    } catch (error) {
+    } catch {
       this.handleReconnect();
     }
   }
@@ -67,7 +67,7 @@ class TranscriptionService {
       this.reconnectAttempts = 0;
 
       // Re-subscribe to active sessions
-      this.sessions.forEach((session, callSid) => {
+      this.sessions.forEach((_, callSid) => {
         this.socket?.emit('subscribe', { callSid });
       });
     });
@@ -82,9 +82,10 @@ class TranscriptionService {
       });
     });
 
-    this.socket.on('connect_error', (error: any) => {
+    this.socket.on('connect_error', () => {
       // Only log first connection error to avoid console spam
       if (this.reconnectAttempts === 0) {
+        // First connection error occurred
       }
     });
 
@@ -119,7 +120,9 @@ class TranscriptionService {
       }
     });
 
-    this.socket.on('transcription:started', (data: any) => {});
+    this.socket.on('transcription:started', () => {
+      // Transcription session started
+    });
 
     this.socket.on('transcription:error', (data: { callSid: string; error: string }) => {
       const session = this.sessions.get(data.callSid);
@@ -145,8 +148,8 @@ class TranscriptionService {
 
   public startTranscription(
     callSid: string,
-    onUpdate: (update: TranscriptionUpdate) => void,
-    onError: (error: Error) => void,
+    onUpdate: (_update: TranscriptionUpdate) => void,
+    onError: (_error: Error) => void,
     onComplete: () => void
   ) {
     if (!this.socket || !this.isConnected) {

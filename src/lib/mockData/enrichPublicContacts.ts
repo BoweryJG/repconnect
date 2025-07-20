@@ -90,7 +90,7 @@ export async function enrichPublicContacts() {
         CREATE INDEX idx_enriched_contacts_original_id ON enriched_public_contacts(original_id);
       `;
 
-      const { error: createError } = await supabase.rpc('exec_sql', { sql: createTableQuery });
+      await supabase.rpc('exec_sql', { sql: createTableQuery });
       return;
     }
 

@@ -12,8 +12,8 @@ interface Toast {
 
 interface ToastState {
   toasts: Toast[];
-  addToast: (toast: Omit<Toast, 'id'>) => void;
-  removeToast: (id: string) => void;
+  addToast: (_toast: Omit<Toast, 'id'>) => void;
+  removeToast: (_id: string) => void;
 }
 
 // Zustand store for toast state management

@@ -17,7 +17,7 @@ interface NavItem {
 
 interface SettingsNavbarProps {
   activeTab: string;
-  onTabChange: (tabId: string) => void;
+  onTabChange: (_tabId: string) => void;
   syncCount?: number;
   onClose?: () => void;
 }

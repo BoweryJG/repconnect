@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, X, Brain, User, Check, Volume2 } from 'lucide-react';
+import { Plus, X, Check, Volume2 } from 'lucide-react';
 import { useStore } from '../store/useStore';
 
 export default function AgentSelector() {

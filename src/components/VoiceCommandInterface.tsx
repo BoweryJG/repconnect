@@ -9,13 +9,13 @@ import { NaturalLanguageProcessor } from '../lib/ai/NaturalLanguageProcessor';
 import { adaptiveRenderer } from '../lib/performance/AdaptiveRenderer';
 
 interface VoiceCommandInterfaceProps {
-  onCommand: (query: string) => void;
+  onCommand: (_query: string) => void;
   suggestions?: string[];
 }
 
 export const VoiceCommandInterface: React.FC<VoiceCommandInterfaceProps> = ({
   onCommand,
-  suggestions = [],
+  suggestions: _suggestions = [],
 }) => {
   const [isListening, setIsListening] = useState(false);
   const [query, setQuery] = useState('');
@@ -55,7 +55,7 @@ export const VoiceCommandInterface: React.FC<VoiceCommandInterfaceProps> = ({
         }
       };
 
-      recognitionRef.current.onerror = (event: any) => {
+      recognitionRef.current.onerror = (_event: any) => {
         setIsListening(false);
       };
 

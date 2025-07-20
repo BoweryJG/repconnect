@@ -105,13 +105,14 @@ const AdminDashboard: React.FC = () => {
 
       setSuccessMessage('Agent status updated successfully!');
       setTimeout(() => setSuccessMessage(''), 3000);
-    } catch (err) {
+    } catch (_err) {
       setError('Failed to update agent status');
       setTimeout(() => setError(''), 3000);
     }
   };
 
   const deleteAgent = async (agentId: string) => {
+    // eslint-disable-next-line no-alert
     if (!window.confirm('Are you sure you want to delete this agent?')) return;
 
     try {
@@ -127,7 +128,7 @@ const AdminDashboard: React.FC = () => {
 
       setSuccessMessage('Agent deleted successfully!');
       setTimeout(() => setSuccessMessage(''), 3000);
-    } catch (err) {
+    } catch (_err) {
       setError('Failed to delete agent');
       setTimeout(() => setError(''), 3000);
     }

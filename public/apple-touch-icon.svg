@@ -1,36 +1,79 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" width="180" height="180">
   <defs>
-    <linearGradient id="appleMoneyGreen" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#00FF88;stop-opacity:1" />
-      <stop offset="50%" style="stop-color:#00DD77;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#00CC66;stop-opacity:1" />
+    <!-- High-resolution gradients for Apple touch icon -->
+    <linearGradient id="outerApple" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stopColor="#9f58fa" stopOpacity="0.95"/>
+      <stop offset="100%" stopColor="#6366f1" stopOpacity="0.8"/>
     </linearGradient>
-    <filter id="appleGlow">
-      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
-      <feMerge>
+    
+    <linearGradient id="middleApple" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stopColor="#4B96DC" stopOpacity="0.9"/>
+      <stop offset="100%" stopColor="#6366f1" stopOpacity="0.7"/>
+    </linearGradient>
+    
+    <linearGradient id="innerApple" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stopColor="#00d4ff" stopOpacity="0.95"/>
+      <stop offset="100%" stopColor="#4B96DC" stopOpacity="0.8"/>
+    </linearGradient>
+    
+    <radialGradient id="coreApple" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stopColor="#ffffff" stopOpacity="1"/>
+      <stop offset="25%" stopColor="#00ffff" stopOpacity="0.95"/>
+      <stop offset="50%" stopColor="#00d4ff" stopOpacity="0.8"/>
+      <stop offset="100%" stopColor="#4B96DC" stopOpacity="0.4"/>
+    </radialGradient>
+    
+    <!-- Enhanced glow for high-res -->
+    <filter id="appleGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge> 
         <feMergeNode in="coloredBlur"/>
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
   </defs>
   
-  <!-- Rounded rectangle background for Apple devices -->
+  <!-- Background for better visibility on home screen -->
   <rect width="180" height="180" rx="40" fill="#0A0A0B"/>
   
-  <!-- Money bills stack (scaled for 180x180) -->
-  <g transform="translate(90, 90) scale(0.35)">
-    <!-- Back bill -->
-    <rect x="-140" y="-60" width="280" height="120" rx="8" fill="#1a4d2e" opacity="0.7" transform="rotate(-5)"/>
-    <!-- Middle bill -->
-    <rect x="-140" y="-60" width="280" height="120" rx="8" fill="#2d6a4f" opacity="0.8" transform="rotate(-2.5)"/>
-    <!-- Front bill -->
-    <rect x="-140" y="-60" width="280" height="120" rx="8" fill="url(#appleMoneyGreen)" filter="url(#appleGlow)"/>
-    
-    <!-- Dollar sign on front bill -->
-    <text x="0" y="15" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif" font-size="80" font-weight="900" text-anchor="middle" fill="#0A0A0B">$</text>
-    
-    <!-- Bill details -->
-    <rect x="-120" y="-40" width="40" height="40" rx="20" fill="none" stroke="#0A0A0B" stroke-width="3"/>
-    <rect x="80" y="-40" width="40" height="40" rx="20" fill="none" stroke="#0A0A0B" stroke-width="3"/>
-  </g>
+  <!-- Outer orbital ring -->
+  <ellipse cx="90" cy="90" rx="65" ry="27" 
+           transform="rotate(30 90 90)" 
+           fill="none" 
+           stroke="url(#outerApple)" 
+           strokeWidth="5"
+           filter="url(#appleGlow)"/>
+  
+  <!-- Middle orbital ring -->
+  <ellipse cx="90" cy="90" rx="50" ry="21" 
+           transform="rotate(-45 90 90)" 
+           fill="none" 
+           stroke="url(#middleApple)" 
+           strokeWidth="4"
+           filter="url(#appleGlow)"/>
+  
+  <!-- Inner orbital ring -->
+  <ellipse cx="90" cy="90" rx="35" ry="14" 
+           transform="rotate(75 90 90)" 
+           fill="none" 
+           stroke="url(#innerApple)" 
+           strokeWidth="3.5"
+           filter="url(#appleGlow)"/>
+  
+  <!-- Central core with enhanced glow -->
+  <circle cx="90" cy="90" r="15" 
+          fill="url(#coreApple)"
+          filter="url(#appleGlow)"/>
+  
+  <!-- Inner core layers -->
+  <circle cx="90" cy="90" r="8" 
+          fill="#ffffff"
+          opacity="0.9"/>
+  
+  <circle cx="90" cy="90" r="4" 
+          fill="#00ffff"/>
+  
+  <!-- Central point -->
+  <circle cx="90" cy="90" r="2" 
+          fill="#ffffff"/>
 </svg>

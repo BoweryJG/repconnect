@@ -52,27 +52,27 @@ interface Agent {
 interface AppState {
   // Contacts
   contacts: Contact[];
-  addContact: (contact: Omit<Contact, 'id' | 'callCount'>) => void;
-  updateContact: (id: string, updates: Partial<Contact>) => void;
-  deleteContact: (id: string) => void;
-  setContacts: (contacts: Contact[]) => void;
+  addContact: (_contact: Omit<Contact, 'id' | 'callCount'>) => void;
+  updateContact: (_id: string, _updates: Partial<Contact>) => void;
+  deleteContact: (_id: string) => void;
+  setContacts: (_contacts: Contact[]) => void;
 
   // Calls
   calls: Call[];
   activeCall: Call | null;
-  addCall: (call: Omit<Call, 'id'>) => void;
-  setActiveCall: (call: Call | null) => void;
-  updateCall: (id: string, updates: Partial<Call>) => void;
+  addCall: (_call: Omit<Call, 'id'>) => void;
+  setActiveCall: (_call: Call | null) => void;
+  updateCall: (_id: string, _updates: Partial<Call>) => void;
 
   // UI State
   isCallInProgress: boolean;
-  setCallInProgress: (inProgress: boolean) => void;
+  setCallInProgress: (_inProgress: boolean) => void;
   selectedContactId: string | null;
-  setSelectedContact: (id: string | null) => void;
+  setSelectedContact: (_id: string | null) => void;
 
   // Performance
   performanceMode: 'ultra' | 'balanced' | 'battery';
-  setPerformanceMode: (mode: 'ultra' | 'balanced' | 'battery') => void;
+  setPerformanceMode: (_mode: 'ultra' | 'balanced' | 'battery') => void;
 
   // AI Features
   aiEnabled: boolean;
@@ -82,21 +82,21 @@ interface AppState {
 
   // Auth State
   isAuthenticated: boolean;
-  setAuthenticated: (authenticated: boolean) => void;
+  setAuthenticated: (_authenticated: boolean) => void;
   showLoginModal: boolean;
-  setShowLoginModal: (show: boolean) => void;
+  setShowLoginModal: (_show: boolean) => void;
   showSubscriptionModal: boolean;
-  setShowSubscriptionModal: (show: boolean) => void;
+  setShowSubscriptionModal: (_show: boolean) => void;
   subscriptionTier: string;
-  setSubscriptionTier: (tier: string) => void;
+  setSubscriptionTier: (_tier: string) => void;
 
   // Agents
   agents: Agent[];
   currentAgentId: string;
-  setCurrentAgent: (agentId: string) => void;
-  addAgent: (agent: Omit<Agent, 'id'>) => void;
-  updateAgent: (id: string, updates: Partial<Agent>) => void;
-  deleteAgent: (id: string) => void;
+  setCurrentAgent: (_agentId: string) => void;
+  addAgent: (_agent: Omit<Agent, 'id'>) => void;
+  updateAgent: (_id: string, _updates: Partial<Agent>) => void;
+  deleteAgent: (_id: string) => void;
 }
 
 // Default agents
@@ -160,7 +160,7 @@ const defaultAgents: Agent[] = [
 ];
 
 export const useStore = create<AppState>()(
-  subscribeWithSelector((set, get) => ({
+  subscribeWithSelector((set, _get) => ({
     // Initial state
     contacts: [],
     calls: [],

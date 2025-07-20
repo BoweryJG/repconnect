@@ -17,14 +17,12 @@ import {
   CheckCircle,
   TipsAndUpdates,
   Speed,
-  Psychology,
   ExpandMore,
   ExpandLess,
   VolumeUp,
   VolumeOff,
 } from '@mui/icons-material';
 import { harveyWebRTC } from '../services/harveyWebRTC';
-import { harveyService } from '../services/harveyService';
 
 interface HarveyActiveCallInterfaceProps {
   isActive: boolean;
@@ -52,8 +50,8 @@ interface CallMetrics {
 export const HarveyActiveCallInterface: React.FC<HarveyActiveCallInterfaceProps> = ({
   isActive,
   contactName,
-  phoneNumber,
-  onClose,
+  phoneNumber: _phoneNumber,
+  onClose: _onClose,
 }) => {
   const [isExpanded, setIsExpanded] = useState(true);
   const [isMuted, setIsMuted] = useState(false);
@@ -72,62 +70,19 @@ export const HarveyActiveCallInterface: React.FC<HarveyActiveCallInterfaceProps>
   const [harveyMode, setHarveyMode] = useState<string>('normal');
   const audioContextRef = useRef<AudioContext | null>(null);
 
-  useEffect(() => {
-    if (isActive) {
-      initializeHarvey();
-    }
-    return () => {
-      if (audioContextRef.current) {
-        audioContextRef.current.close();
-      }
-    };
-  }, [isActive]);
+  const addInsight = useCallback((insight: CoachingInsight) => {
+    setInsights((prev) => [insight, ...prev].slice(0, 5));
+  }, []);
 
-  const initializeHarvey = useCallback(async () => {
-    try {
-      // Get Harvey mode from localStorage
-      const savedModes = localStorage.getItem('harveyModes');
-      if (savedModes) {
-        const modes = JSON.parse(savedModes);
-        setHarveyMode(modes.coachingMode || 'normal');
-      }
+  const playHarveyAudio = useCallback((audioData: string) => {
+    if (!audioContextRef.current) return;
 
-      // Initialize audio context
-      audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const audio = new Audio(audioData);
+    audio.volume = 0.3; // Harvey whispers
+    audio.play();
+  }, []);
 
-      // Connect to Harvey
-      await harveyWebRTC.connect({
-        userId: 'user',
-        onConnectionChange: (connected) => {
-          setConnectionStatus(connected ? 'connected' : 'reconnecting');
-        },
-        onAudioReceived: (audioData) => {
-          if (harveyVolume) {
-            playHarveyAudio(audioData);
-          }
-        },
-        onVoiceAnalysis: (analysis) => {
-          updateMetricsFromAnalysis(analysis);
-        },
-      });
-
-      // Start initial coaching
-      addInsight({
-        id: Date.now().toString(),
-        type: 'tip',
-        message: getInitialMessage(),
-        timestamp: new Date(),
-        urgency: 'low',
-      });
-
-      // Simulate real-time insights
-      startInsightGeneration();
-    } catch (error) {
-      setConnectionStatus('reconnecting');
-    }
-  }, [harveyVolume]);
-
-  const getInitialMessage = () => {
+  const getInitialMessage = useCallback(() => {
     switch (harveyMode) {
       case 'gentle':
         return "I'm here to help. Let's make this call count.";
@@ -138,38 +93,7 @@ export const HarveyActiveCallInterface: React.FC<HarveyActiveCallInterfaceProps>
       default:
         return "Let's see what you've got. Make it worth my time.";
     }
-  };
-
-  const playHarveyAudio = useCallback((audioData: string) => {
-    if (!audioContextRef.current) return;
-
-    const audio = new Audio(audioData);
-    audio.volume = 0.3; // Harvey whispers
-    audio.play();
-  }, []);
-
-  const updateMetricsFromAnalysis = (analysis: any) => {
-    setMetrics((prev) => ({
-      ...prev,
-      confidence: analysis.confidence || prev.confidence,
-      pace: analysis.pace || prev.pace,
-    }));
-  };
-
-  const startInsightGeneration = useCallback(() => {
-    // Generate first insight quickly in mock mode
-    setTimeout(() => generateInsight(), 3000);
-
-    // Simulate Harvey's real-time insights
-    const interval = setInterval(() => {
-      if (Math.random() > 0.5) {
-        // More frequent in mock mode
-        generateInsight();
-      }
-    }, 8000); // Every 8 seconds
-
-    return () => clearInterval(interval);
-  }, []);
+  }, [harveyMode]);
 
   const generateInsight = useCallback(() => {
     const insightTypes: Array<'tip' | 'warning' | 'praise' | 'critical'> = [
@@ -212,11 +136,94 @@ export const HarveyActiveCallInterface: React.FC<HarveyActiveCallInterfaceProps>
       timestamp: new Date(),
       urgency: type === 'critical' ? 'high' : type === 'warning' ? 'medium' : 'low',
     });
-  }, []);
+  }, [addInsight]);
 
-  const addInsight = useCallback((insight: CoachingInsight) => {
-    setInsights((prev) => [insight, ...prev].slice(0, 5));
-  }, []);
+  const startInsightGeneration = useCallback(() => {
+    // Generate first insight quickly in mock mode
+    setTimeout(() => generateInsight(), 3000);
+
+    // Simulate Harvey's real-time insights
+    const interval = setInterval(() => {
+      if (Math.random() > 0.5) {
+        // More frequent in mock mode
+        generateInsight();
+      }
+    }, 8000); // Every 8 seconds
+
+    return () => clearInterval(interval);
+  }, [generateInsight]);
+
+  const initializeHarvey = useCallback(async () => {
+    try {
+      // Get Harvey mode from localStorage
+      const savedModes = localStorage.getItem('harveyModes');
+      if (savedModes) {
+        const modes = JSON.parse(savedModes);
+        setHarveyMode(modes.coachingMode || 'normal');
+      }
+
+      // Initialize audio context
+      audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+
+      // Connect to Harvey
+      await harveyWebRTC.connect({
+        userId: 'user',
+        onConnectionChange: (connected) => {
+          setConnectionStatus(connected ? 'connected' : 'reconnecting');
+        },
+        onAudioReceived: (audioData) => {
+          if (harveyVolume) {
+            playHarveyAudio(audioData);
+          }
+        },
+        onVoiceAnalysis: (analysis) => {
+          updateMetricsFromAnalysis(analysis);
+        },
+      });
+
+      // Start initial coaching
+      addInsight({
+        id: Date.now().toString(),
+        type: 'tip',
+        message: getInitialMessage(),
+        timestamp: new Date(),
+        urgency: 'low',
+      });
+
+      // Simulate real-time insights
+      const cleanup = startInsightGeneration();
+      return cleanup;
+    } catch (error) {
+      setConnectionStatus('reconnecting');
+    }
+  }, [harveyVolume, addInsight, getInitialMessage, playHarveyAudio, startInsightGeneration]);
+
+  useEffect(() => {
+    let cleanup: (() => void) | undefined;
+    
+    if (isActive) {
+      initializeHarvey().then((cleanupFn) => {
+        cleanup = cleanupFn;
+      });
+    }
+    
+    return () => {
+      if (cleanup) {
+        cleanup();
+      }
+      if (audioContextRef.current) {
+        audioContextRef.current.close();
+      }
+    };
+  }, [isActive, initializeHarvey]);
+
+  const updateMetricsFromAnalysis = (analysis: any) => {
+    setMetrics((prev) => ({
+      ...prev,
+      confidence: analysis.confidence || prev.confidence,
+      pace: analysis.pace || prev.pace,
+    }));
+  };
 
   const toggleMute = () => {
     setIsMuted(!isMuted);

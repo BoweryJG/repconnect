@@ -150,7 +150,7 @@ export const HarveySyndicate: React.FC = () => {
         // Play verdict audio if available
         if (verdict.audio && audioRef.current) {
           audioRef.current.src = verdict.audio;
-          audioRef.current.play().catch((err) => {});
+          audioRef.current.play().catch(() => {});
         }
       }
 
@@ -664,7 +664,7 @@ export const HarveySyndicate: React.FC = () => {
                     </Typography>
                   </div>
                 ) : (
-                  hotLeads.map((lead, index) => (
+                  hotLeads.map((lead) => (
                     <div
                       key={lead.id}
                       style={{

@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <defs>
+    <!-- Gradients for the orbital rings -->
+    <linearGradient id="outerRing" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stopColor="#9f58fa" stopOpacity="0.9"/>
+      <stop offset="100%" stopColor="#6366f1" stopOpacity="0.7"/>
+    </linearGradient>
+    
+    <linearGradient id="middleRing" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stopColor="#4B96DC" stopOpacity="0.8"/>
+      <stop offset="100%" stopColor="#6366f1" stopOpacity="0.6"/>
+    </linearGradient>
+    
+    <linearGradient id="innerRing" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stopColor="#00d4ff" stopOpacity="0.9"/>
+      <stop offset="100%" stopColor="#4B96DC" stopOpacity="0.7"/>
+    </linearGradient>
+    
+    <!-- Radial gradient for the central core -->
+    <radialGradient id="coreGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stopColor="#ffffff" stopOpacity="1"/>
+      <stop offset="30%" stopColor="#00ffff" stopOpacity="0.9"/>
+      <stop offset="60%" stopColor="#00d4ff" stopOpacity="0.6"/>
+      <stop offset="100%" stopColor="#4B96DC" stopOpacity="0.3"/>
+    </radialGradient>
+    
+    <!-- Drop shadow filter -->
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Outer orbital ring (tilted) -->
+  <ellipse cx="50" cy="50" rx="35" ry="15" 
+           transform="rotate(30 50 50)" 
+           fill="none" 
+           stroke="url(#outerRing)" 
+           strokeWidth="3"
+           filter="url(#glow)"
+           opacity="0.8"/>
+  
+  <!-- Middle orbital ring (opposite tilt) -->
+  <ellipse cx="50" cy="50" rx="28" ry="12" 
+           transform="rotate(-45 50 50)" 
+           fill="none" 
+           stroke="url(#middleRing)" 
+           strokeWidth="2.5"
+           filter="url(#glow)"
+           opacity="0.9"/>
+  
+  <!-- Inner orbital ring (different angle) -->
+  <ellipse cx="50" cy="50" rx="20" ry="8" 
+           transform="rotate(75 50 50)" 
+           fill="none" 
+           stroke="url(#innerRing)" 
+           strokeWidth="2"
+           filter="url(#glow)"
+           opacity="1"/>
+  
+  <!-- Central core with glow effect -->
+  <circle cx="50" cy="50" r="8" 
+          fill="url(#coreGlow)"
+          filter="url(#glow)"/>
+  
+  <!-- Inner core highlight -->
+  <circle cx="50" cy="50" r="4" 
+          fill="#ffffff"
+          opacity="0.9"/>
+  
+  <!-- Tiny central point -->
+  <circle cx="50" cy="50" r="1.5" 
+          fill="#00ffff"/>
+</svg>

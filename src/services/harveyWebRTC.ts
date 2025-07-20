@@ -3,9 +3,9 @@
 
 interface HarveyWebRTCConfig {
   userId: string;
-  onConnectionChange?: (connected: boolean) => void;
-  onAudioReceived?: (audioData: string) => void;
-  onVoiceAnalysis?: (analysis: VoiceAnalysis) => void;
+  onConnectionChange?: (_connected: boolean) => void;
+  onAudioReceived?: (_audioData: string) => void;
+  onVoiceAnalysis?: (_analysis: VoiceAnalysis) => void;
 }
 
 interface VoiceAnalysis {
@@ -169,6 +169,7 @@ class HarveyWebRTC {
 
           try {
             // Get auth token if available
+            // eslint-disable-next-line
             const authToken = localStorage.getItem('harvey_token');
 
             // Send initial handshake with authentication
@@ -438,7 +439,7 @@ class HarveyWebRTC {
     }
   }
 
-  private handleBattleMode(data: any): void {
+  private handleBattleMode(_data: any): void {
     // Handle battle mode setup for competitive calling
     // Implementation for split-screen battle mode
   }
@@ -542,13 +543,13 @@ class HarveyWebRTC {
     try {
       await this.connect({
         userId: 'test-user',
-        onConnectionChange: (connected) => {
+        onConnectionChange: (_connected) => {
           // Connection state changed
         },
-        onAudioReceived: (audioData) => {
+        onAudioReceived: (_audioData) => {
           // Audio received
         },
-        onVoiceAnalysis: (analysis) => {
+        onVoiceAnalysis: (_analysis) => {
           // Voice analysis received
         },
       });

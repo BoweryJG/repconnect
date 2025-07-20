@@ -2,7 +2,6 @@ import React from 'react';
 import {
   Dialog,
   DialogContent,
-  Box,
   Typography,
   Button,
   IconButton,
@@ -18,7 +17,7 @@ interface AgentSelectionModalProps {
   open: boolean;
   onClose: () => void;
   agent: Agent | null;
-  onSelectMode: (mode: 'message' | 'converse') => void;
+  onSelectMode: (_mode: 'message' | 'converse') => void;
 }
 
 const StyledDialog = styled(Dialog)(({ theme }) => ({
@@ -61,14 +60,14 @@ const StyledButton = styled(Button)(({ theme }) => ({
   },
 }));
 
-const MessageButton = styled(StyledButton)(({ theme }) => ({
+const MessageButton = styled(StyledButton)(({ theme: _theme }) => ({
   background: `linear-gradient(135deg, ${alpha('#3B82F6', 0.2)} 0%, ${alpha('#8B5CF6', 0.2)} 100%)`,
   '&:hover': {
     background: `linear-gradient(135deg, ${alpha('#3B82F6', 0.3)} 0%, ${alpha('#8B5CF6', 0.3)} 100%)`,
   },
 }));
 
-const ConverseButton = styled(StyledButton)(({ theme }) => ({
+const ConverseButton = styled(StyledButton)(({ theme: _theme }) => ({
   background: `linear-gradient(135deg, ${alpha('#10B981', 0.2)} 0%, ${alpha('#34D399', 0.2)} 100%)`,
   '&:hover': {
     background: `linear-gradient(135deg, ${alpha('#10B981', 0.3)} 0%, ${alpha('#34D399', 0.3)} 100%)`,

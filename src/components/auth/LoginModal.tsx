@@ -19,7 +19,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSucce
       setIsLoading(true);
       setLoadingProvider(provider);
 
-      const { data, error } = await supabase.auth.signInWithOAuth({
+      const { error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
           redirectTo: `${window.location.origin}/auth/callback`,
@@ -36,6 +36,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSucce
       onSuccess?.();
     } catch (error) {
       console.error('Sign in error:', error);
+      // eslint-disable-next-line no-alert
       alert('Failed to sign in. Please try again.');
     } finally {
       setIsLoading(false);

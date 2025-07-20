@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16">
+  <defs>
+    <linearGradient id="ring16" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stopColor="#9f58fa"/>
+      <stop offset="50%" stopColor="#4B96DC"/>
+      <stop offset="100%" stopColor="#00d4ff"/>
+    </linearGradient>
+    <radialGradient id="core16" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stopColor="#ffffff"/>
+      <stop offset="60%" stopColor="#00ffff"/>
+      <stop offset="100%" stopColor="#4B96DC"/>
+    </radialGradient>
+  </defs>
+  
+  <!-- Simplified single ring for small size -->
+  <ellipse cx="8" cy="8" rx="6" ry="2.5" 
+           transform="rotate(30 8 8)" 
+           fill="none" 
+           stroke="url(#ring16)" 
+           strokeWidth="1"/>
+  
+  <ellipse cx="8" cy="8" rx="5" ry="2" 
+           transform="rotate(-30 8 8)" 
+           fill="none" 
+           stroke="url(#ring16)" 
+           strokeWidth="0.8"/>
+  
+  <!-- Central core -->
+  <circle cx="8" cy="8" r="2" fill="url(#core16)"/>
+  <circle cx="8" cy="8" r="1" fill="#ffffff"/>
+</svg>

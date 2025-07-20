@@ -66,7 +66,7 @@ class HarveyService {
   private socket: Socket | null = null;
   private baseUrl: string;
   private userId: string = '';
-  private updateCallbacks: ((update: HarveyUpdate) => void)[] = [];
+  private updateCallbacks: ((_update: HarveyUpdate) => void)[] = [];
   private metricsCache: HarveyMetrics | null = null;
 
   constructor() {
@@ -88,7 +88,8 @@ class HarveyService {
   private initializeSocket(): void {
     if (this.socket) return;
 
-    // Get auth token
+    // Get auth token  
+    // eslint-disable-next-line
     const authToken = localStorage.getItem('harvey_token');
 
     // Connect to harvey-ws namespace
@@ -107,15 +108,21 @@ class HarveyService {
       },
     });
 
-    this.socket.on('connect', () => {});
+    this.socket.on('connect', () => {
+      // Successfully connected to Harvey
+    });
 
-    this.socket.on('connect_error', (error) => {});
+    this.socket.on('connect_error', () => {
+      // Connection to Harvey failed
+    });
 
     this.socket.on('harvey-update', (update: HarveyUpdate) => {
       this.handleUpdate(update);
     });
 
-    this.socket.on('disconnect', (reason) => {});
+    this.socket.on('disconnect', () => {
+      // Disconnected from Harvey
+    });
   }
 
   private handleUpdate(update: HarveyUpdate): void {
@@ -129,7 +136,7 @@ class HarveyService {
   }
 
   // Subscribe to real-time updates
-  subscribeToUpdates(callback: (update: HarveyUpdate) => void): () => void {
+  subscribeToUpdates(callback: (_update: HarveyUpdate) => void): () => void {
     this.updateCallbacks.push(callback);
     this.initializeSocket();
 
@@ -188,7 +195,7 @@ class HarveyService {
           leaderboard: [],
         };
       }
-    } catch (error) {
+    } catch {
       // Return cached data if available
       return {
         metrics: this.metricsCache || this.getDefaultMetrics(),
@@ -213,7 +220,7 @@ class HarveyService {
       }
 
       return await response.json();
-    } catch (error) {
+    } catch {
       return {
         rating: 5,
         message: "You're avoiding me. That tells me everything I need to know.",
@@ -296,7 +303,7 @@ class HarveyService {
       }
 
       return await response.json();
-    } catch (error) {
+    } catch {
       return {
         response: "I can't process that right now. Check your connection.",
       };
@@ -317,7 +324,7 @@ class HarveyService {
       }
 
       return await response.json();
-    } catch (error) {
+    } catch {
       return [];
     }
   }
@@ -338,7 +345,9 @@ class HarveyService {
         },
         body: JSON.stringify(callData),
       });
-    } catch (error) {}
+    } catch {
+      // Ignore errors in call performance submission
+    }
   }
 
   // Request Harvey intervention
@@ -352,7 +361,9 @@ class HarveyService {
         },
         body: JSON.stringify({ reason }),
       });
-    } catch (error) {}
+    } catch {
+      // Ignore errors in intervention request
+    }
   }
 
   // Get hot leads
@@ -369,7 +380,7 @@ class HarveyService {
       }
 
       return await response.json();
-    } catch (error) {
+    } catch {
       return [];
     }
   }
@@ -391,7 +402,7 @@ class HarveyService {
       }
 
       return await response.json();
-    } catch (error) {
+    } catch {
       return {
         accepted: false,
         message: "You're not ready to challenge me yet. Close more deals.",
@@ -413,7 +424,7 @@ class HarveyService {
       }
 
       return await response.json();
-    } catch (error) {
+    } catch {
       return [];
     }
   }
@@ -443,7 +454,9 @@ class HarveyService {
         },
         body: JSON.stringify({ mode }),
       });
-    } catch (error) {}
+    } catch {
+      // Ignore errors in coaching mode update
+    }
   }
 
   // Update Harvey modes
@@ -457,7 +470,9 @@ class HarveyService {
         },
         body: JSON.stringify(modes),
       });
-    } catch (error) {}
+    } catch {
+      // Ignore errors in modes update
+    }
   }
 
   // Clean up resources

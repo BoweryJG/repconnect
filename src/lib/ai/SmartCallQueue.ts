@@ -225,7 +225,7 @@ export class SmartCallQueue {
 
   static async syncQueue(
     queue: SyncQueue,
-    onProgress?: (progress: number) => void
+    onProgress?: (_progress: number) => void
   ): Promise<SyncQueue> {
     queue.status = 'syncing';
 

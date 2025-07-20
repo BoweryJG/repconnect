@@ -105,7 +105,7 @@ export default function AudioTestComponent() {
       setError(null);
 
       // Test connection to agent backend
-      const response = await fetch('https://agentbackend-2932.onrender.com/api/agents');
+      const response = await fetch('https://osbackend-zl1h.onrender.com/api/agents');
       if (!response.ok) {
         throw new Error(`Backend returned ${response.status}`);
       }

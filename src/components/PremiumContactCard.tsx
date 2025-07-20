@@ -90,7 +90,13 @@ export const PremiumContactCard: React.FC<PremiumContactCardProps> = ({
             animate={{ rotateY: 0, opacity: 1 }}
             exit={{ rotateY: isFlipped ? 0 : 180, opacity: 0 }}
             transition={{ duration: 0.6, type: 'spring', stiffness: 100 }}
-            onClick={() => setIsFlipped(!isFlipped)}
+            onClick={() => {
+              if (onClick) {
+                onClick();
+              } else {
+                setIsFlipped(!isFlipped);
+              }
+            }}
           >
             {!isFlipped ? (
               // Front of card

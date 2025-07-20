@@ -3,7 +3,7 @@
 
 import fetch from 'node-fetch';
 
-const AGENT_BACKEND_URL = process.env.AGENT_BACKEND_URL || 'https://agentbackend-2932.onrender.com';
+const AGENT_BACKEND_URL = process.env.AGENT_BACKEND_URL || 'https://osbackend-zl1h.onrender.com';
 
 // Helper function to get auth headers (server-side implementation)
 async function getAuthHeaders() {

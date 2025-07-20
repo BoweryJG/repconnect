@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { SUBSCRIPTION_TIERS, SubscriptionTier } from '../../lib/subscriptionTiers';
+import { SUBSCRIPTION_TIERS } from '../../lib/subscriptionTiers';
 import { useAuth } from '../../auth/useAuth';
 import { createCheckoutSession } from '../../lib/stripe';
 import './SubscriptionModal.css';
@@ -48,7 +48,6 @@ export const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
   if (!isOpen) return null;
 
   const tiers = Object.values(SUBSCRIPTION_TIERS).filter((tier) => tier.id !== 'free');
-  const annualSavings = billingCycle === 'annual' ? 0.2 : 0; // 20% discount
 
   return (
     <div className="subscription-modal-overlay" onClick={onClose}>

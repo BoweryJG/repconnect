@@ -7,7 +7,6 @@ import {
   Button,
   Typography,
   LinearProgress,
-  Box,
 } from '@mui/material';
 import { Warning } from '@mui/icons-material';
 

@@ -1,5 +1,5 @@
 import React, { Suspense } from 'react';
-import { CircularProgress, Box, Typography } from '@mui/material';
+import { CircularProgress, Typography } from '@mui/material';
 import { motion } from 'framer-motion';
 
 // Loading component for lazy-loaded components

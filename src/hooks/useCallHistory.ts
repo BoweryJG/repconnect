@@ -113,7 +113,7 @@ export const useCallHistory = (options: UseCallHistoryOptions = {}) => {
                 {} as Record<string, string>
               );
             }
-          } catch (err) {}
+          } catch (_err) {}
         }
 
         // Fetch call analysis data if available
@@ -154,7 +154,7 @@ export const useCallHistory = (options: UseCallHistoryOptions = {}) => {
                 {} as Record<string, CallAnalysisRecord>
               );
             }
-          } catch (err) {}
+          } catch (_err) {}
         }
 
         // Process the data with contact names and analysis
@@ -232,7 +232,7 @@ export const useCallHistory = (options: UseCallHistoryOptions = {}) => {
           schema: 'public',
           table: 'call_logs',
         },
-        (payload) => {
+        (_payload) => {
           // Refresh the list when there's any change
           refresh();
         }
@@ -244,7 +244,7 @@ export const useCallHistory = (options: UseCallHistoryOptions = {}) => {
           schema: 'public',
           table: 'call_analysis',
         },
-        (payload) => {
+        (_payload) => {
           // Refresh to get updated analysis
           refresh();
         }
