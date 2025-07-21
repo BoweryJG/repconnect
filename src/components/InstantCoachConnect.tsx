@@ -478,18 +478,6 @@ export default function InstantCoachConnect() {
                       <Typography variant="subtitle2" gutterBottom>
                         Practice Scenarios:
                       </Typography>
-                      <div
-                        style={{
-                          marginBottom: '16px',
-                          display: 'flex',
-                          gap: '8px',
-                          flexWrap: 'wrap',
-                        }}
-                      >
-                        {specialization.mock_scenarios?.slice(0, 2).map((scenario, i) => (
-                          <Chip key={i} label={scenario.name} size="small" variant="outlined" />
-                        ))}
-                      </div>
 
                       <Button
                         variant="contained"
