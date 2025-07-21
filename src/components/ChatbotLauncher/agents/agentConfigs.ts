@@ -637,16 +637,22 @@ let agentConfigs: Record<string, AgentConfig> = { ...localAgentConfigs };
 // Initialize agents from remote backend
 export async function initializeAgents(categories?: string[]): Promise<void> {
   try {
-    // Fetch remote agents
+    // Always start with local agents
+    agentConfigs = { ...localAgentConfigs };
+
+    // Try to fetch remote agents and merge if successful
     const remoteAgents = await getCachedRemoteAgents(categories?.join(','));
 
     // Merge remote agents with local agents (remote takes precedence)
-    agentConfigs = {
-      ...localAgentConfigs,
-      ...remoteAgents,
-    };
+    if (Object.keys(remoteAgents).length > 0) {
+      agentConfigs = {
+        ...localAgentConfigs,
+        ...remoteAgents,
+      };
+    }
   } catch (error) {
     console.error('Failed to load remote agents, using local fallback:', error);
+    // Ensure we always have local agents even if remote fails
     agentConfigs = { ...localAgentConfigs };
   }
 }

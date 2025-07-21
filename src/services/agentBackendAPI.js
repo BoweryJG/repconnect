@@ -44,12 +44,34 @@ class AgentBackendAPI {
       return cached.data;
     }
 
+    // Check if we have session_token cookie, if not try to get one
+    if (!document.cookie.includes('session_token')) {
+      console.warn('No session_token cookie found. You may need to log in first.');
+      // Try to get current session and exchange for cookies
+      try {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+        if (session) {
+          console.log('Found Supabase session, attempting cookie exchange...');
+          const authService = (await import('../services/authService')).authService;
+          await authService.loginWithCookies(session);
+          console.log('Cookie exchange completed');
+        }
+      } catch (error) {
+        console.error('Failed to exchange session for cookies:', error);
+      }
+    }
+
     try {
       const url = category
         ? `${this.baseURL}/api/canvas/agents?category=${category}`
         : `${this.baseURL}/api/canvas/agents`;
 
       const headers = await this.getAuthHeaders();
+
+      console.log('Fetching agents from:', url);
+      console.log('Document cookies:', document.cookie);
 
       const response = await fetch(url, {
         method: 'GET',
@@ -58,6 +80,8 @@ class AgentBackendAPI {
         },
         credentials: 'include', // Include cookies for authentication
       });
+
+      console.log('Response status:', response.status);
 
       if (!response.ok) {
         throw new Error(`Failed to fetch agents: ${response.statusText}`);
