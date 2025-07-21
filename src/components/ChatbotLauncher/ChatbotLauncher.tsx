@@ -361,7 +361,7 @@ const ChatbotLauncher: React.FC<ChatbotLauncherProps> = ({
                       })()
                     )}
                   </StyledAvatar>
-                  <Box sx={{ textAlign: 'center', width: '100%' }}>
+                  <div style={{ textAlign: 'center', width: '100%' }}>
                     <Typography
                       variant="subtitle2"
                       fontWeight={600}
@@ -395,7 +395,7 @@ const ChatbotLauncher: React.FC<ChatbotLauncherProps> = ({
                     >
                       {agent.specialty}
                     </Typography>
-                  </Box>
+                  </div>
                 </AgentCard>
               </Tooltip>
             ))}
