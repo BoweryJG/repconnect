@@ -65,8 +65,8 @@ class AgentBackendAPI {
 
     try {
       const url = category
-        ? `${this.baseURL}/api/canvas/agents?category=${category}`
-        : `${this.baseURL}/api/canvas/agents`;
+        ? `${this.baseURL}/api/repconnect/agents?category=${category}`
+        : `${this.baseURL}/api/repconnect/agents`;
 
       const headers = await this.getAuthHeaders();
 
@@ -115,7 +115,7 @@ class AgentBackendAPI {
     try {
       const headers = await this.getAuthHeaders();
 
-      const response = await fetch(`${this.baseURL}/api/canvas/agents/${agentId}`, {
+      const response = await fetch(`${this.baseURL}/api/repconnect/agents/${agentId}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

@@ -106,7 +106,7 @@ export default function AudioTestComponent() {
       setError(null);
 
       // Test connection to agent backend
-      const response = await api.get('/api/agents');
+      const response = await api.get('/api/repconnect/agents');
       const data = response.data;
       // Agent backend is accessible
       setError(null);

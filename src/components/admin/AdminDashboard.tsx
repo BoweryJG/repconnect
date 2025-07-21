@@ -91,7 +91,9 @@ const AdminDashboard: React.FC = () => {
 
   const toggleAgentStatus = async (agentId: string, currentStatus: boolean) => {
     try {
-      const response = await api.patch(`/api/agents/${agentId}`, { active: !currentStatus });
+      const response = await api.patch(`/api/repconnect/agents/${agentId}`, {
+        active: !currentStatus,
+      });
 
       // Update local state
       setAgents(
@@ -111,7 +113,7 @@ const AdminDashboard: React.FC = () => {
     if (!window.confirm('Are you sure you want to delete this agent?')) return;
 
     try {
-      await api.delete(`/api/agents/${agentId}`);
+      await api.delete(`/api/repconnect/agents/${agentId}`);
 
       // Update local state
       setAgents(agents.filter((agent) => agent.id !== agentId));

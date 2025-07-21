@@ -134,9 +134,9 @@ const AgentEditor: React.FC = () => {
 
     try {
       if (isEditMode) {
-        await api.put(`/api/agents/${id}`, formData);
+        await api.put(`/api/repconnect/agents/${id}`, formData);
       } else {
-        await api.post('/api/agents', formData);
+        await api.post('/api/repconnect/agents', formData);
       }
 
       navigate('/admin/dashboard');

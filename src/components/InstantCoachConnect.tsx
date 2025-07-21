@@ -74,7 +74,7 @@ export default function InstantCoachConnect() {
   const loadAvailableCoaches = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await api.get('/api/agents');
+      const response = await api.get('/api/repconnect/agents');
       const data = response.data;
       setAvailableCoaches(data.coaches || []);
     } catch (_error) {
