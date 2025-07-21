@@ -12,6 +12,7 @@ import {
 } from '@mui/material';
 import { Phone, Psychology, GpsFixed, AutoAwesome, Mic, Message } from '@mui/icons-material';
 import { toast } from '../utils/toast';
+import api from '../config/api';
 
 interface Coach {
   id: string;
@@ -73,12 +74,8 @@ export default function InstantCoachConnect() {
   const loadAvailableCoaches = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await fetch(
-        `https://osbackend-zl1h.onrender.com/api/agents`
-      );
-      if (!response.ok) throw new Error('Failed to fetch coaches');
-
-      const data = await response.json();
+      const response = await api.get('/api/agents');
+      const data = response.data;
       setAvailableCoaches(data.coaches || []);
     } catch (_error) {
       toast.error('Failed to load available coaches');
@@ -90,25 +87,12 @@ export default function InstantCoachConnect() {
   const connectToCoach = async (coachId: string, coachName: string) => {
     setConnecting(coachId);
     try {
-      const response = await fetch(
-        `${process.env.REACT_APP_BACKEND_URL}/api/coaching/start-session`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            repId: 'demo-rep-001',
-            coachId,
-            procedureCategory: selectedCategory,
-            sessionType: 'practice_pitch',
-          }),
-        }
-      );
-
-      if (!response.ok) throw new Error('Failed to start session');
-
-      const data = await response.json();
+      const { data } = await api.post('/api/coaching/start-session', {
+        repId: 'demo-rep-001',
+        coachId,
+        procedureCategory: selectedCategory,
+        sessionType: 'practice_pitch',
+      });
 
       // Request microphone permission and start WebRTC
       try {
@@ -154,16 +138,9 @@ export default function InstantCoachConnect() {
       }
 
       // End session in backend
-      await fetch(
-        `${process.env.REACT_APP_BACKEND_URL}/api/coaching/end-session/${activeSession.sessionId}`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            notes: `Session duration: ${Math.floor(sessionTime / 60)}:${(sessionTime % 60).toString().padStart(2, '0')}`,
-          }),
-        }
-      );
+      await api.post(`/api/coaching/end-session/${activeSession.sessionId}`, {
+        notes: `Session duration: ${Math.floor(sessionTime / 60)}:${(sessionTime % 60).toString().padStart(2, '0')}`,
+      });
 
       // Clear session state
       setActiveSession(null);

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAdminAuth } from '../../contexts/AdminAuthContext';
 import agentBackendAPI from '../../services/agentBackendAPI';
+import api from '../../config/api';
 import { Save, X, Loader2, AlertCircle, ArrowLeft, Plus } from 'lucide-react';
 
 interface AgentFormData {
@@ -132,21 +133,10 @@ const AgentEditor: React.FC = () => {
     setError('');
 
     try {
-      const url = isEditMode
-        ? `${agentBackendAPI.baseURL}/api/agents/${id}`
-        : `${agentBackendAPI.baseURL}/api/agents`;
-
-      const method = isEditMode ? 'PUT' : 'POST';
-
-      const response = await fetch(url, {
-        method,
-        headers: await agentBackendAPI.getAuthHeaders(),
-        body: JSON.stringify(formData),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to save agent');
+      if (isEditMode) {
+        await api.put(`/api/agents/${id}`, formData);
+      } else {
+        await api.post('/api/agents', formData);
       }
 
       navigate('/admin/dashboard');

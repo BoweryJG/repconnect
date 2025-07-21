@@ -5,6 +5,9 @@ import { supabase } from '../lib/supabase';
 export const API_BASE_URL =
   process.env.REACT_APP_BACKEND_URL || 'https://osbackend-zl1h.onrender.com';
 
+// Debug log to verify URL is defined
+console.log('[API Config] Base URL:', API_BASE_URL);
+
 // Create axios instance with default config
 export const api = axios.create({
   baseURL: API_BASE_URL,
@@ -23,6 +26,10 @@ const getCSRFToken = (): string | null => {
 // Request interceptor to add CSRF token and Authorization header
 api.interceptors.request.use(
   async (config) => {
+    // Debug log to verify full URL
+    const fullUrl = config.baseURL ? config.baseURL + config.url : config.url;
+    console.log('[API Request]', config.method?.toUpperCase(), fullUrl);
+    
     // Add CSRF token for non-GET requests
     // Commented out since backend doesn't implement CSRF yet
     // if (config.method && ['post', 'put', 'patch', 'delete'].includes(config.method.toLowerCase())) {

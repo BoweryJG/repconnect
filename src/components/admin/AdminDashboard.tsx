@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAdminAuth } from '../../contexts/AdminAuthContext';
 import agentBackendAPI from '../../services/agentBackendAPI';
+import api from '../../config/api';
 import {
   Users,
   LogOut,
@@ -90,13 +91,7 @@ const AdminDashboard: React.FC = () => {
 
   const toggleAgentStatus = async (agentId: string, currentStatus: boolean) => {
     try {
-      const response = await fetch(`${agentBackendAPI.baseURL}/api/agents/${agentId}`, {
-        method: 'PATCH',
-        headers: await agentBackendAPI.getAuthHeaders(),
-        body: JSON.stringify({ active: !currentStatus }),
-      });
-
-      if (!response.ok) throw new Error('Failed to update agent status');
+      const response = await api.patch(`/api/agents/${agentId}`, { active: !currentStatus });
 
       // Update local state
       setAgents(
@@ -116,12 +111,7 @@ const AdminDashboard: React.FC = () => {
     if (!window.confirm('Are you sure you want to delete this agent?')) return;
 
     try {
-      const response = await fetch(`${agentBackendAPI.baseURL}/api/agents/${agentId}`, {
-        method: 'DELETE',
-        headers: await agentBackendAPI.getAuthHeaders(),
-      });
-
-      if (!response.ok) throw new Error('Failed to delete agent');
+      await api.delete(`/api/agents/${agentId}`);
 
       // Update local state
       setAgents(agents.filter((agent) => agent.id !== agentId));

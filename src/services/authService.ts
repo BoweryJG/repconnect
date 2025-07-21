@@ -1,85 +1,14 @@
-import axios from 'axios';
+import api from '../config/api';
 import { supabase } from '../lib/supabase';
 import logger from '../utils/logger';
 
-// Configure axios defaults
-axios.defaults.withCredentials = true;
-
-const API_BASE_URL = process.env.REACT_APP_BACKEND_URL || 'https://osbackend-zl1h.onrender.com';
-
-// Get CSRF token from cookie
-// Commented out - not currently used but kept for future CSRF implementation
-// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
-const _getCSRFToken = (): string | null => {
-  const matches = document.cookie.match(/csrf_token=([^;]+)/);
-  return matches ? matches[1] : null;
-};
-
-// Add CSRF token and Authorization header to axios requests
-axios.interceptors.request.use(
-  async (config) => {
-    // Add CSRF token for non-GET requests
-    // Commented out since backend doesn't implement CSRF yet
-    // const csrfToken = getCSRFToken();
-    // if (csrfToken && config.method !== 'get') {
-    //   config.headers['X-CSRF-Token'] = csrfToken;
-    // }
-
-    // Add Authorization header with Supabase token
-    try {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-      if (session?.access_token) {
-        config.headers['Authorization'] = `Bearer ${session.access_token}`;
-      }
-    } catch (error) {
-      logger.error('Failed to get auth session:', error);
-    }
-
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
-
-// Handle 401 responses (session expired)
-axios.interceptors.response.use(
-  (response) => response,
-  async (error) => {
-    if (error.response?.status === 401 && !error.config._retry) {
-      error.config._retry = true;
-
-      try {
-        // Try to refresh Supabase session
-        const {
-          data: { session },
-          error: refreshError,
-        } = await supabase.auth.refreshSession();
-
-        if (refreshError || !session) {
-          throw new Error('Session refresh failed');
-        }
-
-        // Retry the original request with new token
-        error.config.headers['Authorization'] = `Bearer ${session.access_token}`;
-        return axios(error.config);
-      } catch (refreshError) {
-        // Don't redirect - let the app handle showing login modal
-        logger.error('Session refresh failed:', refreshError);
-        return Promise.reject(refreshError);
-      }
-    }
-    return Promise.reject(error);
-  }
-);
+// Note: CSRF token handling and interceptors are configured in config/api.ts
 
 export const authService = {
   // Login and exchange Supabase session for httpOnly cookies
   async loginWithCookies(session: any) {
     try {
-      const response = await axios.post(`${API_BASE_URL}/api/auth/login`, {
+      const response = await api.post('/api/auth/login', {
         // eslint-disable-next-line camelcase
         access_token: session.access_token,
         // eslint-disable-next-line camelcase
@@ -96,7 +25,7 @@ export const authService = {
   // Logout and clear cookies
   async logout() {
     try {
-      await axios.post(`${API_BASE_URL}/api/auth/logout`);
+      await api.post('/api/auth/logout');
       await supabase.auth.signOut();
     } catch (error) {
       logger.error('Logout error:', error);
@@ -107,7 +36,7 @@ export const authService = {
   // Get current user from cookie session
   async getCurrentUser() {
     try {
-      const response = await axios.get(`${API_BASE_URL}/api/auth/me`);
+      const response = await api.get('/api/auth/me');
       return response.data.user;
     } catch (error) {
       logger.error('Get current user error:', error);
@@ -118,7 +47,7 @@ export const authService = {
   // Refresh session
   async refreshSession() {
     try {
-      const response = await axios.post(`${API_BASE_URL}/api/auth/refresh`);
+      const response = await api.post('/api/auth/refresh');
       return response.data;
     } catch (error) {
       logger.error('Refresh session error:', error);
@@ -129,7 +58,7 @@ export const authService = {
   // Get new CSRF token
   async getNewCSRFToken() {
     try {
-      const response = await axios.get(`${API_BASE_URL}/api/auth/csrf`);
+      const response = await api.get('/api/auth/csrf');
       return response.data.csrfToken;
     } catch (error) {
       logger.error('Get CSRF token error:', error);

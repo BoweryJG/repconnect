@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Paper, Typography } from '@mui/material';
 import { Mic, MicOff, Volume2, VolumeX } from 'lucide-react';
+import api from '../config/api';
 
 export default function AudioTestComponent() {
   const [isMicrophoneEnabled, setIsMicrophoneEnabled] = useState(false);
@@ -105,12 +106,8 @@ export default function AudioTestComponent() {
       setError(null);
 
       // Test connection to agent backend
-      const response = await fetch('https://osbackend-zl1h.onrender.com/api/agents');
-      if (!response.ok) {
-        throw new Error(`Backend returned ${response.status}`);
-      }
-
-      const data = await response.json();
+      const response = await api.get('/api/agents');
+      const data = response.data;
       // Agent backend is accessible
       setError(null);
       // Show success in UI instead of alert
