@@ -9,6 +9,14 @@ interface VoiceModalProps {
   agentName?: string;
   agentAvatar?: string;
   agentRole?: string;
+  agentId?: string;
+  voiceConfig?: {
+    voiceId: string;
+    stability: number;
+    similarityBoost: number;
+    style: number;
+    useSpeakerBoost: boolean;
+  };
 }
 
 interface TranscriptionLine {
@@ -24,6 +32,8 @@ export default function VoiceModalWebRTC({
   agentName = 'AI Assistant',
   agentAvatar = '/agent-avatar.jpg',
   agentRole = 'Your Personal AI Concierge',
+  agentId,
+  voiceConfig,
 }: VoiceModalProps) {
   const { user, session } = useAuth();
   const [isCallActive, setIsCallActive] = useState(false);
@@ -53,7 +63,7 @@ export default function VoiceModalWebRTC({
       // Create WebRTC client
       webRTCClientRef.current = new WebRTCClient({
         backendUrl,
-        agentId: agentName.toLowerCase().replace(/\s+/g, '-'),
+        agentId: agentId || agentName.toLowerCase().replace(/\s+/g, '-'),
         userId: user?.id || 'guest-' + Date.now(),
         authToken: session?.access_token,
       });

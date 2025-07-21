@@ -144,6 +144,7 @@ export const ChatbotIntegration: React.FC<ChatbotIntegrationProps> = ({
             agentName={selectedAgent.name}
             agentAvatar={typeof selectedAgent.avatar === 'string' ? selectedAgent.avatar : '🤖'}
             agentRole={selectedAgent.tagline}
+            agentId={selectedAgent.id}
           />
 
           <VoiceModalWebRTC
@@ -152,6 +153,8 @@ export const ChatbotIntegration: React.FC<ChatbotIntegrationProps> = ({
             agentName={selectedAgent.name}
             agentAvatar={typeof selectedAgent.avatar === 'string' ? selectedAgent.avatar : '🤖'}
             agentRole={selectedAgent.tagline}
+            agentId={selectedAgent.id}
+            voiceConfig={selectedAgent.voiceConfig}
           />
         </>
       )}
