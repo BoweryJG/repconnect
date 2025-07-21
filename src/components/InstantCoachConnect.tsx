@@ -85,7 +85,7 @@ export default function InstantCoachConnect() {
       const data = response.data;
 
       // Map agents to coaches format with voice info
-      const coaches = (data.agents || []).map((agent) => ({
+      const coaches = (data.agents || []).map((agent: any) => ({
         id: agent.id,
         name: agent.name,
         personality_type: agent.personality_type,
