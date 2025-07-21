@@ -8,6 +8,7 @@ export const authService = {
   // Login and exchange Supabase session for httpOnly cookies
   async loginWithCookies(session: any) {
     try {
+      console.log('[Auth] Exchanging Supabase session for cookies...');
       const response = await api.post('/api/auth/login', {
         // eslint-disable-next-line camelcase
         access_token: session.access_token,
@@ -15,8 +16,10 @@ export const authService = {
         refresh_token: session.refresh_token,
       });
 
+      console.log('[Auth] Cookie exchange response:', response.data);
       return response.data;
-    } catch (error) {
+    } catch (error: any) {
+      console.error('[Auth] Login with cookies error:', error.response?.data || error.message);
       logger.error('Login with cookies error:', error);
       throw error;
     }
@@ -36,9 +39,12 @@ export const authService = {
   // Get current user from cookie session
   async getCurrentUser() {
     try {
+      console.log('[Auth] Checking cookie session...');
       const response = await api.get('/api/auth/me');
+      console.log('[Auth] Current user:', response.data.user);
       return response.data.user;
-    } catch (error) {
+    } catch (error: any) {
+      console.log('[Auth] No cookie session found:', error.response?.status);
       logger.error('Get current user error:', error);
       return null;
     }
