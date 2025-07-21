@@ -36,9 +36,12 @@ export async function loadAgentConfig(agentId) {
   try {
     const headers = await getAuthHeaders();
 
-    const response = await fetch(`${AGENT_BACKEND_URL}/api/agents/${agentId}`, {
+    const response = await fetch(`${AGENT_BACKEND_URL}/api/canvas/agents/${agentId}`, {
       method: 'GET',
-      headers,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include', // Include cookies for authentication
     });
 
     if (!response.ok) {
@@ -129,9 +132,12 @@ export async function loadAllAgents() {
   try {
     const headers = await getAuthHeaders();
 
-    const response = await fetch(`${AGENT_BACKEND_URL}/api/agents`, {
+    const response = await fetch(`${AGENT_BACKEND_URL}/api/canvas/agents`, {
       method: 'GET',
-      headers,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include', // Include cookies for authentication
     });
 
     if (!response.ok) {

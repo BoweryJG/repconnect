@@ -46,14 +46,17 @@ class AgentBackendAPI {
 
     try {
       const url = category
-        ? `${this.baseURL}/api/agents?category=${category}`
-        : `${this.baseURL}/api/agents`;
+        ? `${this.baseURL}/api/canvas/agents?category=${category}`
+        : `${this.baseURL}/api/canvas/agents`;
 
       const headers = await this.getAuthHeaders();
 
       const response = await fetch(url, {
         method: 'GET',
-        headers,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include', // Include cookies for authentication
       });
 
       if (!response.ok) {
@@ -88,9 +91,12 @@ class AgentBackendAPI {
     try {
       const headers = await this.getAuthHeaders();
 
-      const response = await fetch(`${this.baseURL}/api/agents/${agentId}`, {
+      const response = await fetch(`${this.baseURL}/api/canvas/agents/${agentId}`, {
         method: 'GET',
-        headers,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include', // Include cookies for authentication
       });
 
       if (!response.ok) {
