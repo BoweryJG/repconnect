@@ -10,28 +10,35 @@ import {
   CircularProgress,
   Paper,
 } from '@mui/material';
-import { Phone, Psychology, GpsFixed, AutoAwesome, Mic, Message } from '@mui/icons-material';
+import {
+  Phone,
+  Psychology,
+  GpsFixed,
+  AutoAwesome,
+  Mic,
+  Message,
+  RecordVoiceOver,
+} from '@mui/icons-material';
 import { toast } from '../utils/toast';
 import api from '../config/api';
 
 interface Coach {
   id: string;
   name: string;
-  gender: string;
   personality_type: string;
-  avatar_url?: string;
+  avatar_emoji?: string;
+  voice_enabled: boolean;
+  voice_id?: string;
+  voice_name?: string;
+  whisper_supported: boolean;
   coaching_style: any;
   specialties: string[];
-}
-
-interface CoachSpecialization {
-  id: string;
-  coach_id: string;
-  procedure_category: string;
-  expertise_description: string;
-  common_questions: string[];
-  mock_scenarios: any[];
-  coach?: Coach;
+  category: string;
+  conversation_style?: any;
+  signature_phrases?: string[];
+  // Special fields for Harvey
+  aggression_level?: number;
+  is_harvey?: boolean;
 }
 
 const procedureCategories = [
@@ -45,7 +52,7 @@ const procedureCategories = [
 
 export default function InstantCoachConnect() {
   const [selectedCategory, setSelectedCategory] = useState<string>('');
-  const [availableCoaches, setAvailableCoaches] = useState<CoachSpecialization[]>([]);
+  const [availableCoaches, setAvailableCoaches] = useState<Coach[]>([]);
   const [loading, setLoading] = useState(false);
   const [connecting, setConnecting] = useState<string | null>(null);
   const [activeSession, setActiveSession] = useState<any>(null);
@@ -76,7 +83,29 @@ export default function InstantCoachConnect() {
     try {
       const response = await api.get('/api/repconnect/agents');
       const data = response.data;
-      setAvailableCoaches(data.coaches || []);
+
+      // Map agents to coaches format with voice info
+      const coaches = (data.agents || []).map((agent) => ({
+        id: agent.id,
+        name: agent.name,
+        personality_type: agent.personality_type,
+        avatar_emoji: agent.avatar_emoji,
+        voice_enabled: agent.voice_enabled,
+        voice_id: agent.voice_id,
+        voice_name: agent.voice_name,
+        whisper_supported: agent.whisper_supported,
+        coaching_style: agent.coaching_style,
+        specialties: agent.specialties || [],
+        category: agent.agent_category,
+        conversation_style: agent.conversation_style,
+        signature_phrases: agent.signature_phrases || [],
+        // Mark Harvey as special
+        is_harvey: agent.name === 'Harvey Specter',
+        aggression_level:
+          agent.personality_profile?.aggression || (agent.name === 'Harvey Specter' ? 9 : 5),
+      }));
+
+      setAvailableCoaches(coaches);
     } catch (_error) {
       toast.error('Failed to load available coaches');
     } finally {
@@ -256,6 +285,61 @@ export default function InstantCoachConnect() {
         <Typography variant="subtitle1" color="text.secondary">
           Practice with AI coaches specialized in specific procedures
         </Typography>
+
+        {/* Special Harvey Button */}
+        <Paper
+          sx={{
+            mt: 3,
+            p: 2,
+            background: 'linear-gradient(135deg, #8B5CF6 0%, #6366F1 100%)',
+            border: '2px solid #8B5CF6',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div>
+              <Typography variant="h6" sx={{ color: 'white', fontWeight: 'bold' }}>
+                🔥 Need to Close NOW? Get Harvey.
+              </Typography>
+              <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.9)' }}>
+                The elite closer. Aggressive, direct, no excuses. "I don't have dreams, I have
+                goals."
+              </Typography>
+            </div>
+            <Button
+              variant="contained"
+              size="large"
+              onClick={async () => {
+                // Load coaches if not already loaded
+                if (availableCoaches.length === 0) {
+                  await loadAvailableCoaches();
+                }
+                // Find Harvey
+                const harvey = availableCoaches.find((c) => c.name === 'Harvey Specter');
+                if (harvey) {
+                  connectToCoach(harvey.id, harvey.name);
+                } else {
+                  // Fetch Harvey directly
+                  try {
+                    const response = await api.get('/api/repconnect/agents/harvey');
+                    const harveyAgent = response.data.agent;
+                    connectToCoach(harveyAgent.id, harveyAgent.name);
+                  } catch (error) {
+                    toast.error('Harvey is not available right now');
+                  }
+                }
+              }}
+              sx={{
+                backgroundColor: 'white',
+                color: '#8B5CF6',
+                '&:hover': {
+                  backgroundColor: 'rgba(255,255,255,0.9)',
+                },
+              }}
+            >
+              Connect to Harvey
+            </Button>
+          </div>
+        </Paper>
       </div>
 
       {/* Procedure Category Selection */}
@@ -307,47 +391,87 @@ export default function InstantCoachConnect() {
             </div>
           ) : (
             <Grid container spacing={3}>
-              {availableCoaches.map((specialization) => (
-                <Grid item xs={12} md={6} lg={4} key={specialization.id}>
+              {availableCoaches.map((coach) => (
+                <Grid item xs={12} md={6} lg={4} key={coach.id}>
                   <Card
                     style={{
                       height: '100%',
                       display: 'flex',
                       flexDirection: 'column',
-                      backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                      border: '1px solid rgba(255, 255, 255, 0.1)',
+                      backgroundColor: coach.is_harvey
+                        ? 'rgba(139, 92, 246, 0.1)'
+                        : 'rgba(255, 255, 255, 0.05)',
+                      border: coach.is_harvey
+                        ? '2px solid #8B5CF6'
+                        : '1px solid rgba(255, 255, 255, 0.1)',
+                      position: 'relative',
+                      overflow: 'hidden',
                     }}
                   >
+                    {coach.is_harvey && (
+                      <div
+                        style={{
+                          position: 'absolute',
+                          top: 0,
+                          right: 0,
+                          background: 'linear-gradient(135deg, #8B5CF6 0%, #6366F1 100%)',
+                          padding: '4px 12px',
+                          borderBottomLeftRadius: '8px',
+                        }}
+                      >
+                        <Typography
+                          variant="caption"
+                          style={{ color: 'white', fontWeight: 'bold' }}
+                        >
+                          ELITE CLOSER
+                        </Typography>
+                      </div>
+                    )}
                     <CardHeader
-                      title={specialization.coach?.name}
-                      subheader={specialization.coach?.personality_type}
+                      title={
+                        <div
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                            flexWrap: 'wrap',
+                          }}
+                        >
+                          <span>{coach.name}</span>
+                          {coach.voice_enabled && (
+                            <Chip
+                              icon={<Mic />}
+                              label="Voice"
+                              size="small"
+                              color="primary"
+                              variant="outlined"
+                            />
+                          )}
+                        </div>
+                      }
+                      subheader={coach.personality_type}
                       titleTypographyProps={{ sx: { color: 'white' } }}
                       subheaderTypographyProps={{ sx: { color: 'text.secondary' } }}
-                      action={
-                        <Chip
-                          label={specialization.coach?.gender === 'male' ? '👨‍💼' : '👩‍💼'}
-                          size="small"
-                        />
-                      }
+                      action={<Chip label={coach.avatar_emoji || '🤖'} size="small" />}
                     />
                     <CardContent sx={{ flexGrow: 1 }}>
                       <Typography variant="body2" color="text.secondary" paragraph>
-                        {specialization.expertise_description}
+                        {coach.signature_phrases?.[0] ||
+                          `Expert in ${coach.specialties.slice(0, 2).join(', ')}`}
                       </Typography>
 
                       <Typography variant="subtitle2" gutterBottom>
-                        Common Questions:
+                        Specialties:
                       </Typography>
                       <div style={{ marginBottom: '16px' }}>
-                        {specialization.common_questions?.slice(0, 2).map((q, i) => (
-                          <Typography
+                        {coach.specialties.slice(0, 3).map((specialty, i) => (
+                          <Chip
                             key={i}
-                            variant="caption"
-                            display="block"
-                            color="text.secondary"
-                          >
-                            • {q}
-                          </Typography>
+                            label={specialty}
+                            size="small"
+                            variant="outlined"
+                            style={{ marginRight: '4px', marginBottom: '4px' }}
+                          />
                         ))}
                       </div>
 
@@ -371,18 +495,17 @@ export default function InstantCoachConnect() {
                         variant="contained"
                         fullWidth
                         startIcon={
-                          connecting === specialization.coach_id ? (
-                            <CircularProgress size={16} />
-                          ) : (
-                            <Phone />
-                          )
+                          connecting === coach.id ? <CircularProgress size={16} /> : <Phone />
                         }
-                        onClick={() =>
-                          connectToCoach(specialization.coach_id, specialization.coach?.name || '')
-                        }
-                        disabled={connecting === specialization.coach_id}
+                        onClick={() => connectToCoach(coach.id, coach.name)}
+                        disabled={connecting === coach.id || !coach.voice_enabled}
+                        color={coach.is_harvey ? 'secondary' : 'primary'}
                       >
-                        {connecting === specialization.coach_id ? 'Connecting...' : 'Connect Now'}
+                        {connecting === coach.id
+                          ? 'Connecting...'
+                          : coach.voice_enabled
+                            ? 'Connect Now'
+                            : 'Voice Coming Soon'}
                       </Button>
                     </CardContent>
                   </Card>
