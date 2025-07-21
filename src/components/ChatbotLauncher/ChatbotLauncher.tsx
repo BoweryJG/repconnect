@@ -105,53 +105,71 @@ const Header = styled(Box)(({ theme }) => ({
 }));
 
 const AgentCarousel = styled(Box)(({ theme }) => ({
-  padding: theme.spacing(2),
-  maxHeight: 400,
-  overflowY: 'auto',
+  padding: theme.spacing(1, 2),
+  display: 'flex',
+  overflowX: 'auto',
+  overflowY: 'hidden',
+  gap: theme.spacing(1.5),
+  scrollSnapType: 'x mandatory',
   '&::-webkit-scrollbar': {
-    width: 8,
+    height: 6,
+    display: 'none', // Hide scrollbar for cleaner mobile look
   },
-  '&::-webkit-scrollbar-track': {
-    background: 'rgba(0, 0, 0, 0.05)',
-    borderRadius: 4,
-  },
-  '&::-webkit-scrollbar-thumb': {
-    background: 'rgba(0, 0, 0, 0.2)',
-    borderRadius: 4,
-    '&:hover': {
-      background: 'rgba(0, 0, 0, 0.3)',
-    },
+  // Mobile optimizations
+  [theme.breakpoints.down('sm')]: {
+    padding: theme.spacing(1),
+    gap: theme.spacing(1),
   },
 }));
 
 const AgentCard = styled(Box)<{ agentcolor: string }>(({ theme, agentcolor }) => ({
-  padding: theme.spacing(2),
-  marginBottom: theme.spacing(1.5),
-  borderRadius: 16,
+  minWidth: 140,
+  maxWidth: 160,
+  height: 120,
+  padding: theme.spacing(1.5),
+  borderRadius: 12,
   cursor: 'pointer',
-  transition: 'all 0.3s ease',
-  background: 'rgba(255, 255, 255, 0.8)',
-  border: '1px solid rgba(0, 0, 0, 0.08)',
+  position: 'relative',
+  overflow: 'hidden',
+  background: `linear-gradient(135deg, ${agentcolor}15 0%, ${agentcolor}08 100%)`,
+  border: `1px solid ${agentcolor}25`,
+  scrollSnapAlign: 'start',
+  flexShrink: 0,
   display: 'flex',
+  flexDirection: 'column',
   alignItems: 'center',
-  gap: theme.spacing(2),
-  '&:hover': {
-    transform: 'translateX(-4px)',
-    background: `linear-gradient(135deg, ${agentcolor}15 0%, ${agentcolor}05 100%)`,
-    borderColor: agentcolor,
-    boxShadow: `0 4px 20px ${agentcolor}30`,
+  justifyContent: 'center',
+  textAlign: 'center',
+  transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+  // Mobile optimizations
+  [theme.breakpoints.down('sm')]: {
+    minWidth: 120,
+    maxWidth: 140,
+    height: 100,
+    padding: theme.spacing(1),
   },
-  '&:last-child': {
-    marginBottom: 0,
+  '&:hover': {
+    transform: 'scale(1.05)',
+    boxShadow: `0 4px 12px ${agentcolor}30`,
+  },
+  '&:active': {
+    transform: 'scale(0.95)',
   },
 }));
 
 const StyledAvatar = styled(Avatar)<{ bgcolor: string }>(({ theme, bgcolor }) => ({
-  width: 56,
-  height: 56,
+  width: 48,
+  height: 48,
   backgroundColor: bgcolor,
   color: theme.palette.common.white,
-  fontSize: 24,
+  fontSize: 20,
+  marginBottom: theme.spacing(0.5),
+  // Mobile optimizations
+  [theme.breakpoints.down('sm')]: {
+    width: 40,
+    height: 40,
+    fontSize: 18,
+  },
 }));
 
 // Default agents - removed as agents are now passed from parent
@@ -333,46 +351,51 @@ const ChatbotLauncher: React.FC<ChatbotLauncherProps> = ({
                 >
                   <StyledAvatar bgcolor={agent.color || '#3B82F6'}>
                     {typeof agent.avatar === 'string' ? (
-                      <span style={{ fontSize: '2rem' }}>{agent.avatar}</span>
+                      <span style={{ fontSize: '1.5rem' }}>{agent.avatar}</span>
                     ) : (
                       (() => {
                         const Icon = agent.avatar.icon;
-                        return <Icon size={32} style={{ color: agent.avatar.iconColor }} />;
+                        return (
+                          <Icon size={24} style={{ color: agent.avatar.iconColor || '#fff' }} />
+                        );
                       })()
                     )}
                   </StyledAvatar>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <Typography variant="subtitle1" fontWeight={600}>
-                        {agent.name}
-                      </Typography>
-                      {!agent.available && (
-                        <Chip
-                          label="Soon"
-                          size="small"
-                          sx={{
-                            height: 20,
-                            fontSize: '0.7rem',
-                            backgroundColor: 'rgba(0, 0, 0, 0.08)',
-                          }}
-                        />
-                      )}
-                    </div>
-                    <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-                      {agent.description}
+                  <Box sx={{ textAlign: 'center', width: '100%' }}>
+                    <Typography
+                      variant="subtitle2"
+                      fontWeight={600}
+                      sx={{
+                        fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                        lineHeight: 1.2,
+                        mb: 0.5,
+                      }}
+                    >
+                      {agent.name}
                     </Typography>
+                    {!agent.available && (
+                      <Chip
+                        label="Soon"
+                        size="small"
+                        sx={{
+                          height: 16,
+                          fontSize: '0.6rem',
+                          backgroundColor: 'rgba(0, 0, 0, 0.08)',
+                        }}
+                      />
+                    )}
                     <Typography
                       variant="caption"
                       sx={{
                         color: agent.color,
                         fontWeight: 500,
                         mt: 0.5,
-                        display: 'inline-block',
+                        display: 'block',
                       }}
                     >
                       {agent.specialty}
                     </Typography>
-                  </div>
+                  </Box>
                 </AgentCard>
               </Tooltip>
             ))}
