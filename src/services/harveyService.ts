@@ -71,12 +71,10 @@ class HarveyService {
 
   constructor() {
     this.baseUrl = process.env.REACT_APP_BACKEND_URL || 'https://osbackend-zl1h.onrender.com';
-    // Get user ID from auth or generate a unique one
+    // Get user ID from session or generate a unique one
     const getUserId = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      return user?.id || localStorage.getItem('harvey_user_id') || `user-${Date.now()}`;
+      const { data: { session } } = await supabase.auth.getSession();
+      return session?.user?.id || localStorage.getItem('harvey_user_id') || `user-${Date.now()}`;
     };
     getUserId().then((id) => {
       this.userId = id;
@@ -90,7 +88,9 @@ class HarveyService {
 
     // Get auth token  
     // eslint-disable-next-line
-    const authToken = localStorage.getItem('harvey_token');
+    const storageKey = 'harvey_token';
+    // eslint-disable-next-line
+    const authToken = localStorage.getItem(storageKey);
 
     // Connect to harvey-ws namespace
     this.socket = io(`${this.baseUrl}/harvey-ws`, {

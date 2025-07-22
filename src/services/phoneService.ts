@@ -59,10 +59,16 @@ class PhoneService {
 
   // Phone Number Management
   async getPhoneNumbers(): Promise<PhoneNumber[]> {
+    // Check if user has a session first
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.user?.id) {
+      return []; // Return empty array if not authenticated
+    }
+
     const { data: numbers, error } = await supabase
       .from('phone_numbers')
       .select('*')
-      .eq('assigned_to', (await supabase.auth.getUser()).data.user?.id)
+      .eq('assigned_to', session.user.id)
       .order('created_at', { ascending: false });
 
     if (error) throw error;
@@ -84,9 +90,14 @@ class PhoneService {
 
   async provisionNumber(phoneNumber: string, friendlyName?: string) {
     try {
-      const user = await supabase.auth.getUser();
+      // Check if user has a session first
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.user?.id) {
+        throw new Error('User not authenticated');
+      }
+
       const response = await this.apiClient.post('/phone-numbers/provision', {
-        clientId: user.data.user?.id,
+        clientId: session.user.id,
         phoneNumber,
         friendlyName,
         capabilities: {
@@ -278,7 +289,7 @@ class PhoneService {
   }
 
   // Real-time subscriptions
-  subscribeToIncomingCalls(phoneNumber: string, callback: (call: CallLog) => void) {
+  subscribeToIncomingCalls(phoneNumber: string, callback: (_call: CallLog) => void) {
     return supabase
       .channel(`calls:${phoneNumber}`)
       .on(
@@ -294,7 +305,7 @@ class PhoneService {
       .subscribe();
   }
 
-  subscribeToIncomingSMS(phoneNumber: string, callback: (message: SMSMessage) => void) {
+  subscribeToIncomingSMS(phoneNumber: string, callback: (_message: SMSMessage) => void) {
     return supabase
       .channel(`sms:${phoneNumber}`)
       .on(

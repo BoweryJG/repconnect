@@ -40,12 +40,15 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [isLoading, setIsLoading] = useState(true);
 
   const checkAdminStatus = async (): Promise<boolean> => {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user || !user.email) return false;
+    // This should be updated to use the main auth context instead
+    // For now, only check if we have a session
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.user?.email) {
+      setIsAdmin(false);
+      return false;
+    }
 
-    const adminStatus = ADMIN_EMAILS.includes(user.email.toLowerCase());
+    const adminStatus = ADMIN_EMAILS.includes(session.user.email.toLowerCase());
     setIsAdmin(adminStatus);
     return adminStatus;
   };

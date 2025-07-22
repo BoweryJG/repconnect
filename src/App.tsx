@@ -185,8 +185,13 @@ function AppContent() {
     setSubscriptionTier,
   } = useStore();
 
-  // Load contacts from Supabase on mount
+  // Load contacts from Supabase on mount - only for authenticated users
   const loadContacts = useCallback(async () => {
+    // Don't load contacts if user is not authenticated
+    if (!user) {
+      return;
+    }
+
     try {
       const { data, error } = await supabase
         .from('contacts')
@@ -224,7 +229,7 @@ function AppContent() {
     } catch (error) {
       logger.error('Error loading contacts:', error);
     }
-  }, [setContacts]);
+  }, [user, setContacts]);
 
   useEffect(() => {
     loadContacts();
