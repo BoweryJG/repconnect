@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { supabase } from '../lib/supabase';
 import { CallAnalysisRecord } from '../types/callSummary';
+import { useAuth } from '../auth/AuthContext';
 
 export interface CallHistoryItem {
   id: string;
@@ -38,6 +39,7 @@ export interface UseCallHistoryOptions {
 
 export const useCallHistory = (options: UseCallHistoryOptions = {}) => {
   const { pageSize = 20, autoRefresh = true, filters = {} } = options;
+  const { user, loading: authLoading } = useAuth(); // Add authentication check with loading state
 
   const [calls, setCalls] = useState<CallHistoryItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -49,6 +51,12 @@ export const useCallHistory = (options: UseCallHistoryOptions = {}) => {
   // Fetch calls with filters and pagination
   const fetchCalls = useCallback(
     async (reset = false) => {
+      // Don't fetch if not authenticated
+      if (!user || authLoading) {
+        setLoading(false);
+        return;
+      }
+
       try {
         setLoading(true);
         setError(null);
@@ -204,7 +212,7 @@ export const useCallHistory = (options: UseCallHistoryOptions = {}) => {
         setLoading(false);
       }
     },
-    [page, pageSize, filters]
+    [page, pageSize, filters, user, authLoading]
   );
 
   // Load more calls
@@ -219,9 +227,9 @@ export const useCallHistory = (options: UseCallHistoryOptions = {}) => {
     fetchCalls(true);
   }, [fetchCalls]);
 
-  // Set up real-time subscription
+  // Set up real-time subscription - only for authenticated users
   useEffect(() => {
-    if (!autoRefresh) return;
+    if (!autoRefresh || !user || authLoading) return; // Add authentication guard with loading check
 
     const channel = supabase
       .channel('call-updates')
@@ -254,7 +262,7 @@ export const useCallHistory = (options: UseCallHistoryOptions = {}) => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [autoRefresh, refresh]);
+  }, [autoRefresh, refresh, user, authLoading]); // Add user and authLoading dependencies
 
   // Initial fetch and refetch when filters change
   useEffect(() => {
