@@ -1,5 +1,5 @@
 import React from 'react';
-import { Avatar, Typography } from '@mui/material';
+import { Avatar, Typography, Tooltip } from '@mui/material';
 import { User } from '@supabase/supabase-js';
 
 interface UserProfile {
@@ -56,7 +56,7 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
 
   const initials = getInitials(displayName);
 
-  return (
+  const content = (
     <div
       onClick={onClick}
       style={{
@@ -108,4 +108,15 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
       )}
     </div>
   );
+
+  // Wrap with tooltip if onClick is provided (indicating sign out functionality)
+  if (onClick) {
+    return (
+      <Tooltip title="Click to sign out" placement="bottom">
+        {content}
+      </Tooltip>
+    );
+  }
+
+  return content;
 };

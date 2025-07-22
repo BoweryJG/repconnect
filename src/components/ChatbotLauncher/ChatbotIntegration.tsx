@@ -114,11 +114,8 @@ export const ChatbotIntegration: React.FC<ChatbotIntegrationProps> = ({
     return categoryMap[agentId] || 'general';
   };
 
-  // Show loading state
-  if (isLoading) {
-    return null; // Or a loading spinner
-  }
-
+  // Always show the launcher, even when loading
+  // This ensures the launcher doesn't disappear when auth state changes
   return (
     <>
       <ChatbotLauncher
