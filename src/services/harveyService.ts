@@ -86,11 +86,9 @@ class HarveyService {
   private initializeSocket(): void {
     if (this.socket) return;
 
-    // Get auth token  
-    // eslint-disable-next-line
+    // Get auth credentials from storage
     const storageKey = 'harvey_token';
-    // eslint-disable-next-line
-    const authToken = localStorage.getItem(storageKey);
+    const authCredential = localStorage.getItem(storageKey);
 
     // Connect to harvey-ws namespace
     this.socket = io(`${this.baseUrl}/harvey-ws`, {
@@ -101,7 +99,7 @@ class HarveyService {
       reconnectionDelayMax: 5000,
       auth: {
         userId: this.userId,
-        token: authToken,
+        token: authCredential,
       },
       query: {
         userId: this.userId,
