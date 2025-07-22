@@ -1,373 +1,390 @@
-# RepConnect Frontend - Claude Code Context
+# CLAUDE.md
 
-This file provides guidance to Claude Code when working with the RepConnect frontend React application.
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Essential Commands
+
+### Development
+
+- `npm start` - Start development server (React)
+- `npm run build` - Build for production
+- `npm test` - Run tests
+- `npm run lint` - Run linting
+- `npm run format` - Format code with Prettier
+
+### Testing
+
+- `npm test` - Run all tests
+- `npm run test:coverage` - Run tests with coverage
+- `npm run test:ci` - Run tests in CI mode
 
 ## Architecture Overview
 
-### RepConnect Application
+### Core Application Structure
 
-RepConnect is a **sales representative platform** that connects to the **unified agent system backend** for AI-powered sales coaching and voice conversations.
+RepConnect is a **sales representative platform** React application integrated with the unified agent system backend for AI-powered sales coaching and voice conversations.
 
-**Key Features:**
+### Key Architectural Patterns
 
-- 🎤 **Voice Conversations**: 19 ElevenLabs-powered agents
-- 💬 **Text Chat**: Real-time streaming chat with AI agents
-- 📊 **Performance Dashboards**: Harvey Specter coaching and battle mode
-- 📞 **Call Management**: Twilio integration for voice calls
-- 🎯 **Multi-Agent Support**: Access to 19 specialized sales agents
+#### 1. Backend Integration (`src/config/api.ts`)
 
-### Backend Integration
+Fully integrated with the unified backend:
 
-- **Primary Backend**: `https://osbackend-zl1h.onrender.com` (unified agent system)
-- **Local Development**: `http://localhost:3001`
-- **Agent API**: `/api/repconnect/*` endpoints
-- **Chat API**: `/api/repconnect/chat/*` endpoints (NEW)
-- **WebSocket**: `/agents-ws` with `appName: 'repconnect'`
+- **Primary Backend**: `osbackend-zl1h.onrender.com`
+- **Fallback URL**: Configurable via `REACT_APP_BACKEND_URL`
+- **Agent System**: Complete integration with 19 AI agents
+- **Authentication**: Supabase Auth with JWT tokens
 
-## Unified Agent System Integration
+#### 2. Unified Agent System Integration
 
-### Available Agents (19 total)
+**Multi-Agent Architecture** supporting 19 specialized agents:
 
-RepConnect has access to these specialized agents via the unified backend:
+- **Agent Management**: REST API endpoints via `/api/repconnect/agents`
+- **Chat Functionality**: Both WebSocket and REST API support
+- **Voice Sessions**: ElevenLabs integration for voice conversations
+- **Real-time Communication**: Socket.IO for streaming responses
 
-#### 🏆 Elite Closers (2 agents)
+#### 3. Voice & Communication System
 
-- **Harvey Specter**: Legendary closer with maximum aggression
-- **Victoria Sterling**: Elite negotiator with sophisticated approach
+**Advanced Voice Integration**:
 
-#### 👥 Coaches (5 agents)
+- **19 Voice-Enabled Agents**: ElevenLabs TTS integration
+- **WebRTC Support**: Real-time voice conversations
+- **Deepgram Integration**: Speech-to-text processing
+- **Twilio Integration**: Traditional phone call support
 
-- **Coach Alex**: Motivational sales coach (RepConnect exclusive)
-- **Alexis Rivera**: Confidence and mindset coaching
-- **David Park**: Strategic sales methodology
-- **Marcus Chen**: Performance optimization
-- **Sarah Mitchell**: Relationship building expertise
+#### 4. Harvey Specter Integration
 
-#### 🧠 Strategists (4 agents)
+**Elite Coaching System**:
 
-- **Hunter**: Prospecting and lead generation specialist
-- **Closer**: Deal-making and negotiation expert
-- **Educator**: Teaching-focused medical procedure expert
-- **Strategist**: Market intelligence and competitive analysis
+- **Harvey War Room**: 3D visualization with Three.js
+- **Battle Mode**: Competitive sales challenges
+- **Performance Analytics**: Real-time coaching metrics
+- **WebSocket Connection**: Direct Harvey backend communication
 
-#### 🩺 Medical Specialists (6 agents)
+### Component Architecture
 
-- **Dr. Amanda Foster, Dr. Harvey Stern, Dr. Lisa Martinez**: Medical device experts
-- **Dr. Sarah Chen, Jake Thompson, Marcus Rodriguez**: Specialized procedure experts
+#### Agent Integration Components (`src/components/`)
 
-#### 🎤 Voice Representatives (2 RepConnect exclusive)
+- **ChatbotLauncher/**: Main agent interface with 19 agents
+- **AgentSelector.tsx**: Agent selection and filtering UI
+- **VoiceModal\*.tsx**: Voice conversation interface components
+- **WebRTCVoiceInterface\*.tsx**: WebRTC voice communication
 
-- **Marcus**: Professional analytical approach
-- **Sarah**: Friendly empathetic communication
+#### Harvey-Specific Components
 
-### API Endpoints
+- **Harvey\*.tsx**: Harvey Specter-specific interface components
+- **HarveyWarRoom.tsx**: 3D battle environment
+- **HarveyCoachingDashboard.tsx**: Performance metrics display
 
-#### Agent Management
+#### Voice & Communication
 
-```
-GET    /api/repconnect/agents                    # List all RepConnect agents (19)
-GET    /api/repconnect/agents/voice-enabled      # Voice-enabled agents (19)
-GET    /api/repconnect/agents/harvey             # Harvey Specter specific
-GET    /api/repconnect/agents/categories         # Agent categories
-GET    /api/repconnect/agents/:id                # Specific agent details
-```
+- **Voice\*.tsx**: Voice interaction components
+- **WebRTC\*.tsx**: WebRTC communication components
+- **ChatInterface.tsx**: Text-based agent communication
 
-#### Chat Functionality (NEW)
+### Data Flow
+
+#### 1. Agent Selection Flow
 
 ```
-POST   /api/repconnect/chat/stream               # Streaming chat (SSE)
-POST   /api/repconnect/chat/message              # Standard chat messages
-POST   /api/repconnect/chat/conversations        # Create conversation
-GET    /api/repconnect/chat/conversations        # List conversations
-GET    /api/repconnect/chat/conversations/:id    # Get conversation details
+User Selection → Agent Filter → API Request → Agent Details → Chat/Voice Interface
 ```
 
-#### Voice Sessions
+#### 2. Chat Communication Flow
 
 ```
-POST   /api/repconnect/agents/:id/start-voice-session  # Start voice session
+User Message → WebSocket/REST → Agent Processing → Streaming Response → UI Update
 ```
 
-### WebSocket Integration
+#### 3. Voice Session Flow
 
-RepConnect can use both WebSocket and REST for chat:
-
-```javascript
-// WebSocket Connection
-const socket = io('https://osbackend-zl1h.onrender.com', {
-  path: '/agents-ws',
-  auth: {
-    token: 'jwt-token',
-    appName: 'repconnect', // IMPORTANT: Must specify 'repconnect'
-  },
-});
-
-// Events
-socket.emit('message', { conversationId, message, agentId });
-socket.on('agent:message:chunk', (data) => {
-  /* streaming response */
-});
-socket.on('agent:message:complete', (data) => {
-  /* response complete */
-});
+```
+Agent Selection → Voice Session API → ElevenLabs TTS → WebRTC Stream → Audio Interface
 ```
 
-## Frontend Architecture
+### Integration Points
 
-### Tech Stack
+#### Backend Synchronization Status
 
-- **React 18** with TypeScript
-- **Material-UI v5** for components
-- **Zustand** for state management
-- **React Router v6** for routing
-- **Three.js** for 3D visualizations (Harvey War Room)
-- **Framer Motion** for animations
-- **Socket.IO Client** for WebSocket connections
+**RepConnect ↔ osbackend-zl1h.onrender.com Integration**
 
-### Key Components
+**✅ FULLY SYNCHRONIZED ENDPOINTS:**
 
-#### Agent Integration
+- `GET /api/repconnect/agents` - List all RepConnect agents (✅ 19 agents)
+- `GET /api/repconnect/agents/voice-enabled` - Voice-enabled agents (✅ 19 agents)
+- `GET /api/repconnect/agents/harvey` - Harvey Specter specific (✅ Working)
+- `GET /api/repconnect/agents/categories` - Agent categories (✅ Working)
+- `GET /api/repconnect/agents/:id` - Specific agent details (✅ Working)
+- `POST /api/repconnect/chat/stream` - Streaming chat SSE (✅ Working)
+- `POST /api/repconnect/chat/message` - Standard chat messages (✅ Working)
+- `POST /api/repconnect/chat/conversations` - Create conversation (✅ Working)
+- `GET /api/repconnect/chat/conversations` - List conversations (✅ Working)
+- `GET /api/repconnect/chat/conversations/:id` - Get conversation details (✅ Working)
+- `POST /api/repconnect/agents/:id/start-voice-session` - Start voice session (✅ Working)
+- `GET /health` - Backend health check (✅ Working)
 
-- `src/components/ChatbotLauncher/` - Main agent interface
-- `src/components/AgentSelector.tsx` - Agent selection UI
-- `src/components/VoiceModal*.tsx` - Voice conversation interface
-- `src/services/agentBackendAPI.js` - Backend API integration
-- `src/services/agentChatAPI.js` - Chat functionality
+**🔧 FUNCTIONAL FEATURES:**
 
-#### Harvey Specific
+- **Agent System**: Complete access to 19 AI agents across all categories
+- **Chat Functionality**: Full WebSocket and REST API support
+- **Voice Integration**: ElevenLabs TTS with all 19 agents
+- **Harvey Integration**: Elite coaching system with battle mode
+- **Authentication**: Supabase Auth with automatic token refresh
+- **Real-time Communication**: Socket.IO streaming responses
+- **Performance Analytics**: Coaching metrics and progress tracking
 
-- `src/components/Harvey*.tsx` - Harvey-specific components
-- `src/services/harveyAPI.js` - Harvey backend integration
-- `src/services/harveyWebRTC.ts` - Voice integration
+#### Agent Categories Available
 
-#### Voice & WebRTC
+**🏆 Elite Closers (2 agents)**
 
-- `src/services/webRTCVoiceService.ts` - WebRTC voice service
-- `src/services/elevenLabsTTS.ts` - ElevenLabs integration
-- `src/components/WebRTCVoiceInterface*.tsx` - Voice UI components
+- Harvey Specter: Legendary closer with maximum aggression
+- Victoria Sterling: Elite negotiator with sophisticated approach
 
-### Configuration Files
+**👥 Coaches (5 agents)**
+
+- Coach Alex: Motivational sales coach (RepConnect exclusive)
+- Alexis Rivera: Confidence and mindset coaching
+- David Park: Strategic sales methodology
+- Marcus Chen: Performance optimization
+- Sarah Mitchell: Relationship building expertise
+
+**🧠 Strategists (4 agents)**
+
+- Hunter: Prospecting and lead generation specialist
+- Closer: Deal-making and negotiation expert
+- Educator: Teaching-focused medical procedure expert
+- Strategist: Market intelligence and competitive analysis
+
+**🩺 Medical Specialists (6 agents)**
+
+- Dr. Amanda Foster, Dr. Harvey Stern, Dr. Lisa Martinez: Medical device experts
+- Dr. Sarah Chen, Jake Thompson, Marcus Rodriguez: Specialized procedure experts
+
+**🎤 Voice Representatives (2 RepConnect exclusive)**
+
+- Marcus: Professional analytical approach
+- Sarah: Friendly empathetic communication
+
+#### External Services
+
+- **Supabase**: Authentication and user management (`cbopynuvhcymbumjnvay.supabase.co`)
+- **ElevenLabs**: Voice synthesis for all 19 agents
+- **Deepgram**: Speech-to-text processing
+- **Twilio**: Traditional phone call integration
+- **Sentry**: Error monitoring and performance tracking
+
+### State Management
+
+#### React State Usage
+
+- **React Hooks**: useState, useEffect for local component state
+- **Zustand**: Global state management for agent selections and chat history
+- **Context API**: Authentication state and user preferences
+- **Custom Hooks**: Agent management and voice session handling
+
+#### Data Persistence
+
+- **Supabase**: User profiles, agent conversations, performance metrics
+- **Local Storage**: Agent preferences, UI settings
+- **Session Storage**: Temporary chat state and voice session data
+
+### Important Development Notes
 
 #### Environment Variables
 
-```env
-# Backend Integration
-REACT_APP_BACKEND_URL=https://osbackend-zl1h.onrender.com
-REACT_APP_HARVEY_API_URL=https://osbackend-zl1h.onrender.com
-REACT_APP_HARVEY_WS_URL=wss://osbackend-zl1h.onrender.com
+**Backend Connection:**
 
-# Supabase (for auth and data)
-REACT_APP_SUPABASE_URL=https://cbopynuvhcymbumjnvay.supabase.co
-REACT_APP_SUPABASE_ANON_KEY=your-anon-key
+- `REACT_APP_BACKEND_URL=https://osbackend-zl1h.onrender.com` (unified backend)
 
-# Voice Services
-REACT_APP_ELEVENLABS_API_KEY=your-elevenlabs-key
-REACT_APP_DEEPGRAM_API_KEY=your-deepgram-key
+**Required for full functionality:**
 
-# Twilio (for voice calls)
-REACT_APP_TWILIO_PHONE_NUMBER=+18454090692
-```
+- `REACT_APP_SUPABASE_URL` and `REACT_APP_SUPABASE_ANON_KEY` (authentication)
+- `REACT_APP_ELEVENLABS_API_KEY` (voice synthesis)
+- `REACT_APP_DEEPGRAM_API_KEY` (speech-to-text)
+- `REACT_APP_TWILIO_PHONE_NUMBER` (phone integration)
+- `REACT_APP_HARVEY_API_URL` and `REACT_APP_HARVEY_WS_URL` (Harvey integration)
 
-## Development Commands
+#### Build Configuration
 
-### Core Development
+- **React 18**: Modern React with concurrent features
+- **TypeScript**: Full type safety across the application
+- **Material-UI v5**: Comprehensive component library
+- **Three.js**: 3D visualization for Harvey War Room
 
-```bash
-# Install dependencies
-npm install
+#### Error Handling
 
-# Start development server (http://localhost:3000)
-npm start
+- **Sentry Integration**: Comprehensive error monitoring
+- **Graceful Degradation**: Fallbacks when agents are unavailable
+- **Authentication Recovery**: Automatic session refresh
+- **Voice Session Recovery**: Reconnection handling for voice calls
 
-# Build for production
-npm run build
+#### Performance Considerations
 
-# Run tests
-npm test
+- **Code Splitting**: Lazy loading for agent components
+- **Memory Management**: Proper cleanup for voice sessions
+- **WebSocket Management**: Connection pooling and reconnection
+- **3D Optimization**: Efficient Three.js rendering for Harvey components
 
-# Run specific test file
-npm test -- src/components/ComponentName.test.tsx
-```
+#### Mobile Optimization
 
-### Agent Testing
+- **Responsive Design**: Mobile-first agent interfaces
+- **Touch-Friendly**: Optimized for mobile sales scenarios
+- **Progressive Web App**: Offline capabilities for core features
+- **Voice Optimization**: Mobile microphone and speaker handling
 
-```bash
-# Test backend agent connections
-node test-agent-connections.js
+### Testing Strategy
 
-# Test all API endpoints
-node test-all-apis.js
+- **Jest**: Unit and integration testing framework
+- **React Testing Library**: Component testing with user interaction focus
+- **API Testing**: Backend endpoint verification scripts
+- **Voice Testing**: ElevenLabs and WebRTC connection testing
 
-# Test production APIs
-node test-production-apis.js
+### Security Implementation
 
-# Test Harvey WebSocket
-node test-harvey-socket.js
-```
+- **JWT Authentication**: Secure Supabase token management
+- **API Security**: Automatic token refresh and validation
+- **Environment Secrets**: Secure API key management
+- **CORS Configuration**: Proper origin validation for agent communication
 
-### Backend Server (if running locally)
+## Backend Synchronization Status
 
-```bash
-# Start backend server (runs on PORT env var, default 3001)
-node server.js
+### Overview
 
-# Check production readiness
-./check-production.sh
+RepConnect is fully synchronized with the unified osbackend-zl1h.onrender.com backend. All agent functionality, chat capabilities, and voice integration are operational.
 
-# Security audit
-./check-for-secrets.sh
-```
+### RepConnect Backend Sync Status - Complete ✅
 
-## Database Integration
-
-### Supabase Tables
-
-- `representatives` - Sales rep profiles
-- `contacts` - Lead/customer data
-- `calls` - Call history and recordings
-- `call_summaries` - AI-generated summaries
-- `harvey_sessions` - Coaching sessions
-- `coaching_analytics` - Performance metrics
-
-### Authentication
-
-- **Supabase Auth** with JWT tokens
-- **Session management** with automatic refresh
-- **Row Level Security (RLS)** on all tables
-
-## Critical Implementation Notes
-
-### Backend URL Configuration
-
-Always ensure these services point to the correct backend:
+#### Agent System Integration
 
 ```javascript
-// In src/services/agentBackendAPI.js
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:3001';
+// All agents accessible via unified backend:
 
-// In src/services/agentChatAPI.js
-const API_BASE_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:3001';
+// Elite Closers (2)
+Harvey Specter, Victoria Sterling
+
+// Coaches (5)
+Coach Alex (RepConnect exclusive), Alexis Rivera, David Park, Marcus Chen, Sarah Mitchell
+
+// Strategists (4)
+Hunter, Closer, Educator, Strategist
+
+// Medical Specialists (6)
+Dr. Amanda Foster, Dr. Harvey Stern, Dr. Lisa Martinez, Dr. Sarah Chen, Jake Thompson, Marcus Rodriguez
+
+// Voice Representatives (2 RepConnect exclusive)
+Marcus, Sarah
 ```
 
-### Agent Loading Pattern
+#### Implementation Details
+
+- **Backend**: Full agent management via `unified_agents` table
+- **Frontend**: Complete agent integration via `src/services/agentBackendAPI.js`
+- **Architecture**: Multi-modal communication (WebSocket + REST)
+- **Features**: Complete AI coaching system with voice and chat
+
+#### Communication Channels
+
+- **WebSocket**: Real-time streaming chat via `/agents-ws` endpoint
+- **REST API**: Full chat functionality via `/api/repconnect/chat/*` endpoints
+- **Voice Sessions**: ElevenLabs integration via `/api/repconnect/agents/:id/start-voice-session`
+- **Harvey Integration**: Direct connection to Harvey coaching system
+
+#### Current Capabilities
+
+- **19 AI Agents**: Full access to all unified backend agents
+- **Voice Conversations**: ElevenLabs TTS with all agents
+- **Real-time Chat**: WebSocket and REST API streaming support
+- **Harvey War Room**: 3D battle environment with elite coaching
+- **Performance Analytics**: Real-time coaching metrics and progress tracking
+- **Mobile Optimization**: Full mobile-responsive agent interfaces
+
+### Environment Configuration
+
+```env
+# Frontend Environment Variables
+REACT_APP_BACKEND_URL=https://osbackend-zl1h.onrender.com
+REACT_APP_SUPABASE_URL=https://cbopynuvhcymbumjnvay.supabase.co
+REACT_APP_SUPABASE_ANON_KEY=your_supabase_anon_key
+REACT_APP_ELEVENLABS_API_KEY=your_elevenlabs_api_key
+REACT_APP_DEEPGRAM_API_KEY=your_deepgram_api_key
+REACT_APP_TWILIO_PHONE_NUMBER=+18454090692
+
+# Backend Environment Variables (on Render)
+SUPABASE_URL=https://cbopynuvhcymbumjnvay.supabase.co
+SUPABASE_SERVICE_KEY=your_supabase_service_key
+ELEVENLABS_API_KEY=your_elevenlabs_api_key
+```
+
+### Integration Status Summary
+
+- **Backend Integration**: 100% Complete ✅
+- **Agent System**: Fully Functional (19 agents) ✅
+- **Chat Functionality**: WebSocket + REST ✅
+- **Voice Integration**: ElevenLabs TTS ✅
+- **Harvey System**: Battle Mode Operational ✅
+- **Performance Analytics**: Real-time Metrics ✅
+
+RepConnect is fully integrated with the unified osbackend system and provides complete AI-powered sales coaching capabilities with 19 specialized agents, voice conversations, and elite performance coaching.
+
+## File Naming Conventions
+
+When creating new files:
+
+- **Agent components**: Include "agent" in filename (e.g., `AgentSelector.tsx`)
+- **Voice components**: Include "voice" in filename (e.g., `VoiceModal.tsx`)
+- **Harvey components**: Include "harvey" in filename (e.g., `HarveyWarRoom.tsx`)
+- **Chat components**: Include "chat" in filename (e.g., `ChatInterface.tsx`)
+
+## Agent Integration Patterns
+
+### Loading Agents
 
 ```javascript
 // Correct way to load RepConnect agents
 const loadRepConnectAgents = async () => {
-  const response = await fetch(`${BACKEND_URL}/api/repconnect/agents`);
-  const data = await response.json();
-  return data.agents; // Should return 19 agents
+  const response = await api.get('/api/repconnect/agents');
+  return response.data.agents; // Returns 19 agents
 };
 ```
 
-### Chat Integration Pattern
+### Chat Integration
 
 ```javascript
-// Using REST API for chat
-const sendChatMessage = async (agentId, message, conversationId) => {
-  const response = await fetch(`${BACKEND_URL}/api/repconnect/chat/message`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ agentId, message, conversationId }),
-  });
-  return response.json();
-};
-
-// Using WebSocket for chat
-socket.emit('message', {
-  conversationId,
-  message,
-  agentId,
-  metadata: { appName: 'repconnect', userType: 'sales_rep' },
-});
-```
-
-### Voice Session Pattern
-
-```javascript
-// Start voice session with agent
-const startVoiceSession = async (agentId) => {
-  const response = await fetch(
-    `${BACKEND_URL}/api/repconnect/agents/${agentId}/start-voice-session`,
-    {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ provider: 'webrtc' }),
-    }
-  );
-  return response.json();
-};
-```
-
-## Deployment Configuration
-
-### Frontend (Netlify)
-
-- **Build Command**: `CI=false GENERATE_SOURCEMAP=false npm run build`
-- **Publish Directory**: `build`
-- **Environment Variables**: Set all REACT*APP*\* variables
-
-### Backend Integration Testing
-
-After deployment, verify:
-
-1. **Agent Loading**: Check `/api/repconnect/agents` returns 19 agents
-2. **Chat Functionality**: Test `/api/repconnect/chat/message` endpoint
-3. **WebSocket Connection**: Verify `/agents-ws` accepts RepConnect connections
-4. **Voice Sessions**: Test voice session creation and ElevenLabs integration
-
-## Common Issues & Solutions
-
-### Agent Loading Issues
-
-```bash
-# Check if backend is responding
-curl https://osbackend-zl1h.onrender.com/api/repconnect/agents
-
-# Should return JSON with 19 agents
-```
-
-### WebSocket Connection Issues
-
-```javascript
-// Ensure correct appName is specified
-const socket = io(BACKEND_URL, {
+// WebSocket chat
+const socket = io(API_BASE_URL, {
   path: '/agents-ws',
-  auth: { token, appName: 'repconnect' }, // MUST be 'repconnect'
+  auth: { token, appName: 'repconnect' },
 });
+
+// REST API chat
+const sendMessage = async (agentId, message, conversationId) => {
+  return await api.post('/api/repconnect/chat/message', {
+    agentId,
+    message,
+    conversationId,
+  });
+};
 ```
 
-### Environment Variable Issues
+### Voice Sessions
 
-```bash
-# Check all required variables are set
-echo $REACT_APP_BACKEND_URL
-echo $REACT_APP_SUPABASE_URL
-echo $REACT_APP_ELEVENLABS_API_KEY
+```javascript
+// Start voice session
+const startVoiceSession = async (agentId) => {
+  return await api.post(`/api/repconnect/agents/${agentId}/start-voice-session`, {
+    provider: 'webrtc',
+  });
+};
 ```
 
-## File Structure Overview
+## Important Notes
 
-```
-repconnect/
-├── src/
-│   ├── components/
-│   │   ├── ChatbotLauncher/     # Main agent interface
-│   │   ├── Harvey*.tsx          # Harvey-specific components
-│   │   ├── Voice*.tsx           # Voice interface components
-│   │   └── WebRTC*.tsx          # WebRTC components
-│   ├── services/
-│   │   ├── agentBackendAPI.js   # Backend integration
-│   │   ├── agentChatAPI.js      # Chat functionality
-│   │   ├── harveyAPI.js         # Harvey integration
-│   │   └── webRTCVoiceService.ts # Voice services
-│   └── config/
-│       └── api.ts               # API configuration
-├── backend-routes/              # Local backend routes (if any)
-└── test-*.js                   # API testing scripts
-```
+- **Always use unified backend** for all agent functionality
+- **19 agents available** across all categories with voice capabilities
+- **Multi-modal communication** via WebSocket and REST API
+- **Harvey integration** provides elite coaching with 3D battle environment
+- **Mobile-optimized** for sales representatives in the field
+- **Complete authentication** with automatic session management
 
-This RepConnect frontend integrates with the unified agent system backend to provide comprehensive AI-powered sales coaching and voice conversation capabilities to sales representatives.
+This application serves as a comprehensive AI-powered sales coaching platform with full integration to the unified agent backend system.

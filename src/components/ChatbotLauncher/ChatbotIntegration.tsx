@@ -4,7 +4,6 @@ import { ChatModal } from './ChatModal';
 import VoiceModalWebRTC from './VoiceModalWebRTC';
 import AgentSelectionModal from './AgentSelectionModal';
 import { getAllAgents, initializeAgents } from './agents/agentConfigs';
-import { useAuth } from '../../auth/AuthContext';
 import type { Agent } from './types';
 
 interface ChatbotIntegrationProps {
@@ -20,23 +19,18 @@ export const ChatbotIntegration: React.FC<ChatbotIntegrationProps> = ({
   primaryColor,
   glowColor = '#3B82F6',
 }) => {
-  const { user, loading: authLoading } = useAuth();
+  // Auth not needed - chatbot is available for everyone
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const [showSelectionModal, setShowSelectionModal] = useState(false);
   const [agents, setAgents] = useState<Agent[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
 
-  // Initialize agents on component mount - only when user is authenticated
+  // Initialize agents on component mount - available for everyone
   useEffect(() => {
     const loadAgents = async () => {
-      setIsLoading(true);
       try {
-        // Only fetch remote agents if user is authenticated
-        if (user) {
-          // Initialize agents from remote backend
-          await initializeAgents(['sales', 'coaching']);
-        }
+        // Initialize agents from remote backend (available for all users)
+        await initializeAgents(['sales', 'coaching']);
 
         // Get all agents
         const agentConfigs = await getAllAgents();
@@ -66,16 +60,12 @@ export const ChatbotIntegration: React.FC<ChatbotIntegrationProps> = ({
         setAgents(convertedAgents);
       } catch (error) {
         console.error('Error loading agents:', error);
-      } finally {
-        setIsLoading(false);
       }
     };
 
-    // Don't load if auth is still loading
-    if (!authLoading) {
-      loadAgents();
-    }
-  }, [user, authLoading]);
+    // Load agents immediately for all users
+    loadAgents();
+  }, []); // Remove dependency on user and authLoading
 
   const handleAgentSelect = useCallback((agent: Agent) => {
     setSelectedAgent(agent);
