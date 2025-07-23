@@ -55,15 +55,24 @@ class AgentChatAPI {
       const session = sessionId || this.getSessionId(userId, agentId);
       const headers = await this.getAuthHeaders();
 
-      const response = await fetch(`${this.baseURL}/api/canvas/chat`, {
+      const response = await fetch(`${this.baseURL}/api/anthropic`, {
         method: 'POST',
         headers,
         credentials: 'include', // Include cookies for authentication
         body: JSON.stringify({
-          message,
-          agentId,
-          userId,
-          sessionId: session,
+          model: 'claude-3-5-sonnet-20241022',
+          messages: [
+            {
+              role: 'user',
+              content: message,
+            },
+          ],
+          max_tokens: 1000,
+          metadata: {
+            agentId,
+            userId,
+            sessionId: session,
+          },
         }),
       });
 
@@ -85,8 +94,8 @@ class AgentChatAPI {
       const data = await response.json();
       return {
         success: true,
-        message: data.message,
-        agentId: data.agentId,
+        message: data.choices?.[0]?.message?.content || data.content || data.message,
+        agentId: agentId,
         sessionId: session,
         timestamp: new Date().toISOString(),
       };
@@ -106,16 +115,25 @@ class AgentChatAPI {
       const session = sessionId || this.getSessionId(userId, agentId);
       const headers = await this.getAuthHeaders();
 
-      const response = await fetch(`${this.baseURL}/api/canvas/chat/stream`, {
+      const response = await fetch(`${this.baseURL}/api/anthropic`, {
         method: 'POST',
         headers,
         credentials: 'include', // Include cookies for authentication
         body: JSON.stringify({
-          message,
-          agentId,
-          userId,
-          sessionId: session,
+          model: 'claude-3-5-sonnet-20241022',
+          messages: [
+            {
+              role: 'user',
+              content: message,
+            },
+          ],
+          max_tokens: 1000,
           stream: true,
+          metadata: {
+            agentId,
+            userId,
+            sessionId: session,
+          },
         }),
       });
 

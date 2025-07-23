@@ -43,7 +43,7 @@ router.post('/auth/login', async (req, res) => {
     });
 
     // Set httpOnly cookie
-    res.cookie('session', sessionToken, {
+    res.cookie('session_token', sessionToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
