@@ -34,7 +34,6 @@ export const ChatbotIntegration: React.FC<ChatbotIntegrationProps> = ({
 
         // Get all agents
         const agentConfigs = await getAllAgents();
-        console.log('Loaded agent configs:', agentConfigs.length, 'agents');
 
         // Convert to Agent format
         const convertedAgents = agentConfigs.map((config) => ({

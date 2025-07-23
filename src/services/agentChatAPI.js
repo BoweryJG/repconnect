@@ -27,10 +27,8 @@ class AgentChatAPI {
           data: { session },
         } = await supabase.auth.getSession();
         if (session) {
-          console.log('Found Supabase session, attempting cookie exchange...');
           const authService = (await import('./authService')).authService;
           await authService.loginWithCookies(session);
-          console.log('Cookie exchange completed');
         }
       } catch (error) {
         console.error('Failed to exchange session for cookies:', error);

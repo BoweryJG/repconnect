@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import ReactDOM from 'react-dom';
 import { gsap } from 'gsap';
 import { supabase } from '../../lib/supabase';
@@ -158,7 +158,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({
     };
   }, [isOpen]);
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     if (!modalRef.current) return;
 
     gsap.to(modalRef.current, {
@@ -172,7 +172,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({
         onClose();
       },
     });
-  };
+  }, [onClose]);
 
   // Keyboard navigation
   useEffect(() => {

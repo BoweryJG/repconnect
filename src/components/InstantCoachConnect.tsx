@@ -10,15 +10,7 @@ import {
   CircularProgress,
   Paper,
 } from '@mui/material';
-import {
-  Phone,
-  Psychology,
-  GpsFixed,
-  AutoAwesome,
-  Mic,
-  Message,
-  RecordVoiceOver,
-} from '@mui/icons-material';
+import { Phone, Psychology, GpsFixed, AutoAwesome, Mic, Message } from '@mui/icons-material';
 import { toast } from '../utils/toast';
 import api from '../config/api';
 

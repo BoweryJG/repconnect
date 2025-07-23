@@ -53,10 +53,8 @@ class AgentBackendAPI {
           data: { session },
         } = await supabase.auth.getSession();
         if (session) {
-          console.log('Found Supabase session, attempting cookie exchange...');
           const authService = (await import('../services/authService')).authService;
           await authService.loginWithCookies(session);
-          console.log('Cookie exchange completed');
         }
       } catch (error) {
         console.error('Failed to exchange session for cookies:', error);
@@ -68,10 +66,7 @@ class AgentBackendAPI {
         ? `${this.baseURL}/api/repconnect/agents?category=${category}`
         : `${this.baseURL}/api/repconnect/agents`;
 
-      const headers = await this.getAuthHeaders();
-
-      console.log('Fetching agents from:', url);
-      console.log('Document cookies:', document.cookie);
+      await this.getAuthHeaders();
 
       const response = await fetch(url, {
         method: 'GET',
@@ -80,8 +75,6 @@ class AgentBackendAPI {
         },
         credentials: 'include', // Include cookies for authentication
       });
-
-      console.log('Response status:', response.status);
 
       if (!response.ok) {
         throw new Error(`Failed to fetch agents: ${response.statusText}`);
@@ -113,7 +106,7 @@ class AgentBackendAPI {
     }
 
     try {
-      const headers = await this.getAuthHeaders();
+      await this.getAuthHeaders();
 
       const response = await fetch(`${this.baseURL}/api/repconnect/agents/${agentId}`, {
         method: 'GET',

@@ -33,7 +33,7 @@ export default function VoiceModalWebRTC({
   agentAvatar = '/agent-avatar.jpg',
   agentRole = 'Your Personal AI Concierge',
   agentId,
-  voiceConfig,
+  voiceConfig: _voiceConfig,
 }: VoiceModalProps) {
   const { user, session } = useAuth();
   const [isCallActive, setIsCallActive] = useState(false);
@@ -80,7 +80,7 @@ export default function VoiceModalWebRTC({
       console.error('Failed to initialize WebRTC:', error);
       setConnectionStatus('error');
     }
-  }, [agentName, user, session]);
+  }, [agentName, user, session, agentId]);
 
   // Start the call
   const startCall = async () => {

@@ -91,7 +91,7 @@ const AdminDashboard: React.FC = () => {
 
   const toggleAgentStatus = async (agentId: string, currentStatus: boolean) => {
     try {
-      const response = await api.patch(`/api/repconnect/agents/${agentId}`, {
+      await api.patch(`/api/repconnect/agents/${agentId}`, {
         active: !currentStatus,
       });
 
