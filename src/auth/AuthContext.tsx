@@ -151,30 +151,32 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   useEffect(() => {
     const initializeAuth = async () => {
       try {
-        // First, check if we have a cookie session
-        const cookieUser = await authService.getCurrentUser();
+        // First check for Supabase session to avoid unnecessary API calls
+        const {
+          data: { session: currentSession },
+        } = await supabase.auth.getSession();
 
-        if (cookieUser) {
-          setUser(cookieUser);
-          const userProfile = await fetchProfile(cookieUser.id);
+        if (currentSession?.user) {
+          // Exchange Supabase session for cookie session
+          await authService.loginWithCookies(currentSession);
+          setSession(currentSession);
+          setUser(currentSession.user);
+
+          const userProfile = await createOrUpdateProfile(currentSession.user);
           if (userProfile) {
             setProfile(userProfile);
           }
         } else {
-          // Fallback to Supabase session
-          const {
-            data: { session: currentSession },
-          } = await supabase.auth.getSession();
-
-          if (currentSession?.user) {
-            // Exchange Supabase session for cookie session
-            await authService.loginWithCookies(currentSession);
-            setSession(currentSession);
-            setUser(currentSession.user);
-
-            const userProfile = await createOrUpdateProfile(currentSession.user);
-            if (userProfile) {
-              setProfile(userProfile);
+          // Only check cookie session if we might have one (not on initial load)
+          const hasSessionCookie = document.cookie.includes('session_token');
+          if (hasSessionCookie) {
+            const cookieUser = await authService.getCurrentUser();
+            if (cookieUser) {
+              setUser(cookieUser);
+              const userProfile = await fetchProfile(cookieUser.id);
+              if (userProfile) {
+                setProfile(userProfile);
+              }
             }
           }
         }

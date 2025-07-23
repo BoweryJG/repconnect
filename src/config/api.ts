@@ -56,6 +56,16 @@ api.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
+        // First check if we have a session to refresh
+        const {
+          data: { session: currentSession },
+        } = await supabase.auth.getSession();
+
+        if (!currentSession) {
+          // No session to refresh, reject with original error
+          return Promise.reject(error);
+        }
+
         // Try to refresh Supabase session
         const {
           data: { session },
@@ -63,16 +73,19 @@ api.interceptors.response.use(
         } = await supabase.auth.refreshSession();
 
         if (refreshError || !session) {
-          throw new Error('Session refresh failed');
+          // Session refresh failed, user needs to log in again
+          return Promise.reject(error);
         }
 
         // Retry the original request with new token
         originalRequest.headers['Authorization'] = `Bearer ${session.access_token}`;
         return api(originalRequest);
       } catch (refreshError) {
-        // Don't redirect - let the app handle showing login modal
-        console.error('Session refresh failed:', refreshError);
-        return Promise.reject(refreshError);
+        // Don't log refresh errors for unauthenticated users
+        if (error.response?.data?.error?.code !== 'NOT_AUTHENTICATED') {
+          console.error('Session refresh error:', refreshError);
+        }
+        return Promise.reject(error);
       }
     }
 
