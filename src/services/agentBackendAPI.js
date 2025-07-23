@@ -66,13 +66,11 @@ class AgentBackendAPI {
         ? `${this.baseURL}/api/repconnect/agents?category=${category}`
         : `${this.baseURL}/api/repconnect/agents`;
 
-      await this.getAuthHeaders();
+      const headers = await this.getAuthHeaders();
 
       const response = await fetch(url, {
         method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers,
         credentials: 'include', // Include cookies for authentication
       });
 
@@ -106,13 +104,11 @@ class AgentBackendAPI {
     }
 
     try {
-      await this.getAuthHeaders();
+      const headers = await this.getAuthHeaders();
 
       const response = await fetch(`${this.baseURL}/api/repconnect/agents/${agentId}`, {
         method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers,
         credentials: 'include', // Include cookies for authentication
       });
 

@@ -30,7 +30,16 @@
   padding: 24px;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+  background-color: rgba(255, 255, 255, 0.85); /* Fallback for browsers without backdrop-filter */
   transition: all 0.3s ease;
+}
+
+/* Fallback for browsers that don't support backdrop-filter */
+@supports not (backdrop-filter: blur(12px)) {
+  .agent-card-container {
+    background-color: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  }
 }
 
 /* Glassmorphism noise texture */

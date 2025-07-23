@@ -86,11 +86,15 @@ const CarouselContainer = styled(Paper)(({ theme }) => ({
   maxHeight: '70vh',
   overflow: 'hidden',
   borderRadius: 24,
-  backgroundColor: 'rgba(255, 255, 255, 0.9)',
+  backgroundColor: 'rgba(255, 255, 255, 0.95)', // Increased opacity for better fallback
   backdropFilter: 'blur(20px)',
   WebkitBackdropFilter: 'blur(20px)',
-  border: '1px solid rgba(255, 255, 255, 0.2)',
-  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+  border: '1px solid rgba(255, 255, 255, 0.3)', // More visible border
+  boxShadow: '0 16px 48px rgba(0, 0, 0, 0.15)', // Stronger shadow for depth
+  '@supports not (backdrop-filter: blur(20px))': {
+    backgroundColor: 'rgba(255, 255, 255, 0.98)',
+    boxShadow: '0 20px 60px rgba(0, 0, 0, 0.2)',
+  },
   [theme.breakpoints.down('sm')]: {
     width: 'calc(100vw - 32px)',
     right: '50%',

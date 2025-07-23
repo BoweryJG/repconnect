@@ -136,7 +136,21 @@ class AgentChatAPI {
       });
 
       if (!response.ok) {
-        throw new Error(`Chat API error: ${response.statusText}`);
+        // Enhanced error handling with specific messages
+        let errorMessage = `Chat API error: ${response.statusText}`;
+        
+        if (response.status === 404) {
+          errorMessage = 'Chat service endpoint not found. Please check if the backend is running.';
+        } else if (response.status === 401) {
+          errorMessage = 'Authentication failed. Please try logging in again.';
+        } else if (response.status === 500) {
+          errorMessage = 'Server error. The backend service may be experiencing issues.';
+        } else if (response.status === 503) {
+          errorMessage = 'Service temporarily unavailable. Please try again in a moment.';
+        }
+        
+        console.error(`Chat API Error (${response.status}):`, errorMessage);
+        throw new Error(errorMessage);
       }
 
       // Handle streaming response
