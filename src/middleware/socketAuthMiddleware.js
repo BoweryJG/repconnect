@@ -22,10 +22,7 @@ export const socketAuthMiddleware = async (socket, next) => {
       socket.handshake.query.access_token ||
       socket.handshake.headers.authorization?.replace('Bearer ', '');
 
-    // Extract session token from cookies if available
-    const sessionToken = parseCookies(socket.handshake.headers.cookie)?.session;
-
-    if (!token && !sessionToken) {
+    if (!token) {
       logger.warn('Socket authentication failed: No token provided', {
         socketId: socket.id,
         handshakeAuth: socket.handshake.auth,
@@ -35,54 +32,9 @@ export const socketAuthMiddleware = async (socket, next) => {
     }
 
     let user = null;
-    let sessionData = null;
 
-    // Try to authenticate with session token first (from cookies)
-    if (sessionToken) {
-      try {
-        sessionData = jwt.verify(sessionToken, process.env.JWT_SECRET || 'fallback-secret');
-
-        // Check if session is still valid (30 minutes)
-        const sessionAge = Date.now() - sessionData.iat;
-        if (sessionAge > 30 * 60 * 1000) {
-          logger.warn('Socket authentication failed: Session expired', {
-            socketId: socket.id,
-            sessionAge,
-          });
-          return next(new Error('Session expired'));
-        }
-
-        // Verify token with Supabase
-        const {
-          data: { user: supabaseUser },
-          error,
-        } = await supabase.auth.getUser(sessionData.access_token);
-
-        if (error || !supabaseUser) {
-          logger.warn('Socket authentication failed: Invalid session token', {
-            socketId: socket.id,
-            error: error?.message,
-          });
-          return next(new Error('Invalid session'));
-        }
-
-        user = supabaseUser;
-        logger.info('Socket authenticated via session cookie', {
-          socketId: socket.id,
-          userId: user.id,
-          email: user.email,
-        });
-      } catch (error) {
-        logger.warn('Socket session validation failed', {
-          socketId: socket.id,
-          error: error.message,
-        });
-        // Fall through to try direct token authentication
-      }
-    }
-
-    // If session authentication failed, try direct token authentication
-    if (!user && token) {
+    // Authenticate with token
+    if (token) {
       try {
         const {
           data: { user: supabaseUser },
@@ -121,11 +73,9 @@ export const socketAuthMiddleware = async (socket, next) => {
 
     // Attach user info to socket
     socket.user = user;
-    socket.sessionData = sessionData;
 
     // Add user to socket handshake for easy access
     socket.handshake.user = user;
-    socket.handshake.sessionData = sessionData;
 
     logger.info('Socket authenticated successfully', {
       socketId: socket.id,
@@ -143,21 +93,6 @@ export const socketAuthMiddleware = async (socket, next) => {
     next(new Error('Authentication error'));
   }
 };
-
-/**
- * Parse cookies from cookie header string
- */
-function parseCookies(cookieHeader) {
-  if (!cookieHeader) return {};
-
-  return cookieHeader.split(';').reduce((cookies, cookie) => {
-    const [name, value] = cookie.trim().split('=');
-    if (name && value) {
-      cookies[name] = decodeURIComponent(value);
-    }
-    return cookies;
-  }, {});
-}
 
 /**
  * Get user ID from socket (helper function)

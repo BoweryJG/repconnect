@@ -1,16 +1,75 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CircularProgress, Typography } from '@mui/material';
+import { supabase } from '../lib/supabase';
 
 export const AuthCallback: React.FC = () => {
   const navigate = useNavigate();
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Supabase handles the OAuth callback automatically
-    // Just redirect to home and let AuthContext handle the session
-    setTimeout(() => {
-      navigate('/');
-    }, 100);
+    // Handle auth callback
+    const handleAuthCallback = async () => {
+      try {
+        console.log('AuthCallback - Processing OAuth callback...');
+        console.log('URL:', window.location.href);
+
+        // Get the auth code from URL
+        const hashParams = new URLSearchParams(window.location.hash.substring(1));
+        const searchParams = new URLSearchParams(window.location.search);
+
+        // Check for error in URL
+        const errorDesc =
+          searchParams.get('error_description') || hashParams.get('error_description');
+        if (errorDesc) {
+          setError(decodeURIComponent(errorDesc));
+          setTimeout(() => navigate('/login'), 3000);
+          return;
+        }
+
+        // Check if we have access_token in hash (Supabase OAuth response)
+        const accessToken = hashParams.get('access_token');
+        if (accessToken) {
+          console.log('AuthCallback - Found access token in URL hash');
+          // Supabase should automatically handle this, but let's make sure
+          await new Promise((resolve) => setTimeout(resolve, 1000)); // Give Supabase time to process
+        }
+
+        // Let Supabase handle the OAuth callback
+        const { data, error } = await supabase.auth.getSession();
+
+        if (error) {
+          console.error('Auth callback error:', error);
+          setError(error.message);
+          setTimeout(() => navigate('/login'), 3000);
+        } else if (data.session) {
+          // Successfully authenticated
+          console.log('Auth successful, user:', data.session.user.email);
+          navigate('/');
+        } else {
+          console.log('No session found, checking again...');
+          // No session after callback, wait a bit and check again
+          setTimeout(async () => {
+            const {
+              data: { session },
+            } = await supabase.auth.getSession();
+            if (session) {
+              console.log('Session found on retry, user:', session.user.email);
+              navigate('/');
+            } else {
+              console.log('Still no session, redirecting to login');
+              navigate('/login');
+            }
+          }, 2000);
+        }
+      } catch (err) {
+        console.error('Auth callback exception:', err);
+        setError('An unexpected error occurred');
+        setTimeout(() => navigate('/login'), 3000);
+      }
+    };
+
+    handleAuthCallback();
   }, [navigate]);
 
   return (
@@ -24,10 +83,31 @@ export const AuthCallback: React.FC = () => {
         background: '#0A0A0B',
       }}
     >
-      <CircularProgress size={60} sx={{ color: '#4B96DC', mb: 3 }} />
-      <Typography variant="h6" sx={{ color: 'text.secondary', mb: 2 }}>
-        Completing authentication...
-      </Typography>
+      {error ? (
+        <>
+          <Typography variant="h5" sx={{ fontWeight: 600, color: '#ff6b6b', mb: 2 }}>
+            Authentication Error
+          </Typography>
+          <Typography
+            sx={{ opacity: 0.9, textAlign: 'center', maxWidth: 400, color: '#ff6b6b', mb: 1 }}
+          >
+            {error}
+          </Typography>
+          <Typography sx={{ opacity: 0.7, textAlign: 'center', fontSize: '14px' }}>
+            Redirecting to login...
+          </Typography>
+        </>
+      ) : (
+        <>
+          <CircularProgress size={60} sx={{ color: '#4B96DC', mb: 3 }} />
+          <Typography variant="h6" sx={{ color: 'text.secondary', mb: 2 }}>
+            Completing authentication...
+          </Typography>
+          <Typography sx={{ opacity: 0.7, textAlign: 'center', maxWidth: 400 }}>
+            Please wait while we securely sign you in
+          </Typography>
+        </>
+      )}
     </div>
   );
 };

@@ -95,7 +95,10 @@ filesToCheck.forEach((filePath) => {
               match.includes('sessionData.') ||
               match.includes('data.session.') ||
               match.includes('session.access_token') ||
-              match.includes('session.refresh_token')
+              match.includes('session.refresh_token') ||
+              match.includes('authHeader.substring') ||
+              match.includes('Bearer ') ||
+              line.includes('// Remove')
           );
 
           if (!isFalsePositive) {

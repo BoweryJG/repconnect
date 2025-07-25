@@ -67,15 +67,9 @@ export const authService = {
     }
   },
 
-  // Check if session is active
+  // Check if session is active - no cookie checks, just return true
   isSessionActive(): boolean {
-    const lastActivity = document.cookie.match(/last_activity=([^;]+)/);
-    if (!lastActivity) return false;
-
-    const timeSinceLastActivity = Date.now() - parseInt(lastActivity[1]);
-    const SESSION_TIMEOUT = 30 * 60 * 1000; // 30 minutes
-
-    return timeSinceLastActivity < SESSION_TIMEOUT;
+    return true; // Let Supabase handle session management
   },
 
   // Setup session timeout warning

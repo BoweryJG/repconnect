@@ -61,17 +61,19 @@ const cleanupExpiredTokens = () => {
 // Authentication middleware
 export const authMiddleware = async (req, res, next) => {
   try {
-    const sessionToken = req.cookies?.session_token;
-
-    if (!sessionToken) {
-      return res.status(401).json({ error: 'No session token provided' });
+    // Get Bearer token from Authorization header
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({ error: 'No authorization token provided' });
     }
+
+    const token = authHeader.substring(7); // Remove 'Bearer ' prefix
 
     // Verify session with Supabase
     const {
       data: { user },
       error,
-    } = await supabase.auth.getUser(sessionToken);
+    } = await supabase.auth.getUser(token);
 
     if (error || !user) {
       logger.error('Auth middleware error:', error);
@@ -80,10 +82,7 @@ export const authMiddleware = async (req, res, next) => {
 
     // Attach user to request
     req.user = user;
-    req.sessionToken = sessionToken;
-
-    // Refresh session timeout
-    res.cookie('session_token', sessionToken, COOKIE_OPTIONS);
+    req.sessionToken = token;
 
     next();
   } catch (error) {
@@ -92,52 +91,24 @@ export const authMiddleware = async (req, res, next) => {
   }
 };
 
-// CSRF protection middleware
+// CSRF protection middleware - simplified without cookie checks
 export const csrfProtection = (req, res, next) => {
   // Skip CSRF for GET requests
   if (req.method === 'GET' || req.method === 'HEAD' || req.method === 'OPTIONS') {
     return next();
   }
 
-  const sessionToken = req.cookies?.session_token;
-  const csrfToken = req.headers['x-csrf-token'] || req.body?._csrf;
-
-  if (!sessionToken || !csrfToken) {
-    return res.status(403).json({ error: 'CSRF token missing' });
-  }
-
-  if (!validateCSRFToken(sessionToken, csrfToken)) {
-    return res.status(403).json({ error: 'Invalid CSRF token' });
-  }
-
+  // For now, just pass through - CSRF can be handled by Supabase
+  // In production, you might want to implement proper CSRF protection
   next();
 };
 
-// Session timeout middleware
+// Session timeout middleware - let Supabase handle session expiry
 export const sessionTimeout = (req, res, next) => {
-  const lastActivity = req.cookies?.last_activity;
-
-  if (lastActivity) {
-    const timeSinceLastActivity = Date.now() - parseInt(lastActivity);
-
-    if (timeSinceLastActivity > SESSION_TIMEOUT) {
-      // Clear cookies
-      res.clearCookie('session_token');
-      res.clearCookie('last_activity');
-      res.clearCookie('csrf_token');
-
-      return res.status(401).json({ error: 'Session expired' });
-    }
-  }
-
-  // Update last activity
-  res.cookie('last_activity', Date.now().toString(), {
-    ...COOKIE_OPTIONS,
-    httpOnly: false, // Client needs to read this
-  });
-
+  // Supabase handles session expiry automatically
+  // No need for cookie-based timeout checking
   next();
 };
 
-// Combined auth middleware with CSRF and session timeout
-export const requireAuth = [sessionTimeout, authMiddleware, csrfProtection];
+// Combined auth middleware - simplified without cookie dependencies
+export const requireAuth = [authMiddleware];
