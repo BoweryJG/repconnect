@@ -157,8 +157,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         } = await supabase.auth.getSession();
 
         if (currentSession?.user) {
-          // Exchange Supabase session for cookie session
-          await authService.loginWithCookies(currentSession);
           setSession(currentSession);
           setUser(currentSession.user);
 
@@ -168,7 +166,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           }
         } else {
           // Only check cookie session if we might have one (not on initial load)
-          const hasSessionCookie = document.cookie.includes('session_token');
+          const hasSessionCookie = document.cookie.includes('session');
           if (hasSessionCookie) {
             const cookieUser = await authService.getCurrentUser();
             if (cookieUser) {
