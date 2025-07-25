@@ -277,10 +277,13 @@ const ChatbotLauncher: React.FC<ChatbotLauncherProps> = ({
   }, [isOpen]);
 
   const handleToggle = () => {
+    console.log('ChatbotLauncher toggle clicked, current state:', isOpen);
+    console.log('Available agents:', agents.length);
     setIsOpen(!isOpen);
   };
 
   const handleAgentClick = (agent: Agent) => {
+    console.log('ChatbotLauncher agent clicked:', agent.name, 'available:', agent.available);
     if (agent.available) {
       onAgentSelect?.(agent);
       setIsOpen(false);
@@ -339,70 +342,87 @@ const ChatbotLauncher: React.FC<ChatbotLauncherProps> = ({
           </Header>
 
           <AgentCarousel>
-            {agents.map((agent) => (
-              <Tooltip
-                key={agent.id}
-                title={!agent.available ? 'Coming Soon' : ''}
-                placement="left"
+            {agents.length === 0 ? (
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '100%',
+                  padding: '20px',
+                  color: 'text.secondary',
+                }}
               >
-                <AgentCard
-                  agentcolor={agent.color || '#3B82F6'}
-                  onClick={() => handleAgentClick(agent)}
-                  sx={{
-                    opacity: agent.available ? 1 : 0.6,
-                    cursor: agent.available ? 'pointer' : 'not-allowed',
-                  }}
+                <Typography variant="body2" color="text.secondary">
+                  Loading agents...
+                </Typography>
+              </div>
+            ) : (
+              agents.map((agent) => (
+                <Tooltip
+                  key={agent.id}
+                  title={!agent.available ? 'Coming Soon' : ''}
+                  placement="left"
                 >
-                  <StyledAvatar bgcolor={agent.color || '#3B82F6'}>
-                    {typeof agent.avatar === 'string' ? (
-                      <span style={{ fontSize: '1.5rem' }}>{agent.avatar}</span>
-                    ) : (
-                      (() => {
-                        const Icon = agent.avatar.icon;
-                        return (
-                          <Icon size={24} style={{ color: agent.avatar.iconColor || '#fff' }} />
-                        );
-                      })()
-                    )}
-                  </StyledAvatar>
-                  <div style={{ textAlign: 'center', width: '100%' }}>
-                    <Typography
-                      variant="subtitle2"
-                      fontWeight={600}
-                      sx={{
-                        fontSize: { xs: '0.75rem', sm: '0.875rem' },
-                        lineHeight: 1.2,
-                        mb: 0.5,
-                      }}
-                    >
-                      {agent.name}
-                    </Typography>
-                    {!agent.available && (
-                      <Chip
-                        label="Soon"
-                        size="small"
+                  <AgentCard
+                    agentcolor={agent.color || '#3B82F6'}
+                    onClick={() => handleAgentClick(agent)}
+                    sx={{
+                      opacity: agent.available ? 1 : 0.6,
+                      cursor: agent.available ? 'pointer' : 'not-allowed',
+                    }}
+                  >
+                    <StyledAvatar bgcolor={agent.color || '#3B82F6'}>
+                      {typeof agent.avatar === 'string' ? (
+                        <span style={{ fontSize: '1.5rem' }}>{agent.avatar}</span>
+                      ) : (
+                        (() => {
+                          const Icon = agent.avatar.icon;
+                          return (
+                            <Icon size={24} style={{ color: agent.avatar.iconColor || '#fff' }} />
+                          );
+                        })()
+                      )}
+                    </StyledAvatar>
+                    <div style={{ textAlign: 'center', width: '100%' }}>
+                      <Typography
+                        variant="subtitle2"
+                        fontWeight={600}
                         sx={{
-                          height: 16,
-                          fontSize: '0.6rem',
-                          backgroundColor: 'rgba(0, 0, 0, 0.08)',
+                          fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                          lineHeight: 1.2,
+                          mb: 0.5,
                         }}
-                      />
-                    )}
-                    <Typography
-                      variant="caption"
-                      sx={{
-                        color: agent.color,
-                        fontWeight: 500,
-                        mt: 0.5,
-                        display: 'block',
-                      }}
-                    >
-                      {agent.specialty}
-                    </Typography>
-                  </div>
-                </AgentCard>
-              </Tooltip>
-            ))}
+                      >
+                        {agent.name}
+                      </Typography>
+                      {!agent.available && (
+                        <Chip
+                          label="Soon"
+                          size="small"
+                          sx={{
+                            height: 16,
+                            fontSize: '0.6rem',
+                            backgroundColor: 'rgba(0, 0, 0, 0.08)',
+                          }}
+                        />
+                      )}
+                      <Typography
+                        variant="caption"
+                        sx={{
+                          color: agent.color,
+                          fontWeight: 500,
+                          mt: 0.5,
+                          display: 'block',
+                        }}
+                      >
+                        {agent.specialty}
+                      </Typography>
+                    </div>
+                  </AgentCard>
+                </Tooltip>
+              ))
+            )}
           </AgentCarousel>
         </CarouselContainer>
       </Fade>

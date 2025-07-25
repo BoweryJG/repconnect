@@ -53,17 +53,23 @@ class AgentBackendAPI {
 
       const headers = await this.getAuthHeaders();
 
+      console.log('Fetching agents from:', url);
       const response = await fetch(url, {
         method: 'GET',
         headers,
         credentials: 'include', // Include cookies for authentication
       });
 
+      console.log('Agent fetch response status:', response.status);
+
       if (!response.ok) {
-        throw new Error(`Failed to fetch agents: ${response.statusText}`);
+        const errorText = await response.text();
+        console.error('Agent fetch error response:', errorText);
+        throw new Error(`Failed to fetch agents: ${response.status} ${response.statusText}`);
       }
 
       const data = await response.json();
+      console.log('Agent fetch successful, got:', data.agents ? data.agents.length : 0, 'agents');
 
       // Cache the response
       this.cache.set(cacheKey, {

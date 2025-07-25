@@ -29,11 +29,15 @@ export const ChatbotIntegration: React.FC<ChatbotIntegrationProps> = ({
   useEffect(() => {
     const loadAgents = async () => {
       try {
+        console.log('Starting agent loading...');
+
         // Initialize agents from remote backend (available for all users)
         await initializeAgents(['sales', 'coaching']);
+        console.log('Agent initialization complete');
 
         // Get all agents
         const agentConfigs = await getAllAgents();
+        console.log('Got agent configs:', agentConfigs.length, 'agents');
 
         // Convert to Agent format
         const convertedAgents = agentConfigs.map((config) => ({
@@ -56,9 +60,14 @@ export const ChatbotIntegration: React.FC<ChatbotIntegrationProps> = ({
           },
         }));
 
+        console.log(
+          'Converted agents:',
+          convertedAgents.map((a) => ({ id: a.id, name: a.name }))
+        );
         setAgents(convertedAgents);
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error loading agents:', error);
+        console.error('Error details:', error?.message || 'Unknown error');
       }
     };
 
@@ -67,14 +76,19 @@ export const ChatbotIntegration: React.FC<ChatbotIntegrationProps> = ({
   }, []); // Remove dependency on user and authLoading
 
   const handleAgentSelect = useCallback((agent: Agent) => {
+    console.log('Agent selected:', agent.name, agent.id);
     setSelectedAgent(agent);
     setShowSelectionModal(true);
   }, []);
 
-  const handleModeSelect = useCallback((mode: 'message' | 'converse') => {
-    setActiveModal(mode === 'message' ? 'chat' : 'voice');
-    setShowSelectionModal(false);
-  }, []);
+  const handleModeSelect = useCallback(
+    (mode: 'message' | 'converse') => {
+      console.log('Mode selected:', mode, 'for agent:', selectedAgent?.name);
+      setActiveModal(mode === 'message' ? 'chat' : 'voice');
+      setShowSelectionModal(false);
+    },
+    [selectedAgent]
+  );
 
   const handleCloseModal = useCallback(() => {
     setActiveModal(null);
