@@ -1,9 +1,7 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import { supabase } from '../lib/supabase';
 import { User, Session } from '@supabase/supabase-js';
-import { authService, startSessionRefresh } from '../services/authService';
 import logger from '../utils/logger';
-import SessionWarning from '../components/SessionWarning';
 
 type AuthProviderType = 'google' | 'facebook';
 
@@ -30,8 +28,6 @@ interface AuthContextType {
   signInWithProvider: (_provider: AuthProviderType) => Promise<void>;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
-  showSessionWarning: boolean;
-  extendSession: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -53,8 +49,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
-  const [showSessionWarning, setShowSessionWarning] = useState(false);
-  const [sessionTimeLeft, setSessionTimeLeft] = useState(300); // 5 minutes in seconds
 
   // Fetch user profile from database
   const fetchProfile = useCallback(async (userId: string) => {
@@ -136,11 +130,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // Sign out
   const signOut = useCallback(async () => {
     try {
-      await authService.logout();
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+
       setUser(null);
       setSession(null);
       setProfile(null);
-      setShowSessionWarning(false);
     } catch (error) {
       logger.error('Sign out error:', error);
       throw error;
@@ -151,7 +146,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   useEffect(() => {
     const initializeAuth = async () => {
       try {
-        // First check for Supabase session to avoid unnecessary API calls
+        // Only check Supabase session - no cookie checks
         const {
           data: { session: currentSession },
         } = await supabase.auth.getSession();
@@ -163,19 +158,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           const userProfile = await createOrUpdateProfile(currentSession.user);
           if (userProfile) {
             setProfile(userProfile);
-          }
-        } else {
-          // Only check cookie session if we might have one (not on initial load)
-          const hasSessionCookie = document.cookie.includes('session');
-          if (hasSessionCookie) {
-            const cookieUser = await authService.getCurrentUser();
-            if (cookieUser) {
-              setUser(cookieUser);
-              const userProfile = await fetchProfile(cookieUser.id);
-              if (userProfile) {
-                setProfile(userProfile);
-              }
-            }
           }
         }
       } catch (error) {
@@ -192,8 +174,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (session?.user) {
-        // Exchange new session for cookies
-        await authService.loginWithCookies(session);
+        // Simply use Supabase session like Canvas does
         setSession(session);
         setUser(session.user);
 
@@ -208,44 +189,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
     });
 
-    // Setup session timeout warning
-    const cleanupSessionWarning = authService.setupSessionTimeoutWarning(
-      () => {
-        setShowSessionWarning(true);
-        setSessionTimeLeft(300); // Reset to 5 minutes
-      },
-      async () => {
-        setShowSessionWarning(false);
-        await signOut();
-      }
-    );
-
-    // Start session refresh
-    const cleanupSessionRefresh = startSessionRefresh();
-
     return () => {
       subscription.unsubscribe();
-      cleanupSessionWarning();
-      cleanupSessionRefresh();
     };
-  }, [createOrUpdateProfile, fetchProfile, signOut]);
-
-  // Timer for session warning countdown
-  useEffect(() => {
-    if (!showSessionWarning) return;
-
-    const timer = setInterval(() => {
-      setSessionTimeLeft((prev) => {
-        if (prev <= 1) {
-          signOut();
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [showSessionWarning, signOut]);
+  }, [createOrUpdateProfile, fetchProfile]);
 
   // Sign in with OAuth provider
   const signInWithProvider = useCallback(async (provider: AuthProviderType) => {
@@ -280,17 +227,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   }, [user, fetchProfile]);
 
-  // Extend session
-  const extendSession = useCallback(async () => {
-    try {
-      await authService.refreshSession();
-      setShowSessionWarning(false);
-    } catch (error) {
-      logger.error('Extend session error:', error);
-      throw error;
-    }
-  }, []);
-
   const value: AuthContextType = {
     user,
     session,
@@ -299,19 +235,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     signInWithProvider,
     signOut,
     refreshProfile,
-    showSessionWarning,
-    extendSession,
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-      <SessionWarning
-        open={showSessionWarning}
-        timeLeft={sessionTimeLeft}
-        onExtend={extendSession}
-        onLogout={signOut}
-      />
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
