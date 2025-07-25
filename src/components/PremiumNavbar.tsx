@@ -1659,9 +1659,17 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
         open={showLogoutModal}
         onClose={() => setShowLogoutModal(false)}
         onConfirm={async () => {
-          await signOut();
-          setShowLogoutModal(false);
-          window.location.href = '/';
+          try {
+            await signOut();
+            setShowLogoutModal(false);
+            // Use replace to prevent back button issues
+            window.location.replace('/');
+          } catch (error) {
+            console.error('Sign out error:', error);
+            // Even if sign out fails, still redirect
+            setShowLogoutModal(false);
+            window.location.replace('/');
+          }
         }}
       />
     </div>

@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { gsap } from 'gsap';
-import { useAuth } from '../../auth/AuthContext';
 import './GlobalAuthModal.css';
 
 interface GlobalLogoutModalProps {
