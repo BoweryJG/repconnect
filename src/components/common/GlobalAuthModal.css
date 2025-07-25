@@ -1,0 +1,678 @@
+/* CSS Variables */
+:root {
+  --metal-light: #c0c5ce;
+  --metal-dark: #65737e;
+  --metal-shadow: #2b303b;
+  --gem-impossible: #ff00ff;
+  --gem-shift: #00ffff;
+  --purple-primary: #9f58fa;
+  --text-secondary: #999;
+  --text-muted: #666;
+  --green-accent: #00ff00;
+}
+
+/* Animated Starfield Background */
+.starfield {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 1000;
+}
+
+.stars {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 200%;
+  background-image:
+    radial-gradient(2px 2px at 20% 30%, white, transparent),
+    radial-gradient(2px 2px at 40% 70%, white, transparent),
+    radial-gradient(1px 1px at 50% 50%, white, transparent),
+    radial-gradient(1px 1px at 80% 10%, white, transparent),
+    radial-gradient(2px 2px at 90% 60%, white, transparent);
+  background-size: 200px 200px;
+  background-repeat: repeat;
+  animation: moveStars 60s linear infinite;
+}
+
+@keyframes moveStars {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-100vh);
+  }
+}
+
+/* Modal Overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 1001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Login Modal - Luxury Glassmorphic Design */
+.login-modal {
+  position: relative;
+  width: 400px;
+  min-height: 500px;
+  background: linear-gradient(
+    135deg,
+    rgba(26, 26, 26, 0.95) 0%,
+    rgba(30, 30, 30, 0.9) 50%,
+    rgba(26, 26, 26, 0.95) 100%
+  );
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.5),
+    0 0 40px rgba(0, 255, 255, 0.1),
+    0 0 80px rgba(255, 0, 255, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+  padding: 48px 40px 32px;
+  transform-style: preserve-3d;
+}
+
+/* Breathing Animation */
+.login-modal::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: 24px;
+  background: linear-gradient(135deg, var(--gem-impossible), var(--gem-shift));
+  opacity: 0.1;
+  z-index: -1;
+  animation: breathing 4s ease-in-out infinite;
+}
+
+@keyframes breathing {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.1;
+  }
+  50% {
+    transform: scale(1.02);
+    opacity: 0.2;
+  }
+}
+
+/* 4-Point Luxury Screws */
+.login-modal .screw {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: radial-gradient(circle at 30% 30%, var(--metal-light), var(--metal-dark));
+  border-radius: 50%;
+  box-shadow:
+    inset -1px -1px 2px rgba(0, 0, 0, 0.6),
+    inset 1px 1px 2px rgba(255, 255, 255, 0.2),
+    0 1px 2px rgba(0, 0, 0, 0.4);
+  z-index: 10;
+  transition: transform 0.4s ease;
+}
+
+.login-modal .screw::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 80%;
+  height: 1px;
+  background: var(--metal-shadow);
+  transform: translate(-50%, -50%) rotate(var(--angle, 45deg));
+  box-shadow: 0 2px 0 -1px var(--metal-shadow);
+}
+
+.login-modal .screw-tl {
+  top: 8px;
+  left: 8px;
+  --angle: 15deg;
+}
+.login-modal .screw-tr {
+  top: 8px;
+  right: 8px;
+  --angle: -22deg;
+}
+.login-modal .screw-bl {
+  bottom: 8px;
+  left: 8px;
+  --angle: -8deg;
+}
+.login-modal .screw-br {
+  bottom: 8px;
+  right: 8px;
+  --angle: 30deg;
+}
+
+/* Screw idle animation */
+@keyframes screwIdle {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(15deg);
+  }
+}
+
+/* Apply animation to screws */
+.login-modal .screw {
+  animation: screwIdle 8s ease-in-out infinite;
+  animation-delay: calc(var(--screw-index, 0) * 2s);
+}
+
+/* Power Rail */
+.power-rail {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  height: 2px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(0, 255, 255, 0.2),
+    rgba(0, 255, 255, 0.1),
+    rgba(0, 255, 255, 0.2),
+    transparent
+  );
+  overflow: hidden;
+}
+
+.power-rail::after {
+  content: '';
+  position: absolute;
+  height: 100%;
+  width: 20%;
+  background: linear-gradient(to right, transparent, var(--gem-shift), transparent);
+  animation: powerFlow 4s infinite linear;
+  box-shadow: 0 0 10px var(--gem-shift);
+}
+
+@keyframes powerFlow {
+  from {
+    left: -20%;
+  }
+  to {
+    left: 120%;
+  }
+}
+
+/* Power Nodes */
+.power-node {
+  position: absolute;
+  top: -2px;
+  width: 6px;
+  height: 6px;
+  background: radial-gradient(circle, var(--gem-shift), transparent);
+  border-radius: 50%;
+  animation: nodePulse 2s infinite ease-in-out;
+}
+
+.power-node:nth-child(1) {
+  left: 20%;
+  animation-delay: 0s;
+}
+.power-node:nth-child(2) {
+  left: 40%;
+  animation-delay: 0.5s;
+}
+.power-node:nth-child(3) {
+  left: 60%;
+  animation-delay: 1s;
+}
+.power-node:nth-child(4) {
+  left: 80%;
+  animation-delay: 1.5s;
+}
+
+@keyframes nodePulse {
+  0%,
+  100% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.5);
+  }
+}
+
+/* Close Button */
+.close-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 32px;
+  height: 32px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 20;
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+}
+
+.close-btn:hover {
+  opacity: 1;
+}
+
+.close-btn::before,
+.close-btn::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 16px;
+  height: 2px;
+  background: #fff;
+  transform-origin: center;
+}
+
+.close-btn::before {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.close-btn::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+/* Logo Section */
+.logo-section {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding-top: 1rem;
+}
+
+.logo-icon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 1rem;
+  position: relative;
+}
+
+.logo-icon svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 0 20px rgba(159, 88, 250, 0.3));
+}
+
+.logo-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem;
+  background: linear-gradient(135deg, #fff 0%, var(--gem-shift) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.logo-subtitle {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin: 0;
+}
+
+/* Auth Section */
+.auth-section {
+  margin: 2rem 0;
+}
+
+/* Social Buttons */
+.social-btn {
+  width: 100%;
+  padding: 12px 16px;
+  margin-bottom: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.social-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: var(--gem-shift);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(0, 255, 198, 0.3);
+}
+
+.social-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.social-btn.facebook {
+  background: rgba(24, 119, 242, 0.2);
+  border-color: rgba(24, 119, 242, 0.3);
+}
+
+.social-btn.facebook:hover:not(:disabled) {
+  background: rgba(24, 119, 242, 0.3);
+  border-color: #1877f2;
+  box-shadow: 0 4px 20px rgba(24, 119, 242, 0.3);
+}
+
+.social-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Divider */
+.divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 2rem 0;
+  gap: 1rem;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.75rem;
+}
+
+.divider-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.divider-text {
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+/* Email Option */
+.email-option {
+  text-align: center;
+  margin: 1.5rem 0;
+}
+
+.email-link {
+  color: var(--gem-shift);
+  text-decoration: none;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+}
+
+.email-link:hover {
+  background: rgba(0, 255, 198, 0.1);
+  border-color: var(--gem-shift);
+}
+
+/* Terms */
+.terms {
+  text-align: center;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin-top: 1rem;
+  line-height: 1.4;
+}
+
+.terms a {
+  color: var(--gem-shift);
+  text-decoration: none;
+}
+
+.terms a:hover {
+  text-decoration: underline;
+}
+
+/* Email Form */
+.email-form {
+  margin: 2rem 0;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-input {
+  width: 100%;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 15px;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--gem-shift);
+  box-shadow: 0 0 0 3px rgba(0, 255, 198, 0.1);
+}
+
+.form-input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 12px 16px;
+  background: linear-gradient(135deg, var(--gem-impossible), var(--gem-shift));
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 1rem;
+}
+
+.submit-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(0, 255, 198, 0.4);
+}
+
+.submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.form-navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.nav-btn {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  font-size: 0.875rem;
+  padding: 4px 8px;
+  transition: color 0.3s ease;
+}
+
+.nav-btn:hover {
+  color: var(--gem-shift);
+}
+
+/* Footer */
+.modal-footer {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.security-text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+/* LED Indicators */
+.led-indicator {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--green-accent);
+  box-shadow: 0 0 8px var(--green-accent);
+  animation: ledBlink 2s infinite ease-in-out;
+}
+
+.led-indicator:nth-child(2) {
+  animation-delay: 0.5s;
+}
+.led-indicator:nth-child(4) {
+  animation-delay: 1s;
+}
+.led-indicator:nth-child(5) {
+  animation-delay: 1.5s;
+}
+
+@keyframes ledBlink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+/* Loading Overlay */
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  border-radius: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  z-index: 100;
+}
+
+.loading-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.loading-jewel {
+  width: 60px;
+  height: 60px;
+  animation: loadingSpin 2s linear infinite;
+}
+
+@keyframes loadingSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Success Flare */
+.success-flare {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 200px;
+  height: 200px;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  z-index: 50;
+}
+
+.success-flare.active {
+  opacity: 1;
+  visibility: visible;
+  animation: successFlare 0.8s ease-out;
+}
+
+@keyframes successFlare {
+  0% {
+    transform: translate(-50%, -50%) scale(0) rotate(0deg);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.2) rotate(180deg);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1) rotate(360deg);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+  .login-modal {
+    width: 90%;
+    min-width: 320px;
+    padding: 40px 24px 24px;
+  }
+
+  .logo-icon {
+    width: 60px;
+    height: 60px;
+  }
+
+  .logo-title {
+    font-size: 1.25rem;
+  }
+}
+
+/* Dark theme adjustments */
+@media (prefers-color-scheme: dark) {
+  .form-input {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+}

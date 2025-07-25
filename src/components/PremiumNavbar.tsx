@@ -41,6 +41,7 @@ import { useAuth } from '../auth/AuthContext';
 import { useStore } from '../store/useStore';
 import { UserAvatar } from './UserAvatar';
 import { SmartPreloader } from '../utils/dynamicImports';
+import GlobalLogoutModal from './common/GlobalLogoutModal';
 
 // Animations
 const glassOscillate = keyframes`
@@ -84,6 +85,7 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
   const [scrolled, setScrolled] = useState(false);
   const [scrollOffset, setScrollOffset] = useState(0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [currentTheme, setCurrentTheme] = useState({
     impossible: '255, 0, 255',
     shift: '0, 255, 255',
@@ -740,7 +742,7 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                       profile={profile}
                       size={32}
                       showInitials={true}
-                      onClick={() => signOut()}
+                      onClick={() => setShowLogoutModal(true)}
                     />
                   </>
                 ) : (
@@ -1651,6 +1653,17 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
           </List>
         </div>
       </Drawer>
+
+      {/* Logout Modal */}
+      <GlobalLogoutModal
+        open={showLogoutModal}
+        onClose={() => setShowLogoutModal(false)}
+        onConfirm={async () => {
+          await signOut();
+          setShowLogoutModal(false);
+          window.location.href = '/';
+        }}
+      />
     </div>
   );
 };
