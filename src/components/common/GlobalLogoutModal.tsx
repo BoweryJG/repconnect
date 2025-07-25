@@ -145,13 +145,16 @@ export default function GlobalLogoutModal({ open, onClose, onConfirm }: GlobalLo
   }, [open, handleClose]);
 
   const handleConfirm = async () => {
+    console.log('Logout button clicked');
     setIsLoading(true);
     try {
       await onConfirm();
+      console.log('onConfirm completed');
     } catch (error) {
       console.error('Logout failed:', error);
-    } finally {
+      // Still close modal on error
       setIsLoading(false);
+      onClose();
     }
   };
 
