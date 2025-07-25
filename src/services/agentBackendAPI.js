@@ -44,22 +44,7 @@ class AgentBackendAPI {
       return cached.data;
     }
 
-    // Check if we have session_token cookie, if not try to get one
-    if (!document.cookie.includes('session_token')) {
-      console.warn('No session_token cookie found. You may need to log in first.');
-      // Try to get current session and exchange for cookies
-      try {
-        const {
-          data: { session },
-        } = await supabase.auth.getSession();
-        if (session) {
-          const authService = (await import('../services/authService')).authService;
-          await authService.loginWithCookies(session);
-        }
-      } catch (error) {
-        console.error('Failed to exchange session for cookies:', error);
-      }
-    }
+    // No cookie checks needed - using Supabase auth
 
     try {
       const url = category

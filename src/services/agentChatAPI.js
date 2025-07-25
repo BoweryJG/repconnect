@@ -18,21 +18,16 @@ class AgentChatAPI {
       'Content-Type': 'application/json',
     };
 
-    // Check if we have session_token cookie, if not try to get one
-    if (!document.cookie.includes('session_token')) {
-      console.warn('No session_token cookie found. You may need to log in first.');
-      // Try to get current session and exchange for cookies
-      try {
-        const {
-          data: { session },
-        } = await supabase.auth.getSession();
-        if (session) {
-          const authService = (await import('./authService')).authService;
-          await authService.loginWithCookies(session);
-        }
-      } catch (error) {
-        console.error('Failed to exchange session for cookies:', error);
+    // Get Supabase auth token
+    try {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (session?.access_token) {
+        headers['Authorization'] = `Bearer ${session.access_token}`;
       }
+    } catch (error) {
+      console.error('Failed to get auth session:', error);
     }
 
     return headers;
@@ -138,7 +133,7 @@ class AgentChatAPI {
       if (!response.ok) {
         // Enhanced error handling with specific messages
         let errorMessage = `Chat API error: ${response.statusText}`;
-        
+
         if (response.status === 404) {
           errorMessage = 'Chat service endpoint not found. Please check if the backend is running.';
         } else if (response.status === 401) {
@@ -148,7 +143,7 @@ class AgentChatAPI {
         } else if (response.status === 503) {
           errorMessage = 'Service temporarily unavailable. Please try again in a moment.';
         }
-        
+
         console.error(`Chat API Error (${response.status}):`, errorMessage);
         throw new Error(errorMessage);
       }
