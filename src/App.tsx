@@ -141,6 +141,9 @@ function AppContent() {
   const { isMobile } = useResponsive();
   const { user, profile } = useAuth();
   const { showSuccess, showError } = useToast();
+
+  // Debug log
+  console.log('AppContent rendered, user:', user?.email || 'not logged in');
   const [showDialer, setShowDialer] = useState(false);
   const [showMissionControl, setShowMissionControl] = useState(false);
   const [showSyncDashboard, setShowSyncDashboard] = useState(false);

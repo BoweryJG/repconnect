@@ -19,6 +19,8 @@ export const ChatbotIntegration: React.FC<ChatbotIntegrationProps> = ({
   primaryColor,
   glowColor = '#3B82F6',
 }) => {
+  console.log('ChatbotIntegration component loaded!');
+
   // Auth not needed - chatbot is available for everyone
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
   const [activeModal, setActiveModal] = useState<ModalType>(null);
@@ -119,8 +121,25 @@ export const ChatbotIntegration: React.FC<ChatbotIntegrationProps> = ({
 
   // Always show the launcher, even when loading
   // This ensures the launcher doesn't disappear when auth state changes
+  console.log('ChatbotIntegration rendering, agents count:', agents.length);
+
   return (
     <>
+      {/* Debug div to ensure component renders */}
+      <div
+        style={{
+          position: 'fixed',
+          bottom: 100,
+          right: 24,
+          zIndex: 9999,
+          background: 'red',
+          color: 'white',
+          padding: 8,
+        }}
+      >
+        Chatbot: {agents.length} agents
+      </div>
+
       <ChatbotLauncher
         agents={agents}
         onAgentSelect={handleAgentSelect}
