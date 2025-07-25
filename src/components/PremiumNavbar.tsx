@@ -1558,7 +1558,7 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                 )}
                 <ListItemButton
                   onClick={() => {
-                    signOut();
+                    setShowLogoutModal(true);
                     setMobileMenuOpen(false);
                   }}
                   sx={{
@@ -1659,18 +1659,27 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
         open={showLogoutModal}
         onClose={() => setShowLogoutModal(false)}
         onConfirm={async () => {
-          console.log('PremiumNavbar onConfirm called');
+          console.log('PremiumNavbar onConfirm called - START');
+
+          // Set a timeout to force redirect if signOut hangs
+          const timeoutId = setTimeout(() => {
+            console.log('SignOut timeout - forcing redirect');
+            window.location.replace('/');
+          }, 3000); // 3 second timeout
+
           try {
-            console.log('Calling signOut...');
+            console.log('About to call signOut...');
             await signOut();
-            console.log('signOut completed');
-            setShowLogoutModal(false);
+            console.log('signOut completed successfully');
+            clearTimeout(timeoutId);
+            console.log('About to redirect...');
             // Use replace to prevent back button issues
             window.location.replace('/');
           } catch (error) {
-            console.error('Sign out error:', error);
+            console.error('Sign out error details:', error);
+            clearTimeout(timeoutId);
             // Even if sign out fails, still redirect
-            setShowLogoutModal(false);
+            console.log('Redirecting after error...');
             window.location.replace('/');
           }
         }}

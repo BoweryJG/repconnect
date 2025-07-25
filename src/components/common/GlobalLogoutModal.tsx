@@ -150,11 +150,14 @@ export default function GlobalLogoutModal({ open, onClose, onConfirm }: GlobalLo
     try {
       await onConfirm();
       console.log('onConfirm completed');
+      // Close modal after successful logout
+      setIsLoading(false);
+      handleClose();
     } catch (error) {
       console.error('Logout failed:', error);
       // Still close modal on error
       setIsLoading(false);
-      onClose();
+      handleClose();
     }
   };
 

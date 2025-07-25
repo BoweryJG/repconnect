@@ -49,7 +49,18 @@ export const AuthCallback: React.FC = () => {
 
           if (data.session) {
             console.log('Session set successfully, user:', data.session.user.email);
-            navigate('/');
+            // Give AuthContext time to process the new session
+            setTimeout(() => {
+              console.log('Navigating to home page...');
+              navigate('/');
+            }, 500);
+            return;
+          } else {
+            // Even if no session returned, we have tokens so force redirect
+            console.log('No session returned but have tokens, forcing redirect...');
+            setTimeout(() => {
+              navigate('/');
+            }, 500);
             return;
           }
         }
