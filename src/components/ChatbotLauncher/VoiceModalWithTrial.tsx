@@ -263,9 +263,17 @@ export default function VoiceModalWithTrial({
   };
 
   const toggleMute = () => {
-    if (webRTCClientRef.current) {
-      webRTCClientRef.current.toggleMute();
-      setIsMuted(!isMuted);
+    // For now, just update the UI state
+    // The actual muting would need to be implemented in WebRTCClient
+    setIsMuted(!isMuted);
+
+    // You could also stop/start the audio stream
+    if (isMuted && webRTCClientRef.current) {
+      // Currently muted, so unmute by restarting audio
+      webRTCClientRef.current.startAudio().catch(console.error);
+    } else if (!isMuted && webRTCClientRef.current) {
+      // Currently unmuted, so mute by stopping audio
+      webRTCClientRef.current.stopAudio();
     }
   };
 
