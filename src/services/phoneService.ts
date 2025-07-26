@@ -60,7 +60,9 @@ class PhoneService {
   // Phone Number Management
   async getPhoneNumbers(): Promise<PhoneNumber[]> {
     // Check if user has a session first
-    const { data: { session } } = await supabase.auth.getSession();
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
     if (!session?.user?.id) {
       return []; // Return empty array if not authenticated
     }
@@ -91,7 +93,9 @@ class PhoneService {
   async provisionNumber(phoneNumber: string, friendlyName?: string) {
     try {
       // Check if user has a session first
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       if (!session?.user?.id) {
         throw new Error('User not authenticated');
       }
@@ -274,7 +278,7 @@ class PhoneService {
 
     // Aggregate by type
     const stats = usage?.reduce(
-      (acc, record) => {
+      (acc: any, record: any) => {
         if (!acc[record.type]) {
           acc[record.type] = { quantity: 0, cost: 0 };
         }

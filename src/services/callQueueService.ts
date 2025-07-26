@@ -220,7 +220,7 @@ export class CallQueueService {
     }
 
     const counts = data.reduce(
-      (acc, call) => {
+      (acc: any, call: any) => {
         acc[call.status] = (acc[call.status] || 0) + 1;
         return acc;
       },
@@ -284,7 +284,9 @@ export class CallQueueService {
   static onCallUpdate(listener: (_call: QueuedCall) => void): () => void {
     this.callListeners.push(listener);
     return () => {
-      this.callListeners = this.callListeners.filter((existingListener) => existingListener !== listener);
+      this.callListeners = this.callListeners.filter(
+        (existingListener) => existingListener !== listener
+      );
     };
   }
 
@@ -337,7 +339,7 @@ export class CallQueueService {
       }
 
       // Check if queue has pending calls
-      const hasPendingCalls = data.some((call) => call.status === 'pending');
+      const hasPendingCalls = data.some((call: any) => call.status === 'pending');
       if (!hasPendingCalls) {
         return false;
       }

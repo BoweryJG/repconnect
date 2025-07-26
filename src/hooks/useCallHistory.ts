@@ -101,7 +101,11 @@ export const useCallHistory = (options: UseCallHistoryOptions = {}) => {
 
         // Fetch contact names if there are contact IDs
         const contactIds = [
-          ...new Set((data || []).filter((call) => call.contact_id).map((call) => call.contact_id)),
+          ...new Set(
+            (data || [])
+              .filter((call: CallHistoryItem) => call.contact_id)
+              .map((call: CallHistoryItem) => call.contact_id)
+          ),
         ];
         let contactsMap: Record<string, string> = {};
 
