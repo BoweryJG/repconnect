@@ -81,6 +81,8 @@ class AgentChatAPI {
     console.log('Parameters:', { message, agentId, userId, sessionId });
     console.log('Backend URL:', this.baseURL);
 
+    let endpoint = ''; // Define endpoint at the top level
+    
     try {
       console.log('Getting session ID...');
       const session = sessionId || this.getSessionId(userId, agentId);
@@ -106,10 +108,9 @@ class AgentChatAPI {
 
       console.log('agentChatAPI: Full request details:', {
         method: 'POST',
-        url: `${this.baseURL}/api/repconnect/chat/message`,
+        url: endpoint,
         headers,
         body: requestBody,
-        credentials: 'include',
       });
 
       // Add timeout to the fetch request
@@ -122,7 +123,7 @@ class AgentChatAPI {
         const hasAuth = headers['Authorization'] ? true : false;
 
         // Use public endpoint if no auth, otherwise use authenticated endpoint
-        const endpoint = hasAuth
+        endpoint = hasAuth
           ? `${this.baseURL}/api/repconnect/chat/message`
           : `${this.baseURL}/api/repconnect/chat/public/message`;
 
@@ -197,8 +198,21 @@ class AgentChatAPI {
         timestamp: new Date().toISOString(),
       };
     } catch (error) {
-      console.error('agentChatAPI: Error sending message:', error);
-      console.error('agentChatAPI: Error details:', error.message, error.stack);
+      console.error('agentChatAPI: Caught error in sendMessage:', error);
+      console.error('agentChatAPI: Error type:', error.constructor.name);
+      console.error('agentChatAPI: Error message:', error.message);
+      console.error('agentChatAPI: Error stack:', error.stack);
+      
+      // Check if it's a network error
+      if (error instanceof TypeError && error.message === 'Failed to fetch') {
+        console.error('agentChatAPI: This is a network/CORS error. The request never reached the server.');
+        console.error('agentChatAPI: Attempted endpoint was:', endpoint);
+        console.error('agentChatAPI: This usually means:');
+        console.error('  1. CORS is blocking the request');
+        console.error('  2. The endpoint does not exist on the server');
+        console.error('  3. Network connectivity issue');
+      }
+      
       return {
         success: false,
         error: error.message,
