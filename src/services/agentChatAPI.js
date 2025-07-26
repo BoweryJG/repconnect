@@ -113,6 +113,19 @@ class AgentChatAPI {
         Object.fromEntries(response.headers.entries())
       );
 
+      // Log response body for debugging
+      const responseText = await response.text();
+      console.log('agentChatAPI: Response body:', responseText);
+
+      // Try to parse as JSON
+      let data;
+      try {
+        data = JSON.parse(responseText);
+      } catch (parseError) {
+        console.error('agentChatAPI: Failed to parse response as JSON:', parseError);
+        throw new Error('Invalid response format from server');
+      }
+
       if (!response.ok) {
         // If chat endpoint doesn't exist, try fallback
         if (response.status === 404) {
@@ -125,10 +138,10 @@ class AgentChatAPI {
             timestamp: new Date().toISOString(),
           };
         }
-        throw new Error(`Chat API error: ${response.statusText}`);
+        console.error('agentChatAPI: Error response:', data);
+        throw new Error(data.error || `Chat API error: ${response.statusText}`);
       }
 
-      const data = await response.json();
       console.log('agentChatAPI: Response data:', data);
 
       // RepConnect API returns response directly
