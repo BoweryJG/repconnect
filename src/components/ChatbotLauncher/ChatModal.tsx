@@ -273,6 +273,7 @@ export const ChatModal: React.FC<ChatModalProps> = ({
     try {
       // Use agentId if provided, otherwise fallback to agentName
       const currentAgentId = agentId || agentName.toLowerCase().replace(/\s+/g, '_');
+      console.log('Sending message to agent:', currentAgentId, 'message:', messageText);
 
       // Send message to agent backend
       const response = await agentChatAPI.sendMessage({
@@ -281,6 +282,8 @@ export const ChatModal: React.FC<ChatModalProps> = ({
         userId: 'user', // You can use actual user ID if available
         sessionId: sessionId as any,
       });
+
+      console.log('Chat API response:', response);
 
       if (response.success) {
         // Update session ID if it's the first message

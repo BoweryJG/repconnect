@@ -48,6 +48,13 @@ class AgentChatAPI {
       const session = sessionId || this.getSessionId(userId, agentId);
       const headers = await this.getAuthHeaders();
 
+      console.log('agentChatAPI: Sending to backend', {
+        url: `${this.baseURL}/api/repconnect/chat/message`,
+        conversationId: session,
+        message: message,
+        agentId: agentId,
+      });
+
       // Use RepConnect chat endpoint instead of canvas endpoint
       const response = await fetch(`${this.baseURL}/api/repconnect/chat/message`, {
         method: 'POST',
@@ -59,6 +66,8 @@ class AgentChatAPI {
           agentId: agentId,
         }),
       });
+
+      console.log('agentChatAPI: Response status:', response.status);
 
       if (!response.ok) {
         // If canvas chat endpoint doesn't exist, try fallback
