@@ -35,10 +35,22 @@ class AgentChatAPI {
       }
 
       console.log('Getting session from supabase...');
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-      console.log('Session obtained:', !!session);
+
+      // Add timeout to getSession call
+      let session = null;
+      try {
+        const sessionPromise = supabase.auth.getSession();
+        const timeoutPromise = new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('Session fetch timeout')), 5000)
+        );
+
+        const result = await Promise.race([sessionPromise, timeoutPromise]);
+        session = result?.data?.session;
+        console.log('Session obtained:', !!session);
+      } catch (sessionError) {
+        console.warn('Failed to get session:', sessionError.message);
+        console.log('Proceeding without authentication');
+      }
 
       if (session?.access_token) {
         headers['Authorization'] = `Bearer ${session.access_token}`;

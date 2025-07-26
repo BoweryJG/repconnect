@@ -7,6 +7,10 @@ const supabaseAnonKey = process.env.REACT_APP_SUPABASE_ANON_KEY;
 
 let supabase: any = null;
 
+console.log('Supabase initialization check:');
+console.log('- URL present:', !!supabaseUrl);
+console.log('- Anon key present:', !!supabaseAnonKey);
+
 if (!supabaseUrl || !supabaseAnonKey) {
   console.error(
     'Missing required environment variables: REACT_APP_SUPABASE_URL and REACT_APP_SUPABASE_ANON_KEY'
