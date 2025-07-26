@@ -171,9 +171,9 @@ export const AgentSelectionModal: React.FC<AgentSelectionModalProps> = ({
 
         {/* Display knowledge domains */}
         {agent.knowledge_domains && agent.knowledge_domains.length > 0 && (
-          <Box sx={{ mb: 3, px: 2 }}>
+          <div style={{ marginBottom: 24, paddingLeft: 16, paddingRight: 16 }}>
             <AgentKnowledgeDomains domains={agent.knowledge_domains} />
-          </Box>
+          </div>
         )}
 
         <div style={{ display: 'flex', gap: 16, justifyContent: 'center' }}>
