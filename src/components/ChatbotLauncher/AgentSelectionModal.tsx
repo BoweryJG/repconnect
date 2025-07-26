@@ -8,7 +8,6 @@ import {
   Tooltip,
   Avatar,
   alpha,
-  Box,
 } from '@mui/material';
 import { Close, Chat, Mic } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
