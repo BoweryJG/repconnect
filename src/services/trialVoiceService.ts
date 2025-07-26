@@ -58,7 +58,7 @@ class TrialVoiceService {
       // Start heartbeat monitoring
       this.startHeartbeat();
 
-      return this.currentSession;
+      return response.data.data;
     } catch (error: any) {
       if (error.response?.status === 403) {
         throw new Error(
