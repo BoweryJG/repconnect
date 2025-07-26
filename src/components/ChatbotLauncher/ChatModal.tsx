@@ -276,6 +276,18 @@ export const ChatModal: React.FC<ChatModalProps> = ({
       console.log('Sending message to agent:', currentAgentId, 'message:', messageText);
 
       // Send message to agent backend
+      console.log('ChatModal: About to call agentChatAPI.sendMessage');
+      console.log('ChatModal: agentChatAPI object:', agentChatAPI);
+
+      if (!agentChatAPI) {
+        throw new Error('agentChatAPI is not initialized!');
+      }
+
+      // Test connection first
+      const isConnected = await agentChatAPI.testConnection();
+      console.log('Backend connection test:', isConnected);
+
+      console.log('ChatModal: Calling agentChatAPI.sendMessage...');
       const response = await agentChatAPI.sendMessage({
         message: messageText,
         agentId: currentAgentId,
@@ -302,8 +314,13 @@ export const ChatModal: React.FC<ChatModalProps> = ({
       } else {
         throw new Error(response.error || 'Failed to send message');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error sending message:', error);
+      console.error('Error details:', {
+        message: error.message,
+        stack: error.stack,
+        name: error.name,
+      });
 
       // Show error message to user
       const errorMessage: Message = {

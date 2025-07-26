@@ -3,31 +3,52 @@
 
 import { supabase } from '../lib/supabase';
 
+console.log('=== AgentChatAPI Module Loading ===');
+console.log('Supabase imported:', !!supabase);
+
 const AGENT_BACKEND_URL =
   process.env.REACT_APP_AGENT_BACKEND_URL || 'https://osbackend-zl1h.onrender.com';
 
+console.log('Backend URL configured:', AGENT_BACKEND_URL);
+
 class AgentChatAPI {
   constructor() {
+    console.log('AgentChatAPI constructor called');
     this.baseURL = AGENT_BACKEND_URL;
     this.sessions = new Map();
+    console.log('AgentChatAPI initialized with baseURL:', this.baseURL);
   }
 
   // Helper method to get current auth headers
   async getAuthHeaders() {
+    console.log('getAuthHeaders called');
     const headers = {
       'Content-Type': 'application/json',
     };
 
     // Get Supabase auth token
     try {
+      console.log('Checking if supabase is initialized:', !!supabase);
+      if (!supabase) {
+        console.warn('Supabase is not initialized! Returning basic headers.');
+        return headers;
+      }
+
+      console.log('Getting session from supabase...');
       const {
         data: { session },
       } = await supabase.auth.getSession();
+      console.log('Session obtained:', !!session);
+
       if (session?.access_token) {
         headers['Authorization'] = `Bearer ${session.access_token}`;
+        console.log('Auth header added');
+      } else {
+        console.log('No auth token available - will use public endpoint');
       }
     } catch (error) {
       console.error('Failed to get auth session:', error);
+      console.error('Error details:', error.message, error.stack);
     }
 
     return headers;
@@ -44,9 +65,18 @@ class AgentChatAPI {
 
   // Send a message to the chat API
   async sendMessage({ message, agentId, userId = 'anonymous', sessionId = null }) {
+    console.log('===== agentChatAPI.sendMessage CALLED =====');
+    console.log('Parameters:', { message, agentId, userId, sessionId });
+    console.log('Backend URL:', this.baseURL);
+
     try {
+      console.log('Getting session ID...');
       const session = sessionId || this.getSessionId(userId, agentId);
+      console.log('Session ID:', session);
+
+      console.log('Getting auth headers...');
       const headers = await this.getAuthHeaders();
+      console.log('Headers obtained:', headers);
 
       console.log('agentChatAPI: Sending to backend', {
         url: `${this.baseURL}/api/repconnect/chat/message`,
@@ -269,10 +299,25 @@ class AgentChatAPI {
   clearAllSessions() {
     this.sessions.clear();
   }
+
+  // Test connection to backend
+  async testConnection() {
+    console.log('Testing connection to backend...');
+    try {
+      const response = await fetch(`${this.baseURL}/health`);
+      console.log('Health check response:', response.status);
+      return response.ok;
+    } catch (error) {
+      console.error('Connection test failed:', error);
+      return false;
+    }
+  }
 }
 
 // Create singleton instance
+console.log('Creating AgentChatAPI singleton instance...');
 const agentChatAPI = new AgentChatAPI();
+console.log('AgentChatAPI instance created:', agentChatAPI);
 
 export default agentChatAPI;
 

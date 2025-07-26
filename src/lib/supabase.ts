@@ -5,19 +5,24 @@ const supabaseUrl =
   process.env.REACT_APP_SUPABASE_URL || 'https://cbopynuvhcymbumjnvay.supabase.co';
 const supabaseAnonKey = process.env.REACT_APP_SUPABASE_ANON_KEY;
 
+let supabase: any = null;
+
 if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error(
+  console.error(
     'Missing required environment variables: REACT_APP_SUPABASE_URL and REACT_APP_SUPABASE_ANON_KEY'
   );
+  console.warn('Supabase will not be initialized. Chat features may not work properly.');
+} else {
+  supabase = createClient(supabaseUrl, supabaseAnonKey, {
+    auth: {
+      autoRefreshToken: true,
+      persistSession: true,
+      detectSessionInUrl: true,
+      storage: window.localStorage,
+      storageKey: 'sb-cbopynuvhcymbumjnvay-auth-token',
+      flowType: 'implicit',
+    },
+  });
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    autoRefreshToken: true,
-    persistSession: true,
-    detectSessionInUrl: true,
-    storage: window.localStorage,
-    storageKey: 'sb-cbopynuvhcymbumjnvay-auth-token',
-    flowType: 'implicit',
-  },
-});
+export { supabase };
