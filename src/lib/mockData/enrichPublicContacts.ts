@@ -278,7 +278,7 @@ export async function getEnrichedPublicContacts(): Promise<EnrichedContact[]> {
   }
 
   // Transform database records back to EnrichedContact format
-  return data.map((record) => ({
+  return data.map((record: any) => ({
     id: record.original_id,
     name: record.name,
     practice_name: record.practice_name,
