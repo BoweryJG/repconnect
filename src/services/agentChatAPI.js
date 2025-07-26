@@ -132,7 +132,6 @@ class AgentChatAPI {
         response = await fetch(endpoint, {
           method: 'POST',
           headers,
-          credentials: 'include', // Include cookies for authentication
           body: requestBody,
           signal: controller.signal,
         });
@@ -145,6 +144,9 @@ class AgentChatAPI {
           throw new Error('Request timed out. The server may be slow or unavailable.');
         }
         console.error('agentChatAPI: Fetch error:', fetchError);
+        console.error('agentChatAPI: Error name:', fetchError.name);
+        console.error('agentChatAPI: Error message:', fetchError.message);
+        console.error('agentChatAPI: Error stack:', fetchError.stack);
         throw fetchError;
       }
 
@@ -215,7 +217,6 @@ class AgentChatAPI {
       const response = await fetch(`${this.baseURL}/api/repconnect/chat/stream`, {
         method: 'POST',
         headers,
-        credentials: 'include', // Include cookies for authentication
         body: JSON.stringify({
           conversationId: session,
           message: message,
