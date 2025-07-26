@@ -246,7 +246,7 @@ export const useCallHistory = (options: UseCallHistoryOptions = {}) => {
           schema: 'public',
           table: 'call_logs',
         },
-        (_payload) => {
+        (_payload: any) => {
           // Refresh the list when there's any change
           refresh();
         }
@@ -258,7 +258,7 @@ export const useCallHistory = (options: UseCallHistoryOptions = {}) => {
           schema: 'public',
           table: 'call_analysis',
         },
-        (_payload) => {
+        (_payload: any) => {
           // Refresh to get updated analysis
           refresh();
         }
