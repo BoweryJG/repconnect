@@ -3,7 +3,6 @@ import ChatbotLauncher from './ChatbotLauncher';
 import { ChatModal } from './ChatModal';
 import VoiceModalWebRTC from './VoiceModalWebRTC';
 import AgentSelectionModal from './AgentSelectionModal';
-import { getAllAgents, initializeAgents } from './agents/agentConfigs';
 import type { Agent } from './types';
 
 interface ChatbotIntegrationProps {
@@ -33,72 +32,91 @@ export const ChatbotIntegration: React.FC<ChatbotIntegrationProps> = ({
       try {
         console.log('Starting agent loading for public access...');
 
-        // Initialize agents from remote backend (available for all users)
-        await initializeAgents(['sales', 'coaching']);
-        console.log('Agent initialization complete');
+        // Fuck the caching, just call the backend directly
+        const response = await fetch('https://osbackend-zl1h.onrender.com/api/repconnect/agents', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
 
-        // Get all agents
-        const agentConfigs = await getAllAgents();
-        console.log('Got agent configs:', agentConfigs.length, 'agents');
-        console.log('First agent example:', agentConfigs[0]);
+        console.log('Backend response status:', response.status);
 
-        // Convert to Agent format
-        const convertedAgents = agentConfigs.map((config) => {
-          // Determine category based on agent category and medical specialties
-          let category = getCategoryForAgent(config.id, (config as any).agent_category);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch agents: ${response.status}`);
+        }
 
-          // For procedure experts, check medical specialties to determine dental vs aesthetic
-          if ((config as any).agent_category === 'procedure_expert' && config.knowledgeDomains) {
-            const isDental = config.knowledgeDomains.some(
-              (domain) =>
-                domain.toLowerCase().includes('dental') ||
-                domain.toLowerCase().includes('implant') ||
-                domain.toLowerCase().includes('orthodont') ||
-                domain.toLowerCase().includes('veneer')
-            );
-            category = isDental ? 'dental' : 'aesthetic';
-          }
+        const data = await response.json();
+        console.log('Backend response data:', data);
+
+        // Extract agents from response
+        let backendAgents = [];
+        if (data.success && data.data && data.data.agents) {
+          backendAgents = data.data.agents;
+        } else if (data.agents) {
+          backendAgents = data.agents;
+        }
+
+        console.log('Found', backendAgents.length, 'agents from backend');
+
+        // Convert backend agents to frontend Agent format
+        const convertedAgents = backendAgents.map((agent: any) => {
+          // Simple direct mapping from backend format
+          const category = getCategoryForAgent(agent.id, agent.agent_category);
 
           return {
-            ...config,
+            id: agent.id,
+            name: agent.name,
+            tagline: agent.tagline,
+            avatar: agent.avatar || '🤖',
+            description: agent.tagline,
+            specialty: agent.medical_specialties?.[0] || agent.tagline,
+            color: agent.accent_color || '#3B82F6',
+            available: agent.is_active !== false,
             category,
-            available: true,
-            description: config.tagline,
-            specialty: config.knowledgeDomains[0],
-            color: config.colorScheme.primary,
-            knowledge_domains: (config as any).knowledge_domains || [],
+            knowledge_domains: agent.knowledge_domains || [],
+            // Just use defaults for other fields we don't need right now
+            colorScheme: {
+              primary: agent.accent_color || '#3B82F6',
+              secondary: '#60A5FA',
+              accent: '#DBEAFE',
+              gradient: 'linear-gradient(135deg, #3B82F6 0%, #60A5FA 100%)',
+              shadowColor: 'rgba(59, 130, 246, 0.3)',
+            },
+            personality: {
+              tone: 'Professional',
+              traits: [],
+              approachStyle: 'Helpful',
+              communicationPreferences: [],
+            },
             voiceConfig: {
-              ...config.voiceConfig,
-              useSpeakerBoost: config.voiceConfig.speakerBoost,
+              voiceId: 'default',
+              stability: 0.5,
+              similarityBoost: 0.5,
+              style: 0.5,
+              useSpeakerBoost: true,
             },
+            knowledgeDomains: agent.medical_specialties || [],
+            conversationStarters: [],
             visualEffects: {
-              ...config.visualEffects,
-              animation: config.visualEffects.animation,
-              glow: config.visualEffects.glowEffect,
-              pulse: config.visualEffects.pulseEffect,
-              particleEffect: config.visualEffects.particleEffect || '',
+              animation: 'pulse',
+              glow: true,
+              pulse: true,
+              particleEffect: 'sparkle',
             },
-          };
+          } as Agent;
         });
 
         console.log(
           'Converted agents:',
-          convertedAgents.map((a) => ({ id: a.id, name: a.name }))
+          convertedAgents.map((a: Agent) => ({ id: a.id, name: a.name }))
         );
         setAgents(convertedAgents);
       } catch (error: any) {
         console.error('Error loading agents:', error);
         console.error('Error details:', error?.message || 'Unknown error');
-        console.error('Error stack:', error?.stack);
-        // Try to load agents directly as fallback
-        try {
-          const response = await fetch('https://osbackend-zl1h.onrender.com/api/repconnect/agents');
-          console.log('Direct fetch status:', response.status);
-          const data = await response.json();
-          console.log('Direct fetch data:', data);
-        } catch (fetchError) {
-          console.error('Direct fetch error:', fetchError);
-        }
+        // Set empty agents array on error
+        setAgents([]);
       }
     };
 
