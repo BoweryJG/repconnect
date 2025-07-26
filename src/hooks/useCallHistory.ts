@@ -129,7 +129,9 @@ export const useCallHistory = (options: UseCallHistoryOptions = {}) => {
         }
 
         // Fetch call analysis data if available
-        const callSids = (data || []).filter((call) => call.call_sid).map((call) => call.call_sid);
+        const callSids = (data || [])
+          .filter((call: CallHistoryItem) => call.call_sid)
+          .map((call: CallHistoryItem) => call.call_sid);
         let analysisMap: Record<string, CallAnalysisRecord> = {};
 
         if (callSids.length > 0) {
@@ -141,7 +143,7 @@ export const useCallHistory = (options: UseCallHistoryOptions = {}) => {
 
             if (!analysisError && analyses) {
               analysisMap = analyses.reduce(
-                (acc, analysis) => {
+                (acc: any, analysis: any) => {
                   acc[analysis.call_sid] = {
                     id: analysis.id,
                     call_sid: analysis.call_sid,
@@ -170,7 +172,7 @@ export const useCallHistory = (options: UseCallHistoryOptions = {}) => {
         }
 
         // Process the data with contact names and analysis
-        const processedCalls: CallHistoryItem[] = (data || []).map((call) => ({
+        const processedCalls: CallHistoryItem[] = (data || []).map((call: any) => ({
           id: call.id,
           call_sid: call.call_sid,
           contact_id: call.contact_id,
