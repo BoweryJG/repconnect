@@ -42,10 +42,7 @@ class TrialVoiceService {
     onTimeExpired?: () => void
   ): Promise<TrialVoiceSession> {
     try {
-      const response = await api.post(
-        `/api/repconnect/agents/${agentId}/start-trial-voice-session`,
-        {}
-      );
+      const response = await api.post(`/api/repconnect/agents/${agentId}/start-voice-session`, {});
 
       if (!response.data.success) {
         throw new Error(response.data.error?.message || 'Failed to start trial session');
