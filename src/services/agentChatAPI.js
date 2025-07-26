@@ -76,8 +76,18 @@ class AgentChatAPI {
 
       let response;
       try {
+        // Check if user is authenticated
+        const hasAuth = headers['Authorization'] ? true : false;
+
+        // Use public endpoint if no auth, otherwise use authenticated endpoint
+        const endpoint = hasAuth
+          ? `${this.baseURL}/api/repconnect/chat/message`
+          : `${this.baseURL}/api/repconnect/chat/public/message`;
+
+        console.log('agentChatAPI: Using endpoint:', endpoint, 'hasAuth:', hasAuth);
+
         // Use RepConnect chat endpoint
-        response = await fetch(`${this.baseURL}/api/repconnect/chat/message`, {
+        response = await fetch(endpoint, {
           method: 'POST',
           headers,
           credentials: 'include', // Include cookies for authentication
