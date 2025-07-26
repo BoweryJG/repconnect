@@ -8,10 +8,12 @@ import {
   Tooltip,
   Avatar,
   alpha,
+  Box,
 } from '@mui/material';
 import { Close, Chat, Mic } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
 import type { Agent } from './types';
+import { AgentKnowledgeDomains } from './AgentKnowledgeDomains';
 
 interface AgentSelectionModalProps {
   open: boolean;
@@ -163,9 +165,16 @@ export const AgentSelectionModal: React.FC<AgentSelectionModalProps> = ({
           {agent.name}
         </Typography>
 
-        <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.7)', mb: 4 }}>
+        <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.7)', mb: 2 }}>
           {agent.tagline}
         </Typography>
+
+        {/* Display knowledge domains */}
+        {agent.knowledge_domains && agent.knowledge_domains.length > 0 && (
+          <Box sx={{ mb: 3, px: 2 }}>
+            <AgentKnowledgeDomains domains={agent.knowledge_domains} />
+          </Box>
+        )}
 
         <div style={{ display: 'flex', gap: 16, justifyContent: 'center' }}>
           <Tooltip title="Ask anything. Your AI will reply instantly." arrow>

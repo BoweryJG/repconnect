@@ -15,6 +15,7 @@ import {
 import { ChatBubbleOutline, Close } from '@mui/icons-material';
 import { styled, keyframes } from '@mui/material/styles';
 import { Agent, ChatbotLauncherProps } from './types';
+import { AgentKnowledgeDomains } from './AgentKnowledgeDomains';
 
 // Keyframe animations
 const pulse = keyframes`
@@ -129,12 +130,13 @@ const AgentCarousel = styled(Box)(({ theme }) => ({
 const AgentCard = styled(Box)<{ agentcolor: string }>(({ theme, agentcolor }) => ({
   minWidth: 140,
   maxWidth: 160,
-  height: 120,
+  height: 'auto',
+  minHeight: 140,
   padding: theme.spacing(1.5),
   borderRadius: 12,
   cursor: 'pointer',
   position: 'relative',
-  overflow: 'hidden',
+  overflow: 'visible',
   background: `linear-gradient(135deg, ${agentcolor}15 0%, ${agentcolor}08 100%)`,
   border: `1px solid ${agentcolor}25`,
   scrollSnapAlign: 'start',
@@ -142,14 +144,15 @@ const AgentCard = styled(Box)<{ agentcolor: string }>(({ theme, agentcolor }) =>
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
-  justifyContent: 'center',
+  justifyContent: 'flex-start',
   textAlign: 'center',
   transition: 'transform 0.2s ease, box-shadow 0.2s ease',
   // Mobile optimizations
   [theme.breakpoints.down('sm')]: {
     minWidth: 120,
     maxWidth: 140,
-    height: 100,
+    height: 'auto',
+    minHeight: 120,
     padding: theme.spacing(1),
   },
   '&:hover': {
@@ -418,6 +421,10 @@ const ChatbotLauncher: React.FC<ChatbotLauncherProps> = ({
                       >
                         {agent.specialty}
                       </Typography>
+                      {/* Display knowledge domains in compact view */}
+                      {agent.knowledge_domains && agent.knowledge_domains.length > 0 && (
+                        <AgentKnowledgeDomains domains={agent.knowledge_domains} compact={true} />
+                      )}
                     </div>
                   </AgentCard>
                 </Tooltip>

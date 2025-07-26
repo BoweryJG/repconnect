@@ -35,6 +35,12 @@ export interface Agent {
   };
   category: 'aesthetic' | 'dental' | 'general' | 'sales' | 'coaching';
   knowledgeDomains: string[];
+  knowledge_domains?: Array<{
+    domain_name: string;
+    domain_category: string;
+    expertise_level: number;
+    product_lines: string[];
+  }>;
   conversationStarters: string[];
   visualEffects: {
     animation: string;

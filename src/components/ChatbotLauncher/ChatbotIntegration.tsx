@@ -65,6 +65,7 @@ export const ChatbotIntegration: React.FC<ChatbotIntegrationProps> = ({
             description: config.tagline,
             specialty: config.knowledgeDomains[0],
             color: config.colorScheme.primary,
+            knowledge_domains: (config as any).knowledge_domains || [],
             voiceConfig: {
               ...config.voiceConfig,
               useSpeakerBoost: config.voiceConfig.speakerBoost,
@@ -139,21 +140,6 @@ export const ChatbotIntegration: React.FC<ChatbotIntegrationProps> = ({
 
   return (
     <>
-      {/* Debug div to ensure component renders */}
-      <div
-        style={{
-          position: 'fixed',
-          bottom: 100,
-          right: 24,
-          zIndex: 9999,
-          background: 'red',
-          color: 'white',
-          padding: 8,
-        }}
-      >
-        Chatbot: {agents.length} agents
-      </div>
-
       <ChatbotLauncher
         agents={agents}
         onAgentSelect={handleAgentSelect}
