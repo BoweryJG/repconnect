@@ -137,7 +137,7 @@ Build command: `CI=false GENERATE_SOURCEMAP=false npm run build`
 - **WebSocket Reconnection**: Automatic reconnection with exponential backoff
 - **Voice Session Recovery**: Graceful handling of connection drops
 
-## Agent System (19 Total)
+## Agent System (35 Total Agents, 6 B2B Knowledge Domains)
 
 ### Agent Categories
 
@@ -146,15 +146,39 @@ Build command: `CI=false GENERATE_SOURCEMAP=false npm run build`
 - **Strategists** (4): Hunter, Closer, Educator, Strategist
 - **Medical Specialists** (6): Dr. Foster, Dr. Stern, Dr. Martinez, Dr. Chen, Jake Thompson, Marcus Rodriguez
 - **Voice Representatives** (2 exclusive): Marcus, Sarah
+- **Procedure Experts** (13): Toxi, Fillmore, Dewey, Blazer, Chilly, Steely, Straightz, Shimmer, and others
+- **General** (3): Harvey AI, Victor, Diana
+
+### B2B Medical Device Sales Knowledge Domains
+
+The system includes 6 comprehensive B2B sales knowledge domains for training sales reps on selling medical devices TO doctors (not patient-facing):
+
+1. **Neurotoxin Sales** (Botox/Dysport/Daxxify) - 19 agents
+2. **All-on-4 Dental Implants** - 18 agents
+3. **Fraxel Laser Systems** - 19 agents
+4. **RF Microneedling** (Morpheus8, Vivace, Secret) - 18 agents
+5. **Body Contouring** (CoolSculpting, EmSculpt) - 23 agents
+6. **Yomi Robotic Dental Surgery** ($220K system, $4-6K/month membership) - 9 agents
+
+Each domain includes:
+
+- Socratic discovery questions
+- ROI models and pricing strategies
+- Objection handling frameworks
+- 2025 market data and trends
+- Consultative, non-pushy challenger approach
 
 ### Loading Agents Pattern
 
 ```javascript
-// Initialize agents for all users (no auth check)
+// Agents now load from osbackend with knowledge domains
 useEffect(() => {
   const loadAgents = async () => {
+    // All agents come from osbackend - no local definitions
     await initializeAgents(['sales', 'coaching']);
-    setAgents(await api.get('/api/repconnect/agents'));
+    const response = await api.get('/api/repconnect/agents');
+    // Each agent includes knowledge_domains array
+    setAgents(response.agents);
   };
   loadAgents();
 }, []);
