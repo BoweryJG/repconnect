@@ -211,7 +211,7 @@ function AppContent() {
 
       // Convert Supabase data to Contact format and set all at once
       const formattedContacts =
-        data?.map((contact) => ({
+        data?.map((contact: any) => ({
           id: crypto.randomUUID(),
           name: `${contact.first_name || ''} ${contact.last_name || ''}`.trim() || 'Unknown',
           phoneNumber: contact.phone_number || contact.cell || '',
