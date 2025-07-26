@@ -36,7 +36,7 @@ export async function loadAgentConfig(agentId) {
   try {
     const headers = await getAuthHeaders();
 
-    const response = await fetch(`${AGENT_BACKEND_URL}/api/canvas/agents/${agentId}`, {
+    const response = await fetch(`${AGENT_BACKEND_URL}/api/repconnect/agents/${agentId}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -132,7 +132,7 @@ export async function loadAllAgents() {
   try {
     const headers = await getAuthHeaders();
 
-    const response = await fetch(`${AGENT_BACKEND_URL}/api/canvas/agents`, {
+    const response = await fetch(`${AGENT_BACKEND_URL}/api/repconnect/agents`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

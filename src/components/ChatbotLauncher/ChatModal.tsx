@@ -305,47 +305,15 @@ export const ChatModal: React.FC<ChatModalProps> = ({
     } catch (error) {
       console.error('Error sending message:', error);
 
-      // Try fallback to old backend if agentbackend fails
-      try {
-        const backendUrl =
-          process.env.REACT_APP_BACKEND_URL || 'https://osbackend-zl1h.onrender.com';
-        const fallbackResponse = await fetch(`${backendUrl}/api/harvey/chat`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            message: messageText,
-            agentId: agentName.toLowerCase(),
-            sessionId: sessionId || Date.now().toString(),
-            context: messages.map((m) => ({
-              role: m.sender === 'user' ? 'user' : 'assistant',
-              content: m.content,
-            })),
-          }),
-        });
-
-        if (fallbackResponse.ok) {
-          const data = await fallbackResponse.json();
-          const agentMessage: Message = {
-            id: (Date.now() + 1).toString(),
-            content: data.response || data.message || 'I apologize, but I encountered an issue.',
-            sender: 'agent',
-            timestamp: new Date(),
-          };
-          setMessages((prev) => [...prev, agentMessage]);
-        } else {
-          throw new Error('Fallback also failed');
-        }
-      } catch (fallbackError) {
-        const errorMessage: Message = {
-          id: (Date.now() + 1).toString(),
-          content: "I apologize, but I'm having trouble connecting. Please try again in a moment.",
-          sender: 'agent',
-          timestamp: new Date(),
-        };
-        setMessages((prev) => [...prev, errorMessage]);
-      }
+      // Show error message to user
+      const errorMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        content:
+          "I apologize, but I'm having trouble connecting to the RepConnect chat service. Please try again in a moment.",
+        sender: 'agent',
+        timestamp: new Date(),
+      };
+      setMessages((prev) => [...prev, errorMessage]);
     } finally {
       setIsTyping(false);
       setIsSending(false);
