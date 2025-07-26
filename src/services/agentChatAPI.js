@@ -48,24 +48,15 @@ class AgentChatAPI {
       const session = sessionId || this.getSessionId(userId, agentId);
       const headers = await this.getAuthHeaders();
 
-      const response = await fetch(`${this.baseURL}/api/anthropic`, {
+      // Use RepConnect chat endpoint instead of canvas endpoint
+      const response = await fetch(`${this.baseURL}/api/repconnect/chat/message`, {
         method: 'POST',
         headers,
         credentials: 'include', // Include cookies for authentication
         body: JSON.stringify({
-          model: 'claude-3-5-sonnet-20241022',
-          messages: [
-            {
-              role: 'user',
-              content: message,
-            },
-          ],
-          max_tokens: 1000,
-          metadata: {
-            agentId,
-            userId,
-            sessionId: session,
-          },
+          conversationId: session,
+          message: message,
+          agentId: agentId,
         }),
       });
 
@@ -85,9 +76,11 @@ class AgentChatAPI {
       }
 
       const data = await response.json();
+
+      // RepConnect API returns response directly
       return {
         success: true,
-        message: data.choices?.[0]?.message?.content || data.content || data.message,
+        message: data.response || data.message || "I'm here to help! How can I assist you today?",
         agentId: agentId,
         sessionId: session,
         timestamp: new Date().toISOString(),
@@ -108,25 +101,15 @@ class AgentChatAPI {
       const session = sessionId || this.getSessionId(userId, agentId);
       const headers = await this.getAuthHeaders();
 
-      const response = await fetch(`${this.baseURL}/api/anthropic`, {
+      // Use RepConnect streaming endpoint
+      const response = await fetch(`${this.baseURL}/api/repconnect/chat/stream`, {
         method: 'POST',
         headers,
         credentials: 'include', // Include cookies for authentication
         body: JSON.stringify({
-          model: 'claude-3-5-sonnet-20241022',
-          messages: [
-            {
-              role: 'user',
-              content: message,
-            },
-          ],
-          max_tokens: 1000,
-          stream: true,
-          metadata: {
-            agentId,
-            userId,
-            sessionId: session,
-          },
+          conversationId: session,
+          message: message,
+          agentId: agentId,
         }),
       });
 
