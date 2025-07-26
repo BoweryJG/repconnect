@@ -331,9 +331,26 @@ class AgentChatAPI {
   async testConnection() {
     console.log('Testing connection to backend...');
     try {
-      const response = await fetch(`${this.baseURL}/health`);
-      console.log('Health check response:', response.status);
-      return response.ok;
+      // Test health endpoint
+      const healthResponse = await fetch(`${this.baseURL}/health`);
+      console.log('Health check response:', healthResponse.status);
+      
+      // Test the new test endpoint
+      const testResponse = await fetch(`${this.baseURL}/api/repconnect/test`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ test: 'data' })
+      });
+      
+      console.log('Test endpoint response:', testResponse.status);
+      if (testResponse.ok) {
+        const data = await testResponse.json();
+        console.log('Test endpoint data:', data);
+      }
+      
+      return healthResponse.ok;
     } catch (error) {
       console.error('Connection test failed:', error);
       return false;
