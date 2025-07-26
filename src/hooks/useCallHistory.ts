@@ -118,7 +118,7 @@ export const useCallHistory = (options: UseCallHistoryOptions = {}) => {
 
             if (!contactError && contacts) {
               contactsMap = contacts.reduce(
-                (acc, contact) => {
+                (acc: any, contact: any) => {
                   acc[contact.id] = contact.name;
                   return acc;
                 },
