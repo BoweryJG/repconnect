@@ -42,25 +42,42 @@ export const ChatbotIntegration: React.FC<ChatbotIntegrationProps> = ({
         console.log('Got agent configs:', agentConfigs.length, 'agents');
 
         // Convert to Agent format
-        const convertedAgents = agentConfigs.map((config) => ({
-          ...config,
-          category: getCategoryForAgent(config.id),
-          available: true,
-          description: config.tagline,
-          specialty: config.knowledgeDomains[0],
-          color: config.colorScheme.primary,
-          voiceConfig: {
-            ...config.voiceConfig,
-            useSpeakerBoost: config.voiceConfig.speakerBoost,
-          },
-          visualEffects: {
-            ...config.visualEffects,
-            animation: config.visualEffects.animation,
-            glow: config.visualEffects.glowEffect,
-            pulse: config.visualEffects.pulseEffect,
-            particleEffect: config.visualEffects.particleEffect || '',
-          },
-        }));
+        const convertedAgents = agentConfigs.map((config) => {
+          // Determine category based on agent category and medical specialties
+          let category = getCategoryForAgent(config.id, (config as any).agent_category);
+
+          // For procedure experts, check medical specialties to determine dental vs aesthetic
+          if ((config as any).agent_category === 'procedure_expert' && config.knowledgeDomains) {
+            const isDental = config.knowledgeDomains.some(
+              (domain) =>
+                domain.toLowerCase().includes('dental') ||
+                domain.toLowerCase().includes('implant') ||
+                domain.toLowerCase().includes('orthodont') ||
+                domain.toLowerCase().includes('veneer')
+            );
+            category = isDental ? 'dental' : 'aesthetic';
+          }
+
+          return {
+            ...config,
+            category,
+            available: true,
+            description: config.tagline,
+            specialty: config.knowledgeDomains[0],
+            color: config.colorScheme.primary,
+            voiceConfig: {
+              ...config.voiceConfig,
+              useSpeakerBoost: config.voiceConfig.speakerBoost,
+            },
+            visualEffects: {
+              ...config.visualEffects,
+              animation: config.visualEffects.animation,
+              glow: config.visualEffects.glowEffect,
+              pulse: config.visualEffects.pulseEffect,
+              particleEffect: config.visualEffects.particleEffect || '',
+            },
+          };
+        });
 
         console.log(
           'Converted agents:',
@@ -98,25 +115,22 @@ export const ChatbotIntegration: React.FC<ChatbotIntegrationProps> = ({
   }, []);
 
   // Helper function to determine category
-  const getCategoryForAgent = (agentId: string): Agent['category'] => {
-    const categoryMap: Record<string, Agent['category']> = {
-      botox: 'aesthetic',
-      fillers: 'aesthetic',
-      skincare: 'aesthetic',
-      laser: 'aesthetic',
-      bodycontouring: 'aesthetic',
-      implants: 'dental',
-      orthodontics: 'dental',
-      cosmetic: 'dental',
-      harvey: 'general',
-      victor: 'sales',
-      maxwell: 'sales',
-      diana: 'sales',
-      marcus: 'sales',
-      sophia: 'sales',
-    };
+  const getCategoryForAgent = (agentId: string, agentCategory?: string): Agent['category'] => {
+    // First check if agent has explicit category from backend
+    if (agentCategory) {
+      const categoryMapping: Record<string, Agent['category']> = {
+        elite_closer: 'sales',
+        coach: 'coaching',
+        specialist: 'general',
+        strategist: 'sales',
+        voice_rep: 'general',
+        procedure_expert: 'aesthetic', // Default procedure experts to aesthetic
+      };
+      return categoryMapping[agentCategory] || 'general';
+    }
 
-    return categoryMap[agentId] || 'general';
+    // No need for ID-based mapping since all agents come from backend now
+    return 'general';
   };
 
   // Always show the launcher, even when loading

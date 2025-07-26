@@ -69,15 +69,24 @@ class AgentBackendAPI {
       }
 
       const data = await response.json();
-      console.log('Agent fetch successful, got:', data.agents ? data.agents.length : 0, 'agents');
+
+      // Handle the response format from osbackend
+      let agents = [];
+      if (data.success && data.data && data.data.agents) {
+        agents = data.data.agents;
+      } else if (data.agents) {
+        agents = data.agents;
+      }
+
+      console.log('Agent fetch successful, got:', agents.length, 'agents');
 
       // Cache the response
       this.cache.set(cacheKey, {
-        data: data.agents || [],
+        data: agents,
         timestamp: Date.now(),
       });
 
-      return data.agents || [];
+      return agents;
     } catch (error) {
       console.error('Error fetching agents from backend:', error);
       // Return empty array on error to allow fallback to local agents

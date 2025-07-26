@@ -33,7 +33,7 @@ export interface Agent {
     style: number;
     useSpeakerBoost: boolean;
   };
-  category: 'aesthetic' | 'dental' | 'general' | 'sales';
+  category: 'aesthetic' | 'dental' | 'general' | 'sales' | 'coaching';
   knowledgeDomains: string[];
   conversationStarters: string[];
   visualEffects: {

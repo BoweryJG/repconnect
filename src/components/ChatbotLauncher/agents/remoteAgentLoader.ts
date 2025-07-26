@@ -38,6 +38,13 @@ const iconMap: Record<string, any> = {
   '💎': Gem,
   '👑': Crown,
   '😊': Smile,
+  '🔥': Zap,
+  '📊': Brain,
+  '🧘': Heart,
+  '🤝': Network,
+  '👔': DollarSign,
+  '🌟': Star,
+  '🦷': Smile,
   // Role-based mappings
   advisor: User,
   specialist: Sparkles,
@@ -45,6 +52,7 @@ const iconMap: Record<string, any> = {
   coach: Trophy,
   sales: DollarSign,
   motivator: Zap,
+  elite_closer: Crown,
 };
 
 // Get icon from emoji or role
@@ -75,53 +83,96 @@ export async function loadRemoteAgents(category?: string): Promise<Record<string
 // Convert a single backend agent to local format
 function convertBackendAgent(backendAgent: any): AgentConfig | null {
   try {
-    const {
-      gradient = '',
-      accentColor = '#7C3AED',
-      shadowColor = 'rgba(124, 58, 237, 0.3)',
-    } = backendAgent;
+    // Handle osbackend agent format
+    const avatar_emoji = backendAgent.avatar_emoji || backendAgent.avatar || '👤';
+    const agent_category = backendAgent.agent_category || 'general';
 
-    // Extract colors from gradient
-    const colors = gradient.match(/#[0-9a-fA-F]{6}/g) || ['#7C3AED', '#A78BFA', '#DDD6FE'];
-    const primaryColor = colors[0] || accentColor;
-    const secondaryColor = colors[1] || colors[0] || '#A78BFA';
-    const accentColorExtracted = colors[colors.length - 1] || '#DDD6FE';
+    // Map agent category to color scheme
+    const colorSchemes: Record<string, any> = {
+      elite_closer: {
+        primary: '#DC2626',
+        secondary: '#EF4444',
+        accent: '#FEE2E2',
+      },
+      coach: {
+        primary: '#3B82F6',
+        secondary: '#60A5FA',
+        accent: '#DBEAFE',
+      },
+      specialist: {
+        primary: '#10B981',
+        secondary: '#34D399',
+        accent: '#D1FAE5',
+      },
+      strategist: {
+        primary: '#8B5CF6',
+        secondary: '#A78BFA',
+        accent: '#EDE9FE',
+      },
+      voice_rep: {
+        primary: '#6366F1',
+        secondary: '#818CF8',
+        accent: '#E0E7FF',
+      },
+      procedure_expert: {
+        primary: '#7C3AED',
+        secondary: '#A78BFA',
+        accent: '#DDD6FE',
+      },
+    };
+
+    const colors = colorSchemes[agent_category] || {
+      primary: '#7C3AED',
+      secondary: '#A78BFA',
+      accent: '#DDD6FE',
+    };
+
+    // Extract tagline from backend or create one
+    let tagline = backendAgent.tagline;
+    if (!tagline && backendAgent.system_prompt) {
+      // Extract first sentence after "You are [name]," from system prompt
+      const match = backendAgent.system_prompt.match(/You are [^,]+, ([^.]+)\./);
+      tagline = match ? match[1] : `${backendAgent.personality_type || agent_category} specialist`;
+    }
 
     return {
       id: backendAgent.id,
       name: backendAgent.name,
-      tagline: backendAgent.tagline,
+      tagline: tagline || `${backendAgent.personality_type || agent_category} specialist`,
       avatar: {
-        icon: getIcon(backendAgent.avatar, backendAgent.role),
-        backgroundColor: accentColorExtracted,
-        iconColor: primaryColor,
+        icon: getIcon(avatar_emoji, agent_category),
+        backgroundColor: colors.accent,
+        iconColor: colors.primary,
       },
       colorScheme: {
-        primary: primaryColor,
-        secondary: secondaryColor,
-        accent: accentColorExtracted,
-        gradient: gradient || `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
-        shadowColor: shadowColor,
+        primary: colors.primary,
+        secondary: colors.secondary,
+        accent: colors.accent,
+        gradient: `linear-gradient(135deg, ${colors.primary} 0%, ${colors.secondary} 100%)`,
+        shadowColor: `rgba(${parseInt(colors.primary.slice(1, 3), 16)}, ${parseInt(colors.primary.slice(3, 5), 16)}, ${parseInt(colors.primary.slice(5, 7), 16)}, 0.3)`,
       },
       personality: {
         tone:
-          backendAgent.personality?.tone ||
-          backendAgent.personality?.communication_style ||
+          backendAgent.personality_profile?.tone ||
+          backendAgent.communication_style ||
           'Professional and friendly',
-        traits: backendAgent.personality?.traits || [],
-        approachStyle: backendAgent.personality?.approach || 'Consultative',
-        communicationPreferences: backendAgent.personality?.specialties || [],
+        traits: backendAgent.personality_profile?.core_traits || [],
+        approachStyle:
+          backendAgent.coaching_style?.approach ||
+          backendAgent.personality_profile?.approach ||
+          'Consultative',
+        communicationPreferences: backendAgent.specialties || [],
       },
       voiceConfig: {
-        voiceId:
-          backendAgent.voice_config?.voice_id || backendAgent.voiceId || 'EXAVITQu4vr4xnSDxMaL',
-        stability: backendAgent.voice_config?.settings?.stability || 0.7,
-        similarityBoost: backendAgent.voice_config?.settings?.similarityBoost || 0.8,
-        style: backendAgent.voice_config?.settings?.style || 0.5,
-        speakerBoost: backendAgent.voice_config?.settings?.useSpeakerBoost !== false,
+        voiceId: backendAgent.voice_id || 'EXAVITQu4vr4xnSDxMaL',
+        stability: backendAgent.voice_settings?.stability || 0.7,
+        similarityBoost: backendAgent.voice_settings?.similarity_boost || 0.8,
+        style: backendAgent.voice_settings?.style || 0.5,
+        speakerBoost: backendAgent.voice_settings?.use_speaker_boost !== false,
       },
-      knowledgeDomains: backendAgent.personality?.specialties || [],
-      conversationStarters: generateConversationStarters(backendAgent),
+      knowledgeDomains: backendAgent.specialties || backendAgent.medical_specialties || [],
+      conversationStarters:
+        backendAgent.conversation_starters || generateConversationStarters(backendAgent),
       visualEffects: {
         animation: getAnimationStyle(backendAgent),
         glowEffect: true,
@@ -180,23 +231,33 @@ function generateConversationStarters(agent: any): string[] {
 }
 
 function getAnimationStyle(agent: any): string {
-  const role = agent.role?.toLowerCase() || '';
-  if (role.includes('sales')) return 'power-surge';
-  if (role.includes('coach')) return 'pulse';
-  if (role.includes('specialist')) return 'sparkle';
+  const category = agent.agent_category?.toLowerCase() || '';
+  const type = agent.personality_type?.toLowerCase() || '';
+
+  if (category === 'elite_closer') return 'power-surge';
+  if (category === 'coach') return 'pulse';
+  if (category === 'specialist') return 'sparkle';
+  if (category === 'procedure_expert') return 'gentle-sway';
+  if (type.includes('disrupt')) return 'lightning-strike';
+  if (type.includes('strategic')) return 'chess-move';
   return 'gentle-sway';
 }
 
 function shouldPulse(agent: any): boolean {
-  const role = agent.role?.toLowerCase() || '';
-  return role.includes('sales') || role.includes('urgent') || role.includes('coach');
+  const category = agent.agent_category?.toLowerCase() || '';
+  return category === 'elite_closer' || category === 'coach' || category === 'strategist';
 }
 
 function getParticleEffect(agent: any): string {
-  const role = agent.role?.toLowerCase() || '';
-  if (role.includes('sales')) return 'gold-coins';
-  if (role.includes('specialist')) return 'sparkle';
-  if (role.includes('coach')) return 'energy-burst';
+  const category = agent.agent_category?.toLowerCase() || '';
+  const type = agent.personality_type?.toLowerCase() || '';
+
+  if (category === 'elite_closer') return 'gold-coins';
+  if (category === 'specialist') return 'sparkle';
+  if (category === 'coach') return 'energy-burst';
+  if (category === 'procedure_expert') return 'shimmer';
+  if (type.includes('network')) return 'connection-nodes';
+  if (type.includes('disrupt')) return 'electric-sparks';
   return '';
 }
 
