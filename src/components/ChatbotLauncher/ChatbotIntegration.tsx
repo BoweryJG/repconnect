@@ -31,7 +31,7 @@ export const ChatbotIntegration: React.FC<ChatbotIntegrationProps> = ({
   useEffect(() => {
     const loadAgents = async () => {
       try {
-        console.log('Starting agent loading...');
+        console.log('Starting agent loading for public access...');
 
         // Initialize agents from remote backend (available for all users)
         await initializeAgents(['sales', 'coaching']);
@@ -40,6 +40,7 @@ export const ChatbotIntegration: React.FC<ChatbotIntegrationProps> = ({
         // Get all agents
         const agentConfigs = await getAllAgents();
         console.log('Got agent configs:', agentConfigs.length, 'agents');
+        console.log('First agent example:', agentConfigs[0]);
 
         // Convert to Agent format
         const convertedAgents = agentConfigs.map((config) => {
@@ -88,6 +89,16 @@ export const ChatbotIntegration: React.FC<ChatbotIntegrationProps> = ({
       } catch (error: any) {
         console.error('Error loading agents:', error);
         console.error('Error details:', error?.message || 'Unknown error');
+        console.error('Error stack:', error?.stack);
+        // Try to load agents directly as fallback
+        try {
+          const response = await fetch('https://osbackend-zl1h.onrender.com/api/repconnect/agents');
+          console.log('Direct fetch status:', response.status);
+          const data = await response.json();
+          console.log('Direct fetch data:', data);
+        } catch (fetchError) {
+          console.error('Direct fetch error:', fetchError);
+        }
       }
     };
 

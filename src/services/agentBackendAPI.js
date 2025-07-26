@@ -19,6 +19,7 @@ class AgentBackendAPI {
       'Content-Type': 'application/json',
     };
 
+    // Don't require auth for public agent access
     try {
       const {
         data: { session },
@@ -28,7 +29,7 @@ class AgentBackendAPI {
         headers['X-Supabase-Auth'] = 'true'; // Additional header to indicate Supabase auth
       }
     } catch (error) {
-      console.error('Failed to get auth session:', error);
+      // Silently ignore auth errors for public access
     }
 
     return headers;
