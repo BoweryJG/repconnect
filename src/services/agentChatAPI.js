@@ -55,24 +55,58 @@ class AgentChatAPI {
         agentId: agentId,
       });
 
-      // Use RepConnect chat endpoint instead of canvas endpoint
-      const response = await fetch(`${this.baseURL}/api/repconnect/chat/message`, {
-        method: 'POST',
-        headers,
-        credentials: 'include', // Include cookies for authentication
-        body: JSON.stringify({
-          conversationId: session,
-          message: message,
-          agentId: agentId,
-        }),
+      // Log the full request details
+      const requestBody = JSON.stringify({
+        conversationId: session,
+        message: message,
+        agentId: agentId,
       });
 
+      console.log('agentChatAPI: Full request details:', {
+        method: 'POST',
+        url: `${this.baseURL}/api/repconnect/chat/message`,
+        headers,
+        body: requestBody,
+        credentials: 'include',
+      });
+
+      // Add timeout to the fetch request
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+
+      let response;
+      try {
+        // Use RepConnect chat endpoint
+        response = await fetch(`${this.baseURL}/api/repconnect/chat/message`, {
+          method: 'POST',
+          headers,
+          credentials: 'include', // Include cookies for authentication
+          body: requestBody,
+          signal: controller.signal,
+        });
+
+        clearTimeout(timeoutId);
+      } catch (fetchError) {
+        clearTimeout(timeoutId);
+        if (fetchError.name === 'AbortError') {
+          console.error('agentChatAPI: Request timed out after 30 seconds');
+          throw new Error('Request timed out. The server may be slow or unavailable.');
+        }
+        console.error('agentChatAPI: Fetch error:', fetchError);
+        throw fetchError;
+      }
+
+      console.log('agentChatAPI: Response received');
       console.log('agentChatAPI: Response status:', response.status);
+      console.log(
+        'agentChatAPI: Response headers:',
+        Object.fromEntries(response.headers.entries())
+      );
 
       if (!response.ok) {
-        // If canvas chat endpoint doesn't exist, try fallback
+        // If chat endpoint doesn't exist, try fallback
         if (response.status === 404) {
-          console.warn('Canvas chat endpoint not found, using fallback response');
+          console.warn('Chat endpoint not found, using fallback response');
           return {
             success: true,
             message: `Hello! I'm ${agentId}. This is a fallback response since the chat backend isn't fully configured yet. The agent selection and UI are working correctly.`,
@@ -85,6 +119,7 @@ class AgentChatAPI {
       }
 
       const data = await response.json();
+      console.log('agentChatAPI: Response data:', data);
 
       // RepConnect API returns response directly
       return {
@@ -95,7 +130,8 @@ class AgentChatAPI {
         timestamp: new Date().toISOString(),
       };
     } catch (error) {
-      console.error('Error sending message to agent:', error);
+      console.error('agentChatAPI: Error sending message:', error);
+      console.error('agentChatAPI: Error details:', error.message, error.stack);
       return {
         success: false,
         error: error.message,
