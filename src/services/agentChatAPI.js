@@ -20,11 +20,17 @@ class AgentChatAPI {
   }
 
   // Helper method to get current auth headers
-  async getAuthHeaders() {
+  async getAuthHeaders(skipAuth = false) {
     console.log('getAuthHeaders called');
     const headers = {
       'Content-Type': 'application/json',
     };
+
+    // Skip auth check if requested (for faster public access)
+    if (skipAuth) {
+      console.log('Skipping auth check for public access');
+      return headers;
+    }
 
     // Get Supabase auth token
     try {
@@ -40,8 +46,8 @@ class AgentChatAPI {
       let session = null;
       try {
         const sessionPromise = supabase.auth.getSession();
-        const timeoutPromise = new Promise((_, reject) =>
-          setTimeout(() => reject(new Error('Session fetch timeout')), 5000)
+        const timeoutPromise = new Promise(
+          (_, reject) => setTimeout(() => reject(new Error('Session fetch timeout')), 1000) // Reduced from 5000ms to 1000ms
         );
 
         const result = await Promise.race([sessionPromise, timeoutPromise]);
@@ -88,8 +94,12 @@ class AgentChatAPI {
       const session = sessionId || this.getSessionId(userId, agentId);
       console.log('Session ID:', session);
 
+      // Check if this is an anonymous/public user to skip auth
+      const isPublicUser = userId === 'anonymous' || userId.startsWith('guest-');
+      console.log('Is public user:', isPublicUser);
+
       console.log('Getting auth headers...');
-      const headers = await this.getAuthHeaders();
+      const headers = await this.getAuthHeaders(isPublicUser);
       console.log('Headers obtained:', headers);
 
       console.log('agentChatAPI: Sending to backend', {
