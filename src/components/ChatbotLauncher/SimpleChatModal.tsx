@@ -100,10 +100,10 @@ export function ChatModal({
         sessionId: sessionId,
       });
 
-      if (response.response) {
+      if (response.message || response.response) {
         const agentMessage: Message = {
           id: `agent-${Date.now()}`,
-          content: response.response,
+          content: response.message || response.response,
           isUser: false,
           timestamp: new Date(),
         };
