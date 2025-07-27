@@ -4,7 +4,7 @@ import { ChatModal } from './ChatModal';
 import VoiceModalWithTrial from './VoiceModalWithTrial';
 import AgentSelectionModal from './AgentSelectionModal';
 import type { Agent } from './types';
-import api from '../../config/api';
+import api, { API_BASE_URL } from '../../config/api';
 
 interface ChatbotIntegrationProps {
   position?: 'bottom-right' | 'bottom-left';
@@ -34,6 +34,7 @@ export const ChatbotIntegration: React.FC<ChatbotIntegrationProps> = ({
         console.log('Starting agent loading for public access...');
 
         // Use the configured API instance with proper credentials
+        console.log('About to call API with URL:', API_BASE_URL + '/api/repconnect/agents');
         const response = await api.get('/api/repconnect/agents');
 
         console.log('Backend response status:', response.status);
