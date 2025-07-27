@@ -533,14 +533,6 @@ const ChatbotLauncher: React.FC<ChatbotLauncherProps> = ({
               alignItems: 'center',
               justifyContent: 'center',
               boxShadow: '0 2px 8px rgba(16, 185, 129, 0.4)',
-              '&::before': {
-                content: '""',
-                position: 'absolute',
-                inset: 0,
-                borderRadius: '50%',
-                backgroundColor: '#10B981',
-                animation: `${pulse} 2s infinite`,
-              },
             }}
           >
             <Typography sx={{ fontSize: 11, fontWeight: 'bold', color: 'white' }}>
@@ -620,18 +612,6 @@ const ChatbotLauncher: React.FC<ChatbotLauncherProps> = ({
                       opacity: agent.available ? 1 : 0.7,
                       cursor: agent.available ? 'pointer' : 'not-allowed',
                       filter: agent.available ? 'none' : 'grayscale(30%)',
-                      position: 'relative',
-                      '&::after': !agent.available
-                        ? {
-                            content: '""',
-                            position: 'absolute',
-                            inset: 0,
-                            background:
-                              'repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(0,0,0,0.03) 10px, rgba(0,0,0,0.03) 20px)',
-                            borderRadius: 20,
-                            pointerEvents: 'none',
-                          }
-                        : {},
                     }}
                   >
                     <StyledAvatar bgcolor={agent.color || '#3B82F6'}>
