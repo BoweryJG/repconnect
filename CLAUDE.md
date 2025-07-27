@@ -87,7 +87,7 @@ src/components/
 - Harvey components use Three.js for 3D visualization
 - Voice components handle both ElevenLabs TTS and Deepgram STT
 
-### 5. Authentication Flow Pattern
+### 5. Authentication Flow Pattern (Updated 2025-01-27)
 
 ```typescript
 // AuthCallback.tsx pattern for OAuth handling
@@ -96,6 +96,31 @@ if (data.session) {
   // Give AuthContext time to process
   setTimeout(() => navigate('/'), 500);
 }
+
+// AuthContext.tsx improvements
+// 1. Reduced session timeout for faster auth checks
+const timeoutPromise = new Promise((_, reject) =>
+  setTimeout(() => reject(new Error('Session fetch timeout')), 1000)
+);
+
+// 2. Proper auth state change handling
+onAuthStateChange(async (event, session) => {
+  if (event === 'SIGNED_OUT') {
+    setUser(null);
+    setSession(null);
+    setProfile(null);
+  } else if (session?.user) {
+    setSession(session);
+    setUser(session.user);
+    const userProfile = await createOrUpdateProfile(session.user);
+    if (userProfile) setProfile(userProfile);
+  }
+});
+
+// 3. Public vs Authenticated endpoints
+// Public users (guest-*, anonymous) skip auth and use public endpoints
+const isPublicUser = userId === 'anonymous' || userId.startsWith('guest-');
+const endpoint = hasAuth ? '/api/repconnect/chat/message' : '/api/repconnect/chat/public/message';
 ```
 
 ## Critical Implementation Details
@@ -224,7 +249,7 @@ if (isLoading) return null;
 if (isLoading) return <LoadingSpinner />;
 ```
 
-### 2. Sign-Out Not Obvious to Users
+### 2. Sign-Out Not Obvious to Users (FIXED 2025-01-27)
 
 ```typescript
 // UserAvatar.tsx pattern
@@ -235,6 +260,15 @@ if (onClick) {
     </Tooltip>
   );
 }
+
+// AuthContext.tsx - proper SIGNED_OUT handling
+onAuthStateChange(async (event, session) => {
+  if (event === 'SIGNED_OUT') {
+    setUser(null);
+    setSession(null);
+    setProfile(null);
+  }
+});
 ```
 
 ### 3. Authentication Callback Issues
@@ -269,6 +303,81 @@ useEffect(() => {
 }, [voiceSession]);
 ```
 
+### 6. Chat Response Streaming (Updated 2025-01-27)
+
+```javascript
+// agentChatAPI.js - Always use public streaming endpoint
+async streamMessage({ message, agentId, userId, sessionId, onChunk }) {
+  // IMPORTANT: Always use public endpoint until backend auth is fixed
+  const endpoint = `${this.baseURL}/api/repconnect/chat/public/stream`;
+  const headers = await this.getAuthHeaders(true); // Skip auth for public
+
+  // Fallback to regular message if streaming fails
+  if (!response.ok) {
+    return this.sendMessage({ message, agentId, userId, sessionId });
+  }
+}
+
+// Reduced auth timeout for faster responses
+const timeoutPromise = new Promise((_, reject) =>
+  setTimeout(() => reject(new Error('Session fetch timeout')), 1000) // Was 5000ms
+);
+```
+
+### 7. Agent ID Format (Important!)
+
+```javascript
+// Agents use UUIDs, not slug names
+// ❌ Wrong
+agentId: 'harvey-specter';
+
+// ✅ Correct
+agentId: '00ed4a18-12f9-4ab0-9c94-2915ad94a9b1'; // Harvey Specter
+
+// Get agent IDs from API
+const response = await fetch('/api/repconnect/agents');
+const agents = response.data.agents;
+```
+
+## Troubleshooting Guide
+
+### Backend Connection Issues
+
+**Problem**: Chat responses taking 8+ seconds
+
+- **Cause**: Auth session timeout was set to 5 seconds
+- **Solution**: Reduced to 1 second in `agentChatAPI.js:50`
+
+**Problem**: Streaming returns 401 Unauthorized
+
+- **Cause**: Public users being sent to authenticated endpoint
+- **Solution**: Always use `/api/repconnect/chat/public/stream` for now
+
+**Problem**: Backend returns 502 Bad Gateway
+
+- **Cause**: Backend streaming endpoint not fully implemented
+- **Solution**: Frontend falls back to regular message endpoint automatically
+
+### Authentication Issues
+
+**Problem**: Can't log out / keeps returning to signed-in state
+
+- **Cause**: AuthContext not handling SIGNED_OUT event
+- **Solution**: Added proper event handling in `AuthContext.tsx:176-180`
+
+**Problem**: Auth state flickers during loading
+
+- **Cause**: Components returning null during auth checks
+- **Solution**: Return loading spinner instead of null
+
+### Agent Selection Issues
+
+**Problem**: "Invalid input syntax for type uuid"
+
+- **Cause**: Using agent name instead of UUID
+- **Solution**: Use actual agent IDs from `/api/repconnect/agents`
+- **Example**: Harvey Specter = `00ed4a18-12f9-4ab0-9c94-2915ad94a9b1`
+
 ## Key Files to Understand
 
 1. **src/config/api.ts** - Backend integration configuration
@@ -277,5 +386,7 @@ useEffect(() => {
 4. **src/pages/AuthCallback.tsx** - OAuth callback handling
 5. **src/components/HarveyWarRoom.tsx** - 3D battle visualization
 6. **src/services/agentBackendAPI.js** - Agent API integration
-7. **public/index.html** - Favicon and meta tag configuration
-8. **netlify.toml** - Deployment configuration
+7. **src/services/agentChatAPI.js** - Chat API with streaming support
+8. **src/auth/AuthContext.tsx** - Authentication state management
+9. **public/index.html** - Favicon and meta tag configuration
+10. **netlify.toml** - Deployment configuration
