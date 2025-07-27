@@ -1,6 +1,6 @@
 module.exports = function override(config, env) {
   // Disable TypeScript type checking in production builds due to TS2590 errors
-  // This is a temporary workaround until we can properly fix the complex union types
+  // We've simplified many components but some Material-UI usage still causes issues
   if (env === 'production') {
     // Find the ForkTsCheckerWebpackPlugin
     const tsCheckerIndex = config.plugins.findIndex(

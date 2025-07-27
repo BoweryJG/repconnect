@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import SimpleChatbotLauncher from './SimpleChatbotLauncher';
-import { ChatModal } from './ChatModal';
+import { ChatModal } from './SimpleChatModal';
 import SimpleVoiceModal from './SimpleVoiceModal';
 import type { Agent } from './types';
 import api, { API_BASE_URL } from '../../config/api';
