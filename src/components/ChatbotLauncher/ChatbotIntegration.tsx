@@ -4,6 +4,7 @@ import { ChatModal } from './ChatModal';
 import VoiceModalWithTrial from './VoiceModalWithTrial';
 import AgentSelectionModal from './AgentSelectionModal';
 import type { Agent } from './types';
+import api from '../../config/api';
 
 interface ChatbotIntegrationProps {
   position?: 'bottom-right' | 'bottom-left';
@@ -32,22 +33,13 @@ export const ChatbotIntegration: React.FC<ChatbotIntegrationProps> = ({
       try {
         console.log('Starting agent loading for public access...');
 
-        // Fuck the caching, just call the backend directly
-        const response = await fetch('https://osbackend-zl1h.onrender.com/api/repconnect/agents', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
+        // Use the configured API instance with proper credentials
+        const response = await api.get('/api/repconnect/agents');
 
         console.log('Backend response status:', response.status);
+        console.log('Backend response data:', response.data);
 
-        if (!response.ok) {
-          throw new Error(`Failed to fetch agents: ${response.status}`);
-        }
-
-        const data = await response.json();
-        console.log('Backend response data:', data);
+        const data = response.data;
 
         // Extract agents from response
         let backendAgents = [];

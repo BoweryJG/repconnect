@@ -82,7 +82,7 @@ class AgentChatAPI {
     console.log('Backend URL:', this.baseURL);
 
     let endpoint = ''; // Define endpoint at the top level
-    
+
     try {
       console.log('Getting session ID...');
       const session = sessionId || this.getSessionId(userId, agentId);
@@ -129,12 +129,13 @@ class AgentChatAPI {
 
         console.log('agentChatAPI: Using endpoint:', endpoint, 'hasAuth:', hasAuth);
 
-        // Use RepConnect chat endpoint
+        // Use RepConnect chat endpoint with credentials
         response = await fetch(endpoint, {
           method: 'POST',
           headers,
           body: requestBody,
           signal: controller.signal,
+          credentials: 'include', // Include cookies for authentication
         });
 
         clearTimeout(timeoutId);
@@ -202,17 +203,19 @@ class AgentChatAPI {
       console.error('agentChatAPI: Error type:', error.constructor.name);
       console.error('agentChatAPI: Error message:', error.message);
       console.error('agentChatAPI: Error stack:', error.stack);
-      
+
       // Check if it's a network error
       if (error instanceof TypeError && error.message === 'Failed to fetch') {
-        console.error('agentChatAPI: This is a network/CORS error. The request never reached the server.');
+        console.error(
+          'agentChatAPI: This is a network/CORS error. The request never reached the server.'
+        );
         console.error('agentChatAPI: Attempted endpoint was:', endpoint);
         console.error('agentChatAPI: This usually means:');
         console.error('  1. CORS is blocking the request');
         console.error('  2. The endpoint does not exist on the server');
         console.error('  3. Network connectivity issue');
       }
-      
+
       return {
         success: false,
         error: error.message,
@@ -231,6 +234,7 @@ class AgentChatAPI {
       const response = await fetch(`${this.baseURL}/api/repconnect/chat/stream`, {
         method: 'POST',
         headers,
+        credentials: 'include', // Include cookies for authentication
         body: JSON.stringify({
           conversationId: session,
           message: message,
@@ -295,6 +299,7 @@ class AgentChatAPI {
       const response = await fetch(`${this.baseURL}/api/chat/history/${sessionId}`, {
         method: 'GET',
         headers,
+        credentials: 'include', // Include cookies for authentication
       });
 
       if (!response.ok) {
@@ -334,22 +339,23 @@ class AgentChatAPI {
       // Test health endpoint
       const healthResponse = await fetch(`${this.baseURL}/health`);
       console.log('Health check response:', healthResponse.status);
-      
+
       // Test the new test endpoint
       const testResponse = await fetch(`${this.baseURL}/api/repconnect/test`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ test: 'data' })
+        credentials: 'include', // Include cookies for authentication
+        body: JSON.stringify({ test: 'data' }),
       });
-      
+
       console.log('Test endpoint response:', testResponse.status);
       if (testResponse.ok) {
         const data = await testResponse.json();
         console.log('Test endpoint data:', data);
       }
-      
+
       return healthResponse.ok;
     } catch (error) {
       console.error('Connection test failed:', error);
