@@ -125,28 +125,18 @@ export const PerformanceDashboard: React.FC = () => {
           icon={<SpeedIcon />}
           label={`${fps} FPS`}
           size="small"
-          sx={{
-            background: fps >= 55 ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)',
-            border: `1px solid ${fps >= 55 ? '#10B981' : '#EF4444'}`,
-          }}
+          className={fps >= 55 ? 'performance-chip-success' : 'performance-chip-error'}
         />
         <Chip
           icon={<ThermostatIcon />}
           label={temperature}
           size="small"
-          sx={{
+          style={{
             background: `${getTemperatureColor()}22`,
             border: `1px solid ${getTemperatureColor()}`,
           }}
         />
-        <Chip
-          label={powerMode}
-          size="small"
-          sx={{
-            background: 'rgba(99, 102, 241, 0.2)',
-            border: '1px solid #6366F1',
-          }}
-        />
+        <Chip label={powerMode} size="small" className="performance-chip-primary" />
       </div>
 
       <Collapse in={isExpanded}>
@@ -154,7 +144,7 @@ export const PerformanceDashboard: React.FC = () => {
           {/* FPS */}
           <div style={metricStyles}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <SpeedIcon sx={{ fontSize: 20, color: 'primary.main' }} />
+              <SpeedIcon className="icon-small-primary" />
               <Typography variant="body2">Frame Rate</Typography>
             </div>
             <div style={{ textAlign: 'right' }}>
@@ -164,16 +154,7 @@ export const PerformanceDashboard: React.FC = () => {
               <LinearProgress
                 variant="determinate"
                 value={(fps / 60) * 100}
-                sx={{
-                  width: 60,
-                  height: 4,
-                  borderRadius: 2,
-                  mt: 0.5,
-                  backgroundColor: 'rgba(255,255,255,0.1)',
-                  '& .MuiLinearProgress-bar': {
-                    backgroundColor: fps >= 55 ? '#10B981' : '#EF4444',
-                  },
-                }}
+                className={`performance-progress ${fps >= 55 ? 'performance-progress-success' : 'performance-progress-error'}`}
               />
             </div>
           </div>
@@ -203,7 +184,7 @@ export const PerformanceDashboard: React.FC = () => {
           {/* Network */}
           <div style={metricStyles}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <NetworkCheckIcon sx={{ fontSize: 20, color: 'secondary.main' }} />
+              <NetworkCheckIcon className="icon-small-primary" />
               <Typography variant="body2">Network</Typography>
             </div>
             <Chip

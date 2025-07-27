@@ -648,7 +648,7 @@ function AppContent() {
             boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)',
           }}
         >
-          <Typography variant="body2" sx={{ color: 'white', fontWeight: 600 }}>
+          <Typography variant="body2" className="white-text-600">
             ⚡ {usageTracker.getRemainingActions()} free actions remaining. Sign in to unlock
             unlimited access!
           </Typography>
@@ -672,7 +672,7 @@ function AppContent() {
             boxShadow: '0 2px 10px rgba(0, 0, 0, 0.2)',
           }}
         >
-          <Typography variant="body2" sx={{ color: 'white', fontWeight: 500 }}>
+          <Typography variant="body2" className="white-text-500">
             🎯 Demo Mode - Explore RepConnect with sample data. {usageTracker.getRemainingActions()}{' '}
             actions remaining.
           </Typography>
@@ -707,7 +707,7 @@ function AppContent() {
                   : '96px',
           }}
         >
-          <Container maxWidth="xl" sx={{ pb: { xs: 4, sm: 8 }, px: { xs: 2, sm: 4 } }}>
+          <Container maxWidth="xl" className="container-responsive">
             {/* Add Contact Section */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -786,15 +786,12 @@ function AppContent() {
                 >
                   <Typography
                     variant="h5"
-                    sx={{
+                    className="gradient-text"
+                    style={{
                       fontWeight: 700,
-                      fontSize: { xs: '1.25rem', sm: '1.5rem' },
-                      background: 'linear-gradient(135deg, #FFFFFF 0%, #D1D5DB 100%)',
-                      backgroundClip: 'text',
-                      WebkitBackgroundClip: 'text',
-                      WebkitTextFillColor: 'transparent',
+                      fontSize: '1.5rem',
                       flex: '0 0 auto',
-                      marginRight: 'auto', // Push widget to the left
+                      marginRight: 'auto',
                     }}
                   >
                     Quick Add Contact
@@ -833,37 +830,15 @@ function AppContent() {
                     label="Name"
                     value={newContactName}
                     onChange={(e) => setNewContactName(e.target.value)}
-                    sx={{
-                      flex: 1,
-                      '& .MuiInputLabel-root': {
-                        color: 'text.secondary',
-                      },
-                      '& .MuiOutlinedInput-root': {
-                        background: 'rgba(255, 255, 255, 0.02)',
-                        backdropFilter: 'blur(10px)',
-                        '& input': {
-                          color: 'text.primary',
-                        },
-                      },
-                    }}
+                    style={{ flex: 1 }}
+                    className="text-field-custom"
                   />
                   <TextField
                     label="Phone Number"
                     value={newContactPhone}
                     onChange={(e) => setNewContactPhone(e.target.value)}
-                    sx={{
-                      flex: 1,
-                      '& .MuiInputLabel-root': {
-                        color: 'text.secondary',
-                      },
-                      '& .MuiOutlinedInput-root': {
-                        background: 'rgba(255, 255, 255, 0.02)',
-                        backdropFilter: 'blur(10px)',
-                        '& input': {
-                          color: 'text.primary',
-                        },
-                      },
-                    }}
+                    style={{ flex: 1 }}
+                    className="text-field-custom"
                   />
                   <Button
                     variant="contained"
@@ -871,21 +846,7 @@ function AppContent() {
                     onClick={handleAddContact}
                     disabled={!newContactName || !newContactPhone}
                     fullWidth={isMobile}
-                    sx={{
-                      px: { xs: 3, sm: 4 },
-                      py: { xs: 1.5, sm: 1.5 },
-                      background: 'linear-gradient(135deg, #6366F1 0%, #EC4899 100%)',
-                      boxShadow: '0 8px 32px rgba(99, 102, 241, 0.3)',
-                      '&:hover': {
-                        background: 'linear-gradient(135deg, #818CF8 0%, #F472B6 100%)',
-                        transform: 'translateY(-2px)',
-                        boxShadow: '0 12px 40px rgba(99, 102, 241, 0.4)',
-                      },
-                      '&:disabled': {
-                        background: 'rgba(255, 255, 255, 0.1)',
-                        color: 'text.disabled',
-                      },
-                    }}
+                    className="button-gradient"
                   >
                     Add
                   </Button>
@@ -910,24 +871,15 @@ function AppContent() {
                 <div>
                   <Typography
                     variant="h3"
-                    sx={{
+                    className="gradient-text"
+                    style={{
                       fontWeight: 800,
-                      background: 'linear-gradient(135deg, #FFFFFF 0%, #6366F1 100%)',
-                      backgroundClip: 'text',
-                      WebkitBackgroundClip: 'text',
-                      WebkitTextFillColor: 'transparent',
-                      mb: 1,
+                      marginBottom: '8px',
                     }}
                   >
                     Your Contacts
                   </Typography>
-                  <Typography
-                    variant="h5"
-                    sx={{
-                      color: 'text.secondary',
-                      fontWeight: 500,
-                    }}
-                  >
+                  <Typography variant="h5" className="text-secondary" style={{ fontWeight: 500 }}>
                     {contacts.length} connections
                   </Typography>
                 </div>
@@ -935,20 +887,7 @@ function AppContent() {
                   variant="outlined"
                   startIcon={viewMode === 'rolodex' ? <ViewModuleIcon /> : <DashboardIcon />}
                   onClick={() => setViewMode(viewMode === 'rolodex' ? 'grid' : 'rolodex')}
-                  sx={{
-                    background: 'rgba(99, 102, 241, 0.1)',
-                    backdropFilter: 'blur(10px)',
-                    px: 3,
-                    py: 1.5,
-                    border: '1px solid rgba(99, 102, 241, 0.3)',
-                    color: '#6366F1',
-                    '&:hover': {
-                      transform: 'translateY(-2px)',
-                      borderColor: '#6366F1',
-                      background: 'rgba(99, 102, 241, 0.2)',
-                      boxShadow: '0 8px 24px rgba(99, 102, 241, 0.3)',
-                    },
-                  }}
+                  className="button-view-toggle"
                 >
                   {viewMode === 'rolodex' ? 'Grid View' : 'Rolodex View'}
                 </Button>
@@ -1143,38 +1082,24 @@ function AppContent() {
                       boxShadow: '0 20px 60px rgba(99, 102, 241, 0.4)',
                     }}
                   >
-                    <AutoAwesomeIcon sx={{ fontSize: 60, color: 'white' }} />
+                    <AutoAwesomeIcon className="icon-large-white" />
                   </div>
                   <Typography
                     variant="h5"
                     gutterBottom
-                    sx={{
-                      fontWeight: 700,
-                      background: 'linear-gradient(135deg, #FFFFFF 0%, #D1D5DB 100%)',
-                      backgroundClip: 'text',
-                      WebkitBackgroundClip: 'text',
-                      WebkitTextFillColor: 'transparent',
-                    }}
+                    className="gradient-text"
+                    style={{ fontWeight: 700 }}
                   >
                     No contacts yet
                   </Typography>
-                  <Typography variant="body1" sx={{ color: 'text.secondary', mb: 4 }}>
+                  <Typography variant="body1" className="text-secondary-mb4">
                     Add your first contact to get started with Pipeline Ultra
                   </Typography>
                   <Button
                     variant="contained"
                     startIcon={<AddIcon />}
                     onClick={() => document.querySelector('input')?.focus()}
-                    sx={{
-                      background: 'linear-gradient(135deg, #6366F1 0%, #EC4899 100%)',
-                      px: 4,
-                      py: 1.5,
-                      boxShadow: '0 8px 32px rgba(99, 102, 241, 0.3)',
-                      '&:hover': {
-                        transform: 'translateY(-2px)',
-                        boxShadow: '0 12px 40px rgba(99, 102, 241, 0.4)',
-                      },
-                    }}
+                    className="button-gradient button-rounded"
                   >
                     Add First Contact
                   </Button>
@@ -1334,15 +1259,12 @@ function AppContent() {
             >
               <IconButton
                 onClick={() => setShowSyncDashboard(false)}
-                sx={{
+                className="close-button-overlay"
+                style={{
                   position: 'absolute',
                   top: 16,
                   right: 16,
                   zIndex: 1,
-                  background: 'rgba(255, 255, 255, 0.1)',
-                  '&:hover': {
-                    background: 'rgba(255, 255, 255, 0.2)',
-                  },
                 }}
               >
                 <CloseIcon />
@@ -1419,15 +1341,12 @@ function AppContent() {
             >
               <IconButton
                 onClick={() => setShowCoachConnect(false)}
-                sx={{
+                className="close-button-overlay"
+                style={{
                   position: 'absolute',
                   top: 16,
                   right: 16,
                   zIndex: 1,
-                  background: 'rgba(255, 255, 255, 0.1)',
-                  '&:hover': {
-                    background: 'rgba(255, 255, 255, 0.2)',
-                  },
                 }}
               >
                 <CloseIcon />
