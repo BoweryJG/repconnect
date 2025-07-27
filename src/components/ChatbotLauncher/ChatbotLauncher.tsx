@@ -505,6 +505,7 @@ const ChatbotLauncher: React.FC<ChatbotLauncherProps> = ({
   };
 
   return (
+    // @ts-ignore - TS2590 workaround
     <LauncherContainer ref={containerRef} sx={containerStyles}>
       {/* Floating Orb */}
       <Zoom in={!isOpen} unmountOnExit>

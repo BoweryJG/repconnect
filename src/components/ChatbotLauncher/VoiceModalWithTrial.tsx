@@ -12,7 +12,6 @@ import {
   Chip,
   LinearProgress,
   Paper,
-  Stack,
   Alert,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
@@ -73,6 +72,69 @@ const PulseAnimation = styled(Box)(({ theme }) => ({
   '@keyframes pulse': {
     '0%, 100%': { transform: 'scale(1)' },
     '50%': { transform: 'scale(1.1)' },
+  },
+}));
+
+const HeaderBox = styled(Box)(({ theme }) => ({
+  background: 'linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%)',
+  color: 'white',
+  padding: theme.spacing(3),
+  position: 'relative',
+}));
+
+const TrialTimerBox = styled(Box)(({ theme }) => ({
+  marginTop: theme.spacing(2),
+  backgroundColor: 'rgba(255, 255, 255, 0.2)',
+  borderRadius: theme.spacing(2),
+  padding: theme.spacing(1),
+  display: 'flex',
+  alignItems: 'center',
+  gap: theme.spacing(1),
+}));
+
+const ErrorIconBox = styled(Box)(({ theme }) => ({
+  width: 64,
+  height: 64,
+  backgroundColor: theme.palette.error.light,
+  borderRadius: '50%',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+}));
+
+const ConnectionStatusBox = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  justifyContent: 'center',
+  marginBottom: theme.spacing(3),
+}));
+
+const MainContentBox = styled(Box)(({ theme }) => ({
+  padding: theme.spacing(2),
+}));
+
+const StatusSectionBox = styled(Box)(({ theme }) => ({
+  marginBottom: theme.spacing(4),
+}));
+
+const TranscriptionSectionBox = styled(Box)(({ theme }) => ({
+  marginTop: theme.spacing(3),
+}));
+
+const CloseButton = styled(IconButton)(({ theme }) => ({
+  position: 'absolute',
+  top: 8,
+  right: 8,
+  color: 'rgba(255, 255, 255, 0.8)',
+  '&:hover': {
+    color: 'white',
+  },
+}));
+
+const MuteButton = styled(IconButton)<{ ismuted?: string }>(({ theme, ismuted }) => ({
+  backgroundColor: ismuted === 'true' ? theme.palette.error.light : theme.palette.grey[100],
+  color: ismuted === 'true' ? theme.palette.error.main : theme.palette.text.secondary,
+  '&:hover': {
+    backgroundColor: ismuted === 'true' ? theme.palette.error.light : theme.palette.grey[200],
   },
 }));
 
@@ -165,7 +227,7 @@ export default function VoiceModalWithTrial({
 
       // Create WebRTC client
       webRTCClientRef.current = new WebRTCClient({
-        signalingServerUrl: backendUrl,
+        backendUrl: backendUrl,
         agentId: agentId!,
         userId: user?.id || 'guest-' + Date.now(),
         authToken: session?.access_token,
@@ -365,40 +427,23 @@ export default function VoiceModalWithTrial({
   }
 
   return (
+    // @ts-ignore - TS2590 workaround
     <StyledDialog open={isOpen} onClose={onClose} fullWidth>
       {/* Header */}
-      <Box
-        sx={{
-          background: 'linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%)',
-          color: 'white',
-          p: 3,
-          position: 'relative',
-        }}
-      >
-        <IconButton
-          onClick={onClose}
-          sx={{
-            position: 'absolute',
-            top: 8,
-            right: 8,
-            color: 'rgba(255, 255, 255, 0.8)',
-            '&:hover': {
-              color: 'white',
-            },
-          }}
-        >
+      <HeaderBox>
+        <CloseButton onClick={onClose}>
           <X size={24} />
-        </IconButton>
+        </CloseButton>
 
-        <Stack direction="row" spacing={2} alignItems="center">
+        <div style={{ display: 'flex', flexDirection: 'row', gap: 16, alignItems: 'center' }}>
           <Avatar
             src={agentAvatar}
             alt={agentName}
-            sx={{
+            style={{
               width: 64,
               height: 64,
               border: '2px solid white',
-              boxShadow: 3,
+              boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
             }}
           >
             {agentAvatar === '/agent-avatar.jpg' ? '🤖' : agentName[0]}
@@ -407,77 +452,65 @@ export default function VoiceModalWithTrial({
             <Typography variant="h5" fontWeight="bold">
               {agentName}
             </Typography>
-            <Typography variant="body2" sx={{ opacity: 0.9 }}>
+            <Typography variant="body2" style={{ opacity: 0.9 }}>
               {agentRole}
             </Typography>
           </Box>
-        </Stack>
+        </div>
 
         {/* Trial Timer in Header */}
         {isTrialSession && isCallActive && (
-          <Box
-            sx={{
-              mt: 2,
-              bgcolor: 'rgba(255, 255, 255, 0.2)',
-              borderRadius: 2,
-              p: 1,
-              display: 'flex',
-              alignItems: 'center',
-              gap: 1,
-            }}
-          >
+          <TrialTimerBox>
             <Clock size={16} />
             <Typography variant="body2" fontWeight="medium">
               Trial Time Remaining: {formatTime(remainingTime)}
             </Typography>
-          </Box>
+          </TrialTimerBox>
         )}
-      </Box>
+      </HeaderBox>
 
       <DialogContent>
         {/* Trial Notice */}
         {showTrialExpired ? (
-          <Box sx={{ py: 4 }}>
-            <Stack alignItems="center" textAlign="center" spacing={3}>
-              <Box
-                sx={{
-                  width: 64,
-                  height: 64,
-                  bgcolor: 'error.light',
-                  borderRadius: '50%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <AlertCircle size={32} color="#d32f2f" />
-              </Box>
-              <Typography variant="h6" fontWeight="semibold">
-                Trial Session Ended
-              </Typography>
-              <Typography color="text.secondary">
-                Your 5-minute trial session has ended. Upgrade to Pro for unlimited voice
-                conversations with your AI agents.
-              </Typography>
-              <Stack direction="row" spacing={2}>
-                <Button variant="outlined" onClick={onClose}>
-                  Close
-                </Button>
-                <Button variant="contained" color="primary">
-                  Upgrade to Pro
-                </Button>
-              </Stack>
-            </Stack>
-          </Box>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              textAlign: 'center',
+              gap: 24,
+              paddingTop: 32,
+              paddingBottom: 32,
+            }}
+          >
+            <ErrorIconBox>
+              <AlertCircle size={32} color="#d32f2f" />
+            </ErrorIconBox>
+            <Typography variant="h6" fontWeight="semibold">
+              Trial Session Ended
+            </Typography>
+            <Typography color="text.secondary">
+              Your 5-minute trial session has ended. Upgrade to Pro for unlimited voice
+              conversations with your AI agents.
+            </Typography>
+            <div style={{ display: 'flex', flexDirection: 'row', gap: 16 }}>
+              <Button variant="outlined" onClick={onClose}>
+                Close
+              </Button>
+              <Button variant="contained" color="primary">
+                Upgrade to Pro
+              </Button>
+            </div>
+          </div>
         ) : (
           <>
             {/* Main Content */}
-            <Box sx={{ p: 2 }}>
+            <MainContentBox>
               {/* Trial Timer Alert */}
               {isTrialSession && !isCallActive && (
                 <Alert
                   severity="warning"
-                  sx={{ mb: 2 }}
+                  style={{ marginBottom: 16 }}
                   action={
                     <Button color="inherit" size="small">
                       Upgrade
@@ -490,13 +523,13 @@ export default function VoiceModalWithTrial({
               )}
 
               {/* Connection Status */}
-              <Box sx={{ mb: 4 }}>
-                <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
+              <StatusSectionBox>
+                <ConnectionStatusBox>
                   <VoiceIndicator>
                     {connectionStatus === 'connected' && isUserSpeaking && <PulseAnimation />}
                     <Volume2 size={48} color="#666" />
                   </VoiceIndicator>
-                </Box>
+                </ConnectionStatusBox>
 
                 <Box textAlign="center" mb={2}>
                   {connectionStatus === 'idle' && (
@@ -516,10 +549,12 @@ export default function VoiceModalWithTrial({
                     <Typography color="error">Connection error - Please try again</Typography>
                   )}
                 </Box>
-              </Box>
+              </StatusSectionBox>
 
               {/* Controls */}
-              <Stack direction="row" justifyContent="center" spacing={2}>
+              <div
+                style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', gap: 16 }}
+              >
                 {!isCallActive ? (
                   <Button
                     onClick={startCall}
@@ -528,55 +563,46 @@ export default function VoiceModalWithTrial({
                     color="success"
                     size="large"
                     startIcon={<Phone size={20} />}
-                    sx={{ borderRadius: 3 }}
+                    style={{ borderRadius: 12 }}
                   >
                     Start Call
                   </Button>
                 ) : (
                   <>
-                    <IconButton
-                      onClick={toggleMute}
-                      sx={{
-                        bgcolor: isMuted ? 'error.light' : 'grey.100',
-                        color: isMuted ? 'error.main' : 'text.secondary',
-                        '&:hover': {
-                          bgcolor: isMuted ? 'error.light' : 'grey.200',
-                        },
-                      }}
-                    >
+                    <MuteButton onClick={toggleMute} ismuted={isMuted.toString()}>
                       {isMuted ? <MicOff size={20} /> : <Mic size={20} />}
-                    </IconButton>
+                    </MuteButton>
                     <Button
                       onClick={endCall}
                       variant="contained"
                       color="error"
                       size="large"
                       startIcon={<PhoneOff size={20} />}
-                      sx={{ borderRadius: 3 }}
+                      style={{ borderRadius: 12 }}
                     >
                       End Call
                     </Button>
                   </>
                 )}
-              </Stack>
+              </div>
 
               {/* Transcription */}
               {transcription.length > 0 && (
-                <Box sx={{ mt: 3 }}>
+                <TranscriptionSectionBox>
                   <Typography variant="subtitle2" color="text.secondary" gutterBottom>
                     Conversation
                   </Typography>
                   <Paper
                     ref={transcriptionRef}
                     elevation={0}
-                    sx={{
-                      bgcolor: 'grey.50',
-                      p: 2,
+                    style={{
+                      backgroundColor: '#f5f5f5',
+                      padding: 16,
                       height: 160,
                       overflowY: 'auto',
                     }}
                   >
-                    <Stack spacing={1}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                       {transcription.map((line) => (
                         <Box key={line.id}>
                           <Typography
@@ -604,11 +630,11 @@ export default function VoiceModalWithTrial({
                         </Box>
                       ))}
                       <div ref={transcriptionEndRef} />
-                    </Stack>
+                    </div>
                   </Paper>
-                </Box>
+                </TranscriptionSectionBox>
               )}
-            </Box>
+            </MainContentBox>
           </>
         )}
       </DialogContent>

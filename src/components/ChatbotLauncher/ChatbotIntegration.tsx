@@ -1,8 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import ChatbotLauncher from './ChatbotLauncher';
+import SimpleChatbotLauncher from './SimpleChatbotLauncher';
 import { ChatModal } from './ChatModal';
-import VoiceModalWithTrial from './VoiceModalWithTrial';
-import AgentSelectionModal from './AgentSelectionModal';
+import SimpleVoiceModal from './SimpleVoiceModal';
 import type { Agent } from './types';
 import api, { API_BASE_URL } from '../../config/api';
 
@@ -24,7 +23,6 @@ export const ChatbotIntegration: React.FC<ChatbotIntegrationProps> = ({
   // Auth not needed - chatbot is available for everyone
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
   const [activeModal, setActiveModal] = useState<ModalType>(null);
-  const [showSelectionModal, setShowSelectionModal] = useState(false);
   const [agents, setAgents] = useState<Agent[]>([]);
 
   // Initialize agents on component mount - available for everyone
@@ -131,23 +129,11 @@ export const ChatbotIntegration: React.FC<ChatbotIntegrationProps> = ({
     loadAgents();
   }, []); // Remove dependency on user and authLoading
 
-  const handleAgentSelect = useCallback((agent: Agent) => {
-    console.log('Agent selected:', agent.name, agent.id);
+  const handleAgentSelect = useCallback((agent: Agent, mode: 'chat' | 'voice') => {
+    console.log('Agent selected:', agent.name, agent.id, 'Mode:', mode);
     setSelectedAgent(agent);
-    setShowSelectionModal(true);
+    setActiveModal(mode);
   }, []);
-
-  const handleModeSelect = useCallback(
-    (mode: 'message' | 'converse') => {
-      console.log('Mode selected:', mode, 'for agent:', selectedAgent?.name);
-      const modalType = mode === 'message' ? 'chat' : 'voice';
-      console.log('Setting activeModal to:', modalType);
-      setActiveModal(modalType);
-      setShowSelectionModal(false);
-      console.log('Modal state after update - activeModal will be:', modalType);
-    },
-    [selectedAgent]
-  );
 
   const handleCloseModal = useCallback(() => {
     setActiveModal(null);
@@ -181,19 +167,12 @@ export const ChatbotIntegration: React.FC<ChatbotIntegrationProps> = ({
 
   return (
     <>
-      <ChatbotLauncher
+      <SimpleChatbotLauncher
         agents={agents}
         onAgentSelect={handleAgentSelect}
         position={position}
         primaryColor={primaryColor}
         glowColor={glowColor}
-      />
-
-      <AgentSelectionModal
-        open={showSelectionModal}
-        onClose={() => setShowSelectionModal(false)}
-        agent={selectedAgent}
-        onSelectMode={handleModeSelect}
       />
 
       {selectedAgent && (
@@ -207,14 +186,13 @@ export const ChatbotIntegration: React.FC<ChatbotIntegrationProps> = ({
             agentId={selectedAgent.id}
           />
 
-          <VoiceModalWithTrial
+          <SimpleVoiceModal
             isOpen={activeModal === 'voice'}
             onClose={handleCloseModal}
             agentName={selectedAgent.name}
             agentAvatar={typeof selectedAgent.avatar === 'string' ? selectedAgent.avatar : '🤖'}
             agentRole={selectedAgent.tagline}
             agentId={selectedAgent.id}
-            voiceConfig={selectedAgent.voiceConfig}
           />
         </>
       )}
