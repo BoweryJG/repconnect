@@ -14,10 +14,10 @@ import {
   Paper,
   Alert,
 } from '@mui/material';
-import { styled } from '@mui/material/styles';
 import { WebRTCClient } from '../../services/webRTCClient';
 import { useAuth } from '../../auth/useAuth';
 import { trialVoiceService } from '../../services/trialVoiceService';
+import './VoiceModalWithTrial.css';
 
 interface VoiceModalProps {
   isOpen: boolean;
@@ -41,102 +41,6 @@ interface TranscriptionLine {
   text: string;
   timestamp: Date;
 }
-
-const StyledDialog = styled(Dialog)(({ theme }) => ({
-  '& .MuiDialog-paper': {
-    borderRadius: theme.spacing(3),
-    overflow: 'hidden',
-    maxWidth: 500,
-  },
-}));
-
-const VoiceIndicator = styled(Box)(({ theme }) => ({
-  width: 128,
-  height: 128,
-  borderRadius: '50%',
-  backgroundColor: theme.palette.grey[100],
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  position: 'relative',
-  overflow: 'hidden',
-}));
-
-const PulseAnimation = styled(Box)(({ theme }) => ({
-  position: 'absolute',
-  inset: 0,
-  borderRadius: '50%',
-  backgroundColor: theme.palette.primary.main,
-  opacity: 0.2,
-  animation: 'pulse 1.5s ease-in-out infinite',
-  '@keyframes pulse': {
-    '0%, 100%': { transform: 'scale(1)' },
-    '50%': { transform: 'scale(1.1)' },
-  },
-}));
-
-const HeaderBox = styled(Box)(({ theme }) => ({
-  background: 'linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%)',
-  color: 'white',
-  padding: theme.spacing(3),
-  position: 'relative',
-}));
-
-const TrialTimerBox = styled(Box)(({ theme }) => ({
-  marginTop: theme.spacing(2),
-  backgroundColor: 'rgba(255, 255, 255, 0.2)',
-  borderRadius: theme.spacing(2),
-  padding: theme.spacing(1),
-  display: 'flex',
-  alignItems: 'center',
-  gap: theme.spacing(1),
-}));
-
-const ErrorIconBox = styled(Box)(({ theme }) => ({
-  width: 64,
-  height: 64,
-  backgroundColor: theme.palette.error.light,
-  borderRadius: '50%',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-}));
-
-const ConnectionStatusBox = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  justifyContent: 'center',
-  marginBottom: theme.spacing(3),
-}));
-
-const MainContentBox = styled(Box)(({ theme }) => ({
-  padding: theme.spacing(2),
-}));
-
-const StatusSectionBox = styled(Box)(({ theme }) => ({
-  marginBottom: theme.spacing(4),
-}));
-
-const TranscriptionSectionBox = styled(Box)(({ theme }) => ({
-  marginTop: theme.spacing(3),
-}));
-
-const CloseButton = styled(IconButton)(({ theme }) => ({
-  position: 'absolute',
-  top: 8,
-  right: 8,
-  color: 'rgba(255, 255, 255, 0.8)',
-  '&:hover': {
-    color: 'white',
-  },
-}));
-
-const MuteButton = styled(IconButton)<{ ismuted?: string }>(({ theme, ismuted }) => ({
-  backgroundColor: ismuted === 'true' ? theme.palette.error.light : theme.palette.grey[100],
-  color: ismuted === 'true' ? theme.palette.error.main : theme.palette.text.secondary,
-  '&:hover': {
-    backgroundColor: ismuted === 'true' ? theme.palette.error.light : theme.palette.grey[200],
-  },
-}));
 
 export default function VoiceModalWithTrial({
   isOpen,
@@ -427,13 +331,12 @@ export default function VoiceModalWithTrial({
   }
 
   return (
-    // @ts-ignore - TS2590 workaround
-    <StyledDialog open={isOpen} onClose={onClose} fullWidth>
+    <Dialog open={isOpen} onClose={onClose} fullWidth className="voice-modal-dialog">
       {/* Header */}
-      <HeaderBox>
-        <CloseButton onClick={onClose}>
+      <div className="voice-modal-header">
+        <IconButton onClick={onClose} className="voice-modal-close-button">
           <X size={24} />
-        </CloseButton>
+        </IconButton>
 
         <div style={{ display: 'flex', flexDirection: 'row', gap: 16, alignItems: 'center' }}>
           <Avatar
@@ -460,32 +363,22 @@ export default function VoiceModalWithTrial({
 
         {/* Trial Timer in Header */}
         {isTrialSession && isCallActive && (
-          <TrialTimerBox>
+          <div className="voice-modal-trial-timer">
             <Clock size={16} />
             <Typography variant="body2" fontWeight="medium">
               Trial Time Remaining: {formatTime(remainingTime)}
             </Typography>
-          </TrialTimerBox>
+          </div>
         )}
-      </HeaderBox>
+      </div>
 
       <DialogContent>
         {/* Trial Notice */}
         {showTrialExpired ? (
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              textAlign: 'center',
-              gap: 24,
-              paddingTop: 32,
-              paddingBottom: 32,
-            }}
-          >
-            <ErrorIconBox>
+          <div className="voice-modal-error-container">
+            <div className="voice-modal-error-icon">
               <AlertCircle size={32} color="#d32f2f" />
-            </ErrorIconBox>
+            </div>
             <Typography variant="h6" fontWeight="semibold">
               Trial Session Ended
             </Typography>
@@ -505,7 +398,7 @@ export default function VoiceModalWithTrial({
         ) : (
           <>
             {/* Main Content */}
-            <MainContentBox>
+            <div className="voice-modal-content">
               {/* Trial Timer Alert */}
               {isTrialSession && !isCallActive && (
                 <Alert
@@ -523,13 +416,15 @@ export default function VoiceModalWithTrial({
               )}
 
               {/* Connection Status */}
-              <StatusSectionBox>
-                <ConnectionStatusBox>
-                  <VoiceIndicator>
-                    {connectionStatus === 'connected' && isUserSpeaking && <PulseAnimation />}
+              <div className="voice-modal-status-section">
+                <div className="voice-modal-connection-status">
+                  <div className="voice-modal-indicator">
+                    {connectionStatus === 'connected' && isUserSpeaking && (
+                      <div className="voice-modal-pulse" />
+                    )}
                     <Volume2 size={48} color="#666" />
-                  </VoiceIndicator>
-                </ConnectionStatusBox>
+                  </div>
+                </div>
 
                 <Box textAlign="center" mb={2}>
                   {connectionStatus === 'idle' && (
@@ -549,12 +444,10 @@ export default function VoiceModalWithTrial({
                     <Typography color="error">Connection error - Please try again</Typography>
                   )}
                 </Box>
-              </StatusSectionBox>
+              </div>
 
               {/* Controls */}
-              <div
-                style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', gap: 16 }}
-              >
+              <div className="voice-modal-controls">
                 {!isCallActive ? (
                   <Button
                     onClick={startCall}
@@ -569,9 +462,12 @@ export default function VoiceModalWithTrial({
                   </Button>
                 ) : (
                   <>
-                    <MuteButton onClick={toggleMute} ismuted={isMuted.toString()}>
+                    <IconButton
+                      onClick={toggleMute}
+                      className={`voice-modal-mute-button ${isMuted ? 'muted' : ''}`}
+                    >
                       {isMuted ? <MicOff size={20} /> : <Mic size={20} />}
-                    </MuteButton>
+                    </IconButton>
                     <Button
                       onClick={endCall}
                       variant="contained"
@@ -588,21 +484,16 @@ export default function VoiceModalWithTrial({
 
               {/* Transcription */}
               {transcription.length > 0 && (
-                <TranscriptionSectionBox>
+                <div className="voice-modal-transcription-section">
                   <Typography variant="subtitle2" color="text.secondary" gutterBottom>
                     Conversation
                   </Typography>
                   <Paper
                     ref={transcriptionRef}
                     elevation={0}
-                    style={{
-                      backgroundColor: '#f5f5f5',
-                      padding: 16,
-                      height: 160,
-                      overflowY: 'auto',
-                    }}
+                    className="voice-modal-transcription-paper"
                   >
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                    <div className="voice-modal-transcription-content">
                       {transcription.map((line) => (
                         <Box key={line.id}>
                           <Typography
@@ -632,12 +523,12 @@ export default function VoiceModalWithTrial({
                       <div ref={transcriptionEndRef} />
                     </div>
                   </Paper>
-                </TranscriptionSectionBox>
+                </div>
               )}
-            </MainContentBox>
+            </div>
           </>
         )}
       </DialogContent>
-    </StyledDialog>
+    </Dialog>
   );
 }

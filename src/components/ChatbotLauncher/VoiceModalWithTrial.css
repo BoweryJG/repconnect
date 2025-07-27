@@ -1,0 +1,140 @@
+/* Voice Modal Styles */
+.voice-modal-dialog .MuiDialog-paper {
+  border-radius: 24px;
+  overflow: hidden;
+  max-width: 500px;
+}
+
+.voice-modal-header {
+  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+  color: white;
+  padding: 24px;
+  position: relative;
+}
+
+.voice-modal-close-button {
+  position: absolute !important;
+  top: 8px;
+  right: 8px;
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.voice-modal-close-button:hover {
+  color: white !important;
+}
+
+.voice-modal-trial-timer {
+  margin-top: 16px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.voice-modal-content {
+  padding: 16px;
+}
+
+.voice-modal-status-section {
+  margin-bottom: 32px;
+}
+
+.voice-modal-connection-status {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.voice-modal-indicator {
+  width: 128px;
+  height: 128px;
+  border-radius: 50%;
+  background-color: #f5f5f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.voice-modal-pulse {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background-color: #3b82f6;
+  opacity: 0.2;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+.voice-modal-error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 24px;
+  padding: 32px 0;
+}
+
+.voice-modal-error-icon {
+  width: 64px;
+  height: 64px;
+  background-color: #ffcdd2;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.voice-modal-controls {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 16px;
+}
+
+.voice-modal-mute-button {
+  background-color: #f5f5f5 !important;
+  color: #666666 !important;
+}
+
+.voice-modal-mute-button:hover {
+  background-color: #e0e0e0 !important;
+}
+
+.voice-modal-mute-button.muted {
+  background-color: #ffcdd2 !important;
+  color: #d32f2f !important;
+}
+
+.voice-modal-mute-button.muted:hover {
+  background-color: #ffcdd2 !important;
+}
+
+.voice-modal-transcription-section {
+  margin-top: 24px;
+}
+
+.voice-modal-transcription-paper {
+  background-color: #f5f5f5 !important;
+  padding: 16px;
+  height: 160px;
+  overflow-y: auto;
+}
+
+.voice-modal-transcription-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
