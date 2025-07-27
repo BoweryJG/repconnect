@@ -140,8 +140,11 @@ export const ChatbotIntegration: React.FC<ChatbotIntegrationProps> = ({
   const handleModeSelect = useCallback(
     (mode: 'message' | 'converse') => {
       console.log('Mode selected:', mode, 'for agent:', selectedAgent?.name);
-      setActiveModal(mode === 'message' ? 'chat' : 'voice');
+      const modalType = mode === 'message' ? 'chat' : 'voice';
+      console.log('Setting activeModal to:', modalType);
+      setActiveModal(modalType);
       setShowSelectionModal(false);
+      console.log('Modal state after update - activeModal will be:', modalType);
     },
     [selectedAgent]
   );
@@ -173,6 +176,8 @@ export const ChatbotIntegration: React.FC<ChatbotIntegrationProps> = ({
   // Always show the launcher, even when loading
   // This ensures the launcher doesn't disappear when auth state changes
   console.log('ChatbotIntegration rendering, agents count:', agents.length);
+  console.log('Current activeModal state:', activeModal);
+  console.log('Selected agent:', selectedAgent?.name);
 
   return (
     <>

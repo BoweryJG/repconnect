@@ -36,6 +36,14 @@ export default function VoiceModalWithTrial({
   agentId,
   voiceConfig: _voiceConfig,
 }: VoiceModalProps) {
+  console.log(
+    'VoiceModalWithTrial rendered - isOpen:',
+    isOpen,
+    'agentName:',
+    agentName,
+    'agentId:',
+    agentId
+  );
   const { user, session } = useAuth();
   const [isCallActive, setIsCallActive] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
@@ -300,7 +308,11 @@ export default function VoiceModalWithTrial({
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  if (!isOpen) return null;
+  console.log('VoiceModalWithTrial about to check isOpen:', isOpen);
+  if (!isOpen) {
+    console.log('VoiceModalWithTrial returning null because isOpen is false');
+    return null;
+  }
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
