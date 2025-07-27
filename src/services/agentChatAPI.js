@@ -238,10 +238,19 @@ class AgentChatAPI {
   async streamMessage({ message, agentId, userId = 'anonymous', sessionId = null, onChunk }) {
     try {
       const session = sessionId || this.getSessionId(userId, agentId);
-      const headers = await this.getAuthHeaders();
+
+      // Check if this is a public user
+      const isPublicUser = userId === 'anonymous' || userId.startsWith('guest-');
+
+      // Use public endpoint for public users, authenticated for logged-in users
+      const endpoint = isPublicUser
+        ? `${this.baseURL}/api/repconnect/chat/public/stream`
+        : `${this.baseURL}/api/repconnect/chat/stream`;
+
+      const headers = await this.getAuthHeaders(isPublicUser);
 
       // Use RepConnect streaming endpoint
-      const response = await fetch(`${this.baseURL}/api/repconnect/chat/stream`, {
+      const response = await fetch(endpoint, {
         method: 'POST',
         headers,
         credentials: 'include', // Include cookies for authentication
@@ -270,20 +279,46 @@ class AgentChatAPI {
         throw new Error(errorMessage);
       }
 
-      // Handle streaming response
+      // Handle streaming response (Server-Sent Events)
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
       let fullMessage = '';
+      let buffer = '';
 
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
 
-        const chunk = decoder.decode(value);
-        fullMessage += chunk;
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
 
-        if (onChunk) {
-          onChunk(chunk);
+        // Keep the last incomplete line in the buffer
+        buffer = lines[lines.length - 1];
+
+        // Process all complete lines
+        for (let i = 0; i < lines.length - 1; i++) {
+          const line = lines[i].trim();
+
+          if (line.startsWith('data: ')) {
+            const data = line.slice(6);
+
+            if (data === '[DONE]') {
+              break;
+            }
+
+            try {
+              const parsed = JSON.parse(data);
+
+              if (parsed.type === 'text_delta' && parsed.text) {
+                fullMessage += parsed.text;
+                if (onChunk) {
+                  onChunk(parsed.text);
+                }
+              }
+            } catch (e) {
+              console.warn('Failed to parse SSE data:', data);
+            }
+          }
         }
       }
 

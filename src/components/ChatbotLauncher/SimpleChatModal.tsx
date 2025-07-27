@@ -92,23 +92,33 @@ export function ChatModal({
     setInputValue('');
     setIsLoading(true);
 
+    // Add agent message placeholder for streaming
+    const agentMessageId = `agent-${Date.now()}`;
+    const agentMessage: Message = {
+      id: agentMessageId,
+      content: '',
+      isUser: false,
+      timestamp: new Date(),
+    };
+    setMessages((prev) => [...prev, agentMessage]);
+
     try {
-      const response = await (agentChatAPI as any).sendMessage({
+      let fullResponse = '';
+
+      // Use streaming for real-time responses
+      await (agentChatAPI as any).streamMessage({
         message: inputValue,
         agentId: agentId!,
         userId: user?.id || 'guest-' + Date.now(),
         sessionId: sessionId,
+        onChunk: (chunk: string) => {
+          fullResponse += chunk;
+          // Update the agent message with accumulated response
+          setMessages((prev) =>
+            prev.map((msg) => (msg.id === agentMessageId ? { ...msg, content: fullResponse } : msg))
+          );
+        },
       });
-
-      if (response.message || response.response) {
-        const agentMessage: Message = {
-          id: `agent-${Date.now()}`,
-          content: response.message || response.response,
-          isUser: false,
-          timestamp: new Date(),
-        };
-        setMessages((prev) => [...prev, agentMessage]);
-      }
     } catch (error) {
       console.error('Failed to send message:', error);
       const errorMessage: Message = {
