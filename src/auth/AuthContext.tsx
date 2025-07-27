@@ -173,7 +173,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event: any, session: any) => {
-      if (session?.user) {
+      if (event === 'SIGNED_OUT') {
+        // Handle sign out
+        setUser(null);
+        setSession(null);
+        setProfile(null);
+      } else if (session?.user) {
         // Simply use Supabase session like Canvas does
         setSession(session);
         setUser(session.user);

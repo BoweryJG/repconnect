@@ -239,15 +239,11 @@ class AgentChatAPI {
     try {
       const session = sessionId || this.getSessionId(userId, agentId);
 
-      // Check if this is a public user
-      const isPublicUser = userId === 'anonymous' || userId.startsWith('guest-');
+      // For now, always use public streaming endpoint until auth is properly configured
+      // TODO: Switch to authenticated endpoint when backend auth is fixed
+      const endpoint = `${this.baseURL}/api/repconnect/chat/public/stream`;
 
-      // Use public endpoint for public users, authenticated for logged-in users
-      const endpoint = isPublicUser
-        ? `${this.baseURL}/api/repconnect/chat/public/stream`
-        : `${this.baseURL}/api/repconnect/chat/stream`;
-
-      const headers = await this.getAuthHeaders(isPublicUser);
+      const headers = await this.getAuthHeaders(true); // Always skip auth for public streaming
 
       // Use RepConnect streaming endpoint
       const response = await fetch(endpoint, {
