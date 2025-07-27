@@ -33,14 +33,24 @@ export const ChatbotIntegration: React.FC<ChatbotIntegrationProps> = ({
       try {
         console.log('Starting agent loading for public access...');
 
-        // Use the configured API instance with proper credentials
+        // Direct fetch call to bypass any axios issues
         console.log('About to call API with URL:', API_BASE_URL + '/api/repconnect/agents');
-        const response = await api.get('/api/repconnect/agents');
+        const response = await fetch(`${API_BASE_URL}/api/repconnect/agents`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+        });
 
         console.log('Backend response status:', response.status);
-        console.log('Backend response data:', response.data);
 
-        const data = response.data;
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log('Backend response data:', data);
 
         // Extract agents from response
         let backendAgents = [];
