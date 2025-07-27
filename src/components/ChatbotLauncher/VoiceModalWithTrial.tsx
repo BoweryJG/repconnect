@@ -1,5 +1,21 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { X, Mic, MicOff, Phone, PhoneOff, Volume2, Clock, AlertCircle } from 'lucide-react';
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  IconButton,
+  Box,
+  Typography,
+  Button,
+  Avatar,
+  Chip,
+  LinearProgress,
+  Paper,
+  Stack,
+  Alert,
+} from '@mui/material';
+import { styled } from '@mui/material/styles';
 import { WebRTCClient } from '../../services/webRTCClient';
 import { useAuth } from '../../auth/useAuth';
 import { trialVoiceService } from '../../services/trialVoiceService';
@@ -26,6 +42,39 @@ interface TranscriptionLine {
   text: string;
   timestamp: Date;
 }
+
+const StyledDialog = styled(Dialog)(({ theme }) => ({
+  '& .MuiDialog-paper': {
+    borderRadius: theme.spacing(3),
+    overflow: 'hidden',
+    maxWidth: 500,
+  },
+}));
+
+const VoiceIndicator = styled(Box)(({ theme }) => ({
+  width: 128,
+  height: 128,
+  borderRadius: '50%',
+  backgroundColor: theme.palette.grey[100],
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  position: 'relative',
+  overflow: 'hidden',
+}));
+
+const PulseAnimation = styled(Box)(({ theme }) => ({
+  position: 'absolute',
+  inset: 0,
+  borderRadius: '50%',
+  backgroundColor: theme.palette.primary.main,
+  opacity: 0.2,
+  animation: 'pulse 1.5s ease-in-out infinite',
+  '@keyframes pulse': {
+    '0%, 100%': { transform: 'scale(1)' },
+    '50%': { transform: 'scale(1.1)' },
+  },
+}));
 
 export default function VoiceModalWithTrial({
   isOpen,
@@ -60,6 +109,7 @@ export default function VoiceModalWithTrial({
   const webRTCClientRef = useRef<WebRTCClient | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
+  const transcriptionRef = useRef<HTMLDivElement>(null);
   const transcriptionEndRef = useRef<HTMLDivElement>(null);
   const animationFrameRef = useRef<number | null>(null);
   const remainingTimeInterval = useRef<NodeJS.Timeout | null>(null);
@@ -94,10 +144,7 @@ export default function VoiceModalWithTrial({
 
       if (!isAuthenticated && agentId) {
         // Start trial session
-        const trialSession = await trialVoiceService.startTrialVoiceSession(
-          agentId,
-          handleTrialExpired
-        );
+        const trialSession = await trialVoiceService.startSession(agentId, handleTrialExpired);
 
         setIsTrialSession(true);
         setRemainingTime(trialSession.session.max_duration_seconds);
@@ -115,8 +162,8 @@ export default function VoiceModalWithTrial({
 
       // Create WebRTC client
       webRTCClientRef.current = new WebRTCClient({
-        backendUrl,
-        agentId: agentId || agentName.toLowerCase().replace(/\s+/g, '-'),
+        signalingServerUrl: backendUrl,
+        agentId: agentId!,
         userId: user?.id || 'guest-' + Date.now(),
         authToken: session?.access_token,
       });
@@ -222,7 +269,7 @@ export default function VoiceModalWithTrial({
   };
 
   const handleCallError = (error: any) => {
-    if (error.name === 'NotAllowedError') {
+    if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
       addTranscriptionLine(
         'agent',
         'Microphone permission denied. Please allow microphone access and try again.'
@@ -315,186 +362,253 @@ export default function VoiceModalWithTrial({
   }
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4">
-        {/* Header */}
-        <div className="relative bg-gradient-to-r from-blue-500 to-purple-600 text-white p-6 rounded-t-2xl">
-          <button
-            onClick={onClose}
-            className="absolute top-4 right-4 text-white/80 hover:text-white transition-colors"
+    <StyledDialog open={isOpen} onClose={onClose} fullWidth>
+      {/* Header */}
+      <Box
+        sx={{
+          background: 'linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%)',
+          color: 'white',
+          p: 3,
+          position: 'relative',
+        }}
+      >
+        <IconButton
+          onClick={onClose}
+          sx={{
+            position: 'absolute',
+            top: 8,
+            right: 8,
+            color: 'rgba(255, 255, 255, 0.8)',
+            '&:hover': {
+              color: 'white',
+            },
+          }}
+        >
+          <X size={24} />
+        </IconButton>
+
+        <Stack direction="row" spacing={2} alignItems="center">
+          <Avatar
+            src={agentAvatar}
+            alt={agentName}
+            sx={{
+              width: 64,
+              height: 64,
+              border: '2px solid white',
+              boxShadow: 3,
+            }}
           >
-            <X size={24} />
-          </button>
+            {agentAvatar === '/agent-avatar.jpg' ? '🤖' : agentName[0]}
+          </Avatar>
+          <Box>
+            <Typography variant="h5" fontWeight="bold">
+              {agentName}
+            </Typography>
+            <Typography variant="body2" sx={{ opacity: 0.9 }}>
+              {agentRole}
+            </Typography>
+          </Box>
+        </Stack>
 
-          <div className="flex items-center gap-4">
-            <img
-              src={agentAvatar}
-              alt={agentName}
-              className="w-16 h-16 rounded-full border-2 border-white shadow-lg"
-            />
-            <div>
-              <h2 className="text-2xl font-bold">{agentName}</h2>
-              <p className="text-white/90">{agentRole}</p>
-            </div>
-          </div>
+        {/* Trial Timer in Header */}
+        {isTrialSession && isCallActive && (
+          <Box
+            sx={{
+              mt: 2,
+              bgcolor: 'rgba(255, 255, 255, 0.2)',
+              borderRadius: 2,
+              p: 1,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1,
+            }}
+          >
+            <Clock size={16} />
+            <Typography variant="body2" fontWeight="medium">
+              Trial Time Remaining: {formatTime(remainingTime)}
+            </Typography>
+          </Box>
+        )}
+      </Box>
 
-          {/* Trial Timer */}
-          {isTrialSession && isCallActive && (
-            <div className="mt-4 bg-white/20 rounded-lg p-2 flex items-center gap-2">
-              <Clock size={16} />
-              <span className="text-sm font-medium">
-                Trial Time Remaining: {formatTime(remainingTime)}
-              </span>
-            </div>
-          )}
-        </div>
+      <DialogContent>
+        {/* Trial Notice */}
+        {showTrialExpired ? (
+          <Box sx={{ py: 4 }}>
+            <Stack alignItems="center" textAlign="center" spacing={3}>
+              <Box
+                sx={{
+                  width: 64,
+                  height: 64,
+                  bgcolor: 'error.light',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <AlertCircle size={32} color="#d32f2f" />
+              </Box>
+              <Typography variant="h6" fontWeight="semibold">
+                Trial Session Ended
+              </Typography>
+              <Typography color="text.secondary">
+                Your 5-minute trial session has ended. Upgrade to Pro for unlimited voice
+                conversations with your AI agents.
+              </Typography>
+              <Stack direction="row" spacing={2}>
+                <Button variant="outlined" onClick={onClose}>
+                  Close
+                </Button>
+                <Button variant="contained" color="primary">
+                  Upgrade to Pro
+                </Button>
+              </Stack>
+            </Stack>
+          </Box>
+        ) : (
+          <>
+            {/* Main Content */}
+            <Box sx={{ p: 2 }}>
+              {/* Trial Timer Alert */}
+              {isTrialSession && !isCallActive && (
+                <Alert
+                  severity="warning"
+                  sx={{ mb: 2 }}
+                  action={
+                    <Button color="inherit" size="small">
+                      Upgrade
+                    </Button>
+                  }
+                  icon={<Clock size={20} />}
+                >
+                  Free 5-minute trial session. Sign up for unlimited voice calls!
+                </Alert>
+              )}
 
-        {/* Main Content */}
-        <div className="p-6">
-          {/* Connection Status */}
-          <div className="mb-4 flex items-center justify-center gap-2">
-            <div
-              className={`w-2 h-2 rounded-full ${
-                connectionStatus === 'connected'
-                  ? 'bg-green-500'
-                  : connectionStatus === 'connecting'
-                    ? 'bg-yellow-500 animate-pulse'
-                    : connectionStatus === 'error'
-                      ? 'bg-red-500'
-                      : 'bg-gray-400'
-              }`}
-            />
-            <span className="text-sm text-gray-600">
-              {connectionStatus === 'connected'
-                ? 'Connected'
-                : connectionStatus === 'connecting'
-                  ? 'Connecting...'
-                  : connectionStatus === 'error'
-                    ? 'Connection Error'
-                    : 'Not Connected'}
-            </span>
-          </div>
+              {/* Connection Status */}
+              <Box sx={{ mb: 4 }}>
+                <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
+                  <VoiceIndicator>
+                    {connectionStatus === 'connected' && isUserSpeaking && <PulseAnimation />}
+                    <Volume2 size={48} color="#666" />
+                  </VoiceIndicator>
+                </Box>
 
-          {/* Trial Expired Message */}
-          {showTrialExpired && (
-            <div className="mb-4 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-              <div className="flex items-start gap-2">
-                <AlertCircle className="text-yellow-600 mt-0.5" size={20} />
-                <div>
-                  <p className="text-sm font-medium text-yellow-800">Trial Ended</p>
-                  <p className="text-sm text-yellow-700 mt-1">
-                    Your free 5-minute trial has ended. Sign up for unlimited voice calls!
-                  </p>
-                  <button
-                    onClick={() => (window.location.href = '/pricing')}
-                    className="mt-2 text-sm font-medium text-yellow-800 hover:text-yellow-900 underline"
+                <Box textAlign="center" mb={2}>
+                  {connectionStatus === 'idle' && (
+                    <Typography color="text.secondary">
+                      Ready to start voice conversation
+                    </Typography>
+                  )}
+                  {connectionStatus === 'connecting' && (
+                    <Typography color="primary">Connecting to voice service...</Typography>
+                  )}
+                  {connectionStatus === 'connected' && (
+                    <Typography color="success.main" fontWeight="medium">
+                      Connected - You can speak now!
+                    </Typography>
+                  )}
+                  {connectionStatus === 'error' && (
+                    <Typography color="error">Connection error - Please try again</Typography>
+                  )}
+                </Box>
+              </Box>
+
+              {/* Controls */}
+              <Stack direction="row" justifyContent="center" spacing={2}>
+                {!isCallActive ? (
+                  <Button
+                    onClick={startCall}
+                    disabled={connectionStatus === 'connecting'}
+                    variant="contained"
+                    color="success"
+                    size="large"
+                    startIcon={<Phone size={20} />}
+                    sx={{ borderRadius: 3 }}
                   >
-                    View Pricing →
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Transcription Area */}
-          <div className="mb-6 h-64 overflow-y-auto bg-gray-50 rounded-lg p-4">
-            {transcription.length === 0 ? (
-              <p className="text-gray-500 text-center">
-                Click the phone button to start the conversation
-              </p>
-            ) : (
-              <div className="space-y-3">
-                {transcription.map((line) => (
-                  <div
-                    key={line.id}
-                    className={`flex gap-2 ${
-                      line.speaker === 'user' ? 'justify-end' : 'justify-start'
-                    }`}
-                  >
-                    <div
-                      className={`max-w-[80%] p-3 rounded-lg ${
-                        line.speaker === 'user'
-                          ? 'bg-blue-500 text-white'
-                          : line.speaker === 'agent'
-                            ? 'bg-gray-200 text-gray-800'
-                            : 'bg-yellow-100 text-yellow-800 text-sm'
-                      }`}
+                    Start Call
+                  </Button>
+                ) : (
+                  <>
+                    <IconButton
+                      onClick={toggleMute}
+                      sx={{
+                        bgcolor: isMuted ? 'error.light' : 'grey.100',
+                        color: isMuted ? 'error.main' : 'text.secondary',
+                        '&:hover': {
+                          bgcolor: isMuted ? 'error.light' : 'grey.200',
+                        },
+                      }}
                     >
-                      <p className="text-sm">{line.text}</p>
-                      <p className="text-xs opacity-70 mt-1">
-                        {line.timestamp.toLocaleTimeString()}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-                <div ref={transcriptionEndRef} />
-              </div>
-            )}
-          </div>
+                      {isMuted ? <MicOff size={20} /> : <Mic size={20} />}
+                    </IconButton>
+                    <Button
+                      onClick={endCall}
+                      variant="contained"
+                      color="error"
+                      size="large"
+                      startIcon={<PhoneOff size={20} />}
+                      sx={{ borderRadius: 3 }}
+                    >
+                      End Call
+                    </Button>
+                  </>
+                )}
+              </Stack>
 
-          {/* Call Controls */}
-          <div className="flex items-center justify-center gap-4">
-            {/* Mute Button */}
-            <button
-              onClick={toggleMute}
-              disabled={!isCallActive}
-              className={`p-4 rounded-full transition-colors ${
-                !isCallActive
-                  ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                  : isMuted
-                    ? 'bg-red-100 text-red-600 hover:bg-red-200'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
-            >
-              {isMuted ? <MicOff size={24} /> : <Mic size={24} />}
-            </button>
-
-            {/* Call Button */}
-            <button
-              onClick={isCallActive ? endCall : startCall}
-              disabled={connectionStatus === 'connecting' || showTrialExpired}
-              className={`p-4 rounded-full transition-colors ${
-                isCallActive
-                  ? 'bg-red-500 text-white hover:bg-red-600'
-                  : connectionStatus === 'connecting' || showTrialExpired
-                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                    : 'bg-green-500 text-white hover:bg-green-600'
-              }`}
-            >
-              {isCallActive ? <PhoneOff size={24} /> : <Phone size={24} />}
-            </button>
-
-            {/* Volume Indicator */}
-            <div
-              className={`p-4 rounded-full ${
-                isAgentSpeaking ? 'bg-purple-100 text-purple-600' : 'bg-gray-100 text-gray-400'
-              }`}
-            >
-              <Volume2 size={24} />
-            </div>
-          </div>
-
-          {/* Audio Level Indicators */}
-          <div className="mt-4 flex items-center justify-center gap-6 text-sm text-gray-600">
-            <div className="flex items-center gap-2">
-              <div
-                className={`w-2 h-2 rounded-full ${isUserSpeaking ? 'bg-blue-500' : 'bg-gray-300'}`}
-              />
-              <span>You're {isUserSpeaking ? 'speaking' : 'silent'}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div
-                className={`w-2 h-2 rounded-full ${
-                  isAgentSpeaking ? 'bg-purple-500' : 'bg-gray-300'
-                }`}
-              />
-              <span>
-                {agentName} is {isAgentSpeaking ? 'speaking' : 'listening'}
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+              {/* Transcription */}
+              {transcription.length > 0 && (
+                <Box sx={{ mt: 3 }}>
+                  <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                    Conversation
+                  </Typography>
+                  <Paper
+                    ref={transcriptionRef}
+                    elevation={0}
+                    sx={{
+                      bgcolor: 'grey.50',
+                      p: 2,
+                      height: 160,
+                      overflowY: 'auto',
+                    }}
+                  >
+                    <Stack spacing={1}>
+                      {transcription.map((line) => (
+                        <Box key={line.id}>
+                          <Typography
+                            component="span"
+                            variant="body2"
+                            fontWeight="medium"
+                            color={
+                              line.speaker === 'user'
+                                ? 'primary.main'
+                                : line.speaker === 'agent'
+                                  ? 'secondary.main'
+                                  : 'text.secondary'
+                            }
+                          >
+                            {line.speaker === 'user'
+                              ? 'You'
+                              : line.speaker === 'agent'
+                                ? agentName
+                                : 'System'}
+                            :
+                          </Typography>{' '}
+                          <Typography component="span" variant="body2" color="text.primary">
+                            {line.text}
+                          </Typography>
+                        </Box>
+                      ))}
+                      <div ref={transcriptionEndRef} />
+                    </Stack>
+                  </Paper>
+                </Box>
+              )}
+            </Box>
+          </>
+        )}
+      </DialogContent>
+    </StyledDialog>
   );
 }
