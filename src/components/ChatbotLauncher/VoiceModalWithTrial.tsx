@@ -144,7 +144,10 @@ export default function VoiceModalWithTrial({
 
       if (!isAuthenticated && agentId) {
         // Start trial session
-        const trialSession = await trialVoiceService.startSession(agentId, handleTrialExpired);
+        const trialSession = await trialVoiceService.startTrialVoiceSession(
+          agentId,
+          handleTrialExpired
+        );
 
         setIsTrialSession(true);
         setRemainingTime(trialSession.session.max_duration_seconds);
