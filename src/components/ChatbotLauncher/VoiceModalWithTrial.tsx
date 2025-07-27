@@ -5,7 +5,6 @@ import {
   DialogTitle,
   DialogContent,
   IconButton,
-  Box,
   Typography,
   Button,
   Avatar,
@@ -351,14 +350,14 @@ export default function VoiceModalWithTrial({
           >
             {agentAvatar === '/agent-avatar.jpg' ? '🤖' : agentName[0]}
           </Avatar>
-          <Box>
+          <div>
             <Typography variant="h5" fontWeight="bold">
               {agentName}
             </Typography>
             <Typography variant="body2" style={{ opacity: 0.9 }}>
               {agentRole}
             </Typography>
-          </Box>
+          </div>
         </div>
 
         {/* Trial Timer in Header */}
@@ -426,7 +425,7 @@ export default function VoiceModalWithTrial({
                   </div>
                 </div>
 
-                <Box textAlign="center" mb={2}>
+                <div style={{ textAlign: 'center', marginBottom: 16 }}>
                   {connectionStatus === 'idle' && (
                     <Typography color="text.secondary">
                       Ready to start voice conversation
@@ -443,7 +442,7 @@ export default function VoiceModalWithTrial({
                   {connectionStatus === 'error' && (
                     <Typography color="error">Connection error - Please try again</Typography>
                   )}
-                </Box>
+                </div>
               </div>
 
               {/* Controls */}
@@ -495,7 +494,7 @@ export default function VoiceModalWithTrial({
                   >
                     <div className="voice-modal-transcription-content">
                       {transcription.map((line) => (
-                        <Box key={line.id}>
+                        <div key={line.id}>
                           <Typography
                             component="span"
                             variant="body2"
@@ -518,7 +517,7 @@ export default function VoiceModalWithTrial({
                           <Typography component="span" variant="body2" color="text.primary">
                             {line.text}
                           </Typography>
-                        </Box>
+                        </div>
                       ))}
                       <div ref={transcriptionEndRef} />
                     </div>
