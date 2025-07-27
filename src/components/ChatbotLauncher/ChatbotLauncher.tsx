@@ -11,6 +11,7 @@ import {
   Avatar,
   Chip,
   Tooltip,
+  Badge,
 } from '@mui/material';
 import { ChatBubbleOutline, Close, AutoAwesome } from '@mui/icons-material';
 import { styled, keyframes } from '@mui/material/styles';
@@ -507,39 +508,37 @@ const ChatbotLauncher: React.FC<ChatbotLauncherProps> = ({
     <LauncherContainer ref={containerRef} sx={containerStyles}>
       {/* Floating Orb */}
       <Zoom in={!isOpen} unmountOnExit>
-        <FloatingOrb onClick={handleToggle} glowcolor={glowColor} aria-label="Open chat assistant">
-          <ChatBubbleOutline />
-          <AutoAwesome
-            sx={{
-              position: 'absolute',
-              fontSize: 16,
-              top: 10,
-              right: 10,
-              color: 'white',
-              filter: 'drop-shadow(0 0 4px rgba(255, 255, 255, 0.8))',
-              animation: `${shimmer} 2s ease-in-out infinite`,
-            }}
-          />
-          <Box
-            sx={{
-              position: 'absolute',
-              top: -5,
-              right: -5,
-              width: 20,
-              height: 20,
-              borderRadius: '50%',
-              backgroundColor: '#10B981',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
+        <Badge
+          badgeContent={agents.length}
+          color="success"
+          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+          sx={{
+            '& .MuiBadge-badge': {
+              fontWeight: 'bold',
+              fontSize: 11,
               boxShadow: '0 2px 8px rgba(16, 185, 129, 0.4)',
-            }}
+            },
+          }}
+        >
+          <FloatingOrb
+            onClick={handleToggle}
+            glowcolor={glowColor}
+            aria-label="Open chat assistant"
           >
-            <Typography sx={{ fontSize: 11, fontWeight: 'bold', color: 'white' }}>
-              {agents.length}
-            </Typography>
-          </Box>
-        </FloatingOrb>
+            <ChatBubbleOutline />
+            <AutoAwesome
+              sx={{
+                position: 'absolute',
+                fontSize: 16,
+                top: 10,
+                right: 10,
+                color: 'white',
+                filter: 'drop-shadow(0 0 4px rgba(255, 255, 255, 0.8))',
+                animation: `${shimmer} 2s ease-in-out infinite`,
+              }}
+            />
+          </FloatingOrb>
+        </Badge>
       </Zoom>
 
       {/* Expanded Carousel */}
