@@ -107,8 +107,12 @@ export const ChatbotIntegration: React.FC<ChatbotIntegrationProps> = ({
       } catch (error: any) {
         console.error('Error loading agents:', error);
         console.error('Error details:', error?.message || 'Unknown error');
+        console.error('Error response:', error?.response);
+        console.error('Error config:', error?.config);
         // Set empty agents array on error
         setAgents([]);
+      } finally {
+        console.log('Agent loading completed (success or failure)');
       }
     };
 
