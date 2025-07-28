@@ -1431,10 +1431,14 @@ function AppContent() {
           try {
             await signOut();
             setShowRepSpheresLogoutModal(false);
-            showSuccess('Successfully signed out');
+            // Force complete logout with page reload
+            window.location.href = '/';
           } catch (error) {
             logger.error('Logout error:', error);
-            showError('Failed to sign out');
+            // Even on error, force logout
+            localStorage.clear();
+            sessionStorage.clear();
+            window.location.href = '/';
           }
         }}
       />

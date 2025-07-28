@@ -130,12 +130,46 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // Sign out
   const signOut = useCallback(async () => {
     try {
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
+      logger.info('Starting sign out process...');
 
+      // Clear local state first
       setUser(null);
       setSession(null);
       setProfile(null);
+
+      // Sign out from Supabase
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        logger.error('Supabase signOut error:', error);
+        throw error;
+      }
+
+      logger.info('Supabase signOut successful');
+
+      // Force clear any lingering storage
+      try {
+        // Clear specific Supabase keys
+        const keysToRemove = [];
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          if (key && (key.includes('supabase') || key.includes('auth'))) {
+            keysToRemove.push(key);
+          }
+        }
+        keysToRemove.forEach((key) => localStorage.removeItem(key));
+
+        // Clear session storage
+        sessionStorage.clear();
+
+        logger.info('Cleared auth storage');
+      } catch (storageError) {
+        logger.error('Error clearing storage:', storageError);
+      }
+
+      // Small delay to ensure cleanup completes
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
+      logger.info('Sign out completed successfully');
     } catch (error) {
       logger.error('Sign out error:', error);
       throw error;
