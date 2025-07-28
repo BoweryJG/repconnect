@@ -51,45 +51,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           await new Promise((resolve) => setTimeout(resolve, 1000));
         }
 
-        // Add timeout to prevent hanging
-        const authTimeout = new Promise((_, reject) => {
-          setTimeout(() => reject(new Error('Auth initialization timeout')), 1500);
-        });
-
-        // First, check if we have an invalid refresh token
-        const existingToken =
-          localStorage.getItem('sb-cbopynuvhcymbumjnvay-auth-token') ||
-          localStorage.getItem('repspheres-auth') ||
-          localStorage.getItem('supabase.auth.token');
-
-        if (existingToken) {
-          try {
-            const parsed = JSON.parse(existingToken);
-            // If token is expired or invalid, clear it
-            if (parsed.expires_at && new Date(parsed.expires_at * 1000) < new Date()) {
-              localStorage.removeItem('repspheres-auth');
-              localStorage.removeItem('supabase.auth.token');
-              localStorage.removeItem('sb-cbopynuvhcymbumjnvay-auth-token');
-            }
-          } catch {
-            // Invalid JSON, clear it
-            localStorage.removeItem('repspheres-auth');
-            localStorage.removeItem('supabase.auth.token');
-            localStorage.removeItem('sb-cbopynuvhcymbumjnvay-auth-token');
-          }
-        }
-
-        const result = await Promise.race([supabase.auth.getSession(), authTimeout]).catch(
-          (timeoutError) => ({
-            data: { session: null },
-            error: timeoutError,
-          })
-        );
-
+        // Just get the session directly without timeout
         const {
           data: { session },
           error,
-        } = result as { data: { session: Session | null }; error: Error | null };
+        } = await supabase.auth.getSession();
 
         // If we get a refresh token error, clear auth and continue as public
         if (error && error.message?.includes('Refresh Token')) {
