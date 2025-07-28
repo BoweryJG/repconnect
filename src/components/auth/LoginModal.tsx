@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import ReactDOM from 'react-dom';
 import { gsap } from 'gsap';
-import { supabase } from '../../lib/supabase';
+import { useAuth } from '../../auth/AuthContext';
 import './LoginModal.css';
 
 interface LoginModalProps {
@@ -185,21 +185,12 @@ export const LoginModal: React.FC<LoginModalProps> = ({
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, handleClose]);
 
+  const { signInWithProvider } = useAuth();
+
   const handleGoogleAuth = async () => {
     setIsLoading(true);
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
-          skipBrowserRedirect: false,
-          queryParams: {
-            access_type: 'offline',
-            prompt: 'consent',
-          },
-        },
-      });
-      if (error) throw error;
+      await signInWithProvider('google');
       setShowSuccess(true);
       setTimeout(() => {
         setShowSuccess(false);
@@ -215,18 +206,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({
   const handleFacebookAuth = async () => {
     setIsLoading(true);
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'facebook',
-        options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
-          skipBrowserRedirect: false,
-          queryParams: {
-            access_type: 'offline',
-            prompt: 'consent',
-          },
-        },
-      });
-      if (error) throw error;
+      await signInWithProvider('facebook');
       setShowSuccess(true);
       setTimeout(() => {
         setShowSuccess(false);

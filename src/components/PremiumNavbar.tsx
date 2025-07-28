@@ -744,9 +744,21 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                     {/* Sign Out Button */}
                     <Button
                       startIcon={<LogoutIcon sx={{ fontSize: 16 }} />}
-                      onClick={() => {
-                        console.log('Sign out clicked');
-                        setShowLogoutModal(true);
+                      onClick={async () => {
+                        console.log('Sign out clicked - direct logout');
+                        // Clear everything
+                        localStorage.clear();
+                        sessionStorage.clear();
+                        // Clear all cookies
+                        document.cookie.split(';').forEach(function (c) {
+                          document.cookie = c
+                            .replace(/^ +/, '')
+                            .replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/');
+                        });
+                        // Sign out from Supabase
+                        await supabase.auth.signOut();
+                        // Force hard reload to clear any cached state
+                        window.location.replace('/');
                       }}
                       sx={{
                         fontSize: '12px',

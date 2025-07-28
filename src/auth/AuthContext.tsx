@@ -129,24 +129,36 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   // Sign out
   const signOut = useCallback(async () => {
+    console.log('=== SIGN OUT CALLED ===');
     try {
       // Clear state
+      console.log('Clearing state...');
       setUser(null);
       setSession(null);
       setProfile(null);
 
       // Sign out from Supabase
-      await supabase.auth.signOut();
+      console.log('Calling supabase.auth.signOut()...');
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        console.error('Supabase signOut error:', error);
+      } else {
+        console.log('Supabase signOut successful');
+      }
 
       // Clear storage
+      console.log('Clearing storage...');
       localStorage.clear();
       sessionStorage.clear();
 
       // Force reload
+      console.log('Redirecting to home...');
       window.location.href = '/';
     } catch (error) {
+      console.error('Sign out error:', error);
       logger.error('Sign out error:', error);
       // Force cleanup anyway
+      console.log('Force cleanup after error...');
       localStorage.clear();
       sessionStorage.clear();
       window.location.href = '/';
@@ -162,7 +174,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           data: { session: currentSession },
         } = await supabase.auth.getSession();
 
+        console.log('Initial session check:', currentSession);
+
         if (currentSession?.user) {
+          console.log('Found existing session for:', currentSession.user.email);
           setSession(currentSession);
           setUser(currentSession.user);
 
@@ -184,12 +199,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event: any, session: any) => {
+      console.log('Auth state change:', event, session);
       if (event === 'SIGNED_OUT') {
         // Handle sign out
         setUser(null);
         setSession(null);
         setProfile(null);
       } else if (session?.user) {
+        console.log('Setting user from auth change:', session.user.email);
         // Simply use Supabase session like Canvas does
         setSession(session);
         setUser(session.user);

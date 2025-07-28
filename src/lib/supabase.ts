@@ -24,7 +24,7 @@ if (!supabaseUrl || !supabaseAnonKey) {
       detectSessionInUrl: true,
       storage: window.localStorage,
       storageKey: 'sb-cbopynuvhcymbumjnvay-auth-token',
-      flowType: 'implicit',
+      flowType: 'implicit', // Canvas uses this and it works
     },
   });
 }
