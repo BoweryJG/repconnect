@@ -130,8 +130,25 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // Sign out
   const signOut = useCallback(async () => {
     try {
+      // First sign out from Supabase
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
+
+      // Then clear backend cookies
+      try {
+        const backendUrl =
+          process.env.REACT_APP_BACKEND_URL || 'https://osbackend-zl1h.onrender.com';
+        await fetch(`${backendUrl}/api/auth/logout`, {
+          method: 'POST',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+      } catch (backendError) {
+        logger.error('Backend logout error:', backendError);
+        // Continue with frontend logout even if backend fails
+      }
 
       setUser(null);
       setSession(null);

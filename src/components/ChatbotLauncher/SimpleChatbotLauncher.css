@@ -133,7 +133,8 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  max-height: calc(70vh - 100px);
+  flex: 1;
+  min-height: 0;
 }
 
 .agent-card {
