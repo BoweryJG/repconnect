@@ -56,6 +56,9 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
 
   const initials = getInitials(displayName);
 
+  // Debug: Log when component renders
+  console.log('UserAvatar rendering with onClick:', !!onClick);
+
   const content = (
     <div
       onClick={() => {
@@ -71,6 +74,8 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
         alignItems: 'center',
         gap: '8px',
         transition: 'all 0.3s ease',
+        position: 'relative',
+        zIndex: 1300,
       }}
       onMouseEnter={(e) => {
         if (onClick) {
@@ -92,8 +97,9 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
           color: 'white',
           fontSize: size * 0.4,
           fontWeight: 600,
-          border: '2px solid rgba(255, 255, 255, 0.1)',
+          border: onClick ? '3px solid #ff0000' : '2px solid rgba(255, 255, 255, 0.1)',
           boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)',
+          cursor: onClick ? 'pointer' : 'default',
         }}
       >
         {!avatarUrl && initials}
