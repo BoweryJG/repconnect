@@ -34,6 +34,17 @@ export default function SimpleVoiceModal({
   const webRTCClientRef = useRef<WebRTCClient | null>(null);
   const remainingTimeInterval = useRef<NodeJS.Timeout | null>(null);
 
+  const endCall = useCallback(() => {
+    if (webRTCClientRef.current) {
+      webRTCClientRef.current.stopAudio();
+    }
+    if (isTrialSession) {
+      trialVoiceService.endSession();
+    }
+    setIsCallActive(false);
+    setConnectionStatus('idle');
+  }, [isTrialSession]);
+
   const handleTrialExpired = useCallback(() => {
     setShowTrialExpired(true);
     endCall();
@@ -104,17 +115,6 @@ export default function SimpleVoiceModal({
       setConnectionStatus('error');
     }
   };
-
-  const endCall = useCallback(() => {
-    if (webRTCClientRef.current) {
-      webRTCClientRef.current.stopAudio();
-    }
-    if (isTrialSession) {
-      trialVoiceService.endSession();
-    }
-    setIsCallActive(false);
-    setConnectionStatus('idle');
-  }, [isTrialSession]);
 
   const toggleMute = () => {
     setIsMuted(!isMuted);
