@@ -1466,11 +1466,9 @@ function AppContent() {
 function App() {
   return (
     <ErrorBoundary>
-      <AuthProvider>
-        <ToastProvider>
-          <AppContent />
-        </ToastProvider>
-      </AuthProvider>
+      <ToastProvider>
+        <AppContent />
+      </ToastProvider>
     </ErrorBoundary>
   );
 }
