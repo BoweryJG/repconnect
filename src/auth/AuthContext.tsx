@@ -208,10 +208,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         if (userProfile) {
           setProfile(userProfile);
         }
-      } else {
-        setSession(null);
-        setUser(null);
-        setProfile(null);
       }
     });
 

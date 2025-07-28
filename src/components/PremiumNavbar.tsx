@@ -741,18 +741,33 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                       </Button>
                     )}
 
-                    {/* User Avatar with Dropdown */}
-                    <UserAvatar
-                      user={user}
-                      profile={profile}
-                      size={32}
-                      showInitials={true}
+                    {/* Sign Out Button */}
+                    <Button
+                      startIcon={<LogoutIcon sx={{ fontSize: 16 }} />}
                       onClick={() => {
-                        console.log('UserAvatar onClick in PremiumNavbar triggered');
-                        console.log('Setting showLogoutModal to true');
+                        console.log('Sign out clicked');
                         setShowLogoutModal(true);
                       }}
-                    />
+                      sx={{
+                        fontSize: '12px',
+                        fontWeight: 600,
+                        px: 2,
+                        py: 1,
+                        background: 'rgba(255, 0, 0, 0.1)',
+                        color: '#ff4444',
+                        border: '1px solid rgba(255, 0, 0, 0.3)',
+                        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                        '&:hover': {
+                          background: 'rgba(255, 0, 0, 0.2)',
+                          borderColor: 'rgba(255, 0, 0, 0.5)',
+                          transform: 'translateY(-1px)',
+                        },
+                      }}
+                    >
+                      SIGN OUT
+                    </Button>
+                    {/* User Avatar */}
+                    <UserAvatar user={user} profile={profile} size={32} showInitials={true} />
                   </>
                 ) : (
                   <Button

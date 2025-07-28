@@ -138,12 +138,6 @@ function AppContent() {
   const { user, profile, signOut } = useAuth();
   const { showSuccess, showError } = useToast();
 
-  // Temporary alert to confirm page loads
-  useEffect(() => {
-    console.log('[AppContent] Component mounted');
-    alert('App loaded! Check console for auth logs.');
-  }, []);
-
   // AppContent rendered
   const [showDialer, setShowDialer] = useState(false);
   const [showMissionControl, setShowMissionControl] = useState(false);
