@@ -11,7 +11,8 @@ export const AuthCallback: React.FC = () => {
     // Handle auth callback
     const handleAuthCallback = async () => {
       try {
-        // Processing OAuth callback
+        console.log('AuthCallback - Processing OAuth callback...');
+        console.log('URL:', window.location.href);
 
         // Get the auth code from URL
         const hashParams = new URLSearchParams(window.location.hash.substring(1));
@@ -28,58 +29,36 @@ export const AuthCallback: React.FC = () => {
 
         // Check if we have access_token in hash (Supabase OAuth response)
         const accessToken = hashParams.get('access_token');
-        const refreshToken = hashParams.get('refresh_token');
-
-        if (accessToken && refreshToken) {
-          // Found tokens in URL hash, setting session manually
-
-          // Manually set the session with the tokens from the URL
-          const { data, error: setSessionError } = await supabase.auth.setSession({
-            access_token: accessToken,
-            refresh_token: refreshToken,
-          });
-
-          if (setSessionError) {
-            // Error setting session
-            setError(setSessionError.message);
-            setTimeout(() => navigate('/login'), 3000);
-            return;
-          }
-
-          if (data.session) {
-            // Session set successfully
-            // Force a full page reload to ensure AuthContext picks up the new session
-            setTimeout(() => {
-              // Redirecting to home page with full reload
-              window.location.href = '/';
-            }, 500);
-            return;
-          }
+        if (accessToken) {
+          console.log('AuthCallback - Found access token in URL hash');
+          // Supabase should automatically handle this, but let's make sure
+          await new Promise((resolve) => setTimeout(resolve, 1000)); // Give Supabase time to process
         }
 
         // Check if session exists
         const { data, error } = await supabase.auth.getSession();
 
         if (error) {
-          // Auth callback error
+          console.error('Auth callback error:', error);
           setError(error.message);
           setTimeout(() => navigate('/login'), 3000);
         } else if (data.session) {
           // Successfully authenticated
-          // Auth successful
-          navigate('/');
+          console.log('Auth successful, user:', data.session.user.email);
+          // Use window.location.href to ensure full page reload
+          window.location.href = '/';
         } else {
-          // No session found, checking again
+          console.log('No session found, checking again...');
           // No session after callback, wait a bit and check again
           setTimeout(async () => {
             const {
               data: { session },
             } = await supabase.auth.getSession();
             if (session) {
-              // Session found on retry
-              navigate('/');
+              console.log('Session found on retry, user:', session.user.email);
+              window.location.href = '/';
             } else {
-              // Still no session, redirecting to login
+              console.log('Still no session, redirecting to login');
               navigate('/login');
             }
           }, 2000);
