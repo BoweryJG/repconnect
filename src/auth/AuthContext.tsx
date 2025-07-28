@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useState, useCallback } fr
 import { supabase } from '../lib/supabase';
 import { User, Session } from '@supabase/supabase-js';
 import logger from '../utils/logger';
+import { markLogoutInProgress } from '../utils/authUtils';
 
 type AuthProviderType = 'google' | 'facebook';
 
@@ -160,6 +161,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
         // Clear session storage
         sessionStorage.clear();
+
+        // Set a flag to prevent session refresh
+        markLogoutInProgress();
 
         logger.info('Cleared auth storage');
       } catch (storageError) {

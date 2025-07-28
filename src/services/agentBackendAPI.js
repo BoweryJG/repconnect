@@ -21,12 +21,16 @@ class AgentBackendAPI {
 
     // Don't require auth for public agent access
     try {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-      if (session?.access_token) {
-        headers['Authorization'] = `Bearer ${session.access_token}`;
-        headers['X-Supabase-Auth'] = 'true'; // Additional header to indicate Supabase auth
+      // Check if logout is in progress
+      const logoutInProgress = localStorage.getItem('repconnect_logout_in_progress');
+      if (logoutInProgress !== 'true') {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+        if (session?.access_token) {
+          headers['Authorization'] = `Bearer ${session.access_token}`;
+          headers['X-Supabase-Auth'] = 'true'; // Additional header to indicate Supabase auth
+        }
       }
     } catch (error) {
       // Silently ignore auth errors for public access
