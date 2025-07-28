@@ -138,15 +138,22 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       try {
         const backendUrl =
           process.env.REACT_APP_BACKEND_URL || 'https://osbackend-zl1h.onrender.com';
-        await fetch(`${backendUrl}/api/auth/logout`, {
+        console.log('Calling backend logout at:', `${backendUrl}/api/auth/logout`);
+        const response = await fetch(`${backendUrl}/api/auth/logout`, {
           method: 'POST',
           credentials: 'include',
           headers: {
             'Content-Type': 'application/json',
           },
         });
+        console.log('Backend logout response status:', response.status);
+        if (!response.ok) {
+          const text = await response.text();
+          console.error('Backend logout failed:', response.status, text);
+        }
       } catch (backendError) {
         logger.error('Backend logout error:', backendError);
+        console.error('Backend logout error details:', backendError);
         // Continue with frontend logout even if backend fails
       }
 
