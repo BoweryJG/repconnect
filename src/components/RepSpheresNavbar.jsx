@@ -6,24 +6,22 @@ const RepSpheresNavbar = ({
   onSignup,
   onLogout,
   user = null,
-  customLinks = [],
+  appLinks = [], // App-specific links go in the more menu
   logoHref = '/',
-  // theme = 'default', // Removed unused prop
 }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMoreMenuOpen, setIsMoreMenuOpen] = useState(false);
   const [telemetryStatus, setTelemetryStatus] = useState(0);
 
-  // Default navigation links
-  const defaultLinks = [
+  // Default ecosystem navigation links
+  const ecosystemLinks = [
     { href: 'https://marketdata.repspheres.com/', label: 'Market Data', icon: 'market' },
     { href: 'https://canvas.repspheres.com/', label: 'Canvas', icon: 'canvas' },
-    { href: 'https://repconnect.repspheres.com/', label: 'Pipeline', icon: 'pipeline' },
-    { href: 'https://crm.repspheres.com/', label: 'Sphere oS', icon: 'sphere' },
+    { href: 'https://repconnect.repspheres.com/', label: 'RepConnect', icon: 'pipeline' },
+    { href: 'https://crm.repspheres.com/', label: 'CRM', icon: 'sphere' },
     { href: 'https://podcast.repspheres.com/', label: 'Podcasts', icon: 'podcasts' },
   ];
-
-  const navLinks = customLinks.length > 0 ? customLinks : defaultLinks;
 
   // Telemetry status messages
   const statusMessages = [
@@ -62,7 +60,32 @@ const RepSpheresNavbar = ({
     };
   }, [isMobileMenuOpen]);
 
-  const handleLinkClick = (e, href) => {
+  useEffect(() => {
+    // Close more menu when clicking outside
+    const handleClickOutside = (e) => {
+      if (!e.target.closest('.nav-more-menu-wrapper')) {
+        setIsMoreMenuOpen(false);
+      }
+    };
+
+    if (isMoreMenuOpen) {
+      document.addEventListener('click', handleClickOutside);
+      return () => document.removeEventListener('click', handleClickOutside);
+    }
+  }, [isMoreMenuOpen]);
+
+  const handleLinkClick = (e, link) => {
+    const href = link.href;
+
+    // Handle custom onClick if provided
+    if (link.onClick) {
+      e.preventDefault();
+      link.onClick();
+      setIsMobileMenuOpen(false);
+      setIsMoreMenuOpen(false);
+      return;
+    }
+
     // If it's a hash link, handle smooth scroll
     if (href.startsWith('#')) {
       e.preventDefault();
@@ -76,6 +99,7 @@ const RepSpheresNavbar = ({
       e.preventDefault();
     }
     setIsMobileMenuOpen(false);
+    setIsMoreMenuOpen(false);
   };
 
   return (
@@ -196,14 +220,14 @@ const RepSpheresNavbar = ({
               <span className="nav-logo-text">RepSpheres</span>
             </a>
 
-            {/* Desktop Navigation Links */}
+            {/* Desktop Navigation Links - Always show ecosystem links */}
             <nav className="nav-links">
-              {navLinks.map((link, index) => (
+              {ecosystemLinks.map((link, index) => (
                 <a
                   key={index}
                   href={link.href}
                   className="nav-link"
-                  onClick={(e) => handleLinkClick(e, link.href)}
+                  onClick={(e) => handleLinkClick(e, link)}
                 >
                   <span className={`nav-link-icon icon-${link.icon}`}></span>
                   <span>{link.label}</span>
@@ -230,6 +254,44 @@ const RepSpheresNavbar = ({
                   </button>
                 </>
               )}
+
+              {/* More Menu - Only show if there are app links */}
+              {appLinks.length > 0 && (
+                <div className="nav-more-menu-wrapper">
+                  <button
+                    className="nav-more"
+                    aria-label="More options"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsMoreMenuOpen(!isMoreMenuOpen);
+                    }}
+                  >
+                    <div className="nav-more-icon">
+                      <span className="nav-more-dot"></span>
+                      <span className="nav-more-dot"></span>
+                      <span className="nav-more-dot"></span>
+                    </div>
+                  </button>
+
+                  {/* Dropdown Menu */}
+                  {isMoreMenuOpen && (
+                    <div className="nav-more-dropdown">
+                      {appLinks.map((link, index) => (
+                        <a
+                          key={index}
+                          href={link.href}
+                          className="nav-more-dropdown-item"
+                          onClick={(e) => handleLinkClick(e, link)}
+                        >
+                          <span className={`nav-link-icon icon-${link.icon}`}></span>
+                          <span>{link.label}</span>
+                        </a>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
               <button
                 className={`nav-hamburger ${isMobileMenuOpen ? 'active' : ''}`}
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -268,17 +330,84 @@ const RepSpheresNavbar = ({
       >
         <div className="mobile-menu">
           <nav className="mobile-menu-links">
-            {navLinks.map((link, index) => (
-              <a
-                key={index}
-                href={link.href}
-                className="mobile-menu-link"
-                onClick={(e) => handleLinkClick(e, link.href)}
-              >
-                <span className={`nav-link-icon icon-${link.icon}`}></span>
-                <span>{link.label}</span>
-              </a>
-            ))}
+            {/* Ecosystem Links */}
+            <div className="mobile-menu-section">
+              <div className="mobile-menu-section-title">RepSpheres Ecosystem</div>
+              {ecosystemLinks.map((link, index) => (
+                <a
+                  key={index}
+                  href={link.href}
+                  className="mobile-menu-link"
+                  onClick={(e) => handleLinkClick(e, link)}
+                >
+                  <span className={`nav-link-icon icon-${link.icon}`}></span>
+                  <span>{link.label}</span>
+                </a>
+              ))}
+            </div>
+
+            {/* App Links */}
+            {appLinks.length > 0 && (
+              <div className="mobile-menu-section">
+                <div className="mobile-menu-section-title">RepConnect Tools</div>
+                {appLinks.map((link, index) => (
+                  <a
+                    key={index}
+                    href={link.href}
+                    className="mobile-menu-link"
+                    onClick={(e) => handleLinkClick(e, link)}
+                  >
+                    <span className={`nav-link-icon icon-${link.icon}`}></span>
+                    <span>{link.label}</span>
+                  </a>
+                ))}
+              </div>
+            )}
+
+            {/* Auth Actions */}
+            <div className="mobile-menu-section">
+              {user ? (
+                <a
+                  href="#"
+                  className="mobile-menu-link"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    onLogout();
+                    setIsMobileMenuOpen(false);
+                  }}
+                >
+                  <span className="nav-link-icon icon-logout"></span>
+                  <span>Sign Out</span>
+                </a>
+              ) : (
+                <>
+                  <a
+                    href="#"
+                    className="mobile-menu-link"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      onLogin();
+                      setIsMobileMenuOpen(false);
+                    }}
+                  >
+                    <span className="nav-link-icon icon-login"></span>
+                    <span>Login</span>
+                  </a>
+                  <a
+                    href="#"
+                    className="mobile-menu-link"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      onSignup();
+                      setIsMobileMenuOpen(false);
+                    }}
+                  >
+                    <span className="nav-link-icon icon-signup"></span>
+                    <span>Sign Up</span>
+                  </a>
+                </>
+              )}
+            </div>
           </nav>
         </div>
       </div>

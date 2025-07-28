@@ -430,6 +430,9 @@
   box-shadow:
     0 4px 20px rgba(159, 88, 250, 0.3),
     0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+  max-width: 120px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 /* Forcefield effect for both buttons */
@@ -779,4 +782,133 @@
   .nav-user-info {
     display: none;
   }
+}
+
+/* More Menu Dropdown */
+.nav-more-menu-wrapper {
+  position: relative;
+}
+
+.nav-more-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  min-width: 200px;
+  background: var(--panel-dark);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 8px;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    0 0 20px rgba(255, 0, 255, 0.1);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  z-index: 1001;
+  animation: dropdownFadeIn 0.2s ease-out;
+}
+
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.nav-more-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+}
+
+.nav-more-dropdown-item:hover {
+  color: var(--text-primary);
+  background: var(--glass-hover);
+  transform: translateX(4px);
+}
+
+/* Mobile Menu Sections */
+.mobile-menu-section {
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.mobile-menu-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.mobile-menu-section-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 10px;
+  padding: 0 20px;
+}
+
+/* Icon styles for app-specific icons */
+.icon-dialer::before {
+  background: #00d4ff;
+  box-shadow: 0 0 10px #00d4ff;
+}
+
+.icon-sync::before {
+  background: #ffd93d;
+  box-shadow: 0 0 10px #ffd93d;
+}
+
+.icon-control::before {
+  background: #ff00ff;
+  box-shadow: 0 0 10px #ff00ff;
+}
+
+.icon-settings::before {
+  background: #94a3b8;
+  box-shadow: 0 0 10px #94a3b8;
+}
+
+.icon-chart::before {
+  background: #4bd48e;
+  box-shadow: 0 0 10px #4bd48e;
+}
+
+.icon-history::before {
+  background: #ff6b35;
+  box-shadow: 0 0 10px #ff6b35;
+}
+
+.icon-coach::before {
+  background: #a855f7;
+  box-shadow: 0 0 10px #a855f7;
+}
+
+.icon-harvey::before {
+  background: #f53969;
+  box-shadow: 0 0 10px #f53969;
+}
+
+.icon-logout::before {
+  background: #ff0040;
+  box-shadow: 0 0 10px #ff0040;
+}
+
+.icon-login::before,
+.icon-signup::before {
+  background: #4b96dc;
+  box-shadow: 0 0 10px #4b96dc;
 }

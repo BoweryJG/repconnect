@@ -48,10 +48,10 @@ export const AuthCallback: React.FC = () => {
 
           if (data.session) {
             // Session set successfully
-            // Give AuthContext time to process the new session
+            // Force a full page reload to ensure AuthContext picks up the new session
             setTimeout(() => {
-              // Navigating to home page
-              navigate('/');
+              // Redirecting to home page with full reload
+              window.location.href = '/';
             }, 500);
             return;
           }
