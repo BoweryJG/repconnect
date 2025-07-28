@@ -1,0 +1,69 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Clear Auth Data</title>
+    <style>
+      body {
+        background: #000;
+        color: #fff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        font-family: Arial, sans-serif;
+      }
+      button {
+        background: #ff0000;
+        color: #fff;
+        border: none;
+        padding: 20px 40px;
+        font-size: 24px;
+        cursor: pointer;
+        border-radius: 10px;
+      }
+      button:hover {
+        background: #cc0000;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <h1>Click to Clear All Auth Data</h1>
+      <button onclick="clearAllAuth()">CLEAR EVERYTHING</button>
+      <div id="result" style="margin-top: 20px; font-size: 20px"></div>
+    </div>
+
+    <script>
+      function clearAllAuth() {
+        const result = document.getElementById('result');
+        result.innerHTML = 'Clearing...';
+
+        // Clear all localStorage
+        let cleared = [];
+        Object.keys(localStorage).forEach((key) => {
+          localStorage.removeItem(key);
+          cleared.push(key);
+        });
+
+        // Clear all sessionStorage
+        Object.keys(sessionStorage).forEach((key) => {
+          sessionStorage.removeItem(key);
+          cleared.push(key);
+        });
+
+        // Clear all cookies
+        document.cookie.split(';').forEach(function (c) {
+          document.cookie = c
+            .replace(/^ +/, '')
+            .replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/');
+        });
+
+        result.innerHTML = 'Cleared ' + cleared.length + ' items. Redirecting...';
+
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 1000);
+      }
+    </script>
+  </body>
+</html>
