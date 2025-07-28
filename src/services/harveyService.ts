@@ -71,14 +71,19 @@ class HarveyService {
 
   constructor() {
     this.baseUrl = process.env.REACT_APP_BACKEND_URL || 'https://osbackend-zl1h.onrender.com';
-    // Get user ID from session or generate a unique one
+    // Get user ID from session only - don't create guest IDs
     const getUserId = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      return session?.user?.id || localStorage.getItem('harvey_user_id') || `user-${Date.now()}`;
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      return session?.user?.id || null;
     };
     getUserId().then((id) => {
-      this.userId = id;
-      localStorage.setItem('harvey_user_id', id);
+      if (id) {
+        this.userId = id;
+        // Only set harvey_user_id if we have a real user
+        localStorage.setItem('harvey_user_id', id);
+      }
     });
   }
 
