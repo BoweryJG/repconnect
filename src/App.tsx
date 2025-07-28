@@ -1314,23 +1314,6 @@ function AppContent() {
         )}
       </AnimatePresence>
 
-      {/* Login Modal */}
-      <ErrorBoundary>
-        <Suspense fallback={null}>
-          <LoginModal
-            isOpen={showLoginModal}
-            onClose={() => setShowLoginModal(false)}
-            onSuccess={() => {
-              setShowLoginModal(false);
-              // Optionally show subscription modal for new users
-              if (profile?.subscription?.tier === 'free') {
-                setTimeout(() => setShowSubscriptionModal(true), 500);
-              }
-            }}
-          />
-        </Suspense>
-      </ErrorBoundary>
-
       {/* Subscription Modal */}
       <Suspense fallback={null}>
         <SubscriptionModal
