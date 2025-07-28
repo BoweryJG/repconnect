@@ -38,6 +38,7 @@ import { keyframes } from '@mui/material';
 import { useResponsive } from '../hooks/useResponsive';
 import { CornerScrews } from './effects/PrecisionScrew';
 import { useAuth } from '../auth/AuthContext';
+import { supabase } from '../lib/supabase';
 import { useStore } from '../store/useStore';
 import { UserAvatar } from './UserAvatar';
 import { SmartPreloader } from '../utils/dynamicImports';
