@@ -2,7 +2,6 @@ import React, { createContext, useContext, useEffect, useState, useCallback } fr
 import { supabase } from '../lib/supabase';
 import { User, Session } from '@supabase/supabase-js';
 import logger from '../utils/logger';
-import { markLogoutInProgress } from '../utils/authUtils';
 
 type AuthProviderType = 'google' | 'facebook';
 
@@ -131,52 +130,26 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // Sign out
   const signOut = useCallback(async () => {
     try {
-      logger.info('Starting sign out process...');
-
-      // Clear local state first
+      // Clear state
       setUser(null);
       setSession(null);
       setProfile(null);
 
       // Sign out from Supabase
-      const { error } = await supabase.auth.signOut();
-      if (error) {
-        logger.error('Supabase signOut error:', error);
-        throw error;
-      }
+      await supabase.auth.signOut();
 
-      logger.info('Supabase signOut successful');
+      // Clear storage
+      localStorage.clear();
+      sessionStorage.clear();
 
-      // Force clear any lingering storage
-      try {
-        // Clear specific Supabase keys
-        const keysToRemove = [];
-        for (let i = 0; i < localStorage.length; i++) {
-          const key = localStorage.key(i);
-          if (key && (key.includes('supabase') || key.includes('auth'))) {
-            keysToRemove.push(key);
-          }
-        }
-        keysToRemove.forEach((key) => localStorage.removeItem(key));
-
-        // Clear session storage
-        sessionStorage.clear();
-
-        // Set a flag to prevent session refresh
-        markLogoutInProgress();
-
-        logger.info('Cleared auth storage');
-      } catch (storageError) {
-        logger.error('Error clearing storage:', storageError);
-      }
-
-      // Small delay to ensure cleanup completes
-      await new Promise((resolve) => setTimeout(resolve, 100));
-
-      logger.info('Sign out completed successfully');
+      // Force reload
+      window.location.href = '/';
     } catch (error) {
       logger.error('Sign out error:', error);
-      throw error;
+      // Force cleanup anyway
+      localStorage.clear();
+      sessionStorage.clear();
+      window.location.href = '/';
     }
   }, []);
 

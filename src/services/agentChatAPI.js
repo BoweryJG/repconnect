@@ -2,7 +2,6 @@
 // Handles chat interactions with the agentbackend API
 
 import { supabase } from '../lib/supabase';
-import { getSafeSession } from '../utils/authUtils';
 
 // AgentChatAPI Module Loading
 
@@ -42,15 +41,16 @@ class AgentChatAPI {
 
       // console.log('Getting session from supabase...');
 
-      // Use safe session getter that respects logout state
+      // Get session with timeout
       let session = null;
       try {
         const timeoutPromise = new Promise((_, reject) =>
           setTimeout(() => reject(new Error('Session fetch timeout')), 1000)
         );
 
-        const result = await Promise.race([getSafeSession(), timeoutPromise]);
-        session = result?.session;
+        const sessionPromise = supabase.auth.getSession();
+        const result = await Promise.race([sessionPromise, timeoutPromise]);
+        session = result?.data?.session;
       } catch (sessionError) {
         // Failed to get session
         // console.log('Proceeding without authentication');

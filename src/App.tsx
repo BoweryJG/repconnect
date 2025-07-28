@@ -26,7 +26,6 @@ import { ToastProvider, useToast } from './utils/toast';
 import logger from './utils/logger';
 import { harveyWebRTC } from './services/harveyWebRTC';
 import { harveyService } from './services/harveyService';
-import { clearLogoutFlag } from './utils/authUtils';
 
 // Core components that need to load immediately
 import { SubtlePipelineBackground } from './components/effects/SubtlePipelineBackground';
@@ -160,16 +159,6 @@ function AppContent() {
     logger.debug('Grid dimensions updated:', gridDimensions);
   }, [gridDimensions]);
 
-  // Clear logout flag on app mount
-  useEffect(() => {
-    const logoutFlag = localStorage.getItem('repconnect_logout_in_progress');
-    if (logoutFlag === 'true') {
-      // Clear the flag after a short delay to ensure logout completes
-      setTimeout(() => {
-        clearLogoutFlag();
-      }, 1000);
-    }
-  }, []);
   const gridContainerRef = useRef<HTMLDivElement>(null);
   const [isDemoMode, setIsDemoMode] = useState(false);
   const [showUsageWarning, setShowUsageWarning] = useState(false);
@@ -1442,9 +1431,7 @@ function AppContent() {
         onConfirm={async () => {
           try {
             await signOut();
-            setShowRepSpheresLogoutModal(false);
-            // Force complete logout with page reload
-            window.location.href = '/';
+            // Modal will close automatically due to page reload
           } catch (error) {
             logger.error('Logout error:', error);
             // Even on error, force logout
