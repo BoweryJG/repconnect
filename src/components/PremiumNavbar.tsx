@@ -1678,6 +1678,8 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
 
           try {
             console.log('About to call signOut...');
+            console.log('signOut function:', signOut);
+            console.log('Calling signOut NOW');
             await signOut();
             console.log('signOut completed successfully');
             clearTimeout(timeoutId);
