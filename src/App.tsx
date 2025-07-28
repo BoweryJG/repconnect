@@ -1421,6 +1421,10 @@ function AppContent() {
             showError('Failed to sign in with Facebook');
           }
         }}
+        onEmailAuth={async () => {
+          // Email auth not implemented yet
+          showError('Email authentication coming soon');
+        }}
       />
 
       <LogoutModal
