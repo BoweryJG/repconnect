@@ -29,13 +29,35 @@ const AuthCallback: React.FC = () => {
 
         // Check if we have access_token in hash (Supabase OAuth response)
         const accessToken = hashParams.get('access_token');
-        if (accessToken) {
-          console.log('AuthCallback - Found access token in URL hash');
-          // Supabase should automatically handle this, but let's make sure
-          await new Promise((resolve) => setTimeout(resolve, 1000)); // Give Supabase time to process
+        const refreshToken = hashParams.get('refresh_token');
+
+        if (accessToken && refreshToken) {
+          console.log('AuthCallback - Found tokens, setting session manually');
+
+          // Force Supabase to set the session from the tokens
+          const { data, error } = await supabase.auth.setSession({
+            access_token: accessToken,
+            refresh_token: refreshToken,
+          });
+
+          if (error) {
+            console.error('Error setting session:', error);
+            setError(error.message);
+            setTimeout(() => navigate('/login'), 3000);
+            return;
+          }
+
+          if (data.session) {
+            console.log('Session set successfully:', data.session.user.email);
+            // Give auth context time to update
+            setTimeout(() => {
+              navigate('/');
+            }, 500);
+            return;
+          }
         }
 
-        // Let Supabase handle the OAuth callback
+        // Fallback to checking existing session
         const { data, error } = await supabase.auth.getSession();
 
         if (error) {
