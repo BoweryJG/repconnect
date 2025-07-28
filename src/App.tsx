@@ -243,6 +243,12 @@ function AppContent() {
 
   // Handle demo mode and authentication
   useEffect(() => {
+    // Don't interfere with auth callback
+    if (window.location.pathname === '/auth/callback') {
+      console.log('App.tsx: Skipping auth logic on /auth/callback');
+      return;
+    }
+
     if (user) {
       setIsDemoMode(false);
       // Load real contacts when authenticated

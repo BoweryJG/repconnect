@@ -31,6 +31,9 @@ export const AppRouter: React.FC = () => {
         <AdminAuthProvider>
           <Router>
             <Routes>
+              {/* Auth callback route - MUST BE FIRST to prevent interference */}
+              <Route path="/auth/callback" element={<AuthCallback />} />
+
               {/* Main app routes */}
               <Route path="/" element={<App />} />
 
@@ -73,9 +76,6 @@ export const AppRouter: React.FC = () => {
                 }
               />
               <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
-
-              {/* Auth callback route */}
-              <Route path="/auth/callback" element={<AuthCallback />} />
 
               {/* Audio test route for debugging */}
               <Route path="/test/audio" element={<AudioTestComponent />} />
