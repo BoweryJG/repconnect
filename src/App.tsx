@@ -29,7 +29,9 @@ import { harveyService } from './services/harveyService';
 
 // Core components that need to load immediately
 import { SubtlePipelineBackground } from './components/effects/SubtlePipelineBackground';
-import { PremiumNavbar } from './components/PremiumNavbar';
+import RepSpheresNavbar from './components/RepSpheresNavbar';
+import LoginModal from './components/LoginModal';
+import LogoutModal from './components/LogoutModal';
 import { CornerScrews } from './components/effects/PrecisionScrew';
 import { LoadingFallback } from './components/LoadingFallback';
 import { lazyWithPreload } from './utils/lazyWithPreload';
@@ -89,12 +91,6 @@ const CompactEnrichmentWidget = React.lazy(() =>
   )
 );
 
-const LoginModal = React.lazy(() =>
-  import(/* webpackChunkName: "auth" */ './components/auth/LoginModal').then((module) => ({
-    default: module.LoginModal,
-  }))
-);
-
 const SubscriptionModal = React.lazy(() =>
   import(/* webpackChunkName: "auth" */ './components/auth/SubscriptionModal').then((module) => ({
     default: module.SubscriptionModal,
@@ -139,7 +135,7 @@ const MissionControlDashboard = React.lazy(() =>
 
 function AppContent() {
   const { isMobile } = useResponsive();
-  const { user, profile } = useAuth();
+  const { user, profile, signOut } = useAuth();
   const { showSuccess, showError } = useToast();
 
   // Debug log
@@ -152,6 +148,8 @@ function AppContent() {
   const [showCallHistory, setShowCallHistory] = useState(false);
   const [showCoachConnect, setShowCoachConnect] = useState(false);
   const [showHarveySettings, setShowHarveySettings] = useState(false);
+  const [showRepSpheresLoginModal, setShowRepSpheresLoginModal] = useState(false);
+  const [showRepSpheresLogoutModal, setShowRepSpheresLogoutModal] = useState(false);
   const [newContactName, setNewContactName] = useState('');
   const [newContactPhone, setNewContactPhone] = useState('');
   const [viewMode, setViewMode] = useState<'rolodex' | 'grid'>('rolodex');
@@ -681,17 +679,56 @@ function AppContent() {
 
       {/* Main App */}
       <div style={{ position: 'relative', zIndex: 1 }}>
-        <PremiumNavbar
-          onDialerOpen={() => setShowDialer(true)}
-          aiEnabled={aiEnabled}
-          onAIToggle={toggleAI}
-          onSyncDashboardOpen={() => setShowSyncDashboard(true)}
-          onMissionControlOpen={() => setShowMissionControl(true)}
-          onAISettingsOpen={() => setShowAISettings(true)}
-          onPerformanceOpen={() => setShowPerformance(true)}
-          onCallHistoryOpen={() => setShowCallHistory(true)}
-          onCoachConnectOpen={() => setShowCoachConnect(true)}
-          onHarveySettingsOpen={() => setShowHarveySettings(true)}
+        <RepSpheresNavbar
+          user={user}
+          customLinks={[
+            { href: '#', label: 'Dialer', icon: 'dialer', onClick: () => setShowDialer(true) },
+            {
+              href: '#',
+              label: 'Sync Dashboard',
+              icon: 'sync',
+              onClick: () => setShowSyncDashboard(true),
+            },
+            {
+              href: '#',
+              label: 'Mission Control',
+              icon: 'control',
+              onClick: () => setShowMissionControl(true),
+            },
+            {
+              href: '#',
+              label: 'AI Settings',
+              icon: 'settings',
+              onClick: () => setShowAISettings(true),
+            },
+            {
+              href: '#',
+              label: 'Performance',
+              icon: 'chart',
+              onClick: () => setShowPerformance(true),
+            },
+            {
+              href: '#',
+              label: 'Call History',
+              icon: 'history',
+              onClick: () => setShowCallHistory(true),
+            },
+            {
+              href: '#',
+              label: 'Coach Connect',
+              icon: 'coach',
+              onClick: () => setShowCoachConnect(true),
+            },
+            {
+              href: '#',
+              label: 'Harvey Settings',
+              icon: 'harvey',
+              onClick: () => setShowHarveySettings(true),
+            },
+          ]}
+          onLogin={() => setShowRepSpheresLoginModal(true)}
+          onSignup={() => setShowRepSpheresLoginModal(true)}
+          onLogout={() => setShowRepSpheresLogoutModal(true)}
         />
 
         <div
@@ -1368,6 +1405,55 @@ function AppContent() {
       <Suspense fallback={null}>
         <ChatbotIntegration position="bottom-right" glowColor="#3B82F6" />
       </Suspense>
+
+      {/* RepSpheres Auth Modals */}
+      <LoginModal
+        isOpen={showRepSpheresLoginModal}
+        onClose={() => setShowRepSpheresLoginModal(false)}
+        onGoogleAuth={async () => {
+          try {
+            const { error } = await supabase.auth.signInWithOAuth({
+              provider: 'google',
+              options: {
+                redirectTo: `${window.location.origin}/auth/callback`,
+              },
+            });
+            if (error) throw error;
+          } catch (error) {
+            logger.error('Google auth error:', error);
+            showError('Failed to sign in with Google');
+          }
+        }}
+        onFacebookAuth={async () => {
+          try {
+            const { error } = await supabase.auth.signInWithOAuth({
+              provider: 'facebook',
+              options: {
+                redirectTo: `${window.location.origin}/auth/callback`,
+              },
+            });
+            if (error) throw error;
+          } catch (error) {
+            logger.error('Facebook auth error:', error);
+            showError('Failed to sign in with Facebook');
+          }
+        }}
+      />
+
+      <LogoutModal
+        isOpen={showRepSpheresLogoutModal}
+        onClose={() => setShowRepSpheresLogoutModal(false)}
+        onConfirm={async () => {
+          try {
+            await signOut();
+            setShowRepSpheresLogoutModal(false);
+            showSuccess('Successfully signed out');
+          } catch (error) {
+            logger.error('Logout error:', error);
+            showError('Failed to sign out');
+          }
+        }}
+      />
 
       {/* Session Warning Dialog is handled by AuthContext */}
     </div>
