@@ -34,6 +34,11 @@ export default function SimpleVoiceModal({
   const webRTCClientRef = useRef<WebRTCClient | null>(null);
   const remainingTimeInterval = useRef<NodeJS.Timeout | null>(null);
 
+  const handleTrialExpired = useCallback(() => {
+    setShowTrialExpired(true);
+    endCall();
+  }, [endCall]);
+
   useEffect(() => {
     if (isTrialSession && isCallActive) {
       remainingTimeInterval.current = setInterval(() => {
@@ -87,11 +92,6 @@ export default function SimpleVoiceModal({
     }
   }, [agentName, user, session, agentId, handleTrialExpired]);
 
-  const handleTrialExpired = () => {
-    setShowTrialExpired(true);
-    endCall();
-  };
-
   const startCall = async () => {
     try {
       if (!webRTCClientRef.current) {
@@ -105,7 +105,7 @@ export default function SimpleVoiceModal({
     }
   };
 
-  const endCall = () => {
+  const endCall = useCallback(() => {
     if (webRTCClientRef.current) {
       webRTCClientRef.current.stopAudio();
     }
@@ -114,7 +114,7 @@ export default function SimpleVoiceModal({
     }
     setIsCallActive(false);
     setConnectionStatus('idle');
-  };
+  }, [isTrialSession]);
 
   const toggleMute = () => {
     setIsMuted(!isMuted);
