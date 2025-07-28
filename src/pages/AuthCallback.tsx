@@ -11,16 +11,12 @@ export const AuthCallback: React.FC = () => {
     // Simple auth callback - let Supabase handle everything
     const handleAuthCallback = async () => {
       try {
-        console.log('AuthCallback - Starting...');
-
         // Just wait a bit for Supabase to process the URL
         await new Promise((resolve) => setTimeout(resolve, 1500));
 
         // Force redirect to home - the auth context will handle the rest
-        console.log('AuthCallback - Redirecting to home...');
         window.location.href = '/';
       } catch (err) {
-        console.error('Auth callback error:', err);
         setError('Authentication failed');
         setTimeout(() => {
           window.location.href = '/';

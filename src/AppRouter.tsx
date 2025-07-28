@@ -25,15 +25,6 @@ import AdminRoute from './components/admin/AdminRoute';
 import { AuthProvider } from './auth/AuthContext';
 
 export const AppRouter: React.FC = () => {
-  // Debug logging
-  React.useEffect(() => {
-    console.log('[ROUTER DEBUG] Initial load');
-    console.log('[ROUTER DEBUG] pathname:', window.location.pathname);
-    console.log('[ROUTER DEBUG] hash:', window.location.hash);
-    console.log('[ROUTER DEBUG] search:', window.location.search);
-    console.log('[ROUTER DEBUG] full URL:', window.location.href);
-  }, []);
-
   return (
     <ErrorBoundary>
       <AuthProvider>

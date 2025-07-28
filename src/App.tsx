@@ -243,30 +243,19 @@ function AppContent() {
 
   // Handle demo mode and authentication
   useEffect(() => {
-    console.log('[App.tsx] Auth effect running:', {
-      pathname: window.location.pathname,
-      user: !!user,
-      showLoginModal,
-    });
-
     // Don't interfere with auth callback
     if (window.location.pathname === '/auth/callback') {
-      console.log('App.tsx: Skipping auth logic on /auth/callback');
       return;
     }
 
     if (user) {
-      console.log('[App.tsx] User authenticated:', user.email);
       setIsDemoMode(false);
       // Load real contacts when authenticated
     } else {
-      console.log('[App.tsx] No user, checking demo usage...');
       // Check if user has exceeded demo usage
       if (usageTracker.hasExceededLimit() && !showLoginModal) {
-        console.log('[App.tsx] Demo usage exceeded, showing login modal');
         setShowLoginModal(true);
       } else {
-        console.log('[App.tsx] Loading demo contacts');
         // Load demo contacts
         setContacts(DEMO_CONTACTS as any);
       }
