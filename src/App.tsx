@@ -680,7 +680,7 @@ function AppContent() {
       {/* Main App */}
       <div style={{ position: 'relative', zIndex: 1 }}>
         <RepSpheresNavbar
-          user={user}
+          user={user as any}
           customLinks={[
             { href: '#', label: 'Dialer', icon: 'dialer', onClick: () => setShowDialer(true) },
             {
