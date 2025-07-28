@@ -58,7 +58,13 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
 
   const content = (
     <div
-      onClick={onClick}
+      onClick={() => {
+        console.log('UserAvatar clicked, onClick prop:', onClick);
+        if (onClick) {
+          console.log('Calling onClick handler');
+          onClick();
+        }
+      }}
       style={{
         cursor: onClick ? 'pointer' : 'default',
         display: 'flex',

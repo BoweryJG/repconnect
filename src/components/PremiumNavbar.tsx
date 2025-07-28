@@ -94,6 +94,11 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
   const { user, profile, signOut } = useAuth();
   const { setShowLoginModal, setShowSubscriptionModal, subscriptionTier } = useStore();
 
+  // Debug logout modal state
+  useEffect(() => {
+    console.log('PremiumNavbar showLogoutModal state changed:', showLogoutModal);
+  }, [showLogoutModal]);
+
   useEffect(() => {
     const handleScroll = () => {
       const offset = window.scrollY;
@@ -742,7 +747,11 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                       profile={profile}
                       size={32}
                       showInitials={true}
-                      onClick={() => setShowLogoutModal(true)}
+                      onClick={() => {
+                        console.log('UserAvatar onClick in PremiumNavbar triggered');
+                        console.log('Setting showLogoutModal to true');
+                        setShowLogoutModal(true);
+                      }}
                     />
                   </>
                 ) : (
