@@ -8,7 +8,7 @@ const RepSpheresNavbar = ({
   user = null,
   customLinks = [],
   logoHref = '/',
-  theme = 'default',
+  // theme = 'default', // Removed unused prop
 }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -52,7 +52,7 @@ const RepSpheresNavbar = ({
     }, 5000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [statusMessages.length]);
 
   useEffect(() => {
     // Prevent body scroll when mobile menu is open

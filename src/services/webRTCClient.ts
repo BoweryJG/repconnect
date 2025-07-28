@@ -60,31 +60,38 @@ export class WebRTCClient {
       this.socket!.on('connect_error', (error: any) => {
         console.error('WebRTC signaling connection error:', error);
         let detailedError = new Error('WebSocket connection failed');
-        
+
         if (error.message && error.message.includes('xhr poll error')) {
-          detailedError = new Error('Cannot connect to voice server. Please check your internet connection.');
+          detailedError = new Error(
+            'Cannot connect to voice server. Please check your internet connection.'
+          );
         } else if (error.message && error.message.includes('websocket error')) {
-          detailedError = new Error('WebSocket connection blocked. Please check firewall settings.');
+          detailedError = new Error(
+            'WebSocket connection blocked. Please check firewall settings.'
+          );
         } else if (error.type === 'TransportError') {
           detailedError = new Error('Network error. The voice server may be unavailable.');
         }
-        
+
         reject(detailedError);
       });
 
       // Add reconnection logic
       this.socket!.on('disconnect', (reason) => {
-        console.warn('WebSocket disconnected:', reason);
+        // WebSocket disconnected
         if (reason === 'io server disconnect') {
           // Server disconnected, attempt reconnection
           setTimeout(() => {
-            console.log('Attempting to reconnect...');
+            // Attempting to reconnect
             this.socket!.connect();
           }, 2000);
         }
       });
 
-      setTimeout(() => reject(new Error('Connection timeout - voice server did not respond')), 10000);
+      setTimeout(
+        () => reject(new Error('Connection timeout - voice server did not respond')),
+        10000
+      );
     });
 
     // Set up event handlers

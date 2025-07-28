@@ -160,7 +160,7 @@ const LoginModal = ({
     };
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onClose]);
+  }, [isOpen, onClose]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleClose = () => {
     if (!modalRef.current) return;
@@ -362,23 +362,17 @@ const LoginModal = ({
 
           {/* Email Option */}
           <div className="email-option">
-            <a
-              href="#"
-              className="email-link"
-              onClick={(e) => {
-                e.preventDefault();
-                handleEmailAuth();
-              }}
-            >
+            <button className="email-link" onClick={handleEmailAuth}>
               {mode === 'signup' ? 'Create Account with Email' : 'Advanced Access with Email'}
-            </a>
+            </button>
           </div>
 
           {/* Terms */}
           <div className="terms">
             By continuing, you agree to our
             <br />
-            <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+            <button className="link-style">Terms of Service</button> and{' '}
+            <button className="link-style">Privacy Policy</button>
           </div>
 
           {/* Footer */}

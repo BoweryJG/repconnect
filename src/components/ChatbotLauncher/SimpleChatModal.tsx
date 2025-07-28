@@ -1,11 +1,9 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   Dialog,
-  DialogTitle,
   DialogContent,
   IconButton,
   TextField,
-  Box,
   Typography,
   Avatar,
   CircularProgress,

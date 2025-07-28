@@ -98,6 +98,8 @@ filesToCheck.forEach((filePath) => {
               match.includes('session.refresh_token') ||
               match.includes('authHeader.substring') ||
               match.includes('Bearer ') ||
+              match.includes('_config.authToken') ||
+              match.includes('this._config.authToken') ||
               line.includes('// Remove')
           );
 

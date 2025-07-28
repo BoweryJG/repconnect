@@ -138,8 +138,7 @@ function AppContent() {
   const { user, profile, signOut } = useAuth();
   const { showSuccess, showError } = useToast();
 
-  // Debug log
-  console.log('AppContent rendered, user:', user?.email || 'not logged in');
+  // AppContent rendered
   const [showDialer, setShowDialer] = useState(false);
   const [showMissionControl, setShowMissionControl] = useState(false);
   const [showSyncDashboard, setShowSyncDashboard] = useState(false);
@@ -176,8 +175,6 @@ function AppContent() {
     setActiveCall,
     isCallInProgress,
     setCallInProgress,
-    aiEnabled,
-    toggleAI,
     showLoginModal,
     setShowLoginModal,
     showSubscriptionModal,

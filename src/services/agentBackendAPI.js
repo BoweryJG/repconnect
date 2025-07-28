@@ -54,14 +54,14 @@ class AgentBackendAPI {
 
       const headers = await this.getAuthHeaders();
 
-      console.log('Fetching agents from:', url);
+      // Fetching agents
       const response = await fetch(url, {
         method: 'GET',
         headers,
         credentials: 'include', // Include cookies for authentication
       });
 
-      console.log('Agent fetch response status:', response.status);
+      // Check response status
 
       if (!response.ok) {
         const errorText = await response.text();
@@ -79,7 +79,7 @@ class AgentBackendAPI {
         agents = data.agents;
       }
 
-      console.log('Agent fetch successful, got:', agents.length, 'agents');
+      // Agent fetch successful
 
       // Cache the response
       this.cache.set(cacheKey, {

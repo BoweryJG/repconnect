@@ -3,7 +3,7 @@ import SimpleChatbotLauncher from './SimpleChatbotLauncher';
 import { ChatModal } from './SimpleChatModal';
 import SimpleVoiceModal from './SimpleVoiceModal';
 import type { Agent } from './types';
-import api, { API_BASE_URL } from '../../config/api';
+import { API_BASE_URL } from '../../config/api';
 
 interface ChatbotIntegrationProps {
   position?: 'bottom-right' | 'bottom-left';
@@ -18,7 +18,7 @@ export const ChatbotIntegration: React.FC<ChatbotIntegrationProps> = ({
   primaryColor,
   glowColor = '#3B82F6',
 }) => {
-  console.log('ChatbotIntegration component loaded!');
+  // ChatbotIntegration component loaded
 
   // Auth not needed - chatbot is available for everyone
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
@@ -29,10 +29,10 @@ export const ChatbotIntegration: React.FC<ChatbotIntegrationProps> = ({
   useEffect(() => {
     const loadAgents = async () => {
       try {
-        console.log('Starting agent loading for public access...');
+        // Starting agent loading for public access
 
         // Direct fetch call to bypass any axios issues
-        console.log('About to call API with URL:', API_BASE_URL + '/api/repconnect/agents');
+        // Call API to load agents
         const response = await fetch(`${API_BASE_URL}/api/repconnect/agents`, {
           method: 'GET',
           headers: {
@@ -41,14 +41,14 @@ export const ChatbotIntegration: React.FC<ChatbotIntegrationProps> = ({
           credentials: 'include',
         });
 
-        console.log('Backend response status:', response.status);
+        // Check backend response
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
         const data = await response.json();
-        console.log('Backend response data:', data);
+        // Backend response received
 
         // Extract agents from response
         let backendAgents = [];
@@ -58,7 +58,7 @@ export const ChatbotIntegration: React.FC<ChatbotIntegrationProps> = ({
           backendAgents = data.agents;
         }
 
-        console.log('Found', backendAgents.length, 'agents from backend');
+        // Process agents from backend
 
         // Convert backend agents to frontend Agent format
         const convertedAgents = backendAgents.map((agent: any) => {
@@ -108,20 +108,14 @@ export const ChatbotIntegration: React.FC<ChatbotIntegrationProps> = ({
           } as Agent;
         });
 
-        console.log(
-          'Converted agents:',
-          convertedAgents.map((a: Agent) => ({ id: a.id, name: a.name }))
-        );
+        // Agents converted successfully
         setAgents(convertedAgents);
       } catch (error: any) {
-        console.error('Error loading agents:', error);
-        console.error('Error details:', error?.message || 'Unknown error');
-        console.error('Error response:', error?.response);
-        console.error('Error config:', error?.config);
+        // Error loading agents - fallback to empty array
         // Set empty agents array on error
         setAgents([]);
       } finally {
-        console.log('Agent loading completed (success or failure)');
+        // Agent loading completed
       }
     };
 
@@ -130,7 +124,7 @@ export const ChatbotIntegration: React.FC<ChatbotIntegrationProps> = ({
   }, []); // Remove dependency on user and authLoading
 
   const handleAgentSelect = useCallback((agent: Agent, mode: 'chat' | 'voice') => {
-    console.log('Agent selected:', agent.name, agent.id, 'Mode:', mode);
+    // Agent selected
     setSelectedAgent(agent);
     setActiveModal(mode);
   }, []);
@@ -161,9 +155,7 @@ export const ChatbotIntegration: React.FC<ChatbotIntegrationProps> = ({
 
   // Always show the launcher, even when loading
   // This ensures the launcher doesn't disappear when auth state changes
-  console.log('ChatbotIntegration rendering, agents count:', agents.length);
-  console.log('Current activeModal state:', activeModal);
-  console.log('Selected agent:', selectedAgent?.name);
+  // Render ChatbotIntegration
 
   return (
     <>

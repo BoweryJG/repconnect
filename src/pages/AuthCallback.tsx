@@ -11,8 +11,7 @@ export const AuthCallback: React.FC = () => {
     // Handle auth callback
     const handleAuthCallback = async () => {
       try {
-        console.log('AuthCallback - Processing OAuth callback...');
-        console.log('URL:', window.location.href);
+        // Processing OAuth callback
 
         // Get the auth code from URL
         const hashParams = new URLSearchParams(window.location.hash.substring(1));
@@ -32,7 +31,7 @@ export const AuthCallback: React.FC = () => {
         const refreshToken = hashParams.get('refresh_token');
 
         if (accessToken && refreshToken) {
-          console.log('AuthCallback - Found tokens in URL hash, setting session manually');
+          // Found tokens in URL hash, setting session manually
 
           // Manually set the session with the tokens from the URL
           const { data, error: setSessionError } = await supabase.auth.setSession({
@@ -41,17 +40,17 @@ export const AuthCallback: React.FC = () => {
           });
 
           if (setSessionError) {
-            console.error('Error setting session:', setSessionError);
+            // Error setting session
             setError(setSessionError.message);
             setTimeout(() => navigate('/login'), 3000);
             return;
           }
 
           if (data.session) {
-            console.log('Session set successfully, user:', data.session.user.email);
+            // Session set successfully
             // Give AuthContext time to process the new session
             setTimeout(() => {
-              console.log('Navigating to home page...');
+              // Navigating to home page
               navigate('/');
             }, 500);
             return;
@@ -62,31 +61,31 @@ export const AuthCallback: React.FC = () => {
         const { data, error } = await supabase.auth.getSession();
 
         if (error) {
-          console.error('Auth callback error:', error);
+          // Auth callback error
           setError(error.message);
           setTimeout(() => navigate('/login'), 3000);
         } else if (data.session) {
           // Successfully authenticated
-          console.log('Auth successful, user:', data.session.user.email);
+          // Auth successful
           navigate('/');
         } else {
-          console.log('No session found, checking again...');
+          // No session found, checking again
           // No session after callback, wait a bit and check again
           setTimeout(async () => {
             const {
               data: { session },
             } = await supabase.auth.getSession();
             if (session) {
-              console.log('Session found on retry, user:', session.user.email);
+              // Session found on retry
               navigate('/');
             } else {
-              console.log('Still no session, redirecting to login');
+              // Still no session, redirecting to login
               navigate('/login');
             }
           }, 2000);
         }
       } catch (err) {
-        console.error('Auth callback exception:', err);
+        // Auth callback exception
         setError('An unexpected error occurred');
         setTimeout(() => navigate('/login'), 3000);
       }

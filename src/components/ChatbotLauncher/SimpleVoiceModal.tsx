@@ -50,7 +50,7 @@ export default function SimpleVoiceModal({
         clearInterval(remainingTimeInterval.current);
       }
     };
-  }, [isTrialSession, isCallActive]);
+  }, [isTrialSession, isCallActive, handleTrialExpired]);
 
   const initializeWebRTC = useCallback(async () => {
     try {
@@ -85,7 +85,7 @@ export default function SimpleVoiceModal({
       console.error('Failed to initialize WebRTC:', error);
       setConnectionStatus('error');
     }
-  }, [agentName, user, session, agentId]);
+  }, [agentName, user, session, agentId, handleTrialExpired]);
 
   const handleTrialExpired = () => {
     setShowTrialExpired(true);
@@ -134,7 +134,7 @@ export default function SimpleVoiceModal({
         webRTCClientRef.current.disconnect();
       }
     };
-  }, []);
+  }, [endCall, isCallActive]);
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
