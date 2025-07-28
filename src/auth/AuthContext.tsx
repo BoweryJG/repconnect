@@ -129,9 +129,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   // Sign out
   const signOut = useCallback(async () => {
+    console.log('AuthContext signOut called');
     try {
       // First sign out from Supabase
+      console.log('Calling supabase.auth.signOut()...');
       const { error } = await supabase.auth.signOut();
+      console.log('Supabase signOut result:', { error });
       if (error) throw error;
 
       // Then clear backend cookies
@@ -160,8 +163,22 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setUser(null);
       setSession(null);
       setProfile(null);
+
+      // Also clear any localStorage items that might be persisting
+      console.log('Clearing localStorage items...');
+      localStorage.removeItem('supabase.auth.token');
+      localStorage.removeItem('supabase.auth.expires_at');
+      localStorage.removeItem('supabase.auth.refresh_token');
+      // Clear all supabase-related items
+      Object.keys(localStorage).forEach((key) => {
+        if (key.includes('supabase')) {
+          console.log('Removing localStorage key:', key);
+          localStorage.removeItem(key);
+        }
+      });
     } catch (error) {
       logger.error('Sign out error:', error);
+      console.error('Full sign out error:', error);
       throw error;
     }
   }, []);
