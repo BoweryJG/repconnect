@@ -41,17 +41,7 @@ export const AppRouter: React.FC = () => {
           <Router>
             <Routes>
               {/* Auth callback route - MUST BE FIRST to prevent interference */}
-              <Route
-                path="/auth/callback"
-                element={
-                  <div style={{ padding: '50px', background: 'red', color: 'white' }}>
-                    <h1>AUTH CALLBACK ROUTE HIT!</h1>
-                    <p>Path: {window.location.pathname}</p>
-                    <p>Hash: {window.location.hash}</p>
-                    <AuthCallback />
-                  </div>
-                }
-              />
+              <Route path="/auth/callback" element={<AuthCallback />} />
 
               {/* Main app routes */}
               <Route path="/" element={<App />} />
@@ -99,19 +89,8 @@ export const AppRouter: React.FC = () => {
               {/* Audio test route for debugging */}
               <Route path="/test/audio" element={<AudioTestComponent />} />
 
-              {/* Catch all route to debug */}
-              <Route
-                path="*"
-                element={
-                  <div style={{ padding: '50px', background: 'yellow', color: 'black' }}>
-                    <h1>CATCH ALL ROUTE - NO MATCH FOUND</h1>
-                    <p>Requested path: {window.location.pathname}</p>
-                    <p>Hash: {window.location.hash}</p>
-                    <p>Full URL: {window.location.href}</p>
-                    <p>If you see this on /auth/callback, the route is NOT matching!</p>
-                  </div>
-                }
-              />
+              {/* Catch all route */}
+              <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </Router>
         </AdminAuthProvider>

@@ -156,11 +156,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // Initialize auth state
   useEffect(() => {
     const initializeAuth = async () => {
+      console.log('[AuthContext] Initializing auth...');
       try {
         // Only check Supabase session - no cookie checks
         const {
           data: { session: currentSession },
         } = await supabase.auth.getSession();
+
+        console.log('[AuthContext] Session check:', {
+          hasSession: !!currentSession,
+          user: currentSession?.user?.email,
+        });
 
         if (currentSession?.user) {
           setSession(currentSession);
@@ -170,8 +176,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           if (userProfile) {
             setProfile(userProfile);
           }
+          console.log('[AuthContext] Auth initialized with user:', currentSession.user.email);
+        } else {
+          console.log('[AuthContext] No session found');
         }
       } catch (error) {
+        console.error('[AuthContext] Error initializing auth:', error);
         logger.error('Error initializing auth:', error);
       } finally {
         setLoading(false);
