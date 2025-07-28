@@ -1,39 +1,23 @@
-import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
+import React, { createContext, useState, useEffect, useCallback } from 'react';
 import { supabase } from '../lib/supabase';
-import { User, Session } from '@supabase/supabase-js';
-import logger from '../utils/logger';
+import type { User, Session } from '@supabase/supabase-js';
 
-type AuthProviderType = 'google' | 'facebook';
-
-interface UserProfile {
-  id: string;
-  user_id: string;
-  full_name?: string;
-  avatar_url?: string;
-  subscription?: {
-    tier: string;
-    status: string;
-    expires_at?: string;
-  };
-  stripe_customer_id?: string;
-  created_at: string;
-  updated_at: string;
-}
-
-interface AuthContextType {
+interface AuthState {
   user: User | null;
   session: Session | null;
-  profile: UserProfile | null;
   loading: boolean;
-  signInWithProvider: (_provider: AuthProviderType) => Promise<void>;
-  signOut: () => Promise<void>;
-  refreshProfile: () => Promise<void>;
+  error: Error | null;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+interface AuthContextType extends AuthState {
+  signInWithProvider: (provider: 'google' | 'facebook') => Promise<void>;
+  signOut: () => Promise<void>;
+}
+
+export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const useAuth = () => {
-  const context = useContext(AuthContext);
+  const context = React.useContext(AuthContext);
   if (!context) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
@@ -45,221 +29,217 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [session, setSession] = useState<Session | null>(null);
-  const [profile, setProfile] = useState<UserProfile | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  // Fetch user profile from database
-  const fetchProfile = useCallback(async (userId: string) => {
-    try {
-      const { data, error } = await supabase
-        .from('user_profiles')
-        .select('*')
-        .eq('user_id', userId)
-        .single();
-
-      if (error) {
-        logger.error('Error fetching profile:', error);
-        return null;
-      }
-
-      return data as UserProfile;
-    } catch (error) {
-      logger.error('Error in fetchProfile:', error);
-      return null;
-    }
-  }, []);
-
-  // Create or update user profile
-  const createOrUpdateProfile = useCallback(
-    async (user: User) => {
-      try {
-        const existingProfile = await fetchProfile(user.id);
-
-        if (!existingProfile) {
-          // Create new profile
-          const { data, error } = await supabase
-            .from('user_profiles')
-            .insert({
-              user_id: user.id,
-              full_name: user.user_metadata?.full_name || user.email?.split('@')[0],
-              avatar_url: user.user_metadata?.avatar_url,
-              subscription: {
-                tier: 'free',
-                status: 'active',
-              },
-            })
-            .select()
-            .single();
-
-          if (error) {
-            logger.error('Error creating profile:', error);
-            return null;
-          }
-
-          return data as UserProfile;
-        } else {
-          // Update existing profile
-          const { data, error } = await supabase
-            .from('user_profiles')
-            .update({
-              full_name: user.user_metadata?.full_name || existingProfile.full_name,
-              avatar_url: user.user_metadata?.avatar_url || existingProfile.avatar_url,
-              updated_at: new Date().toISOString(),
-            })
-            .eq('user_id', user.id)
-            .select()
-            .single();
-
-          if (error) {
-            logger.error('Error updating profile:', error);
-            return existingProfile;
-          }
-
-          return data as UserProfile;
-        }
-      } catch (error) {
-        logger.error('Error in createOrUpdateProfile:', error);
-        return null;
-      }
-    },
-    [fetchProfile]
-  );
-
-  // Sign out
-  const signOut = useCallback(async () => {
-    console.log('=== SIGN OUT CALLED ===');
-    try {
-      // Clear state
-      console.log('Clearing state...');
-      setUser(null);
-      setSession(null);
-      setProfile(null);
-
-      // Sign out from Supabase
-      console.log('Calling supabase.auth.signOut()...');
-      const { error } = await supabase.auth.signOut();
-      if (error) {
-        console.error('Supabase signOut error:', error);
-      } else {
-        console.log('Supabase signOut successful');
-      }
-
-      // Clear storage
-      console.log('Clearing storage...');
-      localStorage.clear();
-      sessionStorage.clear();
-
-      // Force reload
-      console.log('Redirecting to home...');
-      window.location.href = '/';
-    } catch (error) {
-      console.error('Sign out error:', error);
-      logger.error('Sign out error:', error);
-      // Force cleanup anyway
-      console.log('Force cleanup after error...');
-      localStorage.clear();
-      sessionStorage.clear();
-      window.location.href = '/';
-    }
-  }, []);
+  const [state, setState] = useState<AuthState>({
+    user: null,
+    session: null,
+    loading: true,
+    error: null,
+  });
 
   // Initialize auth state
   useEffect(() => {
+    let mounted = true;
+
     const initializeAuth = async () => {
       try {
-        // Only check Supabase session - no cookie checks
-        const {
-          data: { session: currentSession },
-        } = await supabase.auth.getSession();
+        console.log('AuthContext - Initializing auth...');
 
-        console.log('Initial session check:', currentSession);
+        // Check for OAuth tokens in URL first
+        if (window.location.hash && window.location.hash.includes('access_token')) {
+          console.log('AuthContext - OAuth tokens detected in URL, processing...');
+          // Give Supabase time to process the tokens
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+        }
 
-        if (currentSession?.user) {
-          console.log('Found existing session for:', currentSession.user.email);
-          setSession(currentSession);
-          setUser(currentSession.user);
+        // Add timeout to prevent hanging
+        const authTimeout = new Promise((_, reject) => {
+          setTimeout(() => reject(new Error('Auth initialization timeout')), 1500);
+        });
 
-          const userProfile = await createOrUpdateProfile(currentSession.user);
-          if (userProfile) {
-            setProfile(userProfile);
+        // First, check if we have an invalid refresh token
+        const existingToken =
+          localStorage.getItem('sb-cbopynuvhcymbumjnvay-auth-token') ||
+          localStorage.getItem('repspheres-auth') ||
+          localStorage.getItem('supabase.auth.token');
+
+        if (existingToken) {
+          try {
+            const parsed = JSON.parse(existingToken);
+            // If token is expired or invalid, clear it
+            if (parsed.expires_at && new Date(parsed.expires_at * 1000) < new Date()) {
+              localStorage.removeItem('repspheres-auth');
+              localStorage.removeItem('supabase.auth.token');
+              localStorage.removeItem('sb-cbopynuvhcymbumjnvay-auth-token');
+            }
+          } catch {
+            // Invalid JSON, clear it
+            localStorage.removeItem('repspheres-auth');
+            localStorage.removeItem('supabase.auth.token');
+            localStorage.removeItem('sb-cbopynuvhcymbumjnvay-auth-token');
           }
         }
+
+        const result = await Promise.race([supabase.auth.getSession(), authTimeout]).catch(
+          (timeoutError) => ({
+            data: { session: null },
+            error: timeoutError,
+          })
+        );
+
+        const {
+          data: { session },
+          error,
+        } = result as { data: { session: Session | null }; error: Error | null };
+
+        // If we get a refresh token error, clear auth and continue as public
+        if (error && error.message?.includes('Refresh Token')) {
+          console.log('Invalid refresh token, clearing auth data');
+          await supabase.auth.signOut();
+
+          if (mounted) {
+            setState({
+              user: null,
+              session: null,
+              loading: false,
+              error: null,
+            });
+          }
+          return;
+        }
+
+        if (error) throw error;
+
+        if (mounted) {
+          const user = session?.user || null;
+
+          setState({
+            user: user,
+            session: session,
+            loading: false,
+            error: null,
+          });
+        }
       } catch (error) {
-        logger.error('Error initializing auth:', error);
-      } finally {
-        setLoading(false);
+        console.error('Auth initialization error:', error);
+        if (mounted) {
+          // Don't treat auth errors as fatal - allow public access
+          setState({
+            user: null,
+            session: null,
+            loading: false,
+            error: null, // Set to null to allow public access
+          });
+        }
       }
     };
 
     initializeAuth();
 
+    // Force loading to false after 1 second to prevent infinite loading
+    const loadingTimeout = setTimeout(() => {
+      if (mounted) {
+        console.log('[AuthContext] Forcing loading to false after timeout');
+        setState((prev) => ({
+          ...prev,
+          loading: false,
+          error: null,
+        }));
+      }
+    }, 1000);
+
     // Listen for auth changes
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_event: any, session: any) => {
-      console.log('Auth state change:', _event, session);
-      // Just update state with whatever session we get, like Canvas does
-      if (session?.user) {
-        console.log('Setting user from auth change:', session.user.email);
-        setSession(session);
-        setUser(session.user);
+    } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      if (mounted) {
+        const user = session?.user || null;
 
-        const userProfile = await createOrUpdateProfile(session.user);
-        if (userProfile) {
-          setProfile(userProfile);
-        }
+        setState((prev) => ({
+          ...prev,
+          user: user,
+          session: session,
+          loading: false,
+          error: null,
+        }));
       }
     });
 
     return () => {
+      mounted = false;
       subscription.unsubscribe();
+      clearTimeout(loadingTimeout);
     };
-  }, [createOrUpdateProfile, fetchProfile]);
+  }, []);
 
-  // Sign in with OAuth provider
-  const signInWithProvider = useCallback(async (provider: AuthProviderType) => {
+  const signInWithProvider = useCallback(async (provider: 'google' | 'facebook') => {
+    console.log(`AuthContext - signInWithProvider called with provider: ${provider}`);
+    setState((prev) => ({ ...prev, loading: true, error: null }));
+
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider,
+      // Use local domain for OAuth redirect
+      const redirectUrl = `${window.location.origin}/auth/callback`;
+      console.log(`AuthContext - using redirect URL: ${redirectUrl}`);
+
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: provider,
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
-          queryParams: {
-            access_type: 'offline',
-            prompt: 'consent',
-          },
+          redirectTo: redirectUrl,
         },
       });
 
+      console.log('AuthContext - OAuth response:', { data, error });
+
       if (error) {
+        console.error('AuthContext - OAuth error:', error);
         throw error;
       }
+
+      // OAuth should redirect browser to provider
+      console.log('AuthContext - OAuth initiated, browser should redirect');
     } catch (error) {
-      logger.error('Sign in error:', error);
+      console.error('AuthContext - signInWithProvider error:', error);
+      setState((prev) => ({
+        ...prev,
+        loading: false,
+        error: error instanceof Error ? error : new Error('Unknown error'),
+      }));
       throw error;
     }
   }, []);
 
-  // Refresh profile data
-  const refreshProfile = useCallback(async () => {
-    if (!user) return;
+  const signOut = useCallback(async () => {
+    setState((prev) => ({ ...prev, loading: true, error: null }));
 
-    const userProfile = await fetchProfile(user.id);
-    if (userProfile) {
-      setProfile(userProfile);
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+
+      setState({
+        user: null,
+        session: null,
+        loading: false,
+        error: null,
+      });
+    } catch (error) {
+      setState((prev) => ({
+        ...prev,
+        loading: false,
+        error: error instanceof Error ? error : new Error('Unknown error'),
+      }));
+      throw error;
     }
-  }, [user, fetchProfile]);
+  }, []);
 
   const value: AuthContextType = {
-    user,
-    session,
-    profile,
-    loading,
+    ...state,
     signInWithProvider,
     signOut,
-    refreshProfile,
   };
+
+  console.log('[AuthProvider] Rendering with state:', {
+    loading: state.loading,
+    user: state.user?.email,
+  });
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

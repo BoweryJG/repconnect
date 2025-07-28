@@ -2,24 +2,8 @@ import React from 'react';
 import { Avatar, Typography, Tooltip } from '@mui/material';
 import { User } from '@supabase/supabase-js';
 
-interface UserProfile {
-  id: string;
-  user_id: string;
-  full_name?: string;
-  avatar_url?: string;
-  subscription?: {
-    tier: string;
-    status: string;
-    expires_at?: string;
-  };
-  stripe_customer_id?: string;
-  created_at: string;
-  updated_at: string;
-}
-
 interface UserAvatarProps {
   user: User;
-  profile?: UserProfile | null;
   size?: number;
   showInitials?: boolean;
   onClick?: () => void;
@@ -27,22 +11,19 @@ interface UserAvatarProps {
 
 export const UserAvatar: React.FC<UserAvatarProps> = ({
   user,
-  profile,
   size = 32,
   showInitials = true,
   onClick,
 }) => {
   // Get user display name
   const displayName =
-    profile?.full_name ||
     user.user_metadata?.full_name ||
     user.user_metadata?.name ||
     user.email?.split('@')[0] ||
     'User';
 
   // Get avatar URL from various sources
-  const avatarUrl =
-    profile?.avatar_url || user.user_metadata?.avatar_url || user.user_metadata?.picture;
+  const avatarUrl = user.user_metadata?.avatar_url || user.user_metadata?.picture;
 
   // Generate initials from display name
   const getInitials = (name: string): string => {

@@ -135,7 +135,7 @@ const MissionControlDashboard = React.lazy(() =>
 
 function AppContent() {
   const { isMobile } = useResponsive();
-  const { user, profile, signOut } = useAuth();
+  const { user, signOut } = useAuth();
   const { showSuccess, showError } = useToast();
 
   // AppContent rendered
@@ -234,12 +234,13 @@ function AppContent() {
     loadContacts();
   }, [loadContacts]);
 
-  // Update subscription tier when profile changes
+  // Update subscription tier when user changes
   useEffect(() => {
-    if (profile?.subscription?.tier) {
-      setSubscriptionTier(profile.subscription.tier);
+    // Default to free tier for authenticated users
+    if (user) {
+      setSubscriptionTier('free');
     }
-  }, [profile, setSubscriptionTier]);
+  }, [user, setSubscriptionTier]);
 
   // Handle demo mode and authentication
   useEffect(() => {

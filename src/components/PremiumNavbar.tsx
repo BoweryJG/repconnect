@@ -92,7 +92,7 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
     shift: '0, 255, 255',
     deep: '255, 0, 170',
   });
-  const { user, profile, signOut } = useAuth();
+  const { user, signOut } = useAuth();
   const { setShowLoginModal, setShowSubscriptionModal, subscriptionTier } = useStore();
 
   // Debug logout modal state
@@ -780,7 +780,7 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                       SIGN OUT
                     </Button>
                     {/* User Avatar */}
-                    <UserAvatar user={user} profile={profile} size={32} showInitials={true} />
+                    <UserAvatar user={user} size={32} showInitials={true} />
                   </>
                 ) : (
                   <Button
@@ -1639,7 +1639,7 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                   <ListItemIcon>
                     <LogoutIcon />
                   </ListItemIcon>
-                  <ListItemText primary="Sign Out" secondary={profile?.full_name || user.email} />
+                  <ListItemText primary="Sign Out" secondary={user.email} />
                 </ListItemButton>
               </>
             ) : (
