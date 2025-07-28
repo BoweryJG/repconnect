@@ -24,6 +24,15 @@ import AgentEditor from './components/admin/AgentEditor';
 import AdminRoute from './components/admin/AdminRoute';
 
 export const AppRouter: React.FC = () => {
+  // Debug logging
+  React.useEffect(() => {
+    console.log('[ROUTER DEBUG] Initial load');
+    console.log('[ROUTER DEBUG] pathname:', window.location.pathname);
+    console.log('[ROUTER DEBUG] hash:', window.location.hash);
+    console.log('[ROUTER DEBUG] search:', window.location.search);
+    console.log('[ROUTER DEBUG] full URL:', window.location.href);
+  }, []);
+
   return (
     <ErrorBoundary>
       <ThemeProvider theme={premiumTheme}>
@@ -32,7 +41,17 @@ export const AppRouter: React.FC = () => {
           <Router>
             <Routes>
               {/* Auth callback route - MUST BE FIRST to prevent interference */}
-              <Route path="/auth/callback" element={<AuthCallback />} />
+              <Route
+                path="/auth/callback"
+                element={
+                  <div style={{ padding: '50px', background: 'red', color: 'white' }}>
+                    <h1>AUTH CALLBACK ROUTE HIT!</h1>
+                    <p>Path: {window.location.pathname}</p>
+                    <p>Hash: {window.location.hash}</p>
+                    <AuthCallback />
+                  </div>
+                }
+              />
 
               {/* Main app routes */}
               <Route path="/" element={<App />} />
@@ -80,8 +99,19 @@ export const AppRouter: React.FC = () => {
               {/* Audio test route for debugging */}
               <Route path="/test/audio" element={<AudioTestComponent />} />
 
-              {/* Redirect any unknown routes to home */}
-              <Route path="*" element={<Navigate to="/" replace />} />
+              {/* Catch all route to debug */}
+              <Route
+                path="*"
+                element={
+                  <div style={{ padding: '50px', background: 'yellow', color: 'black' }}>
+                    <h1>CATCH ALL ROUTE - NO MATCH FOUND</h1>
+                    <p>Requested path: {window.location.pathname}</p>
+                    <p>Hash: {window.location.hash}</p>
+                    <p>Full URL: {window.location.href}</p>
+                    <p>If you see this on /auth/callback, the route is NOT matching!</p>
+                  </div>
+                }
+              />
             </Routes>
           </Router>
         </AdminAuthProvider>
