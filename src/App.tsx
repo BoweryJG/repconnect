@@ -30,7 +30,7 @@ import { harveyService } from './services/harveyService';
 // Core components that need to load immediately
 import { SubtlePipelineBackground } from './components/effects/SubtlePipelineBackground';
 import RepSpheresNavbar from './components/RepSpheresNavbar';
-import LoginModal from './components/LoginModal';
+import { LoginModal } from './components/auth/LoginModal';
 import LogoutModal from './components/LogoutModal';
 import { CornerScrews } from './components/effects/PrecisionScrew';
 import { LoadingFallback } from './components/LoadingFallback';
@@ -1396,34 +1396,6 @@ function AppContent() {
       <LoginModal
         isOpen={showRepSpheresLoginModal}
         onClose={() => setShowRepSpheresLoginModal(false)}
-        onGoogleAuth={async () => {
-          try {
-            const { error } = await supabase.auth.signInWithOAuth({
-              provider: 'google',
-              options: {
-                redirectTo: `${window.location.origin}/auth/callback`,
-              },
-            });
-            if (error) throw error;
-          } catch (error) {
-            logger.error('Google auth error:', error);
-            showError('Failed to sign in with Google');
-          }
-        }}
-        onFacebookAuth={async () => {
-          try {
-            const { error } = await supabase.auth.signInWithOAuth({
-              provider: 'facebook',
-              options: {
-                redirectTo: `${window.location.origin}/auth/callback`,
-              },
-            });
-            if (error) throw error;
-          } catch (error) {
-            logger.error('Facebook auth error:', error);
-            showError('Failed to sign in with Facebook');
-          }
-        }}
         onEmailAuth={async () => {
           // Email auth not implemented yet
           showError('Email authentication coming soon');
