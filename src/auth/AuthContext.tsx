@@ -198,16 +198,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     // Listen for auth changes
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event: any, session: any) => {
-      console.log('Auth state change:', event, session);
-      if (event === 'SIGNED_OUT') {
-        // Handle sign out
-        setUser(null);
-        setSession(null);
-        setProfile(null);
-      } else if (session?.user) {
+    } = supabase.auth.onAuthStateChange(async (_event: any, session: any) => {
+      console.log('Auth state change:', _event, session);
+      // Just update state with whatever session we get, like Canvas does
+      if (session?.user) {
         console.log('Setting user from auth change:', session.user.email);
-        // Simply use Supabase session like Canvas does
         setSession(session);
         setUser(session.user);
 
