@@ -23,7 +23,7 @@ const AuthCallback: React.FC = () => {
           searchParams.get('error_description') || hashParams.get('error_description');
         if (errorDesc) {
           setError(decodeURIComponent(errorDesc));
-          setTimeout(() => navigate('/login'), 3000);
+          setTimeout(() => navigate('/'), 3000);
           return;
         }
 
@@ -43,7 +43,7 @@ const AuthCallback: React.FC = () => {
           if (error) {
             console.error('Error setting session:', error);
             setError(error.message);
-            setTimeout(() => navigate('/login'), 3000);
+            setTimeout(() => navigate('/'), 3000);
             return;
           }
 
@@ -63,11 +63,14 @@ const AuthCallback: React.FC = () => {
         if (error) {
           console.error('Auth callback error:', error);
           setError(error.message);
-          setTimeout(() => navigate('/login'), 3000);
+          setTimeout(() => navigate('/'), 3000);
         } else if (data.session) {
           // Successfully authenticated
           console.log('Auth successful, user:', data.session.user.email);
-          navigate('/');
+          // Give AuthContext time to process the session
+          setTimeout(() => {
+            navigate('/');
+          }, 1000);
         } else {
           console.log('No session found, checking again...');
           // No session after callback, wait a bit and check again
@@ -79,15 +82,15 @@ const AuthCallback: React.FC = () => {
               console.log('Session found on retry, user:', session.user.email);
               navigate('/');
             } else {
-              console.log('Still no session, redirecting to login');
-              navigate('/login');
+              console.log('Still no session, redirecting to home');
+              navigate('/');
             }
           }, 2000);
         }
       } catch (err) {
         console.error('Auth callback exception:', err);
         setError('An unexpected error occurred');
-        setTimeout(() => navigate('/login'), 3000);
+        setTimeout(() => navigate('/'), 3000);
       }
     };
 
@@ -116,7 +119,7 @@ const AuthCallback: React.FC = () => {
             {error}
           </Typography>
           <Typography sx={{ opacity: 0.7, textAlign: 'center', fontSize: '14px' }}>
-            Redirecting to login...
+            Redirecting to home...
           </Typography>
         </>
       ) : (

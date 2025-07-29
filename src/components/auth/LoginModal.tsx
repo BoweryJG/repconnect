@@ -333,10 +333,54 @@ export const LoginModal: React.FC<LoginModalProps> = ({
             </h1>
             <p className="logo-subtitle">
               {mode === 'signup'
-                ? 'Create Your RepSpheres Account'
+                ? 'Start Your Journey to Sales Excellence'
                 : 'RepSpheres Authentication Portal'}
             </p>
           </div>
+
+          {/* Value Proposition for Signup */}
+          {mode === 'signup' && (
+            <div
+              className="value-props"
+              style={{
+                marginBottom: '20px',
+                padding: '15px',
+                background: 'rgba(59, 130, 246, 0.1)',
+                borderRadius: '8px',
+                border: '1px solid rgba(59, 130, 246, 0.2)',
+              }}
+            >
+              <h3
+                style={{
+                  fontSize: '14px',
+                  marginBottom: '10px',
+                  color: '#60A5FA',
+                  textAlign: 'center',
+                }}
+              >
+                🚀 Unlock Your Full Sales Potential
+              </h3>
+              <ul
+                style={{
+                  listStyle: 'none',
+                  padding: '0',
+                  margin: '0',
+                  fontSize: '12px',
+                  color: '#E5E7EB',
+                }}
+              >
+                <li style={{ marginBottom: '5px' }}>
+                  ✓ Unlimited AI voice coaching with 19 expert agents
+                </li>
+                <li style={{ marginBottom: '5px' }}>✓ Save & track all your conversations</li>
+                <li style={{ marginBottom: '5px' }}>✓ Build your personal AI sales team</li>
+                <li style={{ marginBottom: '5px' }}>
+                  ✓ Access Harvey Specter's elite closing techniques
+                </li>
+                <li>✓ Real-time performance analytics & gamification</li>
+              </ul>
+            </div>
+          )}
 
           {/* Social Auth Section */}
           <div className="auth-section">

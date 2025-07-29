@@ -22,6 +22,7 @@ import { useResponsive } from './hooks/useResponsive';
 import { useAuth } from './auth/AuthContext';
 import { DEMO_CONTACTS } from './lib/demoData';
 import { usageTracker } from './lib/usageTracking';
+import { voiceTimeTracker } from './lib/voiceTimeTracking';
 import { ToastProvider, useToast } from './utils/toast';
 import logger from './utils/logger';
 import { harveyWebRTC } from './services/harveyWebRTC';
@@ -153,20 +154,31 @@ function AppContent() {
   const [newContactPhone, setNewContactPhone] = useState('');
   const [viewMode, setViewMode] = useState<'rolodex' | 'grid'>('rolodex');
   const [gridDimensions, setGridDimensions] = useState({ width: 1200, height: 600 });
+  const gridContainerRef = useRef<HTMLDivElement>(null);
+  const [isGuestMode, setIsGuestMode] = useState(false);
+  const [showVoiceTimeWarning, setShowVoiceTimeWarning] = useState(false);
+  const [harveyLoading, setHarveyLoading] = useState(false);
+
+  // Debug auth state
+  useEffect(() => {
+    console.log('[App] Auth state changed:', {
+      user: user?.email,
+      userId: user?.id,
+      isAuthenticated: !!user,
+      isGuestMode,
+      voiceTimeRemaining: voiceTimeTracker.getFormattedTimeRemaining(),
+    });
+  }, [user, isGuestMode]);
+
+  const [harveyConnectionStatus, setHarveyConnectionStatus] = useState<
+    'connecting' | 'connected' | 'failed' | 'reconnecting'
+  >('connecting');
+  const [harveyError, setHarveyError] = useState<string | undefined>();
 
   // Debug grid dimensions
   useEffect(() => {
     logger.debug('Grid dimensions updated:', gridDimensions);
   }, [gridDimensions]);
-
-  const gridContainerRef = useRef<HTMLDivElement>(null);
-  const [isDemoMode, setIsDemoMode] = useState(false);
-  const [showUsageWarning, setShowUsageWarning] = useState(false);
-  const [harveyLoading, setHarveyLoading] = useState(false);
-  const [harveyConnectionStatus, setHarveyConnectionStatus] = useState<
-    'connecting' | 'connected' | 'failed' | 'reconnecting'
-  >('connecting');
-  const [harveyError, setHarveyError] = useState<string | undefined>();
 
   const {
     contacts,
@@ -250,16 +262,13 @@ function AppContent() {
     }
 
     if (user) {
-      setIsDemoMode(false);
+      setIsGuestMode(false);
       // Load real contacts when authenticated
     } else {
-      // Check if user has exceeded demo usage
-      if (usageTracker.hasExceededLimit() && !showLoginModal) {
-        setShowLoginModal(true);
-      } else {
-        // Load demo contacts
-        setContacts(DEMO_CONTACTS as any);
-      }
+      // Set as guest mode
+      setIsGuestMode(true);
+      // Load demo contacts
+      setContacts(DEMO_CONTACTS as any);
     }
   }, [user, showLoginModal, setShowLoginModal, setContacts]);
 
@@ -287,6 +296,31 @@ function AppContent() {
     };
   }, []);
 
+  // Listen for voice time exceeded event
+  useEffect(() => {
+    const handleVoiceTimeExceeded = () => {
+      showError(
+        '🎙️ Voice trial ended! Sign in to continue your coaching journey with unlimited calls from 19 AI sales experts.'
+      );
+      setShowLoginModal(true);
+      // Force end any active calls
+      if (isCallInProgress) {
+        setCallInProgress(false);
+        setActiveCall(null);
+        setHarveyLoading(false);
+        setHarveyConnectionStatus('connecting');
+        setHarveyError(undefined);
+        harveyWebRTC.disconnect();
+        voiceTimeTracker.endSession();
+      }
+    };
+
+    window.addEventListener('voice-time-exceeded', handleVoiceTimeExceeded);
+    return () => {
+      window.removeEventListener('voice-time-exceeded', handleVoiceTimeExceeded);
+    };
+  }, [isCallInProgress, showError, setShowLoginModal, setCallInProgress, setActiveCall]);
+
   // Setup resize observer for grid dimensions
   useEffect(() => {
     if (!gridContainerRef.current) return;
@@ -305,27 +339,27 @@ function AppContent() {
     };
   }, [viewMode]);
 
-  const checkUsageAndProceed = (
-    action: keyof ReturnType<typeof usageTracker.getUsageStats>['features']
-  ) => {
+  const checkVoiceTimeAndProceed = () => {
     if (!user) {
-      const shouldBlock = usageTracker.trackAction(action);
-      if (shouldBlock) {
+      if (!voiceTimeTracker.hasTimeRemaining()) {
         setShowLoginModal(true);
         return false;
       }
 
-      const remaining = usageTracker.getRemainingActions();
-      if (remaining <= 3 && remaining > 0) {
-        setShowUsageWarning(true);
-        setTimeout(() => setShowUsageWarning(false), 5000);
+      const remainingSeconds = voiceTimeTracker.getRemainingSeconds();
+      if (remainingSeconds <= 60 && remainingSeconds > 0) {
+        showError(
+          `⏰ Only ${voiceTimeTracker.getFormattedTimeRemaining()} left! Sign in now to continue your coaching session uninterrupted.`
+        );
+        setShowVoiceTimeWarning(true);
+        setTimeout(() => setShowVoiceTimeWarning(false), 10000);
       }
     }
     return true;
   };
 
   const handleMakeCall = async (contact: any) => {
-    if (!checkUsageAndProceed('callsInitiated')) return;
+    if (!checkVoiceTimeAndProceed()) return;
 
     // Initialize Harvey first
     setHarveyLoading(true);
@@ -392,6 +426,11 @@ function AppContent() {
     try {
       await twilioService.makeCall(formattedNumber);
 
+      // Start voice time tracking for guest users
+      if (!user) {
+        voiceTimeTracker.startSession(contact.name || 'Unknown');
+      }
+
       // Log to Supabase
       await supabase.from('calls').insert({
         contact_id: contact.id,
@@ -423,7 +462,7 @@ function AppContent() {
   };
 
   const handleDialNumber = async (phoneNumber: string) => {
-    if (!checkUsageAndProceed('dialerOpened')) return;
+    if (!checkVoiceTimeAndProceed()) return;
     logger.debug('🔍 [APP DEBUG] Starting dial process for:', phoneNumber);
 
     // Initialize Harvey first
@@ -501,6 +540,11 @@ function AppContent() {
 
       logger.info('✅ [APP DEBUG] Call initiated successfully:', result);
 
+      // Start voice time tracking for guest users
+      if (!user) {
+        voiceTimeTracker.startSession(formattedNumber);
+      }
+
       // Update activeCall with the call SID for transcription
       if (result.call && result.call.sid) {
         setActiveCall({
@@ -546,41 +590,49 @@ function AppContent() {
     }
   };
 
-  const handleEndCall = async (callDuration?: number) => {
-    // Submit call performance to Harvey for analysis
-    if (activeCall && activeCall.callSid) {
-      const duration = callDuration || activeCall.duration || 0;
+  const handleEndCall = useCallback(
+    async (callDuration?: number) => {
+      // Submit call performance to Harvey for analysis
+      if (activeCall && activeCall.callSid) {
+        const duration = callDuration || activeCall.duration || 0;
 
-      // Get call recording for Harvey's analysis
-      try {
-        const recordings = await twilioService.getCallRecordings(activeCall.callSid);
-        if (recordings && recordings.length > 0) {
-          // Send recording URL to Harvey for deep analysis
-          harveyWebRTC.sendVoiceCommand(`analyze-recording: ${recordings[0].url}`);
+        // Get call recording for Harvey's analysis
+        try {
+          const recordings = await twilioService.getCallRecordings(activeCall.callSid);
+          if (recordings && recordings.length > 0) {
+            // Send recording URL to Harvey for deep analysis
+            harveyWebRTC.sendVoiceCommand(`analyze-recording: ${recordings[0].url}`);
+          }
+        } catch (error) {
+          logger.error('Failed to get call recording:', error);
         }
-      } catch (error) {
-        logger.error('Failed to get call recording:', error);
+
+        await harveyService.submitCallPerformance({
+          callId: activeCall.callSid,
+          duration: duration,
+          outcome: 'follow-up', // This should be determined based on actual call outcome
+          voiceMetrics: {
+            // These would come from harveyWebRTC voice analysis
+            confidence: 75,
+            pace: 'normal',
+          },
+        });
       }
 
-      await harveyService.submitCallPerformance({
-        callId: activeCall.callSid,
-        duration: duration,
-        outcome: 'follow-up', // This should be determined based on actual call outcome
-        voiceMetrics: {
-          // These would come from harveyWebRTC voice analysis
-          confidence: 75,
-          pace: 'normal',
-        },
-      });
-    }
+      setCallInProgress(false);
+      setActiveCall(null);
+      setHarveyLoading(false);
+      setHarveyConnectionStatus('connecting');
+      setHarveyError(undefined);
+      harveyWebRTC.disconnect();
 
-    setCallInProgress(false);
-    setActiveCall(null);
-    setHarveyLoading(false);
-    setHarveyConnectionStatus('connecting');
-    setHarveyError(undefined);
-    harveyWebRTC.disconnect();
-  };
+      // End voice time tracking for guest users
+      if (!user) {
+        voiceTimeTracker.endSession();
+      }
+    },
+    [activeCall, user]
+  );
 
   const handleAddContact = async () => {
     if (newContactName && newContactPhone) {
@@ -632,8 +684,8 @@ function AppContent() {
       {/* Subtle Pipeline Background */}
       <SubtlePipelineBackground />
 
-      {/* Usage Warning Banner */}
-      {showUsageWarning && !user && (
+      {/* Voice Time Warning Banner */}
+      {showVoiceTimeWarning && !user && (
         <motion.div
           initial={{ y: -100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
@@ -651,14 +703,14 @@ function AppContent() {
           }}
         >
           <Typography variant="body2" className="white-text-600">
-            ⚡ {usageTracker.getRemainingActions()} free actions remaining. Sign in to unlock
-            unlimited access!
+            ⚡ Only {voiceTimeTracker.getFormattedTimeRemaining()} voice time left! Sign in to
+            unlock unlimited AI coaching calls & save your progress 🚀
           </Typography>
         </motion.div>
       )}
 
-      {/* Demo Mode Banner */}
-      {isDemoMode && !showUsageWarning && (
+      {/* Guest Mode Banner */}
+      {isGuestMode && !showVoiceTimeWarning && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -675,8 +727,9 @@ function AppContent() {
           }}
         >
           <Typography variant="body2" className="white-text-500">
-            🎯 Demo Mode - Explore RepConnect with sample data. {usageTracker.getRemainingActions()}{' '}
-            actions remaining.
+            🎯 Guest Mode | Unlimited chat + {voiceTimeTracker.getFormattedTimeRemaining()} voice
+            time | Sign in to unlock: ✓ Save conversations ✓ Build your AI sales team ✓ Track
+            progress ✓ Unlimited voice coaching
           </Typography>
         </motion.div>
       )}
@@ -739,7 +792,7 @@ function AppContent() {
           style={{
             padding: isMobile ? '8px' : '12px',
             paddingTop:
-              isDemoMode || showUsageWarning
+              isGuestMode || showVoiceTimeWarning
                 ? isMobile
                   ? '120px'
                   : '140px'
@@ -1110,6 +1163,21 @@ function AppContent() {
                     margin: '0 auto',
                   }}
                 >
+                  {user && (
+                    <div
+                      style={{
+                        background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
+                        color: 'white',
+                        padding: '12px 24px',
+                        borderRadius: '12px',
+                        marginBottom: '32px',
+                        fontSize: '16px',
+                        fontWeight: 600,
+                      }}
+                    >
+                      ✓ Welcome back, {user.email?.split('@')[0]}! You're signed in.
+                    </div>
+                  )}
                   <div
                     style={{
                       width: '120px',
@@ -1131,10 +1199,12 @@ function AppContent() {
                     className="gradient-text"
                     style={{ fontWeight: 700 }}
                   >
-                    No contacts yet
+                    {user ? 'Ready to get started!' : 'No contacts yet'}
                   </Typography>
                   <Typography variant="body1" className="text-secondary-mb4">
-                    Add your first contact to get started with Pipeline Ultra
+                    {user
+                      ? 'Add contacts above or click the chat icon in the bottom right to talk with AI agents'
+                      : 'Add your first contact to get started with Pipeline Ultra'}
                   </Typography>
                   <Button
                     variant="contained"
@@ -1390,7 +1460,10 @@ function AppContent() {
 
       {/* Luxury Chatbot Launcher */}
       <Suspense fallback={null}>
-        <ChatbotIntegration position="bottom-right" glowColor="#3B82F6" />
+        <ChatbotIntegration
+          position="bottom-right"
+          glowColor={user && contacts.length === 0 ? '#10B981' : '#3B82F6'}
+        />
       </Suspense>
 
       {/* RepSpheres Auth Modals */}

@@ -58,13 +58,15 @@ src/
 
 ### Supabase Configuration
 
-Updated `src/lib/supabase.js` to use the bowerycreativeagency project:
-- URL: `https://fiozmyoedptukpkzuhqm.supabase.co`
+Updated `src/lib/supabase.js` to use:
+
+- URL: `https://cbopynuvhcymbumjnvay.supabase.co`
 - Includes auto-refresh and session persistence
 
 ### API Integration
 
 The `agentBackendAPI.js` service has been updated to:
+
 - Include Supabase JWT tokens in all requests
 - Add `X-Supabase-Auth` header for backend verification
 - Maintain session authentication across API calls
@@ -119,7 +121,7 @@ The `agentBackendAPI.js` service has been updated to:
 Ensure these are set in your `.env` file:
 
 ```env
-REACT_APP_SUPABASE_URL=https://fiozmyoedptukpkzuhqm.supabase.co
+REACT_APP_SUPABASE_URL=https://cbopynuvhcymbumjnvay.supabase.co
 REACT_APP_SUPABASE_ANON_KEY=your_anon_key_here
 REACT_APP_AGENT_BACKEND_URL=https://agentbackend-2932.onrender.com
 ```
@@ -127,16 +129,19 @@ REACT_APP_AGENT_BACKEND_URL=https://agentbackend-2932.onrender.com
 ## Troubleshooting
 
 ### Login Issues
+
 - Verify your email is in the admin whitelist
 - Check Supabase credentials in environment variables
 - Ensure cookies are enabled for session persistence
 
 ### API Connection Issues
+
 - Verify agentbackend URL is correct
 - Check browser console for CORS errors
 - Ensure JWT token is being included in requests
 
 ### Agent Management Issues
+
 - Refresh the page to clear cache
 - Check network tab for API errors
 - Verify agent data format matches backend schema
@@ -161,6 +166,7 @@ REACT_APP_AGENT_BACKEND_URL=https://agentbackend-2932.onrender.com
 ## Support
 
 For issues or questions:
+
 - Check browser console for errors
 - Verify all environment variables
 - Contact admin team for access issues

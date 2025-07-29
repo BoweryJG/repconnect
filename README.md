@@ -24,23 +24,24 @@
 
 ## 🎯 Overview
 
-RepConnect1 is the ultimate AI-powered sales CRM that revolutionizes how sales professionals manage contacts, make calls, and close deals. Featuring the groundbreaking **Harvey Syndicate** - an AI performance coach inspired by Harvey Specter that transforms sales teams into elite closers.
+RepConnect is the ultimate AI-powered sales CRM that revolutionizes how sales professionals manage contacts, make calls, and close deals. Featuring the groundbreaking **Harvey Syndicate** - an AI performance coach inspired by Harvey Specter that transforms sales teams into elite closers.
 
 ### 🌟 Core Applications
 
-| Application | Purpose | URL |
-|-------------|---------|-----|
-| **Main CRM** | Contact management & pipeline | `/` |
-| **Harvey Syndicate** | AI performance coaching & metrics | `/harvey` |
-| **Harvey War Room** | Live call monitoring & battle mode | `/harvey/warroom` |
-| **Lead Enrichment** | AI-powered lead intelligence | `/enrich` |
+| Application          | Purpose                            | URL               |
+| -------------------- | ---------------------------------- | ----------------- |
+| **Main CRM**         | Contact management & pipeline      | `/`               |
+| **Harvey Syndicate** | AI performance coaching & metrics  | `/harvey`         |
+| **Harvey War Room**  | Live call monitoring & battle mode | `/harvey/warroom` |
+| **Lead Enrichment**  | AI-powered lead intelligence       | `/enrich`         |
 
 ---
 
 ## ✨ Revolutionary Features
 
 ### 🎭 Harvey Syndicate - AI Performance Theater
-> *"I don't have dreams. I have goals."* - Harvey Specter
+
+> _"I don't have dreams. I have goals."_ - Harvey Specter
 
 - **🏆 Performance Metrics** - Real-time reputation points, closing rates, and status tracking
 - **📊 Elite Leaderboard** - Compete with top performers in your organization
@@ -51,6 +52,7 @@ RepConnect1 is the ultimate AI-powered sales CRM that revolutionizes how sales p
 - **📞 Harvey Pre-Call Whisper** - Personal pep talks before every call (only you hear them)
 
 ### ⚔️ Harvey War Room - Live Performance Monitoring
+
 - **🎯 Real-Time Call Visualization** - 3D sphere representation of active calls
 - **📈 Live Performance Metrics** - Team stats, confidence levels, sentiment analysis
 - **🥊 Battle Mode** - Head-to-head call competitions between reps
@@ -59,6 +61,7 @@ RepConnect1 is the ultimate AI-powered sales CRM that revolutionizes how sales p
 - **🔴 Live Spectating** - Team members can watch and learn from top performers
 
 ### 🧠 AI-Powered Intelligence
+
 - **🤖 Harvey AI Coach** - Personalized coaching based on your performance
 - **📞 Smart Call Sync** - Natural language call queue creation
 - **🎙️ Voice Commands** - Control the app with voice-activated commands
@@ -66,6 +69,7 @@ RepConnect1 is the ultimate AI-powered sales CRM that revolutionizes how sales p
 - **📊 Predictive Analytics** - AI-driven insights for better conversion rates
 
 ### 📞 Advanced Communication
+
 - **☎️ Twilio Integration** - Direct calling with auto-dial and retry logic
 - **👥 Multi-Rep Support** - Each sales rep gets their own number and Harvey coach
 - **🎧 WebRTC Voice** - Real-time audio streaming and analysis
@@ -74,6 +78,7 @@ RepConnect1 is the ultimate AI-powered sales CRM that revolutionizes how sales p
 - **🔄 Auto-Retry Logic** - Intelligent call retry with exponential backoff
 
 ### 💎 Premium User Experience
+
 - **🌟 Glassmorphic Design** - Cutting-edge UI with depth and transparency
 - **⚡ Performance Optimized** - Adaptive rendering based on device capabilities
 - **📱 Fully Responsive** - Seamless experience across all devices
@@ -85,6 +90,7 @@ RepConnect1 is the ultimate AI-powered sales CRM that revolutionizes how sales p
 ## 🛠️ Technology Stack
 
 ### Frontend
+
 - **React 18** - Latest React with concurrent features
 - **TypeScript** - Type-safe development
 - **Material-UI v5** - Modern component library
@@ -94,6 +100,7 @@ RepConnect1 is the ultimate AI-powered sales CRM that revolutionizes how sales p
 - **React Router v6** - Client-side routing
 
 ### Backend & Services
+
 - **Supabase** - PostgreSQL database with real-time subscriptions
 - **Twilio Voice API** - Voice calling infrastructure with Harvey whisper
 - **WebRTC** - Real-time communication
@@ -103,12 +110,14 @@ RepConnect1 is the ultimate AI-powered sales CRM that revolutionizes how sales p
 - **Render** - Backend hosting at `https://osbackend-zl1h.onrender.com`
 
 ### AI & ML
+
 - **Natural Language Processing** - Query parsing and intent recognition
 - **Voice Analysis** - Real-time speech pattern analysis
 - **Sentiment Analysis** - Emotional intelligence in conversations
 - **Predictive Scoring** - Lead quality assessment
 
 ### Deployment & Infrastructure
+
 - **Netlify** - Frontend hosting with edge functions
 - **Render** - Backend API hosting
 - **GitHub Actions** - CI/CD pipeline
@@ -172,6 +181,7 @@ PORT=3000
    - Navigate to SQL Editor
 
 2. **Run Database Migrations**
+
    ```sql
    -- Basic contacts table
    CREATE TABLE contacts (
@@ -186,7 +196,7 @@ PORT=3000
 
    -- Enable RLS
    ALTER TABLE contacts ENABLE ROW LEVEL SECURITY;
-   
+
    -- Basic policy for authenticated users
    CREATE POLICY "Users can manage their own contacts" ON contacts
      FOR ALL USING (auth.uid() IS NOT NULL);
@@ -205,24 +215,28 @@ Visit [http://localhost:3000](http://localhost:3000)
 ## 🎯 Application Guide
 
 ### 🏠 Main CRM Dashboard (`/`)
+
 - **Contact Management** - Add, edit, and organize your contacts
 - **Digital Rolodex** - Premium contact browsing experience
 - **Quick Actions** - Fast contact creation and lead enrichment
 - **Performance Optimized** - Adaptive rendering for smooth performance
 
 ### 🎭 Harvey Syndicate (`/harvey`)
+
 - **Performance Dashboard** - Your reputation points, streak, and status
 - **Daily Verdict** - Harvey's assessment of your performance
 - **Leaderboard** - See how you rank against other closers
 - **Challenge Harvey** - Enter the War Room for live competitions
 
 ### ⚔️ Harvey War Room (`/harvey/warroom`)
+
 - **Live Call Monitoring** - Real-time visualization of active calls
 - **Team Performance** - Aggregate stats and metrics
 - **Battle Mode** - Head-to-head call competitions
 - **Spectator Mode** - Watch and learn from top performers
 
 ### 🔬 Lead Enrichment (`/enrich`)
+
 - **AI-Powered Intelligence** - Enhance contact data with AI
 - **Contact Scoring** - Quality assessment and prioritization
 - **Batch Processing** - Enrich multiple contacts simultaneously
@@ -233,20 +247,23 @@ Visit [http://localhost:3000](http://localhost:3000)
 ## 🎮 Harvey Syndicate Features
 
 ### 🏆 Status Progression
-| Status | Requirements | Benefits |
-|--------|-------------|----------|
-| **Rookie** | Starting level | Basic features, training wheels |
-| **Closer** | 50+ calls, 60% close rate | Standard Harvey features |
-| **Partner** | 200+ calls, 75% close rate | Elite features, battle mode |
-| **Legend** | 500+ calls, 85% close rate | All features, mentor privileges |
+
+| Status      | Requirements               | Benefits                        |
+| ----------- | -------------------------- | ------------------------------- |
+| **Rookie**  | Starting level             | Basic features, training wheels |
+| **Closer**  | 50+ calls, 60% close rate  | Standard Harvey features        |
+| **Partner** | 200+ calls, 75% close rate | Elite features, battle mode     |
+| **Legend**  | 500+ calls, 85% close rate | All features, mentor privileges |
 
 ### 📊 Metrics Tracking
+
 - **Reputation Points** - Earn points for successful calls and achievements
 - **Current Streak** - Track consecutive successful outcomes
 - **Closing Rate** - Percentage of successful call outcomes
 - **Daily Verdicts** - Performance reviews with actionable feedback
 
 ### 🎯 Battle Mode Features
+
 - **Real-Time Competitions** - Live head-to-head call battles
 - **Confidence Scoring** - AI-powered confidence level analysis
 - **Voice Metrics** - Pace, tone, volume, and sentiment tracking
@@ -299,6 +316,7 @@ repconnect/
    - Set publish directory: `build`
 
 2. **Environment Variables**
+
    ```
    REACT_APP_SUPABASE_URL=your_supabase_url
    REACT_APP_SUPABASE_ANON_KEY=your_supabase_key
@@ -312,6 +330,7 @@ repconnect/
 ### Backend Deployment (Render)
 
 The backend is already deployed at `https://osbackend-zl1h.onrender.com` with:
+
 - ✅ CORS configured for `https://repconnect.netlify.app`
 - ✅ Harvey AI endpoints
 - ✅ WebRTC signaling server
@@ -322,7 +341,9 @@ The backend is already deployed at `https://osbackend-zl1h.onrender.com` with:
 ## 🔧 Configuration
 
 ### Harvey AI Settings
+
 Configure Harvey's behavior in the Harvey Control Panel:
+
 - **Coaching Intensity** - Off, Gentle, Normal, Aggressive, Brutal
 - **Daily Verdicts** - Enable/disable performance reviews
 - **Real-Time Coaching** - In-call whisper coaching
@@ -330,13 +351,16 @@ Configure Harvey's behavior in the Harvey Control Panel:
 - **Public Shaming** - Public failure announcements (use cautiously!)
 
 ### Performance Optimization
+
 Adjust performance settings for different devices:
+
 - **Quality Presets** - Auto, High, Medium, Low
 - **Particle Effects** - Adaptive based on device capabilities
 - **Frame Rate Targets** - 60fps for desktop, 30fps for mobile
 - **Thermal Management** - Automatic quality reduction on mobile
 
 ### Voice & Communication
+
 - **Microphone Access** - Required for voice commands and call monitoring
 - **Speaker Output** - For Harvey's voice responses
 - **WebRTC Configuration** - Real-time audio streaming
@@ -356,18 +380,19 @@ Adjust performance settings for different devices:
      '+18454090692': {
        name: 'Jason',
        forwardTo: '+12015231306',
-       harveyStyle: 'quick'
+       harveyStyle: 'quick',
      },
      '+18454090693': {
        name: 'Sarah',
        forwardTo: '+19175551234',
-       harveyStyle: 'motivational'
-     }
+       harveyStyle: 'motivational',
+     },
    };
    ```
 4. **Deploy** - Each rep gets personalized Harvey coaching
 
 ### Harvey Styles by Rep Personality
+
 - **quick** - "Sarah. Sales mode on. Let's go!"
 - **aggressive** - "Time to dominate! Close hard!"
 - **motivational** - "You've got this! Show them why!"
@@ -387,7 +412,7 @@ const metrics = await harveyService.getMetrics();
 const verdict = await harveyService.getDailyVerdict();
 
 // Submit voice command
-const response = await harveyService.submitVoiceCommand("Start battle mode");
+const response = await harveyService.submitVoiceCommand('Start battle mode');
 
 // Update coaching mode
 await harveyService.updateCoachingMode('aggressive');
@@ -413,7 +438,7 @@ await callQueueService.recordOutcome(callId, 'success');
 await harveyWebRTC.connect({
   userId: 'user123',
   onConnectionChange: (connected) => console.log('Connected:', connected),
-  onAudioReceived: (audio) => playAudio(audio)
+  onAudioReceived: (audio) => playAudio(audio),
 });
 
 // Start listening
@@ -428,6 +453,7 @@ await harveyWebRTC.sendText('How am I performing today?');
 ## 🎨 UI Components
 
 ### Custom Components
+
 - **QuantumDialer** - Futuristic dialing interface with glass morphism
 - **CallInterface** - In-call experience with real-time metrics
 - **HarveyControlPanel** - Harvey configuration and interaction
@@ -435,6 +461,7 @@ await harveyWebRTC.sendText('How am I performing today?');
 - **SubtlePipelineBackground** - Animated background effects
 
 ### Design System
+
 - **Colors** - Purple/pink gradient palette with gold accents
 - **Typography** - Orbitron for headers, system fonts for body
 - **Spacing** - 8px base unit with golden ratio scaling
@@ -448,30 +475,37 @@ await harveyWebRTC.sendText('How am I performing today?');
 ### Common Issues
 
 **1. Harvey Services Not Connecting**
+
 ```
 Error: Failed to connect to Harvey
 ```
+
 - Check if backend is running at `https://osbackend-zl1h.onrender.com`
 - Verify CORS is configured for your domain
 - Check browser console for detailed error messages
 
 **2. Voice Features Not Working**
+
 ```
 Error: Microphone access denied
 ```
+
 - Grant microphone permissions in browser
 - Check if HTTPS is enabled (required for WebRTC)
 - Verify WebSocket connection to backend
 
 **3. Calls Not Connecting**
+
 ```
 Error: Twilio call failed
 ```
+
 - Verify Twilio credentials in backend
 - Check phone number format (+1XXXXXXXXXX)
 - Ensure Twilio account has sufficient funds
 
 **4. Performance Issues**
+
 - Enable performance optimization in settings
 - Reduce particle effects for slower devices
 - Clear browser cache and reload
@@ -479,11 +513,13 @@ Error: Twilio call failed
 ### Debug Mode
 
 Enable debug mode by adding to localStorage:
+
 ```javascript
 localStorage.setItem('debug', 'true');
 ```
 
 Or add to URL:
+
 ```
 https://repconnect.netlify.app?debug=true
 ```
@@ -493,6 +529,7 @@ https://repconnect.netlify.app?debug=true
 ## 🚀 Recent Updates
 
 ### Harvey Pre-Call Whisper (NEW!)
+
 - **Personal Motivation** - Harvey gives you a quick pep talk before each call
 - **Customer Privacy** - Only you hear Harvey, customers hear professional greeting
 - **Customizable Messages** - Different styles: aggressive, motivational, quick
@@ -500,6 +537,7 @@ https://repconnect.netlify.app?debug=true
 - **2-3 Second Delay** - Quick messages like "Jason. Sales mode on. Let's go!"
 
 ### Multi-Rep Support (NEW!)
+
 - **Individual Twilio Numbers** - Each rep gets their own phone number
 - **Personalized Harvey** - Custom messages and styles per rep
 - **Automatic Routing** - Calls route to the right rep automatically
@@ -507,6 +545,7 @@ https://repconnect.netlify.app?debug=true
 - **Cost Effective** - Only $1/month per rep + usage
 
 ### Backend Migration
+
 - **Moved to Render** - All API endpoints now on `osbackend-zl1h.onrender.com`
 - **OpenAI GPT-4** - Enhanced call summaries with highest quality AI
 - **Improved Performance** - Direct backend calls, no serverless cold starts
@@ -514,12 +553,14 @@ https://repconnect.netlify.app?debug=true
 ## 🔒 Security
 
 ### Data Protection
+
 - **Supabase RLS** - Row-level security for data isolation
 - **HTTPS Only** - All communications encrypted
 - **CORS Configured** - Restricted origin access
 - **No Credentials Stored** - Client-side tokens only
 
 ### Privacy
+
 - **Minimal Data Collection** - Only essential contact information
 - **Call Recording Consent** - Clear notification before recording
 - **User Consent** - Microphone access requires explicit permission
@@ -532,11 +573,13 @@ https://repconnect.netlify.app?debug=true
 ### Development Workflow
 
 1. **Fork the Repository**
+
    ```bash
    git fork https://github.com/BoweryJG/repconnect.git
    ```
 
 2. **Create Feature Branch**
+
    ```bash
    git checkout -b feature/harvey-enhancement
    ```
@@ -548,6 +591,7 @@ https://repconnect.netlify.app?debug=true
    - Accessibility compliance (WCAG 2.1)
 
 4. **Commit Guidelines**
+
    ```bash
    git commit -m "Add Harvey battle mode voice commands
 
@@ -566,6 +610,7 @@ https://repconnect.netlify.app?debug=true
    - Update documentation if needed
 
 ### Code Standards
+
 - **React Hooks** - Functional components preferred
 - **TypeScript** - Strict mode enabled
 - **Performance** - Optimize for 60fps animations
@@ -576,12 +621,14 @@ https://repconnect.netlify.app?debug=true
 ## 📊 Analytics & Monitoring
 
 ### Performance Metrics
+
 - **Core Web Vitals** - LCP, FID, CLS tracking
 - **Call Success Rate** - Twilio integration metrics
 - **User Engagement** - Harvey feature adoption
 - **Error Monitoring** - Real-time error tracking
 
 ### Harvey Analytics
+
 - **Performance Trends** - Historical metrics tracking
 - **Feature Usage** - Battle mode engagement
 - **Voice Command Success** - Recognition accuracy
@@ -592,24 +639,28 @@ https://repconnect.netlify.app?debug=true
 ## 🌟 Roadmap
 
 ### Phase 1: Core Enhancements ✅
+
 - [x] Harvey Syndicate implementation
-- [x] Real-time War Room monitoring  
+- [x] Real-time War Room monitoring
 - [x] Voice command integration
 - [x] Lead enrichment system
 
 ### Phase 2: Advanced AI (Q2 2025)
+
 - [ ] Machine learning call outcome prediction
 - [ ] Advanced sentiment analysis
 - [ ] Automated coaching recommendations
 - [ ] Competitive intelligence features
 
 ### Phase 3: Enterprise Features (Q3 2025)
+
 - [ ] Multi-tenant organization support
 - [ ] Advanced reporting dashboard
 - [ ] Integration marketplace
 - [ ] White-label customization
 
 ### Phase 4: Mobile App (Q4 2025)
+
 - [ ] React Native mobile application
 - [ ] Offline capability
 - [ ] Push notifications
@@ -620,16 +671,19 @@ https://repconnect.netlify.app?debug=true
 ## 📞 Support & Contact
 
 ### Technical Support
+
 - **GitHub Issues** - [Report bugs and feature requests](https://github.com/BoweryJG/repconnect/issues)
 - **Documentation** - This README and inline code comments
 - **Email Support** - support@repconnect.ai
 
 ### Community
+
 - **Discord** - Join our community server
 - **LinkedIn** - Follow for updates and tips
 - **YouTube** - Video tutorials and demos
 
 ### Professional Services
+
 - **Custom Implementation** - Tailored deployment for enterprises
 - **Training & Onboarding** - Team training programs
 - **Integration Development** - Custom integrations and features
@@ -641,6 +695,7 @@ https://repconnect.netlify.app?debug=true
 This project is proprietary software. All rights reserved.
 
 ### Usage Rights
+
 - ✅ Internal business use
 - ✅ Development and testing
 - ❌ Redistribution or resale
@@ -651,6 +706,7 @@ This project is proprietary software. All rights reserved.
 ## 🙏 Acknowledgments
 
 ### Technology Partners
+
 - **[Supabase](https://supabase.com)** - Database and authentication
 - **[Twilio](https://www.twilio.com)** - Voice communications
 - **[Netlify](https://www.netlify.com)** - Frontend hosting
@@ -658,11 +714,13 @@ This project is proprietary software. All rights reserved.
 - **[Material-UI](https://mui.com)** - Component library
 
 ### Inspiration
+
 - **Harvey Specter** - The legendary closer from Suits
 - **Modern Sales Teams** - Feedback from real sales professionals
 - **AI Innovation** - Cutting-edge voice and language technologies
 
 ### Development Tools
+
 - **[React](https://reactjs.org)** - UI framework
 - **[TypeScript](https://www.typescriptlang.org)** - Type safety
 - **[Framer Motion](https://www.framer.com/motion)** - Animations
@@ -677,7 +735,7 @@ This project is proprietary software. All rights reserved.
 
 **[Start Your Journey](https://repconnect.netlify.app) | [Enter the Syndicate](https://repconnect.netlify.app/harvey) | [Join the War Room](https://repconnect.netlify.app/harvey/warroom)**
 
-*"Success is not just about what you accomplish in your life, it's about what you inspire others to do."*
+_"Success is not just about what you accomplish in your life, it's about what you inspire others to do."_
 
 **Made with ❤️ for sales professionals who demand excellence**
 

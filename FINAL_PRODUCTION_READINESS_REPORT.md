@@ -71,7 +71,7 @@ Publish directory: build
 
 # Required Environment Variables
 REACT_APP_BACKEND_URL=https://osbackend-zl1h.onrender.com
-REACT_APP_SUPABASE_URL=https://fiozmyoedptukpkzuhqm.supabase.co
+REACT_APP_SUPABASE_URL=https://cbopynuvhcymbumjnvay.supabase.co
 REACT_APP_SUPABASE_ANON_KEY=[your_supabase_anon_key]
 REACT_APP_ELEVENLABS_API_KEY=[your_elevenlabs_api_key]
 ```
@@ -86,7 +86,7 @@ Start command: node server.js
 # Environment Variables
 NODE_ENV=production
 PORT=3001
-SUPABASE_URL=https://fiozmyoedptukpkzuhqm.supabase.co
+SUPABASE_URL=https://cbopynuvhcymbumjnvay.supabase.co
 SUPABASE_SERVICE_KEY=[your_supabase_service_key]
 OPENAI_API_KEY=[your_openai_api_key]
 SENTRY_DSN=[your_sentry_dsn]
@@ -99,7 +99,7 @@ SENTRY_DSN=[your_sentry_dsn]
 - **Backend API**: https://osbackend-zl1h.onrender.com
 - **Health Check**: https://osbackend-zl1h.onrender.com/health
 - **Harvey API**: https://osbackend-zl1h.onrender.com/api/harvey/
-- **Supabase**: https://fiozmyoedptukpkzuhqm.supabase.co
+- **Supabase**: https://cbopynuvhcymbumjnvay.supabase.co
 
 ### Health Check Results
 

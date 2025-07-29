@@ -1,22 +1,25 @@
 # Supabase Authentication Implementation Summary
 
 ## Overview
+
 RepConnect has been updated to use Supabase authentication for all API calls to agentbackend. This ensures secure access to agent services and protects the API endpoints.
 
 ## Changes Made
 
 ### 1. Supabase Configuration (`src/lib/supabase.ts`)
-- Added default URL for bowerycreativeagency Supabase project
-- URL: `https://fiozmyoedptukpkzuhqm.supabase.co`
+
+- URL: `https://cbopynuvhcymbumjnvay.supabase.co`
 - Requires `REACT_APP_SUPABASE_ANON_KEY` environment variable
 
 ### 2. Agent Backend API Service (`src/services/agentBackendAPI.js`)
+
 - Added `getAuthHeaders()` method to retrieve JWT tokens from Supabase session
 - Updated `fetchAgents()` to include Authorization header
 - Updated `getAgent()` to include Authorization header
 - All API calls now include `Authorization: Bearer <token>` header
 
 ### 3. Agent Chat API Service (`src/services/agentChatAPI.js`)
+
 - Added `getAuthHeaders()` method for JWT token retrieval
 - Updated `sendMessage()` to include auth headers
 - Updated `streamMessage()` to include auth headers
@@ -24,18 +27,21 @@ RepConnect has been updated to use Supabase authentication for all API calls to 
 - Chat interactions are now authenticated
 
 ### 4. WebRTC Client (`src/services/webRTCClient.ts`)
+
 - Added Supabase import for auth session retrieval
 - Updated `WebRTCConfig` interface to include optional `authToken`
 - Modified `connect()` method to retrieve and include auth token in Socket.IO connection
 - WebRTC signaling now includes authentication
 
 ### 5. Voice Modal Component (`src/components/ChatbotLauncher/VoiceModalWebRTC.tsx`)
+
 - Added `useAuth` hook import
 - Updated to use authenticated user ID instead of generic timestamp
 - Passes auth token to WebRTCClient for secure voice connections
 - Voice calls now use the actual user's identity
 
 ### 6. Documentation
+
 - Created `SUPABASE_AUTH_SETUP.md` with detailed authentication setup instructions
 - Updated `REQUIRED_ENV_VARS.md` to include new Supabase variables
 - Created `.env.example` with required configuration
@@ -51,7 +57,7 @@ RepConnect has been updated to use Supabase authentication for all API calls to 
 
 ```bash
 # Supabase Configuration
-REACT_APP_SUPABASE_URL=https://fiozmyoedptukpkzuhqm.supabase.co
+REACT_APP_SUPABASE_URL=https://cbopynuvhcymbumjnvay.supabase.co
 REACT_APP_SUPABASE_ANON_KEY=<your_anon_key>
 
 # Agent Backend

@@ -1,9 +1,21 @@
 import { createClient } from '@supabase/supabase-js';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
+// IMPORTANT: RepConnect uses the "Sphere1a" Supabase project
+// Project ID: cbopynuvhcymbumjnvay
+// DO NOT use "Bowery Creative" project (fiozmyoedptukpkzuhqm)
+
 // Get environment variables with fallbacks for development
 let supabaseUrl = process.env.REACT_APP_SUPABASE_URL;
 let supabaseAnonKey = process.env.REACT_APP_SUPABASE_ANON_KEY;
+
+// Validate we're not using the wrong project
+if (supabaseUrl && supabaseUrl.includes('fiozmyoedptukpkzuhqm')) {
+  console.error(
+    'WRONG SUPABASE PROJECT! Detected Bowery Creative project. Using correct Sphere1a project instead.'
+  );
+  supabaseUrl = 'https://cbopynuvhcymbumjnvay.supabase.co';
+}
 
 // Check if the URL is masked/invalid (contains asterisks or is not a valid URL)
 if (!supabaseUrl || supabaseUrl.includes('*') || !supabaseUrl.match(/^https?:\/\//)) {
