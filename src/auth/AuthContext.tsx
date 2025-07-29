@@ -47,6 +47,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         // Check for OAuth tokens in URL first
         if (window.location.hash && window.location.hash.includes('access_token')) {
           console.log('AuthContext - OAuth tokens detected in URL, processing...');
+          console.log('Full URL hash:', window.location.hash);
           // Give Supabase time to process the tokens
           await new Promise((resolve) => setTimeout(resolve, 1000));
         }
@@ -56,6 +57,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           data: { session },
           error,
         } = await supabase.auth.getSession();
+
+        console.log('AuthContext - getSession result:', {
+          hasSession: !!session,
+          sessionUser: session?.user?.email,
+          error: error?.message,
+        });
 
         // If we get a refresh token error, clear auth and continue as public
         if (error && error.message?.includes('Refresh Token')) {
@@ -116,7 +123,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     // Listen for auth changes
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_event, session) => {
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log('AuthContext - onAuthStateChange fired:', {
+        event,
+        hasSession: !!session,
+        sessionUser: session?.user?.email,
+      });
+
       if (mounted) {
         const user = session?.user || null;
 
@@ -145,6 +158,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       // Use local domain for OAuth redirect
       const redirectUrl = `${window.location.origin}/auth/callback`;
       console.log(`AuthContext - using redirect URL: ${redirectUrl}`);
+      console.log('Current origin:', window.location.origin);
+      console.log('Current storage key:', 'sb-cbopynuvhcymbumjnvay-auth-token');
 
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: provider,
@@ -154,6 +169,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       });
 
       console.log('AuthContext - OAuth response:', { data, error });
+      console.log('OAuth URL:', data?.url);
 
       if (error) {
         console.error('AuthContext - OAuth error:', error);
@@ -177,7 +193,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setState((prev) => ({ ...prev, loading: true, error: null }));
 
     try {
+      console.log('AuthContext - Starting sign out process...');
+
       // Clear all auth-related storage FIRST
+      console.log('Clearing localStorage keys...');
       localStorage.removeItem('sb-cbopynuvhcymbumjnvay-auth-token');
       localStorage.removeItem('supabase.auth.token');
       localStorage.removeItem('repspheres-auth');
@@ -191,8 +210,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       });
 
       // Then sign out from Supabase
+      console.log('Calling supabase.auth.signOut()...');
       const { error } = await supabase.auth.signOut();
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase signOut error:', error);
+        throw error;
+      }
+      console.log('Supabase signOut successful');
 
       // Set state to signed out
       setState({
@@ -201,6 +225,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         loading: false,
         error: null,
       });
+
+      // Check what's still in localStorage
+      console.log('After signOut - localStorage keys:', Object.keys(localStorage));
+      console.log(
+        'After signOut - checking for auth token:',
+        localStorage.getItem('sb-cbopynuvhcymbumjnvay-auth-token')
+      );
 
       // Force reload to clear any remaining state
       window.location.href = '/';

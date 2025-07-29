@@ -19,7 +19,7 @@ import { supabase } from './lib/supabase';
 import { useStore } from './store/useStore';
 import { adaptiveRenderer } from './lib/performance/AdaptiveRenderer';
 import { useResponsive } from './hooks/useResponsive';
-import { AuthProvider, useAuth } from './auth/AuthContext';
+import { useAuth } from './auth/AuthContext';
 import { DEMO_CONTACTS } from './lib/demoData';
 import { usageTracker } from './lib/usageTracking';
 import { ToastProvider, useToast } from './utils/toast';
