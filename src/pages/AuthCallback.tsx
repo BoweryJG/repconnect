@@ -6,6 +6,7 @@ import { supabase } from '../lib/supabase';
 const AuthCallback: React.FC = () => {
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
+  const [redirecting, setRedirecting] = useState(false);
 
   useEffect(() => {
     // Handle auth callback
@@ -57,8 +58,11 @@ const AuthCallback: React.FC = () => {
 
           if (data.session) {
             console.log('Session set successfully:', data.session.user.email);
-            // Immediate redirect - no delays
-            window.location.href = window.location.origin;
+            setRedirecting(true);
+            // Force unmount then redirect
+            setTimeout(() => {
+              window.location.replace('/');
+            }, 0);
             return;
           }
         }
@@ -73,7 +77,10 @@ const AuthCallback: React.FC = () => {
         } else if (data.session) {
           // Successfully authenticated
           console.log('Auth successful, user:', data.session.user.email);
-          window.location.href = window.location.origin;
+          setRedirecting(true);
+          setTimeout(() => {
+            window.location.replace('/');
+          }, 0);
           return;
         } else {
           console.log('No session found, checking again...');
@@ -100,6 +107,11 @@ const AuthCallback: React.FC = () => {
 
     handleAuthCallback();
   }, [navigate]);
+
+  // Return null immediately when redirecting to force unmount
+  if (redirecting) {
+    return null;
+  }
 
   return (
     <div
