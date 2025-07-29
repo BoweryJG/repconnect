@@ -177,15 +177,33 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setState((prev) => ({ ...prev, loading: true, error: null }));
 
     try {
+      // Clear all auth-related storage FIRST
+      localStorage.removeItem('sb-cbopynuvhcymbumjnvay-auth-token');
+      localStorage.removeItem('supabase.auth.token');
+      localStorage.removeItem('repspheres-auth');
+      sessionStorage.clear();
+
+      // Clear all cookies
+      document.cookie.split(';').forEach(function (c) {
+        document.cookie = c
+          .replace(/^ +/, '')
+          .replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/');
+      });
+
+      // Then sign out from Supabase
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
 
+      // Set state to signed out
       setState({
         user: null,
         session: null,
         loading: false,
         error: null,
       });
+
+      // Force reload to clear any remaining state
+      window.location.href = '/';
     } catch (error) {
       setState((prev) => ({
         ...prev,
