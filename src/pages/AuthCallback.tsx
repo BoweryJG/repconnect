@@ -58,11 +58,7 @@ const AuthCallback: React.FC = () => {
 
           if (data.session) {
             console.log('Session set successfully:', data.session.user.email);
-            setRedirecting(true);
-            // Force unmount then redirect
-            setTimeout(() => {
-              window.location.replace('/');
-            }, 0);
+            window.location.href = '/';
             return;
           }
         }
@@ -77,10 +73,7 @@ const AuthCallback: React.FC = () => {
         } else if (data.session) {
           // Successfully authenticated
           console.log('Auth successful, user:', data.session.user.email);
-          setRedirecting(true);
-          setTimeout(() => {
-            window.location.replace('/');
-          }, 0);
+          window.location.href = '/';
           return;
         } else {
           console.log('No session found, checking again...');
