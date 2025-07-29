@@ -57,10 +57,8 @@ const AuthCallback: React.FC = () => {
 
           if (data.session) {
             console.log('Session set successfully:', data.session.user.email);
-            // Wait a bit longer for auth context to update
-            setTimeout(() => {
-              window.location.href = '/';
-            }, 2000);
+            // Force a hard redirect to ensure the page reloads completely
+            window.location.replace('/');
             return;
           }
         }
@@ -76,9 +74,8 @@ const AuthCallback: React.FC = () => {
           // Successfully authenticated
           console.log('Auth successful, user:', data.session.user.email);
           // Give AuthContext time to process the session
-          setTimeout(() => {
-            window.location.href = '/';
-          }, 1000);
+          // Force a hard redirect
+          window.location.replace('/');
         } else {
           console.log('No session found, checking again...');
           // No session after callback, wait a bit and check again
@@ -88,10 +85,10 @@ const AuthCallback: React.FC = () => {
             } = await supabase.auth.getSession();
             if (session) {
               console.log('Session found on retry, user:', session.user.email);
-              window.location.href = '/';
+              window.location.replace('/');
             } else {
               console.log('Still no session, redirecting to home');
-              window.location.href = '/';
+              window.location.replace('/');
             }
           }, 2000);
         }
