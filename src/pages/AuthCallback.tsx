@@ -60,7 +60,7 @@ const AuthCallback: React.FC = () => {
             // Wait a bit longer for auth context to update
             setTimeout(() => {
               navigate('/');
-            }, 1500);
+            }, 3000);
             return;
           }
         }
