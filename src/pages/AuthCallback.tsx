@@ -35,9 +35,17 @@ const AuthCallback: React.FC = () => {
           console.log('AuthCallback - Found tokens, setting session manually');
 
           // Force Supabase to set the session from the tokens
+          console.log('AuthCallback - Calling setSession with tokens');
           const { data, error } = await supabase.auth.setSession({
             access_token: accessToken,
             refresh_token: refreshToken,
+          });
+
+          console.log('AuthCallback - setSession result:', {
+            success: !error,
+            error: error?.message,
+            hasSession: !!data?.session,
+            userEmail: data?.session?.user?.email,
           });
 
           if (error) {
@@ -49,10 +57,10 @@ const AuthCallback: React.FC = () => {
 
           if (data.session) {
             console.log('Session set successfully:', data.session.user.email);
-            // Give auth context time to update
+            // Wait a bit longer for auth context to update
             setTimeout(() => {
               navigate('/');
-            }, 500);
+            }, 1500);
             return;
           }
         }

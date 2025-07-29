@@ -7,11 +7,13 @@ interface AuthState {
   session: Session | null;
   loading: boolean;
   error: Error | null;
+  isGuest: boolean;
 }
 
 interface AuthContextType extends AuthState {
   signInWithProvider: (provider: 'google' | 'facebook') => Promise<void>;
   signOut: () => Promise<void>;
+  isGuest: boolean;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -34,6 +36,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     session: null,
     loading: true,
     error: null,
+    isGuest: true, // Start as guest until auth is confirmed
   });
 
   // Initialize auth state
@@ -62,9 +65,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           hasSession: !!session,
           sessionUser: session?.user?.email,
           error: error?.message,
+          fullSession: session,
         });
 
-        // If we get a refresh token error, clear auth and continue as public
+        // If we get a refresh token error, clear auth and continue as guest
         if (error && error.message?.includes('Refresh Token')) {
           console.log('Invalid refresh token, clearing auth data');
           await supabase.auth.signOut();
@@ -75,6 +79,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
               session: null,
               loading: false,
               error: null,
+              isGuest: true,
             });
           }
           return;
@@ -90,17 +95,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             session: session,
             loading: false,
             error: null,
+            isGuest: !session, // Guest if no session
           });
         }
       } catch (error) {
         console.error('Auth initialization error:', error);
         if (mounted) {
-          // Don't treat auth errors as fatal - allow public access
+          // Don't treat auth errors as fatal - allow guest access
           setState({
             user: null,
             session: null,
             loading: false,
-            error: null, // Set to null to allow public access
+            error: null, // Set to null to allow guest access
+            isGuest: true,
           });
         }
       }
@@ -116,6 +123,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           ...prev,
           loading: false,
           error: null,
+          isGuest: !prev.session, // Maintain guest status based on session
         }));
       }
     }, 1000);
@@ -139,6 +147,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           session: session,
           loading: false,
           error: null,
+          isGuest: !session,
         }));
       }
     });
@@ -218,12 +227,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
       console.log('Supabase signOut successful');
 
-      // Set state to signed out
+      // Set state to signed out guest
       setState({
         user: null,
         session: null,
         loading: false,
         error: null,
+        isGuest: true,
       });
 
       // Check what's still in localStorage
@@ -253,7 +263,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   console.log('[AuthProvider] Rendering with state:', {
     loading: state.loading,
-    user: state.user?.email,
+    user: state.user?.email || null,
+    isGuest: state.isGuest,
+    hasSession: !!state.session,
+    userId: state.user?.id,
   });
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
