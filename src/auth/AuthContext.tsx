@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useState, useEffect, useCallback, useRef } from 'react';
 import { supabase } from '../lib/supabase';
 import type { User, Session } from '@supabase/supabase-js';
 
@@ -38,6 +38,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     error: null,
     isGuest: true, // Start as guest until auth is confirmed
   });
+
+  // Track if we're in the middle of signing out to prevent race conditions
+  const isSigningOutRef = useRef(false);
 
   // Initialize auth state
   useEffect(() => {
@@ -136,7 +139,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         event,
         hasSession: !!session,
         sessionUser: session?.user?.email,
+        isSigningOut: isSigningOutRef.current,
       });
+
+      // Don't update state if we're in the middle of signing out
+      if (isSigningOutRef.current) {
+        console.log('Ignoring auth state change during sign out');
+        return;
+      }
 
       if (mounted) {
         const user = session?.user || null;
@@ -199,6 +209,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, []);
 
   const signOut = useCallback(async () => {
+    // Set flag to prevent auth state listener from interfering
+    isSigningOutRef.current = true;
+
     setState((prev) => ({ ...prev, loading: true, error: null }));
 
     try {
@@ -218,14 +231,29 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           .replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/');
       });
 
-      // Then sign out from Supabase
+      // Then sign out from Supabase with timeout protection
       console.log('Calling supabase.auth.signOut()...');
-      const { error } = await supabase.auth.signOut();
-      if (error) {
-        console.error('Supabase signOut error:', error);
-        throw error;
+
+      // Create a timeout promise that rejects after 2 seconds
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('SignOut timeout')), 2000)
+      );
+
+      try {
+        // Race between signOut and timeout
+        const { error } = (await Promise.race([supabase.auth.signOut(), timeoutPromise])) as {
+          error: any;
+        };
+
+        if (error) {
+          console.error('Supabase signOut error:', error);
+          throw error;
+        }
+        console.log('Supabase signOut successful');
+      } catch (timeoutError) {
+        console.warn('SignOut timed out or failed, proceeding with logout anyway');
+        // Continue with logout even if Supabase call fails
       }
-      console.log('Supabase signOut successful');
 
       // Set state to signed out guest
       setState({

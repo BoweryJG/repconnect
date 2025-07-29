@@ -32,7 +32,7 @@ import { harveyService } from './services/harveyService';
 import { SubtlePipelineBackground } from './components/effects/SubtlePipelineBackground';
 import RepSpheresNavbar from './components/RepSpheresNavbar';
 import { LoginModal } from './components/auth/LoginModal';
-import LogoutModal from './components/LogoutModal';
+import GlobalLogoutModal from './components/common/GlobalLogoutModal';
 import { CornerScrews } from './components/effects/PrecisionScrew';
 import { LoadingFallback } from './components/LoadingFallback';
 import { lazyWithPreload } from './utils/lazyWithPreload';
@@ -1476,8 +1476,8 @@ function AppContent() {
         }}
       />
 
-      <LogoutModal
-        isOpen={showRepSpheresLogoutModal}
+      <GlobalLogoutModal
+        open={showRepSpheresLogoutModal}
         onClose={() => setShowRepSpheresLogoutModal(false)}
         onConfirm={async () => {
           try {
