@@ -264,6 +264,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         isGuest: true,
       });
 
+      // Reset the signing out flag so future auth changes work
+      isSigningOutRef.current = false;
+
       // Check what's still in localStorage
       console.log('After signOut - localStorage keys:', Object.keys(localStorage));
       console.log(
@@ -279,6 +282,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         loading: false,
         error: error instanceof Error ? error : new Error('Unknown error'),
       }));
+      // Reset the signing out flag even on error
+      isSigningOutRef.current = false;
       throw error;
     }
   }, []);
