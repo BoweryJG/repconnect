@@ -19,7 +19,7 @@ import { supabase } from './lib/supabase';
 import { useStore } from './store/useStore';
 import { adaptiveRenderer } from './lib/performance/AdaptiveRenderer';
 import { useResponsive } from './hooks/useResponsive';
-import { useSimpleAuth } from './auth/SimpleAuth';
+import { useAuth } from './auth/AuthContext';
 import { DEMO_CONTACTS } from './lib/demoData';
 import { usageTracker } from './lib/usageTracking';
 import { voiceTimeTracker } from './lib/voiceTimeTracking';
@@ -136,7 +136,7 @@ const MissionControlDashboard = React.lazy(() =>
 
 function AppContent() {
   const { isMobile } = useResponsive();
-  const { user, signOut } = useSimpleAuth();
+  const { user, signOut } = useAuth();
   const { showSuccess, showError } = useToast();
 
   // AppContent rendered
@@ -256,6 +256,11 @@ function AppContent() {
 
   // Handle demo mode and authentication
   useEffect(() => {
+    // Don't interfere with auth callback
+    if (window.location.pathname === '/auth/callback') {
+      return;
+    }
+
     if (user) {
       setIsGuestMode(false);
       // Load real contacts when authenticated

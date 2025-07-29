@@ -15,23 +15,27 @@ import {
   LazyHarveyBattleMode,
   LazyHarveyMetricsDashboard,
 } from './components/lazy/LazyHarveyComponents';
+import { AuthCallback } from './pages/AuthCallback';
 import AudioTestComponent from './components/AudioTestComponent';
 import { AdminAuthProvider } from './contexts/AdminAuthContext';
 import AdminLogin from './components/admin/AdminLogin';
 import AdminDashboard from './components/admin/AdminDashboard';
 import AgentEditor from './components/admin/AgentEditor';
 import AdminRoute from './components/admin/AdminRoute';
-import { SimpleAuth } from './auth/SimpleAuth';
+import { AuthProvider } from './auth/AuthContext';
 
 export const AppRouter: React.FC = () => {
   return (
     <ErrorBoundary>
-      <SimpleAuth>
+      <AuthProvider>
         <ThemeProvider theme={premiumTheme}>
           <CssBaseline />
           <AdminAuthProvider>
             <Router>
               <Routes>
+                {/* Auth callback route - MUST BE FIRST to prevent interference */}
+                <Route path="/auth/callback" element={<AuthCallback />} />
+
                 {/* Main app routes */}
                 <Route path="/" element={<App />} />
 
@@ -84,7 +88,7 @@ export const AppRouter: React.FC = () => {
             </Router>
           </AdminAuthProvider>
         </ThemeProvider>
-      </SimpleAuth>
+      </AuthProvider>
     </ErrorBoundary>
   );
 };
