@@ -48,6 +48,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     const initializeAuth = async () => {
       try {
+        // Don't initialize if we're on the callback page - let it redirect
+        if (window.location.pathname === '/auth/callback') {
+          console.log('AuthContext - Skipping init on callback page');
+          return;
+        }
+
         console.log('AuthContext - Initializing auth...');
 
         // Check for OAuth tokens in URL first
