@@ -231,28 +231,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           .replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/');
       });
 
-      // Then sign out from Supabase with timeout protection
+      // Then sign out from Supabase
       console.log('Calling supabase.auth.signOut()...');
 
-      // Create a timeout promise that rejects after 2 seconds
-      const timeoutPromise = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('SignOut timeout')), 2000)
-      );
-
       try {
-        // Race between signOut and timeout
-        const { error } = (await Promise.race([supabase.auth.signOut(), timeoutPromise])) as {
-          error: any;
-        };
-
+        const { error } = await supabase.auth.signOut();
         if (error) {
           console.error('Supabase signOut error:', error);
-          throw error;
+          // Continue anyway - we already cleared local storage
+        } else {
+          console.log('Supabase signOut successful');
         }
-        console.log('Supabase signOut successful');
-      } catch (timeoutError) {
-        console.warn('SignOut timed out or failed, proceeding with logout anyway');
-        // Continue with logout even if Supabase call fails
+      } catch (err) {
+        console.error('SignOut exception:', err);
+        // Continue anyway - we already cleared local storage
       }
 
       // Set state to signed out guest

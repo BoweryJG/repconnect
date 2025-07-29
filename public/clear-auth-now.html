@@ -1,0 +1,37 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Clear Auth</title>
+  </head>
+  <body>
+    <h1>Clearing Authentication...</h1>
+    <script>
+      // Clear ALL auth-related localStorage
+      const keysToRemove = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && (key.includes('supabase') || key.includes('auth') || key.includes('sb-'))) {
+          keysToRemove.push(key);
+        }
+      }
+
+      keysToRemove.forEach((key) => {
+        console.log('Removing:', key);
+        localStorage.removeItem(key);
+      });
+
+      // Clear session storage too
+      sessionStorage.clear();
+
+      // Clear cookies
+      document.cookie.split(';').forEach(function (c) {
+        document.cookie = c
+          .replace(/^ +/, '')
+          .replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/');
+      });
+
+      alert('All auth data cleared! Redirecting to home...');
+      window.location.href = '/';
+    </script>
+  </body>
+</html>
