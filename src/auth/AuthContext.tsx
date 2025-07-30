@@ -48,20 +48,21 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     const initializeAuth = async () => {
       try {
-        // Don't initialize if we're on the callback page - let it redirect
-        if (window.location.pathname === '/auth/callback') {
-          console.log('AuthContext - Skipping init on callback page');
-          return;
-        }
-
         console.log('AuthContext - Initializing auth...');
 
-        // Check for OAuth tokens in URL first
-        if (window.location.hash && window.location.hash.includes('access_token')) {
-          console.log('AuthContext - OAuth tokens detected in URL, processing...');
-          console.log('Full URL hash:', window.location.hash);
-          // Give Supabase time to process the tokens
-          await new Promise((resolve) => setTimeout(resolve, 1000));
+        // Check if we just came from auth callback (stored by static HTML)
+        const authDataKey = 'sb-cbopynuvhcymbumjnvay-auth-token';
+        const storedAuth = localStorage.getItem(authDataKey);
+
+        if (storedAuth) {
+          console.log('AuthContext - Found stored auth data from callback');
+          try {
+            const authData = JSON.parse(storedAuth);
+            // Give Supabase a moment to recognize the stored auth
+            await new Promise((resolve) => setTimeout(resolve, 100));
+          } catch (e) {
+            console.error('Failed to parse stored auth:', e);
+          }
         }
 
         // Just get the session directly without timeout

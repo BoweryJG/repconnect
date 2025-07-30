@@ -15,7 +15,6 @@ import {
   LazyHarveyBattleMode,
   LazyHarveyMetricsDashboard,
 } from './components/lazy/LazyHarveyComponents';
-import { AuthCallback } from './pages/AuthCallback';
 import AudioTestComponent from './components/AudioTestComponent';
 import { AdminAuthProvider } from './contexts/AdminAuthContext';
 import AdminLogin from './components/admin/AdminLogin';
@@ -27,14 +26,13 @@ import { AuthProvider } from './auth/AuthContext';
 export const AppRouter: React.FC = () => {
   return (
     <ErrorBoundary>
-      <AuthProvider>
-        <ThemeProvider theme={premiumTheme}>
-          <CssBaseline />
-          <AdminAuthProvider>
-            <Router>
+      <ThemeProvider theme={premiumTheme}>
+        <CssBaseline />
+        <Router>
+          <AuthProvider>
+            <AdminAuthProvider>
               <Routes>
-                {/* Auth callback route - MUST BE FIRST to prevent interference */}
-                <Route path="/auth/callback" element={<AuthCallback />} />
+                {/* Auth callback is now handled by static HTML before React loads */}
 
                 {/* Main app routes */}
                 <Route path="/" element={<App />} />
@@ -85,10 +83,10 @@ export const AppRouter: React.FC = () => {
                 {/* Catch all route */}
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>
-            </Router>
-          </AdminAuthProvider>
-        </ThemeProvider>
-      </AuthProvider>
+            </AdminAuthProvider>
+          </AuthProvider>
+        </Router>
+      </ThemeProvider>
     </ErrorBoundary>
   );
 };

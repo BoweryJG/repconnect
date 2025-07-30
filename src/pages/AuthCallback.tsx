@@ -1,148 +1,148 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { CircularProgress, Typography } from '@mui/material';
-import { supabase } from '../lib/supabase';
+import React, { useEffect, useRef } from 'react';
 
-const AuthCallback: React.FC = () => {
-  const navigate = useNavigate();
-  const [error, setError] = useState<string | null>(null);
-  const [redirecting, setRedirecting] = useState(false);
+const AuthCallback = () => {
+  const attemptCountRef = useRef(0);
+  const loggedRef = useRef(false);
 
   useEffect(() => {
-    // Handle auth callback
-    const handleAuthCallback = async () => {
+    // Log diagnostic information only once
+    if (!loggedRef.current) {
+      loggedRef.current = true;
+
+      console.log('🔍 AUTH CALLBACK DIAGNOSTIC');
+      console.log('==========================');
+      console.log('1. Current URL:', window.location.href);
+      console.log('2. URL hash:', window.location.hash);
+      console.log('3. URL search:', window.location.search);
+      console.log('4. Document ready state:', document.readyState);
+      console.log('5. React Router loaded:', !!(window as any).__REACT_ROUTER__);
+      console.log('6. Service Worker:', 'serviceWorker' in navigator);
+      console.log(
+        '7. Local Storage auth token:',
+        localStorage.getItem('sb-cbopynuvhcymbumjnvay-auth-token')
+      );
+      console.log('8. Session Storage keys:', Object.keys(sessionStorage));
+      console.log('9. Document referrer:', document.referrer);
+      console.log('10. History length:', window.history.length);
+      console.log('==========================');
+    }
+
+    // Try multiple redirect methods with logging
+    const attemptRedirect = () => {
+      attemptCountRef.current++;
+      console.log(`🚀 Redirect attempt #${attemptCountRef.current}`);
+
+      // Method 1: window.location.replace
       try {
-        console.log('AuthCallback - Processing OAuth callback...');
-        console.log('URL:', window.location.href);
-
-        // Get the auth code from URL
-        const hashParams = new URLSearchParams(window.location.hash.substring(1));
-        const searchParams = new URLSearchParams(window.location.search);
-
-        // Check for error in URL
-        const errorDesc =
-          searchParams.get('error_description') || hashParams.get('error_description');
-        if (errorDesc) {
-          setError(decodeURIComponent(errorDesc));
-          setTimeout(() => navigate('/'), 3000);
-          return;
-        }
-
-        // Check if we have access_token in hash (Supabase OAuth response)
-        const accessToken = hashParams.get('access_token');
-        const refreshToken = hashParams.get('refresh_token');
-
-        if (accessToken && refreshToken) {
-          console.log('AuthCallback - Found tokens, setting session manually');
-
-          // Force Supabase to set the session from the tokens
-          console.log('AuthCallback - Calling setSession with tokens');
-          const { data, error } = await supabase.auth.setSession({
-            access_token: accessToken,
-            refresh_token: refreshToken,
-          });
-
-          console.log('AuthCallback - setSession result:', {
-            success: !error,
-            error: error?.message,
-            hasSession: !!data?.session,
-            userEmail: data?.session?.user?.email,
-          });
-
-          if (error) {
-            console.error('Error setting session:', error);
-            setError(error.message);
-            setTimeout(() => navigate('/'), 3000);
-            return;
-          }
-
-          if (data.session) {
-            console.log('Session set successfully:', data.session.user.email);
-            // Force navigation by replacing entire document
-            document.location.replace(window.location.origin);
-            return;
-          }
-        }
-
-        // Fallback to checking existing session
-        const { data, error } = await supabase.auth.getSession();
-
-        if (error) {
-          console.error('Auth callback error:', error);
-          setError(error.message);
-          setTimeout(() => navigate('/'), 3000);
-        } else if (data.session) {
-          // Successfully authenticated
-          console.log('Auth successful, user:', data.session.user.email);
-          document.location.replace(window.location.origin);
-          return;
-        } else {
-          console.log('No session found, checking again...');
-          // No session after callback, wait a bit and check again
-          setTimeout(async () => {
-            const {
-              data: { session },
-            } = await supabase.auth.getSession();
-            if (session) {
-              console.log('Session found on retry, user:', session.user.email);
-              window.location.href = window.location.origin;
-            } else {
-              console.log('Still no session, redirecting to home');
-              window.location.href = window.location.origin;
-            }
-          }, 2000);
-        }
-      } catch (err) {
-        console.error('Auth callback exception:', err);
-        setError('An unexpected error occurred');
-        setTimeout(() => navigate('/'), 3000);
+        console.log('Trying window.location.replace("/")...');
+        window.location.replace('/');
+        console.log('✅ window.location.replace executed (may not have taken effect yet)');
+      } catch (e) {
+        console.error('❌ window.location.replace failed:', e);
       }
+
+      // Method 2: window.location.href
+      setTimeout(() => {
+        try {
+          console.log('Trying window.location.href = "/"...');
+          window.location.href = '/';
+          console.log('✅ window.location.href executed (may not have taken effect yet)');
+        } catch (e) {
+          console.error('❌ window.location.href failed:', e);
+        }
+      }, 100);
+
+      // Method 3: document.location
+      setTimeout(() => {
+        try {
+          console.log('Trying document.location.href = "/"...');
+          document.location.href = '/';
+          console.log('✅ document.location.href executed (may not have taken effect yet)');
+        } catch (e) {
+          console.error('❌ document.location.href failed:', e);
+        }
+      }, 200);
+
+      // Method 4: window.top.location
+      setTimeout(() => {
+        try {
+          console.log('Trying window.top.location.href = "/"...');
+          if (window.top) {
+            window.top.location.href = '/';
+            console.log('✅ window.top.location.href executed (may not have taken effect yet)');
+          }
+        } catch (e) {
+          console.error('❌ window.top.location.href failed:', e);
+        }
+      }, 300);
+
+      // Method 5: History API
+      setTimeout(() => {
+        try {
+          console.log('Trying history.pushState + location.reload...');
+          window.history.pushState(null, '', '/');
+          window.location.reload();
+          console.log('✅ history.pushState + reload executed');
+        } catch (e) {
+          console.error('❌ history.pushState + reload failed:', e);
+        }
+      }, 400);
     };
 
-    handleAuthCallback();
-  }, [navigate]);
+    // Start redirect attempts
+    attemptRedirect();
 
-  // Return null immediately when redirecting to force unmount
-  if (redirecting) {
-    return null;
+    // Log if we're still here after 2 seconds
+    const stillHereTimeout = setTimeout(() => {
+      console.error('❌ STILL ON CALLBACK PAGE AFTER 2 SECONDS!');
+      console.log('Current URL:', window.location.href);
+      console.log('Attempting nuclear option...');
+
+      // Nuclear option: Clear everything and force reload
+      localStorage.clear();
+      sessionStorage.clear();
+      window.location.href = window.location.origin + '/';
+    }, 2000);
+
+    return () => {
+      clearTimeout(stillHereTimeout);
+    };
+  }, []);
+
+  // Also try immediate redirect without useEffect
+  if (typeof window !== 'undefined') {
+    console.log('🔄 Attempting immediate redirect (outside useEffect)');
+    window.location.replace('/');
   }
 
   return (
     <div
       style={{
-        height: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        background: '#0A0A0B',
+        padding: '20px',
+        fontFamily: 'monospace',
+        backgroundColor: '#f0f0f0',
+        minHeight: '100vh',
       }}
     >
-      {error ? (
-        <>
-          <Typography variant="h5" sx={{ fontWeight: 600, color: '#ff6b6b', mb: 2 }}>
-            Authentication Error
-          </Typography>
-          <Typography
-            sx={{ opacity: 0.9, textAlign: 'center', maxWidth: 400, color: '#ff6b6b', mb: 1 }}
-          >
-            {error}
-          </Typography>
-          <Typography sx={{ opacity: 0.7, textAlign: 'center', fontSize: '14px' }}>
-            Redirecting to home...
-          </Typography>
-        </>
-      ) : (
-        <>
-          <CircularProgress size={60} sx={{ color: '#4B96DC', mb: 3 }} />
-          <Typography variant="h6" sx={{ color: 'text.secondary', mb: 2 }}>
-            Completing authentication...
-          </Typography>
-          <Typography sx={{ opacity: 0.7, textAlign: 'center', maxWidth: 400 }}>
-            Please wait while we securely sign you in
-          </Typography>
-        </>
-      )}
+      <h1>Auth Callback Diagnostic</h1>
+      <p>If you see this, the redirect has failed.</p>
+      <p>Check the browser console for diagnostic information.</p>
+      <p>Current URL: {window.location.href}</p>
+      <button
+        onClick={() => (window.location.href = '/')}
+        style={{
+          padding: '10px 20px',
+          fontSize: '16px',
+          backgroundColor: '#007bff',
+          color: 'white',
+          border: 'none',
+          borderRadius: '4px',
+          cursor: 'pointer',
+          marginTop: '20px',
+        }}
+      >
+        Manual Redirect to Home
+      </button>
     </div>
   );
 };

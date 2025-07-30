@@ -1,1 +1,5 @@
+# Auth callback handled by specific HTML file
+/auth/callback /auth-callback-handler.html 200!
+
+# Everything else goes to React
 /* /index.html 200

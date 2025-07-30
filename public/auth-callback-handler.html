@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Completing Authentication...</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        font-family:
+          -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell',
+          'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+      }
+      .container {
+        text-align: center;
+        padding: 2rem;
+      }
+      .spinner {
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        border-top: 3px solid white;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 1.5rem;
+      }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+      .message {
+        font-size: 1.2rem;
+        margin-bottom: 0.5rem;
+      }
+      .submessage {
+        font-size: 0.9rem;
+        opacity: 0.8;
+      }
+    </style>
+    <script>
+      // CRITICAL: This runs BEFORE React loads
+      (function () {
+        console.log('[Auth Callback Handler] Starting auth callback processing...');
+
+        // Extract hash from URL
+        const hash = window.location.hash;
+        console.log('[Auth Callback Handler] URL hash:', hash);
+
+        // Parse the hash to get tokens
+        const params = new URLSearchParams(hash.substring(1));
+        const accessToken = params.get('access_token');
+        const refreshToken = params.get('refresh_token');
+
+        if (accessToken && refreshToken) {
+          console.log('[Auth Callback Handler] Tokens found, storing in localStorage...');
+
+          // Store tokens in the format Supabase expects
+          const storageKey = 'sb-cbopynuvhcymbumjnvay-auth-token';
+          const authData = {
+            currentSession: {
+              access_token: accessToken,
+              refresh_token: refreshToken,
+              expires_in: parseInt(params.get('expires_in') || '3600'),
+              token_type: params.get('token_type') || 'bearer',
+              provider_token: params.get('provider_token'),
+              provider_refresh_token: params.get('provider_refresh_token'),
+            },
+            expiresAt: Date.now() + parseInt(params.get('expires_in') || '3600') * 1000,
+          };
+
+          // Store in localStorage
+          localStorage.setItem(storageKey, JSON.stringify(authData));
+          console.log('[Auth Callback Handler] Auth data stored successfully');
+
+          // Clear the hash to prevent React from seeing it
+          history.replaceState(null, '', window.location.pathname);
+        }
+
+        // Multiple redirect methods to ensure it works
+        console.log('[Auth Callback Handler] Attempting redirect to home...');
+
+        // Method 1: Direct location replace
+        try {
+          window.location.replace('/');
+        } catch (e) {
+          console.error('[Auth Callback Handler] location.replace failed:', e);
+        }
+
+        // Method 2: Location href (backup)
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 100);
+
+        // Method 3: Meta refresh (ultimate backup)
+        const meta = document.createElement('meta');
+        meta.httpEquiv = 'refresh';
+        meta.content = '0;url=/';
+        document.head.appendChild(meta);
+
+        // Method 4: Click a hidden link (nuclear option)
+        setTimeout(() => {
+          const link = document.createElement('a');
+          link.href = '/';
+          link.style.display = 'none';
+          document.body.appendChild(link);
+          link.click();
+        }, 200);
+      })();
+    </script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="spinner"></div>
+      <div class="message">Completing authentication...</div>
+      <div class="submessage">You'll be redirected in a moment</div>
+    </div>
+
+    <!-- Fallback for users with JavaScript disabled -->
+    <noscript>
+      <meta http-equiv="refresh" content="0;url=/" />
+    </noscript>
+  </body>
+</html>

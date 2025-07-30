@@ -10,7 +10,14 @@
   # to be in the build output for client-side usage
   SECRETS_SCAN_ENABLED = "false"
 
-# Redirect all client-side routes to index.html for React Router
+# CRITICAL: Serve our auth handler BEFORE React loads
+[[redirects]]
+  from = "/auth/callback"
+  to = "/auth-callback-handler.html"
+  status = 200
+  force = true  # This ensures it takes precedence
+
+# Redirect all other client-side routes to index.html for React Router
 [[redirects]]
   from = "/*"
   to = "/index.html"
