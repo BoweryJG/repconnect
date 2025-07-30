@@ -1470,10 +1470,6 @@ function AppContent() {
       <LoginModal
         isOpen={showRepSpheresLoginModal}
         onClose={() => setShowRepSpheresLoginModal(false)}
-        onEmailAuth={async () => {
-          // Email auth not implemented yet
-          showError('Email authentication coming soon');
-        }}
       />
 
       <GlobalLogoutModal
