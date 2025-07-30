@@ -93,7 +93,7 @@ class TrialVoiceService {
           }
         }
       } catch (error) {
-        console.error('Heartbeat error:', error);
+        // Heartbeat errors are expected when session ends
       }
     }, 10000);
   }

@@ -17,7 +17,6 @@ export const authService = {
 
       return response.data;
     } catch (error: any) {
-      console.error('[Auth] Login with cookies error:', error.response?.data || error.message);
       logger.error('Login with cookies error:', error);
       throw error;
     }

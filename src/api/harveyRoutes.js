@@ -177,7 +177,7 @@ router.post('/harvey/chat', requireAuth, async (req, res) => {
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
-    console.error('Harvey chat error:', error);
+    // Harvey chat error - return error response
     res.status(500).json({ error: 'Failed to process chat message' });
   }
 });

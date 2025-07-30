@@ -64,8 +64,8 @@ class AgentBackendAPI {
       // Check response status
 
       if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Agent fetch error response:', errorText);
+        // Agent fetch error response - throw with details
+        await response.text(); // Consume the response body
         throw new Error(`Failed to fetch agents: ${response.status} ${response.statusText}`);
       }
 
@@ -89,8 +89,7 @@ class AgentBackendAPI {
 
       return agents;
     } catch (error) {
-      console.error('Error fetching agents from backend:', error);
-      // Return empty array on error to allow fallback to local agents
+      // Error fetching agents from backend - return empty array to allow fallback to local agents
       return [];
     }
   }
@@ -128,7 +127,7 @@ class AgentBackendAPI {
 
       return agent;
     } catch (error) {
-      console.error(`Error fetching agent ${agentId}:`, error);
+      // Error fetching agent - return null
       return null;
     }
   }

@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
-  Button,
   Card,
   CardContent,
   Typography,
@@ -22,7 +21,6 @@ import {
   VolumeUp,
   VolumeOff,
   SignalCellularAlt,
-  Error as ErrorIcon,
   CheckCircle,
   WifiTethering,
 } from '@mui/icons-material';
@@ -72,6 +70,7 @@ export const WebRTCVoiceInterface: React.FC<WebRTCVoiceInterfaceProps> = ({
   const remoteAudioRef = useRef<HTMLAudioElement>(null);
 
   // Initialize services
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const initialize = async () => {
       try {

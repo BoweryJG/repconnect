@@ -45,7 +45,7 @@ export async function loadAgentConfig(agentId) {
     });
 
     if (!response.ok) {
-      console.error(`Failed to fetch agent ${agentId}: ${response.statusText}`);
+      // Failed to fetch agent - return null
       return null;
     }
 
@@ -75,7 +75,7 @@ export async function loadAgentConfig(agentId) {
 
     return serverConfig;
   } catch (error) {
-    console.error(`Error loading agent ${agentId}:`, error);
+    // Error loading agent - return null
     return null;
   }
 }
@@ -141,7 +141,7 @@ export async function loadAllAgents() {
     });
 
     if (!response.ok) {
-      console.error(`Failed to fetch agents: ${response.statusText}`);
+      // Failed to fetch agents - return empty array
       return [];
     }
 
@@ -169,7 +169,7 @@ export async function loadAllAgents() {
 
     return agents;
   } catch (error) {
-    console.error('Error loading all agents:', error);
+    // Error loading all agents - return empty array
     return [];
   }
 }

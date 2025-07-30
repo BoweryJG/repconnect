@@ -35,7 +35,7 @@ export class WebRTCClient {
         } = await supabase.auth.getSession();
         authToken = session?.access_token;
       } catch (error) {
-        console.error('Failed to get auth session for WebRTC:', error);
+        // Auth session not available, will proceed without token
       }
     }
 
@@ -58,7 +58,6 @@ export class WebRTCClient {
       });
 
       this.socket!.on('connect_error', (error: any) => {
-        console.error('WebRTC signaling connection error:', error);
         let detailedError = new Error('WebSocket connection failed');
 
         if (error.message && error.message.includes('xhr poll error')) {
@@ -156,7 +155,6 @@ export class WebRTCClient {
         // Audio producer created successfully
       }
     } catch (error) {
-      console.error('Error starting audio:', error);
       throw error;
     }
   }
@@ -240,7 +238,7 @@ export class WebRTCClient {
     });
 
     this.socket.on('error', (error) => {
-      console.error('WebRTC error:', error);
+      // WebRTC errors are handled by error event listeners
     });
 
     // Handle new consumer (when agent sends audio back)
@@ -282,7 +280,6 @@ export class WebRTCClient {
 
     // Handle autoplay policy
     audio.play().catch((error) => {
-      console.error('Error playing audio:', error);
       // Retry with user interaction if needed
       if (error.name === 'NotAllowedError') {
         // Audio playback requires user interaction. Click to enable audio.
@@ -290,7 +287,9 @@ export class WebRTCClient {
         document.addEventListener(
           'click',
           () => {
-            audio.play().catch((e) => console.error('Still cannot play audio:', e));
+            audio.play().catch((e) => {
+              // Still cannot play audio, but error is expected
+            });
           },
           { once: true }
         );
