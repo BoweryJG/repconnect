@@ -5,7 +5,7 @@ import './SimpleChatbotLauncher.css';
 
 interface SimpleChatbotLauncherProps {
   agents: Agent[];
-  onAgentSelect: (agent: Agent, mode: 'chat' | 'voice') => void;
+  onAgentSelect: (_agent: Agent, _mode: 'chat' | 'voice') => void;
   position?: 'bottom-right' | 'bottom-left';
   primaryColor?: string;
   glowColor?: string;

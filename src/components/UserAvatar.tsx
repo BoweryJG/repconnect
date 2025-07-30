@@ -37,15 +37,10 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
 
   const initials = getInitials(displayName);
 
-  // Debug: Log when component renders
-  console.log('UserAvatar rendering with onClick:', !!onClick);
-
   const content = (
     <div
       onClick={() => {
-        console.log('UserAvatar clicked, onClick prop:', onClick);
         if (onClick) {
-          console.log('Calling onClick handler');
           onClick();
         }
       }}

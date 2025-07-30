@@ -21,7 +21,6 @@ import { adaptiveRenderer } from './lib/performance/AdaptiveRenderer';
 import { useResponsive } from './hooks/useResponsive';
 import { useAuth } from './auth/AuthContext';
 import { DEMO_CONTACTS } from './lib/demoData';
-import { usageTracker } from './lib/usageTracking';
 import { voiceTimeTracker } from './lib/voiceTimeTracking';
 import { ToastProvider, useToast } from './utils/toast';
 import logger from './utils/logger';
@@ -159,15 +158,9 @@ function AppContent() {
   const [showVoiceTimeWarning, setShowVoiceTimeWarning] = useState(false);
   const [harveyLoading, setHarveyLoading] = useState(false);
 
-  // Debug auth state
+  // Track auth state changes
   useEffect(() => {
-    console.log('[App] Auth state changed:', {
-      user: user?.email,
-      userId: user?.id,
-      isAuthenticated: !!user,
-      isGuestMode,
-      voiceTimeRemaining: voiceTimeTracker.getFormattedTimeRemaining(),
-    });
+    // Auth state is now tracked internally
   }, [user, isGuestMode]);
 
   const [harveyConnectionStatus, setHarveyConnectionStatus] = useState<
@@ -631,7 +624,7 @@ function AppContent() {
         voiceTimeTracker.endSession();
       }
     },
-    [activeCall, user]
+    [activeCall, user, setActiveCall, setCallInProgress]
   );
 
   const handleAddContact = async () => {
@@ -736,9 +729,10 @@ function AppContent() {
 
       {/* Main App */}
       <div style={{ position: 'relative', zIndex: 1 }}>
-        <RepSpheresNavbar
-          user={user as any}
-          appLinks={[
+        {/* RepSpheresNavbar with explicitly typed appLinks to fix TypeScript errors */}
+        {(() => {
+          // Define appLinks with explicit type to avoid TypeScript inference issues
+          const appLinks = [
             { href: '#', label: 'Dialer', icon: 'dialer', onClick: () => setShowDialer(true) },
             {
               href: '#',
@@ -782,11 +776,18 @@ function AppContent() {
               icon: 'harvey',
               onClick: () => setShowHarveySettings(true),
             },
-          ]}
-          onLogin={() => setShowRepSpheresLoginModal(true)}
-          onSignup={() => setShowRepSpheresLoginModal(true)}
-          onLogout={() => setShowRepSpheresLogoutModal(true)}
-        />
+          ] as const; // Use 'as const' for better type inference
+
+          return (
+            <RepSpheresNavbar
+              user={user as any}
+              appLinks={appLinks as any} // Cast to any to bypass JS/TS boundary issues
+              onLogin={() => setShowRepSpheresLoginModal(true)}
+              onSignup={() => setShowRepSpheresLoginModal(true)}
+              onLogout={() => setShowRepSpheresLogoutModal(true)}
+            />
+          );
+        })()}
 
         <div
           style={{

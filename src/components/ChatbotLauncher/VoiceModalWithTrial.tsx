@@ -50,14 +50,7 @@ export default function VoiceModalWithTrial({
   agentId,
   voiceConfig: _voiceConfig,
 }: VoiceModalProps) {
-  console.log(
-    'VoiceModalWithTrial rendered - isOpen:',
-    isOpen,
-    'agentName:',
-    agentName,
-    'agentId:',
-    agentId
-  );
+  // Component rendered with isOpen status and agent details
   const { user, session } = useAuth();
   const [isCallActive, setIsCallActive] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
@@ -145,7 +138,7 @@ export default function VoiceModalWithTrial({
 
       setConnectionStatus('connected');
     } catch (error: any) {
-      console.error('Failed to initialize WebRTC:', error);
+      // Failed to initialize WebRTC - error handled below
       setConnectionStatus('error');
 
       if (error.message.includes('trial has been used')) {
@@ -207,7 +200,7 @@ export default function VoiceModalWithTrial({
       // Add initial greeting
       addTranscriptionLine('agent', `Hello! I'm ${agentName}. How can I help you today?`);
     } catch (error: any) {
-      console.error('Failed to start call:', error);
+      // Failed to start call - error handled below
       handleCallError(error);
       setConnectionStatus('error');
     }
@@ -293,7 +286,9 @@ export default function VoiceModalWithTrial({
     // You could also stop/start the audio stream
     if (isMuted && webRTCClientRef.current) {
       // Currently muted, so unmute by restarting audio
-      webRTCClientRef.current.startAudio().catch(console.error);
+      webRTCClientRef.current.startAudio().catch(() => {
+        // Silently handle audio restart errors
+      });
     } else if (!isMuted && webRTCClientRef.current) {
       // Currently unmuted, so mute by stopping audio
       webRTCClientRef.current.stopAudio();
@@ -323,9 +318,8 @@ export default function VoiceModalWithTrial({
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  console.log('VoiceModalWithTrial about to check isOpen:', isOpen);
+  // Check if modal should be displayed
   if (!isOpen) {
-    console.log('VoiceModalWithTrial returning null because isOpen is false');
     return null;
   }
 

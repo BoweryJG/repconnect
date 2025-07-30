@@ -95,9 +95,9 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
   const { user, signOut } = useAuth();
   const { setShowLoginModal, setShowSubscriptionModal, subscriptionTier } = useStore();
 
-  // Debug logout modal state
+  // Monitor logout modal state
   useEffect(() => {
-    console.log('PremiumNavbar showLogoutModal state changed:', showLogoutModal);
+    // State change monitoring removed after auth fix deployment
   }, [showLogoutModal]);
 
   useEffect(() => {
@@ -746,7 +746,6 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
                     <Button
                       startIcon={<LogoutIcon sx={{ fontSize: 16 }} />}
                       onClick={async () => {
-                        console.log('Sign out clicked - direct logout');
                         // Clear everything
                         localStorage.clear();
                         sessionStorage.clear();
@@ -1696,29 +1695,19 @@ export const PremiumNavbar: React.FC<PremiumNavbarProps> = ({
         open={showLogoutModal}
         onClose={() => setShowLogoutModal(false)}
         onConfirm={async () => {
-          console.log('PremiumNavbar onConfirm called - START');
-
           // Set a timeout to force redirect if signOut hangs
           const timeoutId = setTimeout(() => {
-            console.log('SignOut timeout - forcing redirect');
             window.location.replace('/');
           }, 3000); // 3 second timeout
 
           try {
-            console.log('About to call signOut...');
-            console.log('signOut function:', signOut);
-            console.log('Calling signOut NOW');
             await signOut();
-            console.log('signOut completed successfully');
             clearTimeout(timeoutId);
-            console.log('About to redirect...');
             // Use replace to prevent back button issues
             window.location.replace('/');
           } catch (error) {
-            console.error('Sign out error details:', error);
             clearTimeout(timeoutId);
             // Even if sign out fails, still redirect
-            console.log('Redirecting after error...');
             window.location.replace('/');
           }
         }}

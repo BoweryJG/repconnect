@@ -367,44 +367,38 @@ const RepSpheresNavbar = ({
             {/* Auth Actions */}
             <div className="mobile-menu-section">
               {user ? (
-                <a
-                  href="#"
+                <button
                   className="mobile-menu-link"
-                  onClick={(e) => {
-                    e.preventDefault();
+                  onClick={() => {
                     onLogout();
                     setIsMobileMenuOpen(false);
                   }}
                 >
                   <span className="nav-link-icon icon-logout"></span>
                   <span>Sign Out</span>
-                </a>
+                </button>
               ) : (
                 <>
-                  <a
-                    href="#"
+                  <button
                     className="mobile-menu-link"
-                    onClick={(e) => {
-                      e.preventDefault();
+                    onClick={() => {
                       onLogin();
                       setIsMobileMenuOpen(false);
                     }}
                   >
                     <span className="nav-link-icon icon-login"></span>
                     <span>Login</span>
-                  </a>
-                  <a
-                    href="#"
+                  </button>
+                  <button
                     className="mobile-menu-link"
-                    onClick={(e) => {
-                      e.preventDefault();
+                    onClick={() => {
                       onSignup();
                       setIsMobileMenuOpen(false);
                     }}
                   >
                     <span className="nav-link-icon icon-signup"></span>
                     <span>Sign Up</span>
-                  </a>
+                  </button>
                 </>
               )}
             </div>

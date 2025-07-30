@@ -295,7 +295,7 @@ class AgentChatAPI {
                 }
               }
             } catch (e) {
-              console.warn('Failed to parse SSE data:', data);
+              // Failed to parse SSE data
             }
           }
         }
@@ -376,8 +376,8 @@ class AgentChatAPI {
 
       // console.log('Test endpoint response:', testResponse.status);
       if (testResponse.ok) {
-        const data = await testResponse.json();
-        // console.log('Test endpoint data:', data);
+        await testResponse.json();
+        // Test endpoint data received successfully
       }
 
       return healthResponse.ok;
