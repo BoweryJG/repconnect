@@ -17,8 +17,7 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "declaration": false,
-    "declarationMap": false,
-    "suppressExcessPropertyErrors": true
+    "declarationMap": false
   },
   "include": ["src"]
 }

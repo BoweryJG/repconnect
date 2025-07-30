@@ -49,73 +49,25 @@
       }
     </style>
     <script>
-      // CRITICAL: This runs BEFORE React loads
+      // CRITICAL: Redirect to home with the hash intact so Supabase can process it
       (function () {
         console.log('[Auth Callback Handler] Starting auth callback processing...');
 
-        // Extract hash from URL
+        // Get the full hash including tokens
         const hash = window.location.hash;
         console.log('[Auth Callback Handler] URL hash:', hash);
 
-        // Parse the hash to get tokens
-        const params = new URLSearchParams(hash.substring(1));
-        const accessToken = params.get('access_token');
-        const refreshToken = params.get('refresh_token');
+        if (hash && hash.includes('access_token')) {
+          console.log(
+            '[Auth Callback Handler] OAuth tokens detected, redirecting to home with hash...'
+          );
 
-        if (accessToken && refreshToken) {
-          console.log('[Auth Callback Handler] Tokens found, storing in localStorage...');
-
-          // Store tokens in the format Supabase expects
-          const storageKey = 'sb-cbopynuvhcymbumjnvay-auth-token';
-          const authData = {
-            currentSession: {
-              access_token: accessToken,
-              refresh_token: refreshToken,
-              expires_in: parseInt(params.get('expires_in') || '3600'),
-              token_type: params.get('token_type') || 'bearer',
-              provider_token: params.get('provider_token'),
-              provider_refresh_token: params.get('provider_refresh_token'),
-            },
-            expiresAt: Date.now() + parseInt(params.get('expires_in') || '3600') * 1000,
-          };
-
-          // Store in localStorage
-          localStorage.setItem(storageKey, JSON.stringify(authData));
-          console.log('[Auth Callback Handler] Auth data stored successfully');
-
-          // Clear the hash to prevent React from seeing it
-          history.replaceState(null, '', window.location.pathname);
-        }
-
-        // Multiple redirect methods to ensure it works
-        console.log('[Auth Callback Handler] Attempting redirect to home...');
-
-        // Method 1: Direct location replace
-        try {
+          // Redirect to home page WITH the hash so Supabase can process it there
+          window.location.replace('/' + hash);
+        } else {
+          console.log('[Auth Callback Handler] No tokens found, redirecting to home...');
           window.location.replace('/');
-        } catch (e) {
-          console.error('[Auth Callback Handler] location.replace failed:', e);
         }
-
-        // Method 2: Location href (backup)
-        setTimeout(() => {
-          window.location.href = '/';
-        }, 100);
-
-        // Method 3: Meta refresh (ultimate backup)
-        const meta = document.createElement('meta');
-        meta.httpEquiv = 'refresh';
-        meta.content = '0;url=/';
-        document.head.appendChild(meta);
-
-        // Method 4: Click a hidden link (nuclear option)
-        setTimeout(() => {
-          const link = document.createElement('a');
-          link.href = '/';
-          link.style.display = 'none';
-          document.body.appendChild(link);
-          link.click();
-        }, 200);
       })();
     </script>
   </head>

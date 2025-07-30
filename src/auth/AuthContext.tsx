@@ -50,6 +50,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       try {
         console.log('AuthContext - Initializing auth...');
 
+        // Check if we have OAuth tokens in the URL hash (from auth callback redirect)
+        if (window.location.hash && window.location.hash.includes('access_token')) {
+          console.log('AuthContext - OAuth tokens detected in URL, processing...');
+          // Give Supabase time to process the OAuth tokens
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+          // Clean up the URL after Supabase processes the tokens
+          window.history.replaceState(null, '', window.location.pathname);
+        }
+
         // Check if we just came from auth callback (stored by static HTML)
         const authDataKey = 'sb-cbopynuvhcymbumjnvay-auth-token';
         const storedAuth = localStorage.getItem(authDataKey);
