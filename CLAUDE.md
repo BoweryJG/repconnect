@@ -254,7 +254,7 @@ Build command: `CI=false GENERATE_SOURCEMAP=false npm run build`
 - **Strategists** (4): Hunter, Closer, Educator, Strategist
 - **Medical Specialists** (6): Dr. Foster, Dr. Stern, Dr. Martinez, Dr. Chen, Jake Thompson, Marcus Rodriguez
 - **Voice Representatives** (2 exclusive): Marcus, Sarah
-- **Procedure Experts** (25+): Toxi, Fillmore, Dewey, Blazer, Chilly, Steely, Straightz, Shimmer, and many others
+- **Procedure Experts** (25+): Dr. Bella Contour, Dr. Em Pulse, Dr. RF Wave, Dr. Robo Dental, and many others
 - **General** (3): Harvey AI, Victor, Diana
 
 ### B2B Medical Device Sales Knowledge Domains
