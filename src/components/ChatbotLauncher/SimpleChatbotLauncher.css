@@ -233,6 +233,17 @@
   background: color-mix(in srgb, var(--agent-color, #3b82f6) 20%, white);
 }
 
+.voice-action.locked {
+  color: #9ca3af;
+  background: #f3f4f6;
+  cursor: pointer;
+}
+
+.voice-action.locked:hover {
+  background: #e5e7eb;
+  color: #6b7280;
+}
+
 .agent-avatar {
   width: 48px;
   height: 48px;

@@ -1,7 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ChatBubbleOutline, Close, Message, Phone } from '@mui/icons-material';
-import { IconButton } from '@mui/material';
+import { ChatBubbleOutline, Close, Message, Phone, Lock } from '@mui/icons-material';
+import { IconButton, Tooltip } from '@mui/material';
 import { Agent } from './types';
+import { useAuth } from '../../auth/useAuth';
+import { useRepXTier, checkFeatureAccess } from '../../unified-auth';
 import './SimpleChatbotLauncher.css';
 
 interface SimpleChatbotLauncherProps {
@@ -21,6 +23,11 @@ const SimpleChatbotLauncher: React.FC<SimpleChatbotLauncherProps> = ({
   const [isOpen, setIsOpen] = useState(false);
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const { user } = useAuth();
+  const { tier } = useRepXTier(user?.id);
+
+  // Check if user has voice access (Rep2+)
+  const hasVoiceAccess = checkFeatureAccess(tier, 'phoneAccess');
 
   // Handle click outside to close
   useEffect(() => {
@@ -49,6 +56,11 @@ const SimpleChatbotLauncher: React.FC<SimpleChatbotLauncherProps> = ({
 
   const handleAgentSelect = (agent: Agent, mode: 'chat' | 'voice') => {
     if (agent.available) {
+      // Check voice access for voice mode
+      if (mode === 'voice' && !hasVoiceAccess) {
+        // For now, just prevent selection - we'll add visual feedback in Phase 3.3
+        return;
+      }
       onAgentSelect(agent, mode);
       setIsOpen(false);
     }
@@ -117,14 +129,27 @@ const SimpleChatbotLauncher: React.FC<SimpleChatbotLauncherProps> = ({
                       >
                         <Message sx={{ fontSize: 18 }} />
                       </IconButton>
-                      <IconButton
-                        size="small"
-                        onClick={() => handleAgentSelect(agent, 'voice')}
-                        title="Voice call with agent"
-                        className="action-button voice-action"
-                      >
-                        <Phone sx={{ fontSize: 18 }} />
-                      </IconButton>
+                      {hasVoiceAccess ? (
+                        <IconButton
+                          size="small"
+                          onClick={() => handleAgentSelect(agent, 'voice')}
+                          title="Voice call with agent"
+                          className="action-button voice-action"
+                        >
+                          <Phone sx={{ fontSize: 18 }} />
+                        </IconButton>
+                      ) : (
+                        <Tooltip title={`Voice calls require Rep² or higher (currently ${tier})`}>
+                          <IconButton
+                            size="small"
+                            onClick={() => (window.location.href = '/upgrade')}
+                            title="Upgrade for voice calls"
+                            className="action-button voice-action locked"
+                          >
+                            <Lock sx={{ fontSize: 18 }} />
+                          </IconButton>
+                        </Tooltip>
+                      )}
                     </div>
                   )}
                 </div>

@@ -3,6 +3,7 @@ import { WebRTCClient } from '../../services/webRTCClient';
 import { useAuth } from '../../auth/useAuth';
 import { trialVoiceService } from '../../services/trialVoiceService';
 import { api } from '../../config/api';
+import { useRepXTier, checkFeatureAccess } from '../../unified-auth';
 import SimpleChatModal from './SimpleChatModal';
 import './SimpleVoiceModal.css';
 
@@ -24,6 +25,9 @@ export default function SimpleVoiceModal({
   agentId,
 }: SimpleVoiceModalProps) {
   const { user, session } = useAuth();
+  const { tier } = useRepXTier(user?.id);
+  const hasVoiceAccess = checkFeatureAccess(tier, 'phoneAccess');
+
   const [isCallActive, setIsCallActive] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState<
@@ -266,6 +270,20 @@ export default function SimpleVoiceModal({
   };
 
   if (!isOpen) return null;
+
+  // Check voice access first - redirect to text chat if no access
+  if (!hasVoiceAccess && !isTrialSession) {
+    return (
+      <SimpleChatModal
+        isOpen={isOpen}
+        onClose={onClose}
+        agentName={agentName}
+        agentAvatar={agentAvatar}
+        agentRole={agentRole}
+        agentId={agentId}
+      />
+    );
+  }
 
   // Show text chat if user switched
   if (showTextChat) {
