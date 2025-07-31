@@ -192,6 +192,32 @@
   color: #ef4444;
 }
 
+/* Microphone Error */
+.microphone-error {
+  margin: 24px 0;
+  padding: 16px;
+  background: #fee2e2;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.microphone-error .error-message {
+  margin: 0 0 12px 0;
+  color: #dc2626;
+  font-weight: 500;
+}
+
+.button.secondary {
+  background: #f5f5f5;
+  color: #333;
+}
+
+.button.secondary:hover {
+  background: #e0e0e0;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
 /* Controls */
 .controls {
   display: flex;

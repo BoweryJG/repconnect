@@ -305,3 +305,5 @@ export function ChatModal({
     </Dialog>
   );
 }
+
+export default ChatModal;

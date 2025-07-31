@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { WebRTCClient } from '../../services/webRTCClient';
 import { useAuth } from '../../auth/useAuth';
 import { trialVoiceService } from '../../services/trialVoiceService';
+import SimpleChatModal from './SimpleChatModal';
 import './SimpleVoiceModal.css';
 
 interface SimpleVoiceModalProps {
@@ -30,6 +31,8 @@ export default function SimpleVoiceModal({
   const [isTrialSession, setIsTrialSession] = useState(false);
   const [remainingTime, setRemainingTime] = useState(300);
   const [showTrialExpired, setShowTrialExpired] = useState(false);
+  const [microphoneError, setMicrophoneError] = useState<string | null>(null);
+  const [showTextChat, setShowTextChat] = useState(false);
 
   const webRTCClientRef = useRef<WebRTCClient | null>(null);
   const remainingTimeInterval = useRef<NodeJS.Timeout | null>(null);
@@ -103,18 +106,36 @@ export default function SimpleVoiceModal({
     }
   }, [agentName, user, session, agentId, handleTrialExpired]);
 
-  const startCall = async () => {
+  const startCall = useCallback(async () => {
     try {
+      setMicrophoneError(null);
+
       if (!webRTCClientRef.current) {
         await initializeWebRTC();
       }
-      await webRTCClientRef.current!.startAudio();
-      setIsCallActive(true);
+
+      // Request microphone permission and start audio
+      try {
+        await webRTCClientRef.current!.startAudio();
+        setIsCallActive(true);
+      } catch (audioError: any) {
+        // Handle microphone permission denied
+        if (audioError.name === 'NotAllowedError' || audioError.name === 'PermissionDeniedError') {
+          setMicrophoneError(
+            'Microphone access denied. Please enable microphone permissions to use voice chat.'
+          );
+        } else if (audioError.name === 'NotFoundError') {
+          setMicrophoneError('No microphone found. Please connect a microphone to use voice chat.');
+        } else {
+          setMicrophoneError('Failed to access microphone. Please check your audio settings.');
+        }
+        throw audioError;
+      }
     } catch (error) {
       console.error('Failed to start call:', error);
       setConnectionStatus('error');
     }
-  };
+  }, [initializeWebRTC]);
 
   const toggleMute = () => {
     setIsMuted(!isMuted);
@@ -124,6 +145,13 @@ export default function SimpleVoiceModal({
       webRTCClientRef.current.stopAudio();
     }
   };
+
+  // Auto-start call when modal opens
+  useEffect(() => {
+    if (isOpen && !isCallActive && connectionStatus === 'idle' && !microphoneError) {
+      startCall();
+    }
+  }, [isOpen, isCallActive, connectionStatus, microphoneError, startCall]);
 
   useEffect(() => {
     return () => {
@@ -143,6 +171,20 @@ export default function SimpleVoiceModal({
   };
 
   if (!isOpen) return null;
+
+  // Show text chat if user switched
+  if (showTextChat) {
+    return (
+      <SimpleChatModal
+        isOpen={isOpen}
+        onClose={onClose}
+        agentName={agentName}
+        agentAvatar={agentAvatar}
+        agentRole={agentRole}
+        agentId={agentId}
+      />
+    );
+  }
 
   return (
     <div className="voice-modal-overlay" onClick={onClose}>
@@ -189,10 +231,22 @@ export default function SimpleVoiceModal({
                 <p className="status-text">
                   {connectionStatus === 'idle' && 'Ready to start voice conversation'}
                   {connectionStatus === 'connecting' && 'Connecting to voice service...'}
-                  {connectionStatus === 'connected' && 'Connected - You can speak now!'}
+                  {connectionStatus === 'connected' &&
+                    !microphoneError &&
+                    'Connected - You can speak now!'}
                   {connectionStatus === 'error' && 'Connection error - Please try again'}
+                  {microphoneError && connectionStatus !== 'connecting' && microphoneError}
                 </p>
               </div>
+
+              {microphoneError && (
+                <div className="microphone-error">
+                  <p className="error-message">🎤 {microphoneError}</p>
+                  <button className="button secondary" onClick={() => setShowTextChat(true)}>
+                    Switch to Text Chat
+                  </button>
+                </div>
+              )}
 
               <div className="controls">
                 {!isCallActive ? (
