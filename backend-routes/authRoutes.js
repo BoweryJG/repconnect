@@ -45,16 +45,18 @@ router.post('/auth/login', async (req, res) => {
     // Set httpOnly cookie
     res.cookie('session_token', sessionToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      secure: true,
+      sameSite: 'none',
+      domain: '.repspheres.com',
       maxAge: 30 * 60 * 1000, // 30 minutes
     });
 
     // Set last activity cookie
     res.cookie('last_activity', Date.now().toString(), {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      secure: true,
+      sameSite: 'none',
+      domain: '.repspheres.com',
       maxAge: 30 * 60 * 1000,
     });
 
@@ -75,8 +77,8 @@ router.post('/auth/login', async (req, res) => {
 // Logout and clear cookies
 router.post('/auth/logout', (req, res) => {
   try {
-    res.clearCookie('session');
-    res.clearCookie('last_activity');
+    res.clearCookie('session_token', { domain: '.repspheres.com' });
+    res.clearCookie('last_activity', { domain: '.repspheres.com' });
     res.json({ success: true, message: 'Logged out successfully' });
   } catch (error) {
     logger.error('Logout error:', error);
@@ -87,7 +89,7 @@ router.post('/auth/logout', (req, res) => {
 // Get current user from session cookie
 router.get('/auth/me', async (req, res) => {
   try {
-    const sessionToken = req.cookies.session;
+    const sessionToken = req.cookies.session_token;
 
     if (!sessionToken) {
       return res.status(401).json({ error: 'No session found' });
@@ -99,8 +101,8 @@ router.get('/auth/me', async (req, res) => {
     // Check if session is still valid (30 minutes)
     const sessionAge = Date.now() - sessionData.iat;
     if (sessionAge > 30 * 60 * 1000) {
-      res.clearCookie('session');
-      res.clearCookie('last_activity');
+      res.clearCookie('session_token', { domain: '.repspheres.com' });
+      res.clearCookie('last_activity', { domain: '.repspheres.com' });
       return res.status(401).json({ error: 'Session expired' });
     }
 
@@ -112,16 +114,17 @@ router.get('/auth/me', async (req, res) => {
 
     if (error || !user) {
       logger.error('Token verification failed:', error);
-      res.clearCookie('session');
-      res.clearCookie('last_activity');
+      res.clearCookie('session_token', { domain: '.repspheres.com' });
+      res.clearCookie('last_activity', { domain: '.repspheres.com' });
       return res.status(401).json({ error: 'Invalid session' });
     }
 
     // Update last activity
     res.cookie('last_activity', Date.now().toString(), {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      secure: true,
+      sameSite: 'none',
+      domain: '.repspheres.com',
       maxAge: 30 * 60 * 1000,
     });
 
@@ -135,8 +138,8 @@ router.get('/auth/me', async (req, res) => {
     });
   } catch (error) {
     if (error.name === 'JsonWebTokenError' || error.name === 'TokenExpiredError') {
-      res.clearCookie('session');
-      res.clearCookie('last_activity');
+      res.clearCookie('session_token', { domain: '.repspheres.com' });
+      res.clearCookie('last_activity', { domain: '.repspheres.com' });
       return res.status(401).json({ error: 'Invalid or expired session' });
     }
 
@@ -148,7 +151,7 @@ router.get('/auth/me', async (req, res) => {
 // Refresh session
 router.post('/auth/refresh', async (req, res) => {
   try {
-    const sessionToken = req.cookies.session;
+    const sessionToken = req.cookies.session_token;
 
     if (!sessionToken) {
       return res.status(401).json({ error: 'No session found' });
@@ -163,8 +166,8 @@ router.post('/auth/refresh', async (req, res) => {
 
     if (error || !data.session) {
       logger.error('Token refresh failed:', error);
-      res.clearCookie('session');
-      res.clearCookie('last_activity');
+      res.clearCookie('session_token', { domain: '.repspheres.com' });
+      res.clearCookie('last_activity', { domain: '.repspheres.com' });
       return res.status(401).json({ error: 'Failed to refresh session' });
     }
 
@@ -183,17 +186,19 @@ router.post('/auth/refresh', async (req, res) => {
     });
 
     // Update cookies
-    res.cookie('session', newSessionToken, {
+    res.cookie('session_token', newSessionToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      secure: true,
+      sameSite: 'none',
+      domain: '.repspheres.com',
       maxAge: 30 * 60 * 1000,
     });
 
     res.cookie('last_activity', Date.now().toString(), {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      secure: true,
+      sameSite: 'none',
+      domain: '.repspheres.com',
       maxAge: 30 * 60 * 1000,
     });
 
