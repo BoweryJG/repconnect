@@ -34,6 +34,9 @@ class WebSocketChatService {
   private typingHandlers = new Map<string, (_isTyping: boolean) => void>();
   private authSubscription: any = null;
   private currentSession: any = null;
+  private reconnectTimer: NodeJS.Timeout | null = null;
+  private lastSuccessfulConnection = 0;
+  private connectionQuality: 'good' | 'poor' | 'unknown' = 'unknown';
 
   constructor() {
     this.setupAuthListener();
@@ -126,10 +129,7 @@ class WebSocketChatService {
           appName: 'repconnect',
         },
         transports: ['websocket'],
-        reconnection: true,
-        reconnectionDelay: 1000,
-        reconnectionDelayMax: 5000,
-        reconnectionAttempts: this.maxReconnectAttempts,
+        reconnection: false, // We'll handle reconnection manually for better control
       });
 
       this.setupEventHandlers();
@@ -145,11 +145,28 @@ class WebSocketChatService {
       // console.log('WebSocket: Connected to agent chat');
       this.isConnected = true;
       this.reconnectAttempts = 0;
+      this.lastSuccessfulConnection = Date.now();
+      this.connectionQuality = 'good';
+
+      // Clear any pending reconnection timer
+      if (this.reconnectTimer) {
+        clearTimeout(this.reconnectTimer);
+        this.reconnectTimer = null;
+      }
     });
 
-    this.socket.on('disconnect', () => {
+    this.socket.on('disconnect', (reason) => {
       // console.log('WebSocket: Disconnected from agent chat');
       this.isConnected = false;
+
+      // Handle different disconnect reasons
+      if (reason === 'io server disconnect') {
+        // Server disconnected us, try to reconnect
+        this.scheduleReconnect();
+      } else if (reason === 'transport close' || reason === 'transport error') {
+        // Network issue, use intelligent reconnection
+        this.scheduleReconnect();
+      }
     });
 
     this.socket.on('error', (error: any) => {
@@ -192,16 +209,6 @@ class WebSocketChatService {
     // Handle typing indicators
     this.socket.on('agent:typing', (data: AgentTyping) => {
       this.typingHandlers.forEach((handler) => handler(data.isTyping));
-    });
-
-    // Handle reconnection
-    this.socket.on('reconnect_attempt', (attemptNumber) => {
-      this.reconnectAttempts = attemptNumber;
-      // console.log(`WebSocket: Reconnection attempt ${attemptNumber}`);
-    });
-
-    this.socket.on('reconnect_failed', () => {
-      console.error('WebSocket: Failed to reconnect after maximum attempts');
     });
   }
 
@@ -304,7 +311,53 @@ class WebSocketChatService {
     }
   }
 
+  private scheduleReconnect() {
+    // Don't reconnect if already attempting or if manually disconnected
+    if (this.reconnectTimer || !this.currentSession) return;
+
+    // Calculate reconnect delay with exponential backoff
+    const baseDelay = 1000; // 1 second
+    const maxDelay = 30000; // 30 seconds
+    const jitter = Math.random() * 1000; // 0-1 second random jitter
+
+    // Exponential backoff: 1s, 2s, 4s, 8s, 16s, 30s (max)
+    let delay = Math.min(baseDelay * Math.pow(2, this.reconnectAttempts), maxDelay) + jitter;
+
+    // If connection was good previously, try reconnecting faster
+    if (this.connectionQuality === 'good' && this.reconnectAttempts === 0) {
+      delay = 500 + jitter; // Quick first retry
+    }
+
+    // If we've been disconnected for a long time, reduce frequency
+    const timeSinceLastConnection = Date.now() - this.lastSuccessfulConnection;
+    if (timeSinceLastConnection > 5 * 60 * 1000) {
+      // 5 minutes
+      delay = maxDelay;
+    }
+
+    // console.log(`WebSocket: Scheduling reconnect in ${Math.round(delay)}ms (attempt ${this.reconnectAttempts + 1})`);
+
+    this.reconnectTimer = setTimeout(() => {
+      this.reconnectTimer = null;
+      this.reconnectAttempts++;
+
+      if (this.reconnectAttempts <= this.maxReconnectAttempts) {
+        this.reconnect();
+      } else {
+        // Mark connection as poor quality after max attempts
+        this.connectionQuality = 'poor';
+        console.error('WebSocket: Max reconnection attempts reached');
+      }
+    }, delay);
+  }
+
   public disconnect() {
+    // Clear any pending reconnection
+    if (this.reconnectTimer) {
+      clearTimeout(this.reconnectTimer);
+      this.reconnectTimer = null;
+    }
+
     if (this.socket) {
       this.socket.disconnect();
       this.socket = null;
@@ -328,9 +381,24 @@ class WebSocketChatService {
     return this.isConnected;
   }
 
+  public getConnectionStatus(): {
+    connected: boolean;
+    quality: 'good' | 'poor' | 'unknown';
+    reconnectAttempts: number;
+  } {
+    return {
+      connected: this.isConnected,
+      quality: this.connectionQuality,
+      reconnectAttempts: this.reconnectAttempts,
+    };
+  }
+
   public async reconnect() {
     // console.log('WebSocket: Reconnecting...');
     this.disconnect();
+
+    // Reset reconnection attempts for manual reconnect
+    this.reconnectAttempts = 0;
 
     // Small delay to ensure clean disconnect
     await new Promise((resolve) => setTimeout(resolve, 100));
