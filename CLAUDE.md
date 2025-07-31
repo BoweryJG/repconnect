@@ -25,7 +25,7 @@ npm run lint           # ESLint checks
 npm run typecheck      # TypeScript type checking (if configured)
 ```
 
-## Production Readiness (100% Complete as of 2025-01-31)
+## Production Readiness (100% Complete as of 2025-07-31)
 
 ### Performance Optimizations Implemented
 
@@ -42,6 +42,7 @@ npm run typecheck      # TypeScript type checking (if configured)
 - **Loading States**: Skeleton loaders and progress indicators
 - **API Retry Logic**: Exponential backoff for failed requests
 - **User Feedback**: Toast notifications for errors/success
+- **Rate Limiting**: Client-side tracking matches osbackend (100/15min general, 10/15min AI)
 
 ## Architecture Patterns
 
@@ -520,8 +521,20 @@ const agents = response.data.agents;
 15. **src/services/websocketChatService.ts** - WebSocket with reconnection
 16. **public/index.html** - Favicon and meta tag configuration
 17. **netlify.toml** - Deployment configuration
+18. **src/utils/rateLimiter.ts** - Rate limiting utility
+19. **src/components/RateLimitFeedback.tsx** - Rate limit UI feedback
 
-## Recent Updates (2025-01-31)
+## Recent Updates (2025-07-31)
+
+### Rate Limiting Implementation
+
+- ✅ Client-side rate limiting utility (`src/utils/rateLimiter.ts`)
+- ✅ Integration with agentChatAPI for pre-flight checks
+- ✅ UI feedback component with progress bar and reset timer
+- ✅ Rate limit error handling in chat modals
+- ✅ Matches osbackend: 100 req/15min (general), 10 req/15min (AI)
+
+## Previous Updates (2025-01-31)
 
 ### Conversational Agents Plan Implementation
 

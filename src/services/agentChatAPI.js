@@ -3,6 +3,7 @@
 
 import { supabase } from '../lib/supabase';
 import { logger } from '../utils/prodLogger';
+import { rateLimiter, isAIEndpoint, RateLimitError } from '../utils/rateLimiter';
 
 // AgentChatAPI Module Loading
 
@@ -108,6 +109,13 @@ class AgentChatAPI {
           ? `${this.baseURL}/api/repconnect/chat/message`
           : `${this.baseURL}/api/repconnect/chat/public/message`;
 
+        // Check rate limit before making request
+        const isAI = isAIEndpoint(endpoint);
+        if (!rateLimiter.checkLimit(endpoint, isAI)) {
+          const status = rateLimiter.getStatus(isAI);
+          throw new RateLimitError(status.resetIn, isAI);
+        }
+
         // Use RepConnect chat endpoint with credentials
         response = await fetch(endpoint, {
           method: 'POST',
@@ -118,6 +126,9 @@ class AgentChatAPI {
         });
 
         clearTimeout(timeoutId);
+
+        // Update rate limiter from response headers
+        rateLimiter.updateFromHeaders(response.headers);
       } catch (fetchError) {
         clearTimeout(timeoutId);
         if (fetchError.name === 'AbortError') {
@@ -161,6 +172,17 @@ class AgentChatAPI {
         timestamp: new Date().toISOString(),
       };
     } catch (error) {
+      // Check if it's a rate limit error
+      if (error instanceof RateLimitError) {
+        return {
+          success: false,
+          error: error.message,
+          message: error.message,
+          rateLimited: true,
+          resetIn: error.resetIn,
+        };
+      }
+
       // Check if it's a network error
       if (error instanceof TypeError && error.message === 'Failed to fetch') {
         // agentChatAPI: This is a network/CORS error. The request never reached the server.
@@ -182,6 +204,13 @@ class AgentChatAPI {
       // For now, always use public streaming endpoint until auth is properly configured
       // TODO: Switch to authenticated endpoint when backend auth is fixed
       const endpoint = `${this.baseURL}/api/repconnect/chat/public/stream`;
+
+      // Check rate limit before making request
+      const isAI = isAIEndpoint(endpoint);
+      if (!rateLimiter.checkLimit(endpoint, isAI)) {
+        const status = rateLimiter.getStatus(isAI);
+        throw new RateLimitError(status.resetIn, isAI);
+      }
 
       const headers = await this.getAuthHeaders(true); // Always skip auth for public streaming
 

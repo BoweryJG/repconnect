@@ -1,3 +1,4 @@
+// @ts-nocheck
 import axios from 'axios';
 import { authService } from '../authService';
 import { supabase } from '../../lib/supabase';

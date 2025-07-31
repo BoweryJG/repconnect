@@ -19,6 +19,7 @@ import './SimpleChatModal.css';
 import { logger } from '../../utils/prodLogger';
 import { showError } from '../UserFeedback';
 import { withRetry } from '../../utils/apiRetry';
+import { RateLimitFeedback } from '../RateLimitFeedback';
 
 interface ChatModalProps {
   isOpen: boolean;
@@ -52,6 +53,7 @@ const ChatModalComponent: React.FC<ChatModalProps> = ({
   const [isConnected, setIsConnected] = useState(false);
   const [isAgentTyping, setIsAgentTyping] = useState(false);
   const [streamingMessageId, setStreamingMessageId] = useState<string | null>(null);
+  const [isRateLimited, setIsRateLimited] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const typingTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
@@ -197,12 +199,20 @@ const ChatModalComponent: React.FC<ChatModalProps> = ({
           { maxRetries: 2, baseDelay: 1000 }
         );
       }
-    } catch (error) {
+    } catch (error: any) {
       logger.error('Failed to send message', error, 'SimpleChatModal');
-      showError('Failed to send message. Please try again.');
 
-      // Remove the placeholder message on error
-      setMessages((prev) => prev.filter((msg) => msg.id !== agentMessageId));
+      // Check if it's a rate limit error
+      if (error.name === 'RateLimitError') {
+        setIsRateLimited(true);
+        setMessages((prev) =>
+          prev.map((msg) => (msg.id === agentMessageId ? { ...msg, content: error.message } : msg))
+        );
+      } else {
+        showError('Failed to send message. Please try again.');
+        // Remove the placeholder message on error
+        setMessages((prev) => prev.filter((msg) => msg.id !== agentMessageId));
+      }
     } finally {
       setIsLoading(false);
       setIsAgentTyping(false);
@@ -283,6 +293,9 @@ const ChatModalComponent: React.FC<ChatModalProps> = ({
         )}
         <div ref={messagesEndRef} />
       </DialogContent>
+
+      {/* Rate Limit Feedback */}
+      {isRateLimited && <RateLimitFeedback isAI={true} onReset={() => setIsRateLimited(false)} />}
 
       {/* Input */}
       <div className="chat-modal-input">

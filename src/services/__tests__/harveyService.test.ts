@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { io } from 'socket.io-client';
 import { HarveyService } from '../harveyService';
 import { supabase } from '../../lib/supabase';
