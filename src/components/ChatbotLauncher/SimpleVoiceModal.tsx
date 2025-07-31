@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { WebRTCClient } from '../../services/webRTCClient';
 import { useAuth } from '../../auth/useAuth';
 import { trialVoiceService } from '../../services/trialVoiceService';
+import { api } from '../../config/api';
 import SimpleChatModal from './SimpleChatModal';
 import './SimpleVoiceModal.css';
 
@@ -41,6 +42,13 @@ export default function SimpleVoiceModal({
       timestamp: Date;
     }>
   >([]);
+  const [repxTier, setRepxTier] = useState<{
+    tier: string;
+    tierName: string;
+    agentMinutes: number;
+    agentSeconds: number;
+    unlimited: boolean;
+  } | null>(null);
 
   const webRTCClientRef = useRef<WebRTCClient | null>(null);
   const remainingTimeInterval = useRef<NodeJS.Timeout | null>(null);
@@ -57,18 +65,28 @@ export default function SimpleVoiceModal({
     setConnectionStatus('idle');
   }, [isTrialSession]);
 
-  const handleTrialExpired = useCallback(() => {
+  const handleSessionExpired = useCallback(() => {
     setShowTrialExpired(true);
     endCall();
   }, [endCall]);
 
   useEffect(() => {
-    if (isTrialSession && isCallActive) {
+    if ((isTrialSession || (repxTier && !repxTier.unlimited)) && isCallActive) {
+      const startTime = Date.now();
       remainingTimeInterval.current = setInterval(() => {
-        const remaining = trialVoiceService.getRemainingTime();
-        setRemainingTime(remaining);
-        if (remaining <= 0) {
-          handleTrialExpired();
+        if (isTrialSession) {
+          const remaining = trialVoiceService.getRemainingTime();
+          setRemainingTime(remaining);
+          if (remaining <= 0) {
+            handleSessionExpired();
+          }
+        } else if (repxTier && !repxTier.unlimited) {
+          const elapsed = Math.floor((Date.now() - startTime) / 1000);
+          const remaining = repxTier.agentSeconds - elapsed;
+          setRemainingTime(Math.max(0, remaining));
+          if (remaining <= 0) {
+            handleSessionExpired();
+          }
         }
       }, 1000);
     }
@@ -78,7 +96,7 @@ export default function SimpleVoiceModal({
         clearInterval(remainingTimeInterval.current);
       }
     };
-  }, [isTrialSession, isCallActive, handleTrialExpired]);
+  }, [isTrialSession, isCallActive, handleSessionExpired, repxTier]);
 
   const initializeWebRTC = useCallback(async () => {
     try {
@@ -88,7 +106,7 @@ export default function SimpleVoiceModal({
       if (!isAuthenticated && agentId) {
         const trialSession = await trialVoiceService.startTrialVoiceSession(
           agentId,
-          handleTrialExpired
+          handleSessionExpired
         );
         setIsTrialSession(true);
         setRemainingTime(trialSession.session.max_duration_seconds);
@@ -149,7 +167,7 @@ export default function SimpleVoiceModal({
       console.error('Failed to initialize WebRTC:', error);
       setConnectionStatus('error');
     }
-  }, [agentName, user, session, agentId, handleTrialExpired]);
+  }, [agentName, user, session, agentId, handleSessionExpired]);
 
   const startCall = useCallback(async () => {
     try {
@@ -190,6 +208,31 @@ export default function SimpleVoiceModal({
       webRTCClientRef.current.stopAudio();
     }
   };
+
+  // Fetch RepX tier limits when modal opens
+  useEffect(() => {
+    const fetchRepxTier = async () => {
+      if (user && session) {
+        try {
+          const response = await api.get('/api/repx/agent-time-limit');
+          if (response.data.success) {
+            setRepxTier(response.data.data);
+            // Set initial remaining time based on tier
+            const seconds = response.data.data.agentSeconds;
+            setRemainingTime(seconds === -1 ? 999999 : seconds); // Set to large number if unlimited
+          }
+        } catch (error) {
+          console.error('Failed to fetch RepX tier:', error);
+          // Default to 5 minutes if fetch fails
+          setRemainingTime(300);
+        }
+      }
+    };
+
+    if (isOpen) {
+      fetchRepxTier();
+    }
+  }, [isOpen, user, session]);
 
   // Auto-start call when modal opens
   useEffect(() => {
@@ -252,8 +295,16 @@ export default function SimpleVoiceModal({
               <p>{agentRole}</p>
             </div>
           </div>
-          {isTrialSession && isCallActive && (
-            <div className="trial-timer">⏱️ Trial: {formatTime(remainingTime)}</div>
+          {isCallActive && (
+            <div className="trial-timer">
+              {repxTier?.unlimited ? (
+                <>✨ {repxTier.tierName}: Unlimited conversation</>
+              ) : (
+                <>
+                  ⏱️ {isTrialSession ? 'Trial' : repxTier?.tierName}: {formatTime(remainingTime)}
+                </>
+              )}
+            </div>
           )}
         </div>
 
@@ -261,16 +312,23 @@ export default function SimpleVoiceModal({
           {showTrialExpired ? (
             <div className="trial-expired">
               <div className="expired-icon">⏰</div>
-              <h3>Trial Session Ended</h3>
+              <h3>{isTrialSession ? 'Trial Session' : 'Time Limit'} Ended</h3>
               <p>
-                Your 5-minute trial session has ended. Upgrade to Pro for unlimited voice
-                conversations.
+                {isTrialSession
+                  ? 'Your 5-minute trial session has ended. Upgrade to Pro for unlimited voice conversations.'
+                  : repxTier
+                    ? `Your ${repxTier.tierName} ${repxTier.agentMinutes}-minute conversation limit has been reached. ${
+                        repxTier.tier !== 'repx5'
+                          ? 'Upgrade to Rep⁵ for unlimited conversations!'
+                          : ''
+                      }`
+                    : 'Your conversation time has ended.'}
               </p>
               <button
                 className="button primary"
                 onClick={() => (window.location.href = '/upgrade')}
               >
-                Upgrade to Pro
+                {repxTier?.tier === 'repx5' ? 'Start New Conversation' : 'Upgrade Now'}
               </button>
             </div>
           ) : (
@@ -343,9 +401,18 @@ export default function SimpleVoiceModal({
                 )}
               </div>
 
-              {isTrialSession && !isCallActive && (
+              {((isTrialSession && !isCallActive) ||
+                (repxTier && !repxTier.unlimited && !isCallActive)) && (
                 <div className="trial-notice">
-                  ⏱️ Free 5-minute trial session. Sign up for unlimited voice calls!
+                  {isTrialSession ? (
+                    <>⏱️ Free 5-minute trial session. Sign up for unlimited voice calls!</>
+                  ) : (
+                    <>
+                      ⏱️ {repxTier?.tierName}: {repxTier?.agentMinutes} minute
+                      {repxTier?.agentMinutes !== 1 ? 's' : ''} per conversation.
+                      {repxTier?.tier !== 'repx5' && ' Upgrade to Rep⁵ for unlimited!'}
+                    </>
+                  )}
                 </div>
               )}
             </>
