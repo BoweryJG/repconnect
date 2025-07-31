@@ -1,4 +1,4 @@
-import { initializeSupabase } from '../unified-auth';
+import { initializeSupabase } from '../unified-auth/src/unifiedSupabase';
 
 /**
  * Initialize unified auth with RepConnect environment variables

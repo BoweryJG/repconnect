@@ -1,5 +1,5 @@
 import React from 'react';
-import { UnifiedAuthProvider } from '../unified-auth';
+import { UnifiedAuthProvider } from '../unified-auth/src/UnifiedAuthContext';
 
 interface UnifiedAuthWrapperProps {
   children: React.ReactNode;

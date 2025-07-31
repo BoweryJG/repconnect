@@ -2,8 +2,22 @@ import { RepXTier } from './types';
 import type { FeatureAccess } from './types';
 
 // Backend URL - must be provided by environment variable
-export const DEFAULT_BACKEND_URL =
-  import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || '';
+// Support both Vite (import.meta.env) and CRA (process.env)
+declare const process: any;
+
+export const DEFAULT_BACKEND_URL = (() => {
+  // Try CRA environment first (RepConnect, CRM)
+  if (typeof process !== 'undefined' && process.env) {
+    return (
+      process.env.REACT_APP_API_URL ||
+      process.env.REACT_APP_API_BASE_URL ||
+      process.env.REACT_APP_BACKEND_URL ||
+      ''
+    );
+  }
+  // Default to empty string if no env vars found
+  return '';
+})();
 
 // Feature access by tier
 export const TIER_FEATURES: Record<RepXTier, FeatureAccess> = {
