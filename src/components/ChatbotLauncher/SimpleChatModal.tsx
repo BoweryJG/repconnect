@@ -14,6 +14,7 @@ import { X, Send, Loader2, WifiOff, Wifi } from 'lucide-react';
 import { useAuth } from '../../auth/useAuth';
 import websocketChatService from '../../services/websocketChatService';
 import agentChatAPI from '../../services/agentChatAPI';
+import MessageContent from './MessageContent';
 import './SimpleChatModal.css';
 
 interface ChatModalProps {
@@ -48,6 +49,7 @@ export function ChatModal({
   const [isConnected, setIsConnected] = useState(false);
   const [isAgentTyping, setIsAgentTyping] = useState(false);
   const [useWebSocket, setUseWebSocket] = useState(true);
+  const [streamingMessageId, setStreamingMessageId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const typingTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
@@ -129,6 +131,7 @@ export function ChatModal({
       timestamp: new Date(),
     };
     setMessages((prev) => [...prev, agentMessage]);
+    setStreamingMessageId(agentMessageId);
 
     try {
       let fullResponse = '';
@@ -153,6 +156,7 @@ export function ChatModal({
           (message) => {
             setIsLoading(false);
             setIsAgentTyping(false);
+            setStreamingMessageId(null);
           },
           // onTyping handler
           (isTyping) => {
@@ -199,6 +203,7 @@ export function ChatModal({
     } finally {
       setIsLoading(false);
       setIsAgentTyping(false);
+      setStreamingMessageId(null);
     }
   }, [inputValue, isLoading, sessionId, agentId, user, useWebSocket]);
 
@@ -251,9 +256,10 @@ export function ChatModal({
         {messages.map((message) => (
           <div key={message.id} className={`chat-message ${message.isUser ? 'user' : 'agent'}`}>
             <div className="chat-message-bubble">
-              <Typography variant="body1" className="chat-message-text">
-                {message.content}
-              </Typography>
+              <MessageContent
+                content={message.content}
+                isStreaming={message.id === streamingMessageId}
+              />
               <Typography variant="caption" className="chat-message-time">
                 {formatTime(message.timestamp)}
               </Typography>
