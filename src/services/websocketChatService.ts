@@ -1,5 +1,6 @@
 import { io, Socket } from 'socket.io-client';
 import { supabase } from '../lib/supabase';
+import { logger } from '../utils/prodLogger';
 
 interface MessageChunk {
   conversationId: string;

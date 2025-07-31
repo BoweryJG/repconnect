@@ -16,6 +16,9 @@ import websocketChatService from '../../services/websocketChatService';
 import agentChatAPI from '../../services/agentChatAPI';
 import MessageContent from './MessageContent';
 import './SimpleChatModal.css';
+import { logger } from '../../utils/prodLogger';
+import { showError } from '../UserFeedback';
+import { withRetry } from '../../utils/apiRetry';
 
 interface ChatModalProps {
   isOpen: boolean;
@@ -67,7 +70,7 @@ const ChatModalComponent: React.FC<ChatModalProps> = ({
             setSessionId(conversationId);
           })
           .catch((error) => {
-            console.error('Failed to create conversation:', error);
+            logger.error('Failed to create conversation', error, 'SimpleChatModal');
             // Fallback to simple session ID
             setSessionId(`${agentId}-${Date.now()}`);
           });
@@ -173,32 +176,33 @@ const ChatModalComponent: React.FC<ChatModalProps> = ({
           }
         );
       } else {
-        // Fallback to REST API
-        await (agentChatAPI as any).streamMessage({
-          message: inputValue,
-          agentId: agentId!,
-          userId: user?.id || 'guest-' + Date.now(),
-          sessionId: sessionId,
-          onChunk: (chunk: string) => {
-            fullResponse += chunk;
-            // Update the agent message with accumulated response
-            setMessages((prev) =>
-              prev.map((msg) =>
-                msg.id === agentMessageId ? { ...msg, content: fullResponse } : msg
-              )
-            );
-          },
-        });
+        // Fallback to REST API with retry
+        await withRetry(
+          () =>
+            (agentChatAPI as any).streamMessage({
+              message: inputValue,
+              agentId: agentId!,
+              userId: user?.id || 'guest-' + Date.now(),
+              sessionId: sessionId,
+              onChunk: (chunk: string) => {
+                fullResponse += chunk;
+                // Update the agent message with accumulated response
+                setMessages((prev) =>
+                  prev.map((msg) =>
+                    msg.id === agentMessageId ? { ...msg, content: fullResponse } : msg
+                  )
+                );
+              },
+            }),
+          { maxRetries: 2, baseDelay: 1000 }
+        );
       }
     } catch (error) {
-      console.error('Failed to send message:', error);
-      const errorMessage: Message = {
-        id: `error-${Date.now()}`,
-        content: 'Sorry, I encountered an error. Please try again.',
-        isUser: false,
-        timestamp: new Date(),
-      };
-      setMessages((prev) => [...prev, errorMessage]);
+      logger.error('Failed to send message', error, 'SimpleChatModal');
+      showError('Failed to send message. Please try again.');
+
+      // Remove the placeholder message on error
+      setMessages((prev) => prev.filter((msg) => msg.id !== agentMessageId));
     } finally {
       setIsLoading(false);
       setIsAgentTyping(false);

@@ -2,6 +2,7 @@
 // Handles chat interactions with the agentbackend API
 
 import { supabase } from '../lib/supabase';
+import { logger } from '../utils/prodLogger';
 
 // AgentChatAPI Module Loading
 

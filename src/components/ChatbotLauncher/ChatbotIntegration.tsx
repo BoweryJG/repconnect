@@ -2,8 +2,10 @@ import React, { useState, useCallback, useEffect, lazy, Suspense } from 'react';
 import SimpleChatbotLauncher from './SimpleChatbotLauncher';
 import type { Agent } from './types';
 import { API_BASE_URL } from '../../config/api';
-import { CircularProgress } from '@mui/material';
 import { agentCache } from '../../utils/agentCache';
+import { ChatErrorBoundary } from '../ErrorBoundary';
+import { LoadingSpinner } from '../LoadingStates';
+import { logger } from '../../utils/prodLogger';
 
 // Lazy load modals for better performance
 const ChatModal = lazy(() =>
@@ -155,11 +157,8 @@ export const ChatbotIntegration: React.FC<ChatbotIntegrationProps> = ({
         // Agents converted successfully
         setAgents(convertedAgents);
       } catch (error: any) {
-        // Error loading agents - fallback to empty array
-        // Set empty agents array on error
+        logger.error('Failed to load agents', error, 'ChatbotIntegration');
         setAgents([]);
-      } finally {
-        // Agent loading completed
       }
     };
 
@@ -183,7 +182,7 @@ export const ChatbotIntegration: React.FC<ChatbotIntegrationProps> = ({
   // Render ChatbotIntegration
 
   return (
-    <>
+    <ChatErrorBoundary>
       <SimpleChatbotLauncher
         agents={agents}
         onAgentSelect={handleAgentSelect}
@@ -204,7 +203,7 @@ export const ChatbotIntegration: React.FC<ChatbotIntegrationProps> = ({
                 zIndex: 1000,
               }}
             >
-              <CircularProgress size={40} />
+              <LoadingSpinner size={40} message="Loading chat..." />
             </div>
           }
         >
@@ -227,7 +226,7 @@ export const ChatbotIntegration: React.FC<ChatbotIntegrationProps> = ({
           />
         </Suspense>
       )}
-    </>
+    </ChatErrorBoundary>
   );
 };
 

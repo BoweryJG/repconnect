@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef, Suspense } from 'react';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { UserFeedback } from './components/UserFeedback';
 import {
   Container,
   Button,
@@ -1500,6 +1501,7 @@ function App() {
     <ErrorBoundary>
       <ToastProvider>
         <AppContent />
+        <UserFeedback />
       </ToastProvider>
     </ErrorBoundary>
   );
