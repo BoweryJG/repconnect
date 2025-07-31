@@ -48,7 +48,6 @@ export function ChatModal({
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [isAgentTyping, setIsAgentTyping] = useState(false);
-  const [useWebSocket, setUseWebSocket] = useState(true);
   const [streamingMessageId, setStreamingMessageId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -94,7 +93,7 @@ export function ChatModal({
         websocketChatService.cleanupConversation(sessionId);
       }
     };
-  }, [isOpen, agentId, agentName, agentRole]);
+  }, [isOpen, agentId, agentName, agentRole, sessionId]);
 
   // Auto-scroll to bottom
   useEffect(() => {
@@ -137,7 +136,7 @@ export function ChatModal({
       let fullResponse = '';
 
       // Try WebSocket first if connected
-      if (useWebSocket && websocketChatService.isSocketConnected()) {
+      if (websocketChatService.isSocketConnected()) {
         await websocketChatService.sendMessage(
           sessionId,
           inputValue,
@@ -153,7 +152,7 @@ export function ChatModal({
             );
           },
           // onComplete handler
-          (message) => {
+          (_message) => {
             setIsLoading(false);
             setIsAgentTyping(false);
             setStreamingMessageId(null);
@@ -205,7 +204,7 @@ export function ChatModal({
       setIsAgentTyping(false);
       setStreamingMessageId(null);
     }
-  }, [inputValue, isLoading, sessionId, agentId, user, useWebSocket]);
+  }, [inputValue, isLoading, sessionId, agentId, user]);
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {

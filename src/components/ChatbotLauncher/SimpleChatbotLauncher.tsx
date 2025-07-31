@@ -21,7 +21,6 @@ const SimpleChatbotLauncher: React.FC<SimpleChatbotLauncherProps> = ({
   glowColor = '#3B82F6',
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
   const { tier } = useRepXTier(user?.id);
@@ -34,7 +33,6 @@ const SimpleChatbotLauncher: React.FC<SimpleChatbotLauncherProps> = ({
     const handleClickOutside = (event: MouseEvent) => {
       if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
         setIsOpen(false);
-        setSelectedAgent(null);
       }
     };
 
@@ -49,9 +47,6 @@ const SimpleChatbotLauncher: React.FC<SimpleChatbotLauncherProps> = ({
 
   const handleToggle = () => {
     setIsOpen(!isOpen);
-    if (!isOpen) {
-      setSelectedAgent(null);
-    }
   };
 
   const handleAgentSelect = (agent: Agent, mode: 'chat' | 'voice') => {

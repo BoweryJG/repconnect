@@ -29,9 +29,9 @@ class WebSocketChatService {
   private isConnected = false;
   private reconnectAttempts = 0;
   private maxReconnectAttempts = 5;
-  private messageHandlers = new Map<string, (message: ChatMessage) => void>();
-  private chunkHandlers = new Map<string, (chunk: string) => void>();
-  private typingHandlers = new Map<string, (isTyping: boolean) => void>();
+  private messageHandlers = new Map<string, (_message: ChatMessage) => void>();
+  private chunkHandlers = new Map<string, (_chunk: string) => void>();
+  private typingHandlers = new Map<string, (_isTyping: boolean) => void>();
   private authSubscription: any = null;
   private currentSession: any = null;
 
@@ -43,7 +43,7 @@ class WebSocketChatService {
   private setupAuthListener() {
     // Listen for auth state changes
     this.authSubscription = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log('WebSocket: Auth state changed:', event);
+      // console.log('WebSocket: Auth state changed:', event);
 
       // Handle different auth events
       switch (event) {
@@ -90,7 +90,7 @@ class WebSocketChatService {
       }
 
       if (session) {
-        console.log('WebSocket: Session refreshed successfully');
+        // console.log('WebSocket: Session refreshed successfully');
         this.currentSession = session;
         await this.reconnect();
       }
@@ -142,13 +142,13 @@ class WebSocketChatService {
     if (!this.socket) return;
 
     this.socket.on('connect', () => {
-      console.log('WebSocket: Connected to agent chat');
+      // console.log('WebSocket: Connected to agent chat');
       this.isConnected = true;
       this.reconnectAttempts = 0;
     });
 
     this.socket.on('disconnect', () => {
-      console.log('WebSocket: Disconnected from agent chat');
+      // console.log('WebSocket: Disconnected from agent chat');
       this.isConnected = false;
     });
 
@@ -197,7 +197,7 @@ class WebSocketChatService {
     // Handle reconnection
     this.socket.on('reconnect_attempt', (attemptNumber) => {
       this.reconnectAttempts = attemptNumber;
-      console.log(`WebSocket: Reconnection attempt ${attemptNumber}`);
+      // console.log(`WebSocket: Reconnection attempt ${attemptNumber}`);
     });
 
     this.socket.on('reconnect_failed', () => {
@@ -209,9 +209,9 @@ class WebSocketChatService {
     conversationId: string,
     message: string,
     agentId: string,
-    onChunk?: (chunk: string) => void,
-    onComplete?: (message: ChatMessage) => void,
-    onTyping?: (isTyping: boolean) => void
+    onChunk?: (_chunk: string) => void,
+    onComplete?: (_message: ChatMessage) => void,
+    onTyping?: (_isTyping: boolean) => void
   ) {
     if (!this.socket || !this.isConnected) {
       throw new Error('WebSocket not connected');
@@ -329,7 +329,7 @@ class WebSocketChatService {
   }
 
   public async reconnect() {
-    console.log('WebSocket: Reconnecting...');
+    // console.log('WebSocket: Reconnecting...');
     this.disconnect();
 
     // Small delay to ensure clean disconnect
