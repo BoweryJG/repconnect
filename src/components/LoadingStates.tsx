@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, CircularProgress, Skeleton, Typography } from '@mui/material';
+import { CircularProgress, Skeleton, Typography } from '@mui/material';
 
 interface LoadingSpinnerProps {
   size?: number;
@@ -7,14 +7,14 @@ interface LoadingSpinnerProps {
 }
 
 export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({ size = 40, message }) => (
-  <Box
-    sx={{
+  <div
+    style={{
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
-      gap: 2,
-      p: 3,
+      gap: '16px',
+      padding: '24px',
     }}
   >
     <CircularProgress size={size} />
@@ -23,7 +23,7 @@ export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({ size = 40, messa
         {message}
       </Typography>
     )}
-  </Box>
+  </div>
 );
 
 interface ChatLoadingProps {
@@ -31,42 +31,42 @@ interface ChatLoadingProps {
 }
 
 export const ChatMessageSkeleton: React.FC<ChatLoadingProps> = ({ count = 3 }) => (
-  <Box sx={{ p: 2 }}>
+  <div style={{ padding: '16px' }}>
     {Array.from({ length: count }).map((_, index) => (
-      <Box
+      <div
         key={index}
-        sx={{
+        style={{
           display: 'flex',
           alignItems: 'flex-start',
-          mb: 2,
+          marginBottom: '16px',
           flexDirection: index % 2 === 0 ? 'row' : 'row-reverse',
         }}
       >
         <Skeleton variant="circular" width={40} height={40} sx={{ mx: 1 }} />
-        <Box sx={{ flex: 1, maxWidth: '70%' }}>
+        <div style={{ flex: 1, maxWidth: '70%' }}>
           <Skeleton variant="rounded" height={60} sx={{ mb: 0.5 }} />
           <Skeleton variant="text" width={80} />
-        </Box>
-      </Box>
+        </div>
+      </div>
     ))}
-  </Box>
+  </div>
 );
 
 export const AgentCardSkeleton: React.FC = () => (
-  <Box sx={{ p: 2 }}>
-    <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+  <div style={{ padding: '16px' }}>
+    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
       <Skeleton variant="circular" width={48} height={48} sx={{ mr: 2 }} />
-      <Box sx={{ flex: 1 }}>
+      <div style={{ flex: 1 }}>
         <Skeleton variant="text" width="60%" height={24} />
         <Skeleton variant="text" width="40%" height={20} />
-      </Box>
-    </Box>
+      </div>
+    </div>
     <Skeleton variant="rounded" height={80} sx={{ mb: 2 }} />
-    <Box sx={{ display: 'flex', gap: 1 }}>
+    <div style={{ display: 'flex', gap: '8px' }}>
       <Skeleton variant="rounded" width={80} height={36} />
       <Skeleton variant="rounded" width={80} height={36} />
-    </Box>
-  </Box>
+    </div>
+  </div>
 );
 
 interface FullPageLoadingProps {
@@ -74,8 +74,8 @@ interface FullPageLoadingProps {
 }
 
 export const FullPageLoading: React.FC<FullPageLoadingProps> = ({ message = 'Loading...' }) => (
-  <Box
-    sx={{
+  <div
+    style={{
       position: 'fixed',
       top: 0,
       left: 0,
@@ -84,10 +84,10 @@ export const FullPageLoading: React.FC<FullPageLoadingProps> = ({ message = 'Loa
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      bgcolor: 'background.default',
+      backgroundColor: 'rgba(255, 255, 255, 0.9)',
       zIndex: 9999,
     }}
   >
     <LoadingSpinner size={60} message={message} />
-  </Box>
+  </div>
 );
