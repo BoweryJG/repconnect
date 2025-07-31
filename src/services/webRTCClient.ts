@@ -237,7 +237,7 @@ export class WebRTCClient {
       this.cleanup();
     });
 
-    this.socket.on('error', (error) => {
+    this.socket.on('error', (_error) => {
       // WebRTC errors are handled by error event listeners
     });
 
@@ -287,7 +287,7 @@ export class WebRTCClient {
         document.addEventListener(
           'click',
           () => {
-            audio.play().catch((e) => {
+            audio.play().catch((_e) => {
               // Still cannot play audio, but error is expected
             });
           },

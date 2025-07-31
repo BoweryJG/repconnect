@@ -59,7 +59,7 @@ class TrialVoiceService {
     } catch (error: any) {
       if (error.response?.status === 403) {
         throw new Error(
-          'Your free 5-minute trial has been used today. Please sign up for unlimited access.'
+          'Your free 10-minute trial has been used today. Please sign up for unlimited access.'
         );
       }
       throw error;

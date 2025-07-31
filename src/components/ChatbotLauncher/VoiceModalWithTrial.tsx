@@ -61,7 +61,7 @@ export default function VoiceModalWithTrial({
     'idle' | 'connecting' | 'connected' | 'error'
   >('idle');
   const [isTrialSession, setIsTrialSession] = useState(false);
-  const [remainingTime, setRemainingTime] = useState(300); // 5 minutes
+  const [remainingTime, setRemainingTime] = useState(600); // 10 minutes
   const [showTrialExpired, setShowTrialExpired] = useState(false);
 
   const webRTCClientRef = useRef<WebRTCClient | null>(null);
@@ -113,7 +113,7 @@ export default function VoiceModalWithTrial({
         // Add system message about trial
         addTranscriptionLine(
           'system',
-          `Free 5-minute trial started. Sign up for unlimited access!`
+          `Free 10-minute trial started. Sign up for unlimited access!`
         );
       }
 
@@ -156,7 +156,7 @@ export default function VoiceModalWithTrial({
     endCall();
     addTranscriptionLine(
       'system',
-      'Your 5-minute trial has ended. Sign up for unlimited voice calls!'
+      'Your 10-minute trial has ended. Sign up for unlimited voice calls!'
     );
   };
 

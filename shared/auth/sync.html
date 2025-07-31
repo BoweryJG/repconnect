@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RepSpheres Auth Sync</title>
+    <script>
+      // This page handles cross-domain auth synchronization
+      (function () {
+        const SUPABASE_URL = 'https://cbopynuvhcymbumjnvay.supabase.co';
+        const STORAGE_KEY = 'sb-cbopynuvhcymbumjnvay-auth-token';
+
+        // Function to broadcast auth state to other domains
+        function broadcastAuthState() {
+          try {
+            const authData = localStorage.getItem(STORAGE_KEY);
+
+            if (authData) {
+              // Parse the auth data
+              const parsed = JSON.parse(authData);
+
+              // Broadcast to all RepSpheres domains
+              const domains = [
+                'https://canvas.repspheres.com',
+                'https://crm.repspheres.com',
+                'https://market-data.repspheres.com',
+              ];
+
+              domains.forEach((domain) => {
+                if (window.location.origin !== domain) {
+                  // Post message to other domains
+                  const iframe = document.createElement('iframe');
+                  iframe.style.display = 'none';
+                  iframe.src = `${domain}/auth/sync.html`;
+                  iframe.onload = function () {
+                    iframe.contentWindow.postMessage(
+                      {
+                        type: 'REPSPHERES_AUTH_SYNC',
+                        authData: authData,
+                      },
+                      domain
+                    );
+
+                    // Remove iframe after sending
+                    setTimeout(() => iframe.remove(), 1000);
+                  };
+                  document.body.appendChild(iframe);
+                }
+              });
+            }
+          } catch (error) {
+            console.error('Auth sync error:', error);
+          }
+        }
+
+        // Listen for auth sync messages
+        window.addEventListener('message', function (event) {
+          // Verify origin is from RepSpheres
+          const allowedOrigins = [
+            'https://canvas.repspheres.com',
+            'https://crm.repspheres.com',
+            'https://market-data.repspheres.com',
+            'http://localhost:7001',
+            'http://localhost:7002',
+            'http://localhost:7003',
+          ];
+
+          if (!allowedOrigins.includes(event.origin)) {
+            return;
+          }
+
+          if (event.data && event.data.type === 'REPSPHERES_AUTH_SYNC') {
+            try {
+              // Store the auth data locally
+              localStorage.setItem(STORAGE_KEY, event.data.authData);
+
+              // Set cross-domain cookie
+              document.cookie = `repspheres_auth=true; domain=.repspheres.com; path=/; secure; samesite=lax`;
+
+              // Notify parent window
+              if (window.parent !== window) {
+                window.parent.postMessage(
+                  {
+                    type: 'REPSPHERES_AUTH_SYNC_COMPLETE',
+                    success: true,
+                  },
+                  event.origin
+                );
+              }
+            } catch (error) {
+              console.error('Failed to sync auth:', error);
+
+              if (window.parent !== window) {
+                window.parent.postMessage(
+                  {
+                    type: 'REPSPHERES_AUTH_SYNC_COMPLETE',
+                    success: false,
+                    error: error.message,
+                  },
+                  event.origin
+                );
+              }
+            }
+          }
+        });
+
+        // Check if we need to broadcast on load
+        if (window.location.search.includes('broadcast=true')) {
+          broadcastAuthState();
+        }
+
+        // Auto-close if in iframe
+        if (window.parent !== window) {
+          setTimeout(() => {
+            window.parent.postMessage(
+              {
+                type: 'REPSPHERES_AUTH_SYNC_READY',
+              },
+              '*'
+            );
+          }, 100);
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div style="display: none">RepSpheres Auth Sync</div>
+  </body>
+</html>
