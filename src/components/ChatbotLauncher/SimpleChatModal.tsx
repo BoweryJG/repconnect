@@ -8,9 +8,11 @@ import {
   Avatar,
   CircularProgress,
   InputAdornment,
+  Chip,
 } from '@mui/material';
-import { X, Send, Loader2 } from 'lucide-react';
+import { X, Send, Loader2, WifiOff, Wifi } from 'lucide-react';
 import { useAuth } from '../../auth/useAuth';
+import websocketChatService from '../../services/websocketChatService';
 import agentChatAPI from '../../services/agentChatAPI';
 import './SimpleChatModal.css';
 
@@ -43,14 +45,35 @@ export function ChatModal({
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [sessionId, setSessionId] = useState<string | null>(null);
+  const [isConnected, setIsConnected] = useState(false);
+  const [isAgentTyping, setIsAgentTyping] = useState(false);
+  const [useWebSocket, setUseWebSocket] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const typingTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
 
-  // Initialize session when modal opens
+  // Initialize session and check WebSocket connection when modal opens
   useEffect(() => {
     if (isOpen && agentId) {
-      const newSessionId = `${agentId}-${Date.now()}`;
-      setSessionId(newSessionId);
+      // Check WebSocket connection
+      setIsConnected(websocketChatService.isSocketConnected());
+
+      // Try to create conversation via WebSocket if connected
+      if (websocketChatService.isSocketConnected()) {
+        websocketChatService
+          .createConversation(agentId, agentName)
+          .then((conversationId) => {
+            setSessionId(conversationId);
+          })
+          .catch((error) => {
+            console.error('Failed to create conversation:', error);
+            // Fallback to simple session ID
+            setSessionId(`${agentId}-${Date.now()}`);
+          });
+      } else {
+        // Fallback to simple session ID
+        setSessionId(`${agentId}-${Date.now()}`);
+      }
 
       // Send welcome message
       setMessages([
@@ -62,6 +85,13 @@ export function ChatModal({
         },
       ]);
     }
+
+    // Cleanup on unmount
+    return () => {
+      if (sessionId) {
+        websocketChatService.cleanupConversation(sessionId);
+      }
+    };
   }, [isOpen, agentId, agentName, agentRole]);
 
   // Auto-scroll to bottom
@@ -103,20 +133,60 @@ export function ChatModal({
     try {
       let fullResponse = '';
 
-      // Use streaming for real-time responses
-      await (agentChatAPI as any).streamMessage({
-        message: inputValue,
-        agentId: agentId!,
-        userId: user?.id || 'guest-' + Date.now(),
-        sessionId: sessionId,
-        onChunk: (chunk: string) => {
-          fullResponse += chunk;
-          // Update the agent message with accumulated response
-          setMessages((prev) =>
-            prev.map((msg) => (msg.id === agentMessageId ? { ...msg, content: fullResponse } : msg))
-          );
-        },
-      });
+      // Try WebSocket first if connected
+      if (useWebSocket && websocketChatService.isSocketConnected()) {
+        await websocketChatService.sendMessage(
+          sessionId,
+          inputValue,
+          agentId!,
+          // onChunk handler
+          (chunk: string) => {
+            fullResponse += chunk;
+            // Update the agent message with accumulated response
+            setMessages((prev) =>
+              prev.map((msg) =>
+                msg.id === agentMessageId ? { ...msg, content: fullResponse } : msg
+              )
+            );
+          },
+          // onComplete handler
+          (message) => {
+            setIsLoading(false);
+            setIsAgentTyping(false);
+          },
+          // onTyping handler
+          (isTyping) => {
+            setIsAgentTyping(isTyping);
+            // Clear any existing timeout
+            if (typingTimeoutRef.current) {
+              clearTimeout(typingTimeoutRef.current);
+            }
+            // Set timeout to clear typing indicator if no update
+            if (isTyping) {
+              typingTimeoutRef.current = setTimeout(() => {
+                setIsAgentTyping(false);
+              }, 5000);
+            }
+          }
+        );
+      } else {
+        // Fallback to REST API
+        await (agentChatAPI as any).streamMessage({
+          message: inputValue,
+          agentId: agentId!,
+          userId: user?.id || 'guest-' + Date.now(),
+          sessionId: sessionId,
+          onChunk: (chunk: string) => {
+            fullResponse += chunk;
+            // Update the agent message with accumulated response
+            setMessages((prev) =>
+              prev.map((msg) =>
+                msg.id === agentMessageId ? { ...msg, content: fullResponse } : msg
+              )
+            );
+          },
+        });
+      }
     } catch (error) {
       console.error('Failed to send message:', error);
       const errorMessage: Message = {
@@ -128,8 +198,9 @@ export function ChatModal({
       setMessages((prev) => [...prev, errorMessage]);
     } finally {
       setIsLoading(false);
+      setIsAgentTyping(false);
     }
-  }, [inputValue, isLoading, sessionId, agentId, user]);
+  }, [inputValue, isLoading, sessionId, agentId, user, useWebSocket]);
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -161,9 +232,18 @@ export function ChatModal({
             </Typography>
           </div>
         </div>
-        <IconButton onClick={onClose} className="chat-modal-close-button">
-          <X size={24} />
-        </IconButton>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <Chip
+            size="small"
+            icon={isConnected ? <Wifi size={14} /> : <WifiOff size={14} />}
+            label={isConnected ? 'Live' : 'Offline'}
+            color={isConnected ? 'success' : 'default'}
+            variant="outlined"
+          />
+          <IconButton onClick={onClose} className="chat-modal-close-button">
+            <X size={24} />
+          </IconButton>
+        </div>
       </div>
 
       {/* Messages */}
@@ -180,12 +260,14 @@ export function ChatModal({
             </div>
           </div>
         ))}
-        {isLoading && (
+        {(isLoading || isAgentTyping) && (
           <div className="chat-message agent">
             <div className="chat-message-bubble">
               <div className="chat-loading">
                 <CircularProgress size={16} />
-                <Typography variant="body2">Thinking...</Typography>
+                <Typography variant="body2">
+                  {isAgentTyping ? `${agentName} is typing...` : 'Thinking...'}
+                </Typography>
               </div>
             </div>
           </div>
