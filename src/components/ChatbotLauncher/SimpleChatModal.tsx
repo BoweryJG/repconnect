@@ -33,14 +33,14 @@ interface Message {
   timestamp: Date;
 }
 
-export function ChatModal({
+const ChatModalComponent: React.FC<ChatModalProps> = ({
   isOpen,
   onClose,
   agentName = 'AI Assistant',
   agentAvatar = '🤖',
   agentRole = 'Your Personal AI Concierge',
   agentId = 'harvey-ai',
-}: ChatModalProps) {
+}) => {
   const { user } = useAuth();
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
@@ -309,6 +309,7 @@ export function ChatModal({
       </div>
     </Dialog>
   );
-}
+};
 
+export const ChatModal = React.memo(ChatModalComponent);
 export default ChatModal;

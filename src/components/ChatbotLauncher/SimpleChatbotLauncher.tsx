@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { ChatBubbleOutline, Close, Message, Phone, Lock } from '@mui/icons-material';
 import { IconButton, Tooltip } from '@mui/material';
 import { Agent } from './types';
@@ -13,6 +13,67 @@ interface SimpleChatbotLauncherProps {
   primaryColor?: string;
   glowColor?: string;
 }
+
+interface AgentCardProps {
+  agent: Agent;
+  hasVoiceAccess: boolean;
+  onSelect: (_agent: Agent, _mode: 'chat' | 'voice') => void;
+}
+
+// Memoized agent card to prevent re-renders
+const AgentCard = React.memo<AgentCardProps>(({ agent, hasVoiceAccess, onSelect }) => {
+  return (
+    <div
+      className={`agent-card ${!agent.available ? 'unavailable' : ''}`}
+      style={{ '--agent-color': agent.color || '#3B82F6' } as React.CSSProperties}
+    >
+      <div className="agent-avatar">
+        {typeof agent.avatar === 'string' ? (
+          <span className="avatar-emoji">{agent.avatar}</span>
+        ) : (
+          <span className="avatar-emoji">🤖</span>
+        )}
+      </div>
+      <div className="agent-info">
+        <h4 className="agent-name">{agent.name}</h4>
+        {!agent.available && <span className="coming-soon-chip">Coming Soon</span>}
+        <span className="agent-specialty">{agent.specialty}</span>
+      </div>
+      {agent.available && (
+        <div className="agent-actions">
+          <IconButton
+            size="small"
+            onClick={() => onSelect(agent, 'chat')}
+            title="Chat with agent"
+            className="action-button chat-action"
+          >
+            <Message sx={{ fontSize: 18 }} />
+          </IconButton>
+          {hasVoiceAccess ? (
+            <IconButton
+              size="small"
+              onClick={() => onSelect(agent, 'voice')}
+              title="Call agent"
+              className="action-button voice-action"
+            >
+              <Phone sx={{ fontSize: 18 }} />
+            </IconButton>
+          ) : (
+            <Tooltip title="Voice calls available with Rep² subscription" placement="top">
+              <span>
+                <IconButton size="small" disabled className="action-button voice-action disabled">
+                  <Lock sx={{ fontSize: 16 }} />
+                </IconButton>
+              </span>
+            </Tooltip>
+          )}
+        </div>
+      )}
+    </div>
+  );
+});
+
+AgentCard.displayName = 'AgentCard';
 
 const SimpleChatbotLauncher: React.FC<SimpleChatbotLauncherProps> = ({
   agents = [],
@@ -45,21 +106,24 @@ const SimpleChatbotLauncher: React.FC<SimpleChatbotLauncherProps> = ({
     };
   }, [isOpen]);
 
-  const handleToggle = () => {
+  const handleToggle = useCallback(() => {
     setIsOpen(!isOpen);
-  };
+  }, [isOpen]);
 
-  const handleAgentSelect = (agent: Agent, mode: 'chat' | 'voice') => {
-    if (agent.available) {
-      // Check voice access for voice mode
-      if (mode === 'voice' && !hasVoiceAccess) {
-        // For now, just prevent selection - we'll add visual feedback in Phase 3.3
-        return;
+  const handleAgentSelect = useCallback(
+    (agent: Agent, mode: 'chat' | 'voice') => {
+      if (agent.available) {
+        // Check voice access for voice mode
+        if (mode === 'voice' && !hasVoiceAccess) {
+          // For now, just prevent selection - we'll add visual feedback in Phase 3.3
+          return;
+        }
+        onAgentSelect(agent, mode);
+        setIsOpen(false);
       }
-      onAgentSelect(agent, mode);
-      setIsOpen(false);
-    }
-  };
+    },
+    [hasVoiceAccess, onAgentSelect]
+  );
 
   const positionClass = position === 'bottom-right' ? 'launcher-right' : 'launcher-left';
 
@@ -97,57 +161,12 @@ const SimpleChatbotLauncher: React.FC<SimpleChatbotLauncherProps> = ({
               <div className="loading-message">Loading agents...</div>
             ) : (
               agents.map((agent) => (
-                <div
+                <AgentCard
                   key={agent.id}
-                  className={`agent-card ${!agent.available ? 'unavailable' : ''}`}
-                  style={{ '--agent-color': agent.color || '#3B82F6' } as React.CSSProperties}
-                >
-                  <div className="agent-avatar">
-                    {typeof agent.avatar === 'string' ? (
-                      <span className="avatar-emoji">{agent.avatar}</span>
-                    ) : (
-                      <span className="avatar-emoji">🤖</span>
-                    )}
-                  </div>
-                  <div className="agent-info">
-                    <h4 className="agent-name">{agent.name}</h4>
-                    {!agent.available && <span className="coming-soon-chip">Coming Soon</span>}
-                    <span className="agent-specialty">{agent.specialty}</span>
-                  </div>
-                  {agent.available && (
-                    <div className="agent-actions">
-                      <IconButton
-                        size="small"
-                        onClick={() => handleAgentSelect(agent, 'chat')}
-                        title="Chat with agent"
-                        className="action-button chat-action"
-                      >
-                        <Message sx={{ fontSize: 18 }} />
-                      </IconButton>
-                      {hasVoiceAccess ? (
-                        <IconButton
-                          size="small"
-                          onClick={() => handleAgentSelect(agent, 'voice')}
-                          title="Voice call with agent"
-                          className="action-button voice-action"
-                        >
-                          <Phone sx={{ fontSize: 18 }} />
-                        </IconButton>
-                      ) : (
-                        <Tooltip title={`Voice calls require Rep² or higher (currently ${tier})`}>
-                          <IconButton
-                            size="small"
-                            onClick={() => (window.location.href = '/upgrade')}
-                            title="Upgrade for voice calls"
-                            className="action-button voice-action locked"
-                          >
-                            <Lock sx={{ fontSize: 18 }} />
-                          </IconButton>
-                        </Tooltip>
-                      )}
-                    </div>
-                  )}
-                </div>
+                  agent={agent}
+                  hasVoiceAccess={hasVoiceAccess}
+                  onSelect={handleAgentSelect}
+                />
               ))
             )}
           </div>
@@ -168,4 +187,4 @@ const SimpleChatbotLauncher: React.FC<SimpleChatbotLauncherProps> = ({
   );
 };
 
-export default SimpleChatbotLauncher;
+export default React.memo(SimpleChatbotLauncher);

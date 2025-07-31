@@ -16,14 +16,14 @@ interface SimpleVoiceModalProps {
   agentId?: string;
 }
 
-export default function SimpleVoiceModal({
+const SimpleVoiceModal: React.FC<SimpleVoiceModalProps> = ({
   isOpen,
   onClose,
   agentName = 'AI Assistant',
   agentAvatar = '🤖',
   agentRole = 'Your Personal AI Concierge',
   agentId,
-}: SimpleVoiceModalProps) {
+}) => {
   const { user, session } = useAuth();
   const { tier } = useRepXTier(user?.id);
   const hasVoiceAccess = checkFeatureAccess(tier, 'phoneAccess');
@@ -439,4 +439,6 @@ export default function SimpleVoiceModal({
       </div>
     </div>
   );
-}
+};
+
+export default React.memo(SimpleVoiceModal);

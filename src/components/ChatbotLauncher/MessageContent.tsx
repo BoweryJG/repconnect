@@ -90,4 +90,4 @@ const MessageContent: React.FC<MessageContentProps> = ({ content, isStreaming = 
   );
 };
 
-export default MessageContent;
+export default React.memo(MessageContent);
