@@ -192,6 +192,96 @@
   color: #ef4444;
 }
 
+/* Agent Speaking Indicator */
+.status-indicator.agent-speaking {
+  background: #fde047;
+  animation: speaking 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes speaking {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.05);
+  }
+}
+
+.status-indicator.agent-speaking .pulse {
+  animation: pulse 0.5s ease-in-out infinite;
+  color: #f59e0b;
+}
+
+/* Conversation History */
+.conversation-history {
+  margin: 24px 0;
+  padding: 16px;
+  background: #f9fafb;
+  border-radius: 12px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.conversation-history h4 {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #6b7280;
+}
+
+.conversation-messages {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.message {
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.message.user {
+  background: #e0f2fe;
+  margin-left: 20%;
+  text-align: right;
+}
+
+.message.agent {
+  background: #f3f4f6;
+  margin-right: 20%;
+}
+
+.speaker-label {
+  font-weight: 600;
+  margin-right: 8px;
+  color: #374151;
+}
+
+.message-text {
+  color: #1f2937;
+}
+
+/* Scrollbar styling for conversation history */
+.conversation-history::-webkit-scrollbar {
+  width: 6px;
+}
+
+.conversation-history::-webkit-scrollbar-track {
+  background: #e5e7eb;
+  border-radius: 3px;
+}
+
+.conversation-history::-webkit-scrollbar-thumb {
+  background: #9ca3af;
+  border-radius: 3px;
+}
+
+.conversation-history::-webkit-scrollbar-thumb:hover {
+  background: #6b7280;
+}
+
 /* Microphone Error */
 .microphone-error {
   margin: 24px 0;

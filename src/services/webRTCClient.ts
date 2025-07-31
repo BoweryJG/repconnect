@@ -11,7 +11,7 @@ export interface WebRTCConfig {
 }
 
 export class WebRTCClient {
-  private socket: Socket | null = null;
+  socket: Socket | null = null; // Made public for event handling
   private device: Device | null = null;
   private producerTransport: Transport | null = null;
   private consumerTransport: Transport | null = null;

@@ -33,9 +33,18 @@ export default function SimpleVoiceModal({
   const [showTrialExpired, setShowTrialExpired] = useState(false);
   const [microphoneError, setMicrophoneError] = useState<string | null>(null);
   const [showTextChat, setShowTextChat] = useState(false);
+  const [isAgentSpeaking, setIsAgentSpeaking] = useState(false);
+  const [conversationHistory, setConversationHistory] = useState<
+    Array<{
+      speaker: 'user' | 'agent';
+      text: string;
+      timestamp: Date;
+    }>
+  >([]);
 
   const webRTCClientRef = useRef<WebRTCClient | null>(null);
   const remainingTimeInterval = useRef<NodeJS.Timeout | null>(null);
+  const conversationRef = useRef<HTMLDivElement>(null);
 
   const endCall = useCallback(() => {
     if (webRTCClientRef.current) {
@@ -99,6 +108,42 @@ export default function SimpleVoiceModal({
       const roomId = `${agentName.toLowerCase().replace(/\s+/g, '-')}-${Date.now()}`;
       await webRTCClientRef.current.joinRoom(roomId);
 
+      // Set up voice event handlers for continuous conversation
+      if (webRTCClientRef.current.socket) {
+        // Handle agent speaking status
+        webRTCClientRef.current.socket.on('agent:speaking', (speaking: boolean) => {
+          setIsAgentSpeaking(speaking);
+        });
+
+        // Handle transcription events
+        webRTCClientRef.current.socket.on('transcription:user', (data: { text: string }) => {
+          setConversationHistory((prev) => [
+            ...prev,
+            {
+              speaker: 'user',
+              text: data.text,
+              timestamp: new Date(),
+            },
+          ]);
+        });
+
+        webRTCClientRef.current.socket.on('transcription:agent', (data: { text: string }) => {
+          setConversationHistory((prev) => [
+            ...prev,
+            {
+              speaker: 'agent',
+              text: data.text,
+              timestamp: new Date(),
+            },
+          ]);
+        });
+
+        // Handle voice activity detection
+        webRTCClientRef.current.socket.on('vad:speech-end', () => {
+          // User finished speaking, agent will respond
+        });
+      }
+
       setConnectionStatus('connected');
     } catch (error: any) {
       console.error('Failed to initialize WebRTC:', error);
@@ -152,6 +197,13 @@ export default function SimpleVoiceModal({
       startCall();
     }
   }, [isOpen, isCallActive, connectionStatus, microphoneError, startCall]);
+
+  // Auto-scroll conversation history
+  useEffect(() => {
+    if (conversationRef.current) {
+      conversationRef.current.scrollTop = conversationRef.current.scrollHeight;
+    }
+  }, [conversationHistory]);
 
   useEffect(() => {
     return () => {
@@ -224,20 +276,39 @@ export default function SimpleVoiceModal({
           ) : (
             <>
               <div className="connection-status">
-                <div className={`status-indicator ${connectionStatus}`}>
+                <div
+                  className={`status-indicator ${connectionStatus} ${isAgentSpeaking ? 'agent-speaking' : ''}`}
+                >
                   <div className="pulse"></div>
-                  <span className="volume-icon">🔊</span>
+                  <span className="volume-icon">{isAgentSpeaking ? '🗣️' : '🔊'}</span>
                 </div>
                 <p className="status-text">
                   {connectionStatus === 'idle' && 'Ready to start voice conversation'}
                   {connectionStatus === 'connecting' && 'Connecting to voice service...'}
                   {connectionStatus === 'connected' &&
                     !microphoneError &&
-                    'Connected - You can speak now!'}
+                    (isAgentSpeaking ? 'Agent is speaking...' : 'Listening - You can speak now!')}
                   {connectionStatus === 'error' && 'Connection error - Please try again'}
                   {microphoneError && connectionStatus !== 'connecting' && microphoneError}
                 </p>
               </div>
+
+              {/* Conversation history display */}
+              {isCallActive && conversationHistory.length > 0 && (
+                <div className="conversation-history" ref={conversationRef}>
+                  <h4>Conversation</h4>
+                  <div className="conversation-messages">
+                    {conversationHistory.map((message, index) => (
+                      <div key={index} className={`message ${message.speaker}`}>
+                        <span className="speaker-label">
+                          {message.speaker === 'user' ? 'You' : agentName}:
+                        </span>
+                        <span className="message-text">{message.text}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {microphoneError && (
                 <div className="microphone-error">
