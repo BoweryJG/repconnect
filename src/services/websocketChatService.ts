@@ -32,17 +32,85 @@ class WebSocketChatService {
   private messageHandlers = new Map<string, (message: ChatMessage) => void>();
   private chunkHandlers = new Map<string, (chunk: string) => void>();
   private typingHandlers = new Map<string, (isTyping: boolean) => void>();
+  private authSubscription: any = null;
+  private currentSession: any = null;
 
   constructor() {
+    this.setupAuthListener();
     this.connect();
+  }
+
+  private setupAuthListener() {
+    // Listen for auth state changes
+    this.authSubscription = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log('WebSocket: Auth state changed:', event);
+
+      // Handle different auth events
+      switch (event) {
+        case 'SIGNED_IN':
+        case 'TOKEN_REFRESHED':
+          this.currentSession = session;
+          // Reconnect with new session
+          if (this.socket?.connected) {
+            this.disconnect();
+          }
+          await this.connect();
+          break;
+
+        case 'SIGNED_OUT':
+          this.currentSession = null;
+          this.disconnect();
+          break;
+
+        case 'USER_UPDATED':
+          // Session might have changed, reconnect
+          if (session?.access_token !== this.currentSession?.access_token) {
+            this.currentSession = session;
+            this.reconnect();
+          }
+          break;
+      }
+    });
+  }
+
+  private async handleAuthError() {
+    try {
+      // Try to refresh the session
+      const {
+        data: { session },
+        error,
+      } = await supabase.auth.refreshSession();
+
+      if (error) {
+        console.error('WebSocket: Failed to refresh session:', error);
+        // Session expired, user needs to log in again
+        this.currentSession = null;
+        this.disconnect();
+        return;
+      }
+
+      if (session) {
+        console.log('WebSocket: Session refreshed successfully');
+        this.currentSession = session;
+        await this.reconnect();
+      }
+    } catch (error) {
+      console.error('WebSocket: Error handling auth error:', error);
+      this.disconnect();
+    }
   }
 
   private async connect() {
     try {
-      // Get auth token from Supabase
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
+      // Use stored session or get current session
+      let session = this.currentSession;
+      if (!session) {
+        const {
+          data: { session: currentSession },
+        } = await supabase.auth.getSession();
+        session = currentSession;
+        this.currentSession = currentSession;
+      }
 
       if (!session?.access_token) {
         console.warn('WebSocket: No auth token available, skipping connection');
@@ -86,6 +154,18 @@ class WebSocketChatService {
 
     this.socket.on('error', (error: any) => {
       console.error('WebSocket: Error:', error);
+
+      // Handle authentication errors
+      if (error.type === 'UnauthorizedError' || error.code === 'invalid_token') {
+        console.error('WebSocket: Authentication error, refreshing session...');
+        this.handleAuthError();
+      }
+    });
+
+    // Handle authentication errors from server
+    this.socket.on('unauthorized', (error: any) => {
+      console.error('WebSocket: Unauthorized:', error);
+      this.handleAuthError();
     });
 
     // Handle message chunks for streaming
@@ -229,18 +309,33 @@ class WebSocketChatService {
       this.socket.disconnect();
       this.socket = null;
     }
+    this.isConnected = false;
     this.messageHandlers.clear();
     this.chunkHandlers.clear();
     this.typingHandlers.clear();
+  }
+
+  // Clean up auth subscription when service is destroyed
+  public destroy() {
+    this.disconnect();
+    if (this.authSubscription) {
+      this.authSubscription.unsubscribe();
+      this.authSubscription = null;
+    }
   }
 
   public isSocketConnected(): boolean {
     return this.isConnected;
   }
 
-  public reconnect() {
+  public async reconnect() {
+    console.log('WebSocket: Reconnecting...');
     this.disconnect();
-    this.connect();
+
+    // Small delay to ensure clean disconnect
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
+    await this.connect();
   }
 
   // Cleanup handlers for a specific conversation

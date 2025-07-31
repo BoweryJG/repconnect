@@ -20,9 +20,30 @@ export class WebRTCClient {
   private localStream: MediaStream | null = null;
   private roomId: string | null = null;
   private sessionId: string | null = null;
+  private authSubscription: any = null;
+  private isReconnecting = false;
 
   constructor(private _config: WebRTCConfig) {
     // Config stored for WebRTC connection
+    this.setupAuthListener();
+  }
+
+  private setupAuthListener() {
+    // Listen for auth state changes
+    this.authSubscription = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'TOKEN_REFRESHED' && session) {
+        // Update auth token in config
+        this._config.authToken = session.access_token;
+
+        // If connected, send updated token to server
+        if (this.socket?.connected) {
+          this.socket.emit('auth:update', { token: session.access_token });
+        }
+      } else if (event === 'SIGNED_OUT') {
+        // Clean disconnect on sign out
+        this.disconnect();
+      }
+    });
   }
 
   async connect(): Promise<void> {
@@ -237,14 +258,54 @@ export class WebRTCClient {
       this.cleanup();
     });
 
-    this.socket.on('error', (_error) => {
+    this.socket.on('error', (error: any) => {
       // WebRTC errors are handled by error event listeners
+      if (error.type === 'UnauthorizedError' || error.code === 'invalid_token') {
+        this.handleAuthError();
+      }
+    });
+
+    this.socket.on('unauthorized', (_error: any) => {
+      // Handle unauthorized errors
+      this.handleAuthError();
     });
 
     // Handle new consumer (when agent sends audio back)
     this.socket.on('new-consumer', async ({ producerId }) => {
       await this.consume(producerId);
     });
+  }
+
+  private async handleAuthError(): Promise<void> {
+    if (this.isReconnecting) return;
+
+    try {
+      this.isReconnecting = true;
+
+      // Try to refresh the session
+      const {
+        data: { session },
+        error,
+      } = await supabase.auth.refreshSession();
+
+      if (error || !session) {
+        // Session expired, disconnect
+        this.disconnect();
+        return;
+      }
+
+      // Update auth token
+      this._config.authToken = session.access_token;
+
+      // Reconnect with new token
+      this.disconnect();
+      await this.connect();
+    } catch (error) {
+      console.error('WebRTC: Error handling auth error:', error);
+      this.disconnect();
+    } finally {
+      this.isReconnecting = false;
+    }
   }
 
   private async consume(producerId: string): Promise<void> {
@@ -321,6 +382,10 @@ export class WebRTCClient {
     if (this.socket) {
       this.socket.disconnect();
       this.socket = null;
+    }
+    if (this.authSubscription) {
+      this.authSubscription.unsubscribe();
+      this.authSubscription = null;
     }
   }
 
