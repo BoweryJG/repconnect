@@ -34,15 +34,15 @@ if (!supabaseUrl || !supabaseAnonKey) {
   console.warn('Missing Supabase environment variables - using defaults');
 }
 
-// Create a single supabase client with simplified configuration
+// Create a single supabase client with unified auth configuration
 export const supabase: SupabaseClient = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
     autoRefreshToken: true,
     persistSession: true,
     detectSessionInUrl: true,
     storage: window.localStorage,
-    storageKey: 'sb-cbopynuvhcymbumjnvay-auth-token', // Use the exact key that's working
-    flowType: 'implicit' as const, // Use implicit flow for better OAuth handling
+    storageKey: 'repspheres-auth', // Unified key
+    flowType: 'pkce' as const, // Most secure flow
   },
 });
 

@@ -27,6 +27,7 @@ import {
 import webRTCVoiceService from '../services/webRTCVoiceService';
 import { webRTCSignalingService } from '../services/webRTCSignalingService';
 import voiceBridgeFactory from '../services/voiceBridgeFactory';
+import voiceService from '../services/voiceService';
 
 interface WebRTCVoiceInterfaceProps {
   sessionId?: string;

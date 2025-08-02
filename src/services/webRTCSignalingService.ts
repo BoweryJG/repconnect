@@ -29,9 +29,9 @@ class WebRTCSignalingService {
       } = await supabase.auth.getSession();
       const backendUrl = process.env.REACT_APP_BACKEND_URL || 'https://osbackend-zl1h.onrender.com';
 
-      // Connect to WebRTC signaling namespace
-      this.socket = io(`${backendUrl}/webrtc-signaling`, {
-        path: '/agents-ws',
+      // Connect to voice agents WebRTC namespace
+      this.socket = io(`${backendUrl}/voice-agents`, {
+        path: '/socket.io',
         auth: {
           token: session?.access_token || '',
         },
